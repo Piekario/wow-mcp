@@ -2106,6 +2106,22 @@ def check_waypoint_links() -> None:
     assert not any("|H" in line or "install TomTom" in line for line in chat), chat
 
 
+def check_secret_group_range() -> None:
+    """Addon 0.18.0 fix: in a real group (Forever, 2026-11-22) UnitInRange returned a secret "range checked" value and
+    the boolean test on it failed the whole group section. Secrets are now dropped: the group is saved without inRange."""
+    runtime, g, _ = load_addon("forever")
+    runtime.execute("""
+        secretValues["SECRET_IN_RANGE"], secretValues["SECRET_CHECKED"] = true, true
+        function UnitInRange() return "SECRET_IN_RANGE", "SECRET_CHECKED" end
+    """)
+    event_dispatcher(g)(None, "PLAYER_LOGIN")
+    g.SlashCmdList["WOWMCP"]("reload")
+    snapshot = saved_character(g)
+    assert not values(snapshot["errors"]), values(snapshot["errors"])
+    members = values(snapshot["group"]["members"])
+    assert len(members) == 3 and all(m["inRange"] is None for m in members), [dict(m) for m in members]
+
+
 def check_quest_sources_absent() -> None:
     """Without the other addons (or with broken ones) the dump has no error and no section."""
     runtime, g, _ = load_addon("forever")
@@ -2512,6 +2528,7 @@ def main() -> int:
     if mode == "forever":
         check_quest_sources_absent()
         check_waypoint_links()
+        check_secret_group_range()
         check_passed_guide_steps()
         check_realmless_key()
         check_real_lifecycle()

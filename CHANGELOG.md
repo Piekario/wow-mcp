@@ -17,6 +17,10 @@ based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` 
     the zone data QuestieDB ships (the same area-to-map table and overrides Questie uses for its map pins), or from the zone name
     through the client's map data. Only a click sets a waypoint; a shift-click keeps the client's default.
   - `/mcp quest` also lists the objective targets (`objectives:`) between the start and the end.
+- **Fixed**
+  - The `group` section failed in a real party on Forever ("attempt to perform boolean test on ... a secret boolean value"):
+    `UnitInRange` returns its "range checked" value as a secret there. Secret values are now dropped before any test, so the
+    group is saved and `inRange` is left out when the client hides it.
 - **Changed**
   - TomTom is an optional dependency (`## OptionalDeps`), never required: without it, or in a client without
     `LinkUtil.RegisterLinkHandler`, the coordinates stay plain text, and the first lookup with coordinates in a session suggests TomTom once.

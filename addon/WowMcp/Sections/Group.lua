@@ -38,8 +38,13 @@ local function memberFromUnit(unit)
     local power = callFirst({ "UnitPowerType" }, unit)
     if power then m.powerType = plain(power[2]) end
     if unit ~= "player" then
+        -- In a group the Forever client returns both values (in range, range checked) as secrets: test only plain ones.
         local inRange = callFirst({ "UnitInRange" }, unit)
-        if inRange and inRange[2] then m.inRange = plain(inRange[1]) and true or false end
+        local checked = inRange and plain(inRange[2])
+        if checked then
+            local value = plain(inRange[1])
+            if value ~= nil then m.inRange = value and true or false end
+        end
     end
     return m
 end
