@@ -1,5 +1,16 @@
 # wow-mcp
 
+[![CI](https://github.com/Piekario/wow-mcp/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Piekario/wow-mcp/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/Piekario/wow-mcp?sort=semver)](https://github.com/Piekario/wow-mcp/releases/latest)
+[![npm](https://img.shields.io/npm/v/@piekasz/wow-mcp?logo=npm)](https://www.npmjs.com/package/@piekasz/wow-mcp)
+[![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
+
+[![Go](https://img.shields.io/github/go-mod/go-version/Piekario/wow-mcp?filename=server%2Fgo.mod&logo=go&logoColor=white)](server/go.mod)
+[![Lua](https://img.shields.io/badge/addon-Lua-2C2D72?logo=lua&logoColor=white)](addon/WowMcp)
+[![Node.js](https://img.shields.io/badge/npx-Node.js%2018%2B-339933?logo=nodedotjs&logoColor=white)](npm/wow-mcp)
+[![MCP](https://img.shields.io/badge/protocol-MCP-6E56CF)](https://modelcontextprotocol.io)
+[![Platforms](https://img.shields.io/badge/platforms-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)](#supported-game-versions)
+
 An [MCP](https://modelcontextprotocol.io) server that lets an AI assistant in any MCP client read the state of your World of Warcraft
 character: quests, bags, gear, talents, professions, reputation, auctions, progress over time, and more. It has two parts:
 

@@ -12,6 +12,8 @@ based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` 
 - **Fixed**
   - npm: on macOS and Linux `npx -y @piekasz/wow-mcp` failed with `EACCES` because the server binary in the platform
     package had lost its executable bit. The launcher now restores it before starting the server.
+- **Docs**
+  - README badges: CI status, latest release, npm version, license and the technologies used.
 
 ## Addon 0.16.0, server 0.17.0 (2026-11-22)
 
