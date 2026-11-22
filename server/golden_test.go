@@ -733,8 +733,14 @@ func newGoldenEnv(t *testing.T, sc goldenScenario) *goldenEnv {
 		ss.Close()
 	})
 
-	// Absolute paths are replaced with markers (longer ones first).
+	// Absolute paths are replaced with markers (longer ones first). Inside JSON strings a Windows path
+	// appears with doubled backslashes, so that form is replaced first.
+	jsonEscaped := func(p string) string { return strings.ReplaceAll(p, `\`, `\\`) }
 	scrubber := strings.NewReplacer(
+		jsonEscaped(goalsPath), "<GOALS>",
+		jsonEscaped(file), "<FILE>",
+		jsonEscaped(histDir), "<HISTORY>",
+		jsonEscaped(tmp), "<TMP>",
 		goalsPath, "<GOALS>",
 		file, "<FILE>",
 		histDir, "<HISTORY>",
