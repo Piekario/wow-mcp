@@ -12,6 +12,7 @@ ignore:
   - .luacheckrc
   - .pkgmeta
   - addon/tests
+  - assets
   - CHANGELOG.md
   - CODE_OF_CONDUCT.md
   - CONTRIBUTING.md
