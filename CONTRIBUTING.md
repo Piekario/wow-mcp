@@ -36,7 +36,7 @@ Questions and ideas that are not yet a concrete request fit better in
      the diff. A new tool, prompt or argument needs a golden case (the test fails without one).
 4. Add an entry to [CHANGELOG.md](CHANGELOG.md) under the next version.
 5. Open a pull request against `main` and fill in the template. CI must pass on Linux, macOS and Windows before merging.
-   `main` is protected: every change, including the maintainer's, goes through a pull request.
+   `main` is protected: changes from contributors go through a pull request.
 
 ## Code style
 
