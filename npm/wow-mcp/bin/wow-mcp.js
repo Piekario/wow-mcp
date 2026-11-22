@@ -23,8 +23,9 @@ function platformPackageName() {
 function binaryPath() {
   const exe = process.platform === "win32" ? "wow-mcp.exe" : "wow-mcp";
   const pkg = platformPackageName();
+  let bin;
   try {
-    return require.resolve(`${pkg}/bin/${exe}`);
+    bin = require.resolve(`${pkg}/bin/${exe}`);
   } catch (_) {
     process.stderr.write(
       `wow-mcp: no prebuilt server for ${process.platform}/${process.arch} (package ${pkg} is missing).\n` +
@@ -32,6 +33,23 @@ function binaryPath() {
         "--no-optional / --omit=optional. Otherwise build from source: https://github.com/Piekario/wow-mcp\n"
     );
     process.exit(1);
+  }
+  ensureExecutable(bin);
+  return bin;
+}
+
+// npm does not keep the executable bit of files that are not listed in "bin" when a package is packed on Windows,
+// so the binary can arrive as 0644. Restore it before running (a no-op when it is already executable or on Windows).
+function ensureExecutable(file) {
+  if (process.platform === "win32") return;
+  try {
+    fs.accessSync(file, fs.constants.X_OK);
+  } catch (_) {
+    try {
+      fs.chmodSync(file, 0o755);
+    } catch (err) {
+      process.stderr.write(`wow-mcp: ${file} is not executable and chmod failed (${err.message}); run: chmod +x "${file}"\n`);
+    }
   }
 }
 

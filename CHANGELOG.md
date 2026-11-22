@@ -7,6 +7,12 @@ errors, dump 18 ms), addon 0.7.0 with server 0.9.0 (2026-11-15, no section error
 between are part of 0.11.0 / 0.12.2 and were run with them. Addon 0.14.0 was run on 2026-11-22 (client build 71037, no section errors, dump 25.7 ms: `questDb` for 22 log quests, `guide` reading TUGs, `/mcp quest The Glowing Shard`). **Server 0.15.0 and the 0.12.0 / 0.13.0 addon changes (carried periods, flight zones, auction gear details) have not yet been checked in a real client**: their fixes are
 based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` result and golden response tests.
 
+## Server 0.17.1 (2026-11-22)
+
+- **Fixed**
+  - npm: on macOS and Linux `npx -y @piekasz/wow-mcp` failed with `EACCES` because the server binary in the platform
+    package had lost its executable bit. The launcher now restores it before starting the server.
+
 ## Addon 0.16.0, server 0.17.0 (2026-11-22)
 
 First public release. The addon is renamed so the project does not depend on any one AI vendor, and the server can be
