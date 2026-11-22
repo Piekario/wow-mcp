@@ -10,13 +10,13 @@ Original author: Piekasz (GitHub: Piekario). License: GPL-3.0-or-later with an a
 ## 1. Install the in-game addon
 
 ```sh
-npx -y wow-mcp install-addon
+npx -y @piekasz/wow-mcp install-addon
 ```
 
 It finds the game the way Battle.net recorded it (Windows registry), or in the usual install folders (on Windows on
 every drive, also one folder deep such as `D:\Games\World of Warcraft`), and picks the
 client folder when there is only one (`_retail_`, `_classic_era_`, `_forever_`, ...). Otherwise tell it:
-`npx -y wow-mcp install-addon --wow-dir "D:\Games\World of Warcraft" --client _classic_era_`. It copies the bundled
+`npx -y @piekasz/wow-mcp install-addon --wow-dir "D:\Games\World of Warcraft" --client _classic_era_`. It copies the bundled
 addon into `<game>/<client>/Interface/AddOns`, moves an older copy aside as a backup and writes nothing else in the game
 directory. Restart the game completely, then type `/reload` once in game to write the first dump.
 
@@ -27,14 +27,14 @@ directory. Restart the game completely, then type `/reload` once in game to writ
   "mcpServers": {
     "wow": {
       "command": "npx",
-      "args": ["-y", "wow-mcp"],
+      "args": ["-y", "@piekasz/wow-mcp"],
       "env": { "WOW_DIR": "C:\\Program Files (x86)\\World of Warcraft" }
     }
   }
 }
 ```
 
-Run `npx -y wow-mcp --check` to see what the server finds, and `npx -y wow-mcp --help` for every option.
+Run `npx -y @piekasz/wow-mcp --check` to see what the server finds, and `npx -y @piekasz/wow-mcp --help` for every option.
 
 npm installs only the prebuilt server for your platform (Windows, macOS and Linux on x64 and arm64), so you need
 neither Go nor a separate download. The dump history is kept in your user data directory

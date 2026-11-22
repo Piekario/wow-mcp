@@ -36,7 +36,7 @@ That document is a description by the project author, not an approval from Blizz
 ### With npx (Windows, macOS, Linux; needs Node.js 18+)
 
 ```sh
-npx -y wow-mcp install-addon      # copies the WowMcp addon into the game (finds the game; or pass --wow-dir / --client)
+npx -y @piekasz/wow-mcp install-addon      # copies the WowMcp addon into the game (finds the game; or pass --wow-dir / --client)
 ```
 
 Restart the game completely, type `/mcp reload` once, then add the server to your MCP client:
@@ -46,7 +46,7 @@ Restart the game completely, type `/mcp reload` once, then add the server to you
   "mcpServers": {
     "wow": {
       "command": "npx",
-      "args": ["-y", "wow-mcp"],
+      "args": ["-y", "@piekasz/wow-mcp"],
       "env": { "WOW_DIR": "C:\\Program Files (x86)\\World of Warcraft" }
     }
   }

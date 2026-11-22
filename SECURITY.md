@@ -16,5 +16,5 @@ reporter, unless you prefer to stay anonymous.
 ## Scope
 
 In scope: the wow-mcp server (for example reading or writing files outside its own directory, path traversal, crashes
-caused by a crafted SavedVariables file), the installers (`install.ps1`, `install.sh`, `npx wow-mcp install-addon`) and
+caused by a crafted SavedVariables file), the installers (`install.ps1`, `install.sh`, `npx @piekasz/wow-mcp install-addon`) and
 the WowMcp addon. Out of scope: the game client, other addons, and MCP clients that run the server.

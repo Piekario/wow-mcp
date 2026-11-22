@@ -3,11 +3,11 @@
 // Copyright (C) 2026 Piekasz (GitHub: Piekario). Author attribution must be kept: see NOTICE.
 //
 // npm launcher for the wow-mcp server. The server itself is a Go binary; npm installs exactly one
-// platform package (wow-mcp-<os>-<arch>, an optional dependency) and this script runs the binary from it,
+// platform package (@piekasz/wow-mcp-<os>-<arch>, an optional dependency) and this script runs the binary from it,
 // passing every argument and the stdio streams through unchanged (MCP speaks JSON-RPC over stdio).
 //
-//   npx -y wow-mcp [server flags]              run the MCP server (see `--help`)
-//   npx -y wow-mcp install-addon [options]     copy the bundled in-game addon into the game directory
+//   npx -y @piekasz/wow-mcp [server flags]              run the MCP server (see `--help`)
+//   npx -y @piekasz/wow-mcp install-addon [options]     copy the bundled in-game addon into the game directory
 "use strict";
 
 const childProcess = require("child_process");
@@ -17,7 +17,7 @@ const path = require("path");
 const PACKAGE_ROOT = path.join(__dirname, "..");
 
 function platformPackageName() {
-  return `wow-mcp-${process.platform}-${process.arch}`;
+  return `@piekasz/wow-mcp-${process.platform}-${process.arch}`;
 }
 
 function binaryPath() {

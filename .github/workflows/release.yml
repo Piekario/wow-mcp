@@ -1,5 +1,5 @@
 # Release: on a version tag (v*), run the tests, build the archives with `make dist` and attach them to a GitHub release.
-# Also publishes the npm packages (npx -y wow-mcp) with the NPM_TOKEN secret or npm trusted publishing; without either it only builds them.
+# Also publishes the npm packages (npx -y @piekasz/wow-mcp) with the NPM_TOKEN secret or npm trusted publishing; without either it only builds them.
 name: Release
 
 on:

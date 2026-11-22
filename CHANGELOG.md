@@ -28,8 +28,8 @@ installed with `npx`.
   - Reads `WowMcp.lua` and the `WowMcpDB` root (the file of the renamed addon). Answers point to `/mcp` commands.
   - Tool, prompt and server texts name no specific MCP client; the `first_run` prompt is titled "First time with wow-mcp".
 - **Added**
-  - npm packages: `npx -y wow-mcp` runs the prebuilt server for the platform (package `wow-mcp` plus one
-    `wow-mcp-<os>-<arch>` package per platform, chosen by npm), and `npx -y wow-mcp install-addon` copies the bundled addon
+  - npm packages: `npx -y @piekasz/wow-mcp` runs the prebuilt server for the platform (package `@piekasz/wow-mcp` plus one
+    `@piekasz/wow-mcp-<os>-<arch>` package per platform, chosen by npm), and `npx -y @piekasz/wow-mcp install-addon` copies the bundled addon
     into the game (game folder from `--wow-dir`, `WOW_DIR`, the Windows registry entry of Battle.net or the usual install
     folders on every drive, e.g. `D:\Games\World of Warcraft`; client folder from `--client`, `WOW_CLIENT` or the only one present). Under npm the dump history lives in the user
     data directory so it survives updates. `scripts/npm-pack.sh`, `scripts/npm-publish.sh`, and a release workflow job
