@@ -40,6 +40,11 @@ requirements, the shared point currency), but without tree names, with most desc
   - `unrevealed: true` on the "?" perks the game calls "Unknown", and a note not to recommend them.
   - Expects addon 0.17.0.
 
+### Repository
+
+- CurseForge: an `addon-v<version>` tag packages the addon (`.pkgmeta`, BigWigsMods/packager) and uploads it with the
+  `CurseForge` workflow; running the workflow by hand builds the zip only.
+
 ## Server 0.17.1 (2026-11-22)
 
 - **Fixed**

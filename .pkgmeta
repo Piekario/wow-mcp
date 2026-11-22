@@ -1,0 +1,29 @@
+# CurseForge package of the WowMcp addon (BigWigsMods/packager, see .github/workflows/curseforge.yml).
+# The repository also holds the server, so only addon/WowMcp goes into the zip, as the WowMcp folder.
+package-as: WowMcp
+
+move-folders:
+  WowMcp/addon/WowMcp: WowMcp
+
+ignore:
+  - .github
+  - .gitattributes
+  - .gitignore
+  - .luacheckrc
+  - .pkgmeta
+  - addon/tests
+  - CHANGELOG.md
+  - CODE_OF_CONDUCT.md
+  - CONTRIBUTING.md
+  - docs
+  - install.ps1
+  - install.sh
+  - Makefile
+  - npm
+  - README.md
+  - ROADMAP.md
+  - scripts
+  - SECURITY.md
+  - server
+  - SUPPORT.md
+  - TASKS.md
