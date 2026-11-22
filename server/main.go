@@ -1,0 +1,222 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Piekasz (GitHub: Piekario). Author attribution must be kept: see NOTICE.
+
+// wow-mcp: a local MCP server that reads the character state saved by the
+// WowMcp addon in WoW SavedVariables and exposes it as tools.
+//
+// The server never touches the game process and only reads one text file from
+// the WTF directory of the game. The only thing it writes is the snapshot history
+// in its own directory (by default "history" next to wow-mcp.exe, or in <user config>/wow-mcp
+// when the exe directory is not writable), from which it computes changes between snapshots.
+//
+// Launch (done by the MCP client, e.g. your MCP client):
+//
+//	wow-mcp.exe --wow-dir "<path to World of Warcraft>"
+//
+// This file is only the composition root: flags, wiring dependencies, --check and --version.
+package main
+
+import (
+	"context"
+	"flag"
+	"fmt"
+	"io"
+	"log"
+	"os"
+	"path/filepath"
+	"strings"
+	"time"
+
+	"github.com/modelcontextprotocol/go-sdk/mcp"
+
+	"wowmcp/internal/mcpserver"
+	"wowmcp/internal/snapshot"
+	"wowmcp/internal/storage"
+)
+
+const (
+	serverName    = "wow-mcp"
+	serverVersion = "0.17.0"
+)
+
+func main() {
+	wowDir := flag.String("wow-dir", os.Getenv("WOW_DIR"),
+		`game directory, e.g. "<path to World of Warcraft>" (can also be set with the WOW_DIR environment variable); every client folder in it (_retail_, _classic_era_, _forever_...) is searched and the newest dump wins`)
+	client := flag.String("client", os.Getenv("WOW_CLIENT"),
+		`read only this client folder of the game directory, e.g. "_classic_era_" or "forever" (can also be set with WOW_CLIENT); empty = all`)
+	account := flag.String("account", os.Getenv("WOW_ACCOUNT"),
+		`pin one account folder under WTF/Account (e.g. "MYACCOUNT"; can also be set with WOW_ACCOUNT); empty = the account whose dump was modified most recently, and wow_status / wow_doctor name it and the others`)
+	file := flag.String("file", "",
+		"full path to WowMcp.lua; skips searching the game directory")
+	check := flag.Bool("check", false,
+		"check that the dump file can be found and read, print a summary and exit")
+	historyDir := flag.String("history-dir", defaultHistoryDir(),
+		`snapshot history directory (server-only, never inside the game directory; by default next to the exe, or in <user config>/wow-mcp when the exe directory is not writable; a relative path is resolved from that server directory); "" disables history`)
+	historyKeep := flag.Int("history-keep", 50, "how many of the latest snapshots to keep per character")
+	historyMaxMB := flag.Int("history-max-mb", 200,
+		"size limit of one character's history in MB (oldest snapshots go first, the newest stays); 0 = no limit")
+	historyCompressDays := flag.Int("history-compress-days", storage.DefaultCompressDays,
+		"snapshots older than this many days are gzip-compressed (reading works as before); a negative value disables compression")
+	logPath := flag.String("log", "",
+		"file the server appends errors and startup information to (a relative path is resolved from the server directory: the exe directory, or <user config>/wow-mcp when it is not writable; never inside the game directory)")
+	goalsFile := flag.String("goals-file", "",
+		"goals file (wow_goal_set); defaults to goals.json next to the history directory (a relative path is resolved from the server directory; never inside the game directory). The server also reads an optional weights.json next to it")
+	maxResponseKB := flag.Int("max-response-kb", mcpserver.DefaultMaxResponseKB,
+		"limit of one tool answer in KB: a bigger answer is replaced by a compact envelope with a hint on how to ask for less; 0 = no limit")
+	staleMinutes := flag.Int("stale-minutes", 120, "after how many minutes tools warn that the snapshot is stale; 0 disables")
+	version := flag.Bool("version", false, "print the version and exit")
+	flag.Parse()
+
+	if *version {
+		fmt.Println(serverName, serverVersion)
+		return
+	}
+
+	*historyDir = storage.ResolveBeside(*historyDir, ownDir())
+	goalsPath := resolveGoalsFile(*goalsFile, *historyDir)
+	// The server writes nothing in the game directory: the one given with --wow-dir and the one --file points into.
+	gameDirs := []string{*wowDir, storage.GameDirOf(*file)}
+	closeLog, err := setupLogging(*logPath, *historyDir, gameDirs)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "ERROR:", err)
+		os.Exit(1)
+	}
+	defer closeLog()
+
+	fresh := snapshot.Freshness{Now: time.Now, StaleAfter: time.Duration(*staleMinutes) * time.Minute}
+	store := &storage.Store{WowDir: *wowDir, Client: *client, File: *file, Account: *account}
+	if *historyDir != "" {
+		store.History = storage.NewHistory(*historyDir, *historyKeep,
+			storage.WithMaxMB(*historyMaxMB), storage.WithCompressDays(*historyCompressDays))
+	}
+
+	if err := storage.RequireOutside("goals file (--goals-file)", goalsPath, gameDirs...); err != nil {
+		fmt.Fprintln(os.Stderr, "ERROR:", err)
+		closeLog()
+		os.Exit(1)
+	}
+
+	if *check {
+		if err := runCheck(store, fresh); err != nil {
+			log.Print("ERROR: ", err)
+			closeLog()
+			os.Exit(1)
+		}
+		return
+	}
+
+	log.Printf("start: version %s, game directory %q, client %q, history %q", serverVersion, *wowDir, *client, *historyDir)
+	if err := newServer(store, fresh, goalsPath, func(c *mcpserver.Config) { c.MaxResponseKB = *maxResponseKB }).Run(context.Background(), &mcp.StdioTransport{}); err != nil {
+		log.Print("ERROR: ", err)
+		closeLog()
+		os.Exit(1)
+	}
+}
+
+// setupLogging sends the standard log to stderr (stdout belongs to the MCP protocol) and, when
+// --log is given, to a file as well. It rejects paths inside the game directory: the server writes nothing there.
+// The same rule applies to the history directory. It returns a function that closes the log file.
+func setupLogging(logPath, historyDir string, gameDirs []string) (closeLog func(), err error) {
+	log.SetPrefix(serverName + ": ")
+	log.SetOutput(os.Stderr)
+	closeLog = func() {}
+
+	if err := storage.RequireOutside("history directory (--history-dir)", historyDir, gameDirs...); err != nil {
+		return closeLog, err
+	}
+	if logPath == "" {
+		return closeLog, nil
+	}
+	logPath = storage.ResolveBeside(logPath, ownDir())
+	if err := storage.RequireOutside("log file (--log)", logPath, gameDirs...); err != nil {
+		return closeLog, err
+	}
+	f, err := storage.OpenAppend(logPath)
+	if err != nil {
+		return closeLog, fmt.Errorf("cannot open log file %q: %w", logPath, err)
+	}
+	log.SetOutput(io.MultiWriter(os.Stderr, f))
+	return func() { f.Close() }, nil
+}
+
+// resolveGoalsFile picks the goals file: the given one (a relative path is resolved from the exe directory) or goals.json next to
+// the history directory, or next to the exe when there is no history. The weights.json file lives in the same directory.
+func resolveGoalsFile(flagValue, historyDir string) string {
+	if flagValue != "" {
+		return storage.ResolveBeside(flagValue, ownDir())
+	}
+	dir := ownDir()
+	if historyDir != "" {
+		dir = filepath.Dir(historyDir)
+	}
+	if dir == "" {
+		return ""
+	}
+	return filepath.Join(dir, "goals.json")
+}
+
+// newServer assembles the MCP server from the snapshot store and the freshness policy. Shared by main and tests.
+// An empty goalsPath means goals are disabled. Options adjust the configuration (e.g. the response size limit).
+func newServer(store *storage.Store, fresh snapshot.Freshness, goalsPath string, options ...func(*mcpserver.Config)) *mcp.Server {
+	cfg := mcpserver.Config{Name: serverName, Version: serverVersion, Snapshots: store, Freshness: fresh}
+	if goalsPath != "" {
+		cfg.Goals = storage.OwnFile{Path: goalsPath}
+		cfg.GoalsFile = goalsPath
+		cfg.Weights = storage.OwnFile{Path: filepath.Join(filepath.Dir(goalsPath), "weights.json")}
+	}
+	if h := store.History; h != nil && h.Dir != "" {
+		cfg.History, cfg.HistoryDir = h, h.Dir
+	}
+	for _, option := range options {
+		option(&cfg)
+	}
+	return mcpserver.New(cfg)
+}
+
+// runCheck prints where the snapshot is read from, which characters it contains and how old the data is (--check).
+func runCheck(store *storage.Store, fresh snapshot.Freshness) error {
+	db, err := store.Load()
+	if err != nil {
+		return err
+	}
+	fmt.Println("File:", db.Path)
+	fmt.Println("Modified:", db.ModTime.Format("2006-01-02 15:04:05"))
+	if db.Account != "" {
+		fmt.Println("Account:", db.Account)
+		if len(db.OtherAccounts) > 0 {
+			fmt.Println("Other accounts with a dump:", strings.Join(db.OtherAccounts, ", "), "(pin one with --account)")
+		}
+	}
+	for _, name := range db.CharacterNames() {
+		meta := fresh.SnapshotMeta(name, db.Characters[name])
+		fmt.Printf("Character: %s, snapshot: %v\n", name, meta["dumpedAt"])
+		if w, ok := meta["warning"]; ok {
+			fmt.Println("  Warning:", w)
+		}
+	}
+	if store.History != nil {
+		fmt.Println("History:", store.History.Dir)
+	}
+	return nil
+}
+
+// exeDir is the directory of the server executable; "" when it cannot be determined.
+func exeDir() string {
+	exe, err := os.Executable()
+	if err != nil {
+		return ""
+	}
+	return filepath.Dir(exe)
+}
+
+// ownDir is the server's own directory: next to the executable when it is writable, otherwise <user config>/wow-mcp.
+func ownDir() string { return storage.DefaultDir(exeDir(), os.UserConfigDir) }
+
+// defaultHistoryDir is the "history" directory in the server's own directory.
+func defaultHistoryDir() string {
+	dir := ownDir()
+	if dir == "" {
+		return ""
+	}
+	return filepath.Join(dir, "history")
+}

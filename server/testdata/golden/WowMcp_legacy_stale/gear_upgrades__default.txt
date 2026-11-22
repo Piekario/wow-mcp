@@ -1,0 +1,52 @@
+# prompt gear_upgrades variant=default
+# args: {}
+# description: Which items from the bags, bank, the last vendor and the auction house prices the player browsed are upgrades over the equipped gear, with stat and DPS differences.
+--- message[0] role=user ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game. Start your answer with this information.
+
+Assess which of the candidates are upgrades for this class and level. The delta in comparisons is the candidate minus the equipped item (positive = gain). Take into account which stats matter for the class, the required level and the price. auctionUpgrades (when present) are gear prices from the auction house the player browsed, best upgrade first: vsEquipped is the difference to the equipped item, minBuyoutPerUnit the price, canAfford and levelOk say whether it is within reach. Give a short list: what to equip right away, what to buy (also on the auction house), what to leave alone.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "candidates": [],
+  "class": "Hunter",
+  "equipped": [
+    {
+      "id": 5586,
+      "name": "Curvewood Dagger",
+      "numbers": {},
+      "quality": "Uncommon",
+      "slot": "mainHand"
+    },
+    {
+      "id": 5540,
+      "name": "Webwood Slicer",
+      "numbers": {},
+      "quality": "Uncommon",
+      "slot": "offHand"
+    },
+    {
+      "id": 2780,
+      "name": "Light Hunting Bow",
+      "numbers": {},
+      "quality": "Uncommon",
+      "slot": "ranged"
+    }
+  ],
+  "level": 20,
+  "money": "52s 12c",
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  },
+  "stats": []
+}
+```
+

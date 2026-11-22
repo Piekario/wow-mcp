@@ -1,0 +1,17 @@
+# tool wow_trainer variant=npc_nomatch
+# args: {"npc":"Zzzz"}
+# isError: false
+--- content[0] ---
+{
+  "known": [
+    "Einris Brightspear",
+    "Astaia"
+  ],
+  "money": "52s 12c",
+  "note": "I do not remember the trainer Zzzz. Remembered ones are in the known field; open that trainer's window in game and type /mcp reload.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

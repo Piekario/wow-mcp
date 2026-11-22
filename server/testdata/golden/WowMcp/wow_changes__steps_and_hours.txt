@@ -1,0 +1,68 @@
+# tool wow_changes variant=steps_and_hours
+# args: {"sinceHours":1.5,"steps":2}
+# isError: false
+--- content[0] ---
+{
+  "bags": {
+    "lost": [
+      {
+        "after": 0,
+        "before": 1,
+        "change": -1,
+        "id": 99999,
+        "name": "Old Scroll"
+      }
+    ]
+  },
+  "elapsed": "1 h",
+  "experience": {
+    "levelAfter": 20,
+    "levelBefore": 20,
+    "xpAfter": 1200,
+    "xpBefore": 1100,
+    "xpGained": 100
+  },
+  "from": "2026-11-15 15:26",
+  "history": [
+    "2026-11-15 14:26",
+    "2026-11-15 15:26",
+    "2026-11-15 16:26"
+  ],
+  "loot": {
+    "distinctItems": 2,
+    "partialNote": "loot from earlier saves between these dumps is not included: the loot section of the newer dump counts from that moment",
+    "pieces": 6,
+    "qualityNote": "the addon gave no quality for 2 items, so they are not included in the notable list",
+    "since": "2026-11-15 16:26",
+    "unknownQuality": 2
+  },
+  "money": {
+    "after": "52s 12c",
+    "before": "42s 12c",
+    "change": "+10s 0c"
+  },
+  "playedBetween": "1 h",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "to": "2026-11-15 16:26",
+  "xpSources": {
+    "kills": {
+      "count": 2,
+      "xp": 180
+    },
+    "other": {
+      "count": 1,
+      "xp": 40
+    },
+    "partialNote": "XP from earlier saves between these dumps is not included: the xpGains section of the newer dump counts from that moment",
+    "quests": {
+      "count": 2,
+      "xp": 1150
+    },
+    "since": "2026-11-15 16:26",
+    "total": 1370
+  }
+}

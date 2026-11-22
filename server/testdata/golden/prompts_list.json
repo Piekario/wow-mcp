@@ -1,0 +1,156 @@
+[
+  {
+    "arguments": [
+      {
+        "name": "character",
+        "description": "character name; empty = most recently dumped character"
+      }
+    ],
+    "description": "An overview of all characters on the account: gold, levels, professions, ready cooldowns, mail about to expire, and stale snapshots. Combines wow_account and wow_cooldowns.",
+    "name": "account_overview",
+    "title": "All characters overview"
+  },
+  {
+    "arguments": [
+      {
+        "name": "character",
+        "description": "character name; empty = most recently dumped character"
+      }
+    ],
+    "description": "What to do before logging out: an inn for rested XP, mail and auctions, gear repairs, bag space and warnings from wow_status. Combines the character (resting, bindLocation), rested XP, mail, auctions, durability and bags.",
+    "name": "before_logout",
+    "title": "Before logging out"
+  },
+  {
+    "arguments": [
+      {
+        "name": "character",
+        "description": "character name; empty = most recently dumped character"
+      }
+    ],
+    "description": "Which dungeons fit the character's level now, which quests from the log can be done along the way, and how to prepare.",
+    "name": "dungeon_finder",
+    "title": "Which dungeon to run"
+  },
+  {
+    "arguments": [
+      {
+        "name": "character",
+        "description": "character name; empty = most recently dumped character"
+      }
+    ],
+    "description": "An introduction after installation or for a new character: what the assistant can see, which windows to open in game so the addon saves the trainer, vendor, bank, mail and auctions, and example questions.",
+    "name": "first_run",
+    "title": "First time with wow-mcp"
+  },
+  {
+    "arguments": [
+      {
+        "name": "character",
+        "description": "character name; empty = most recently dumped character"
+      }
+    ],
+    "description": "Which items from the bags, bank, the last vendor and the auction house prices the player browsed are upgrades over the equipped gear, with stat and DPS differences.",
+    "name": "gear_upgrades",
+    "title": "Gear upgrades"
+  },
+  {
+    "arguments": [
+      {
+        "name": "character",
+        "description": "character name; empty = most recently dumped character"
+      }
+    ],
+    "description": "The state of a Hunter's pet: happiness, loyalty, training points, diet versus food in the bags, abilities, Beast Training (missing ranks, point plan) and a comparison with the stable. Only useful when the snapshot has a pet section; otherwise it says what is missing.",
+    "name": "pet_care",
+    "title": "Pet care"
+  },
+  {
+    "arguments": [
+      {
+        "name": "character",
+        "description": "character name; empty = most recently dumped character"
+      }
+    ],
+    "description": "How to raise professions as cheaply as possible: what to craft now from the materials in the bags and bank, what is missing, which recipes no longer give skill points. Combines wow_recipes, professions and bags.",
+    "name": "profession_progress",
+    "title": "Profession progress"
+  },
+  {
+    "arguments": [
+      {
+        "name": "character",
+        "description": "character name; empty = most recently dumped character"
+      }
+    ],
+    "description": "A plan for the next game session: quests to do and turn in, ordered by zone, a trainer visit, bag space, the pet. Combines the character, quest log, trainer offer, changes since the previous snapshot and the return-to-town forecast (returnToTown).",
+    "name": "session_plan",
+    "title": "Session plan"
+  },
+  {
+    "arguments": [
+      {
+        "name": "character",
+        "description": "character name; empty = most recently dumped character"
+      }
+    ],
+    "description": "A summary of the last game session: XP and gold gained, pace per hour, quests turned in, new items and spells, time to level. Combines wow_progress and wow_changes since the start of the session.",
+    "name": "session_summary",
+    "title": "Session summary"
+  },
+  {
+    "arguments": [
+      {
+        "name": "character",
+        "description": "character name; empty = most recently dumped character"
+      }
+    ],
+    "description": "Where to spend the next talent points and which build to aim for, based on the full in-game tree, class, level, spells and equipment.",
+    "name": "talent_planning",
+    "title": "Talent planning"
+  },
+  {
+    "arguments": [
+      {
+        "name": "character",
+        "description": "character name; empty = most recently dumped character"
+      }
+    ],
+    "description": "What is worth buying from the trainer with the current gold: spell priorities, what to postpone, how much gold is left. Combines the trainer offer, known spells, talents and gold.",
+    "name": "trainer_shopping",
+    "title": "What to buy from the trainer"
+  },
+  {
+    "arguments": [
+      {
+        "name": "character",
+        "description": "character name; empty = most recently dumped character"
+      }
+    ],
+    "description": "A summary of the last 7 days from the snapshot history: level-ups, gold change day by day, played time, the best session and the most important events. Combines wow_gold_history, wow_journal and wow_timeline; requires snapshot history.",
+    "name": "week_in_game",
+    "title": "Week in game"
+  },
+  {
+    "arguments": [
+      {
+        "name": "character",
+        "description": "character name; empty = most recently dumped character"
+      }
+    ],
+    "description": "What from the bags and bank is worth listing on the auction house and what to sell to a vendor, based on prices saved during recent auction house visits.",
+    "name": "what_to_auction",
+    "title": "What to put on the auction house"
+  },
+  {
+    "arguments": [
+      {
+        "name": "character",
+        "description": "character name; empty = most recently dumped character"
+      }
+    ],
+    "description": "What to sell to a vendor and what to keep: items from the bags and bank with their vendor value, taking quests and professions into account.",
+    "name": "what_to_sell",
+    "title": "What to sell"
+  }
+]

@@ -1,0 +1,25 @@
+# tool wow_quest_lookup variant=quest_nomatch
+# args: {"quest":"Zzzz"}
+# isError: false
+--- content[0] ---
+{
+  "character": {
+    "x": 67.9,
+    "y": 15.4,
+    "zone": "Stormwind City"
+  },
+  "count": 0,
+  "hint": "Not in the dump: it holds only the quests in the log, the quests of the next guide steps and the answers to /mcp quest. Ask the player to type /mcp quest \u003cexact quest name, NPC name or ID\u003e in game and then /mcp reload. Do not guess the location from memory.",
+  "note": "Locations come from the quest database installed in the player's game (the same data Questie shows on the map), not from the quest text. Coordinates are map percentages (x from the left, y from the top) in the named zone.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "source": {
+    "contract": 4,
+    "name": "QuestieDB",
+    "readMode": "baked",
+    "version": "1.1.3"
+  }
+}

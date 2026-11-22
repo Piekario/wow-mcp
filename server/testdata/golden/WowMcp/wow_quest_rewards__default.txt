@@ -1,0 +1,59 @@
+# tool wow_quest_rewards variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "count": 1,
+  "quests": [
+    {
+      "choices": [
+        {
+          "count": 1,
+          "equippable": false,
+          "id": 5586,
+          "levelOk": true,
+          "name": "Curvewood Dagger",
+          "usable": true
+        },
+        {
+          "count": 1,
+          "equippable": false,
+          "id": 5540,
+          "levelOk": true,
+          "name": "Webwood Slicer",
+          "note": "the addon marked this reward as unusable by the character (usable = false): vendor value",
+          "usable": false
+        }
+      ],
+      "complete": false,
+      "fixed": {
+        "items": [
+          "Linen Cloth x5"
+        ],
+        "money": "3s 50c"
+      },
+      "id": 947,
+      "note": "I do not have the data to recommend a choice (no upgrades and no sell prices).",
+      "source": "log",
+      "title": "Cave Mushrooms",
+      "where": "quest log"
+    }
+  ],
+  "scoring": {
+    "how": "without weights the server only counts the change in item level and DPS relative to the equipped item; this is a rough approximation, pass weights (e.g. {\"agility\":1}) or a weights.json file to take stats into account",
+    "method": "item level and DPS"
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "withoutChoices": [
+    {
+      "complete": false,
+      "id": 4740,
+      "title": "WANTED: Murkdeep!",
+      "xp": 1450
+    }
+  ]
+}

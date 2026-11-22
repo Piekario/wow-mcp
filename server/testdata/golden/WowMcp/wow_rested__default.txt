@@ -1,0 +1,47 @@
+# tool wow_rested variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "bindLocation": "Auberdine",
+  "bubbles": 3.8,
+  "bubblesPerLevel": 20,
+  "coversRestOfLevel": false,
+  "level": 20,
+  "levelsWorth": 0.19,
+  "percentOfLevel": 18.8,
+  "pool": {
+    "cap": 31950,
+    "full": false,
+    "inn": {
+      "assumption": "from now, with the pool from the dump, without playing (classic rule, approximate)",
+      "fullAfter": "8 d 17 h",
+      "fullAt": "2026-11-24 10:53",
+      "hoursToFull": 210,
+      "xpPer8h": 1065
+    },
+    "missing": 27950,
+    "outsideInn": {
+      "assumption": "from now, with the pool from the dump, without playing (classic rule, approximate)",
+      "fullAfter": "34 d 23 h",
+      "fullAt": "2026-12-20 16:45",
+      "hoursToFull": 839.8,
+      "xpPer8h": 266
+    },
+    "percentOfCap": 12.5
+  },
+  "restedXp": 4000,
+  "resting": true,
+  "restingNote": "According to the dump the character is resting (inn or city), so by the classic rules the pool is growing now.",
+  "rule": "The rested pool grows by 5% of the level's XP per 8 h in an inn or city, up to 150% of the level's XP; outside an inn it grows four times slower. While the pool lasts, monsters give double XP and the pool shrinks by the bonus XP. This is how it works in classic WoW; Forever may count differently.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "source": "classic rule, approximate",
+  "xp": 1200,
+  "xpLeftAfterPool": 12100,
+  "xpMax": 21300,
+  "xpToNextLevel": 20100
+}

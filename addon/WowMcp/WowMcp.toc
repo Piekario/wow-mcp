@@ -1,0 +1,72 @@
+## Interface: 16001
+## Title: WowMcp
+## Notes: Saves character state to SavedVariables, from where a local MCP server reads it. Read-only, no automation.
+## Author: Piekasz (GitHub: Piekario)
+## X-License: GPL-3.0-or-later, author attribution must be kept (see NOTICE)
+## Version: 0.16.0
+## OptionalDeps: QuestieDB, Questie, Guidelime
+## SavedVariables: WowMcpDB
+
+# Foundations: each file depends only on the files above it.
+Core.lua
+Compat.lua
+Maps.lua
+QuestDb.lua
+Items.lua
+QuestRewards.lua
+TalentGrid.lua
+TraitTree.lua
+Store.lua
+Events.lua
+Timing.lua
+Snapshot.lua
+
+# Sections collected on every dump. File order = section order in the dump.
+Sections\Character.lua
+Sections\Quests.lua
+Sections\Inventory.lua
+Sections\Spells.lua
+Sections\Talents.lua
+Sections\Legacy.lua
+Sections\Professions.lua
+Sections\Pet.lua
+Sections\ActionBars.lua
+Sections\Reputation.lua
+Sections\Macros.lua
+Sections\Currencies.lua
+Sections\Cooldowns.lua
+Sections\Played.lua
+Sections\Group.lua
+Sections\Dungeons.lua
+Sections\EquipmentSets.lua
+Sections\Pvp.lua
+Sections\Guide.lua
+Sections\QuestDb.lua
+
+# Sections collected when a window opens.
+Sections\Trainer.lua
+Sections\Vendor.lua
+Sections\Buyback.lua
+Sections\Stable.lua
+Sections\QuestGiver.lua
+Sections\Bank.lua
+Sections\FlightPaths.lua
+Sections\Recipes.lua
+Sections\Mail.lua
+Sections\Auctions.lua
+Sections\Inspect.lua
+Sections\Friends.lua
+Sections\Guild.lua
+Sections\Probe.lua
+Sections\Deaths.lua
+Sections\Loot.lua
+Sections\XpGains.lua
+Sections\Note.lua
+
+# Player UI.
+Panel.lua
+MinimapButton.lua
+AuctionTooltip.lua
+Options.lua
+WowMcp.lua
+Commands.lua

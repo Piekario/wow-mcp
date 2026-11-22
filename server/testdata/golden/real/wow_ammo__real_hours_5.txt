@@ -1,0 +1,28 @@
+# tool wow_ammo variant=real_hours_5
+# args: {"hours":5}
+# isError: false
+--- content[0] ---
+{
+  "ammo": {
+    "equipped": 0,
+    "inBags": 2124,
+    "name": "Sharp Arrow",
+    "total": 2124
+  },
+  "consumption": {
+    "basis": "play time from /played",
+    "how": "sum of drops in the count between consecutive dumps (purchases and increases do not count); this is an approximation, because the loss can have causes other than shooting",
+    "note": "The ammo did not decrease in this stretch of history, so there is nothing to compute a rate from.",
+    "perHour": 0,
+    "playHours": 2,
+    "snapshots": 3,
+    "used": 0,
+    "window": "current session"
+  },
+  "equippedNote": "The ammo slot is empty; calculated from the most numerous ammo in bags.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  }
+}

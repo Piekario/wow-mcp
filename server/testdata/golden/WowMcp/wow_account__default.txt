@@ -1,0 +1,33 @@
+# tool wow_account variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "characters": [
+    {
+      "ageMinutes": 30,
+      "class": "Hunter",
+      "dumpedAt": "2026-11-15 16:50:00",
+      "freeBagSlots": 27,
+      "level": 20,
+      "money": "52s 12c",
+      "moneyCopper": 5212,
+      "name": "Piekasz",
+      "played": "4 d 4 h",
+      "professions": [
+        "Skinning 96/150",
+        "Mining 71/75",
+        "Cooking 52/75"
+      ],
+      "race": "Night Elf",
+      "restedXp": 4000,
+      "xpPercent": 5.6,
+      "zone": "Stormwind City"
+    }
+  ],
+  "count": 1,
+  "lastCharacter": "Piekasz",
+  "note": "Each character's data comes from its latest dump (ageMinutes). A character appears here after logging in with it with the addon enabled and running /mcp reload (or after logging out, because the addon dumps then by itself).",
+  "totalMoney": "52s 12c",
+  "totalMoneyCopper": 5212
+}

@@ -1,0 +1,5 @@
+# tool wow_compare_item variant=no_match
+# args: {"item":"Zzzz"}
+# isError: true
+--- content[0] ---
+"Zzzz" not found in bags, bank or at a vendor. The bank and vendor appear in the dump only after their window is opened and /mcp reload is run

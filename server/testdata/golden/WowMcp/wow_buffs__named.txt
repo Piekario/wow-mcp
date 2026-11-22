@@ -1,0 +1,26 @@
+# tool wow_buffs variant=named
+# args: {"character":"Piekasz"}
+# isError: false
+--- content[0] ---
+{
+  "assumption": "Heuristic: I warn about a missing buff only when you know the spell (spells section) and none of its group is among the auras. I do not know whether the buff is needed right now (e.g. in combat or in town), and the auras of other players and the pet are not in the dump visible other than as player auras. The dump shows the state at save time: after /reload it may already differ.",
+  "buffs": [],
+  "debuffs": [],
+  "dumpAge": "30 min",
+  "dumpedAt": "2026-11-15 16:26",
+  "missing": [
+    {
+      "group": "Aspect",
+      "knownSpells": [
+        "Aspect of the Hawk"
+      ],
+      "text": "No active buff from the Aspect group, and you know: Aspect of the Hawk."
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "timingNote": "The dump has no aura end times (the client did not give them, or the dump comes from an addon older than 0.7.0), so the time left is not given."
+}

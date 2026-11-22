@@ -1,0 +1,26 @@
+# tool wow_goal_set variant=reputation_value
+# args: {"faction":"Stormwind","target":9000,"type":"reputation"}
+# isError: false
+--- content[0] ---
+{
+  "added": {
+    "id": "g4",
+    "type": "reputation",
+    "character": "Piekasz",
+    "target": 9000,
+    "faction": "Stormwind"
+  },
+  "file": "<GOALS>",
+  "goal": "9000 reputation with Stormwind",
+  "progress": {
+    "done": false,
+    "goal": "9000 reputation with Stormwind",
+    "id": "g4",
+    "missing": "the whole goal",
+    "notes": [
+      "faction \"Stormwind\" is not in the dump (reputation section); the character does not know it yet or the name does not match"
+    ],
+    "percent": 0,
+    "type": "reputation"
+  }
+}

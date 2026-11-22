@@ -1,0 +1,21 @@
+# tool wow_talents variant=tree_match
+# args: {"tree":"Beast Mastery"}
+# isError: false
+--- content[0] ---
+{
+  "class": "Hunter",
+  "expectedPointsClassic": 11,
+  "learned": [],
+  "level": 20,
+  "note": "The dump has no full tree (addon older than 0.4.0). Update the addon and type /mcp reload, then all talents with descriptions and what can be bought now will appear.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "source": null,
+  "spent": null,
+  "split": "",
+  "trees": null,
+  "unspent": 0
+}

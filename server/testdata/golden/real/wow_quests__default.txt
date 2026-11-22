@@ -1,0 +1,862 @@
+# tool wow_quests variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "count": 22,
+  "quests": [
+    {
+      "complete": true,
+      "id": 129,
+      "level": 15,
+      "objectives": [
+        {
+          "done": true,
+          "have": 1,
+          "need": 1,
+          "text": "Bring Parker's lunch to Guard Parker.  He patrols the road leading to Darkshire."
+        }
+      ],
+      "rewards": {
+        "xp": 320
+      },
+      "title": "A Free Lunch",
+      "zone": "Redridge Mountains"
+    },
+    {
+      "complete": false,
+      "id": 116,
+      "level": 15,
+      "objectives": [
+        {
+          "done": false,
+          "have": 0,
+          "need": 1,
+          "text": "0/1 Keg of Thunderbrew"
+        },
+        {
+          "done": false,
+          "have": 0,
+          "need": 1,
+          "text": "0/1 Cask of Merlot"
+        },
+        {
+          "done": false,
+          "have": 0,
+          "need": 1,
+          "text": "0/1 Bottle of Moonshine"
+        },
+        {
+          "done": false,
+          "have": 0,
+          "need": 1,
+          "text": "0/1 Skin of Sweet Rum"
+        }
+      ],
+      "rewards": {
+        "items": [
+          {
+            "count": 1,
+            "equipLoc": "INVTYPE_CLOAK",
+            "id": 1270,
+            "itemLevel": 15,
+            "name": "Finely Woven Cloak",
+            "quality": 2,
+            "requiredLevel": 0,
+            "sellPrice": 213,
+            "stats": {
+              "Armor": 14,
+              "Spirit": 2
+            },
+            "subType": "Cloth",
+            "tooltip": [
+              "Finely Woven Cloak",
+              "Binds when picked up",
+              "Back",
+              "14 Armor",
+              "+2 Spirit",
+              "You haven't collected this appearance"
+            ],
+            "type": "Armor"
+          },
+          {
+            "count": 1,
+            "id": 10456,
+            "itemLevel": 15,
+            "name": "A Bulging Coin Purse",
+            "quality": 1,
+            "requiredLevel": 0,
+            "sellPrice": 0,
+            "subType": "Junk",
+            "type": "Miscellaneous"
+          }
+        ],
+        "xp": 625
+      },
+      "title": "Dry Times",
+      "zone": "Redridge Mountains"
+    },
+    {
+      "complete": false,
+      "id": 246,
+      "level": 17,
+      "objectives": [
+        {
+          "done": false,
+          "have": 0,
+          "need": 10,
+          "text": "0/10 Redridge Mongrel slain"
+        },
+        {
+          "done": false,
+          "have": 0,
+          "need": 6,
+          "text": "0/6 Redridge Poacher slain"
+        }
+      ],
+      "rewards": {
+        "money": 700,
+        "xp": 950
+      },
+      "title": "Assessing the Threat",
+      "zone": "Redridge Mountains"
+    },
+    {
+      "complete": false,
+      "id": 98407,
+      "level": 17,
+      "objectives": [
+        {
+          "done": false,
+          "have": 0,
+          "need": 5,
+          "text": "0/5 Spiked Collar"
+        }
+      ],
+      "rewards": {
+        "xp": 950
+      },
+      "title": "Show of Force",
+      "zone": "Redridge Mountains"
+    },
+    {
+      "complete": false,
+      "id": 150,
+      "level": 20,
+      "objectives": [
+        {
+          "done": false,
+          "have": 0,
+          "need": 8,
+          "text": "0/8 Murloc Fin"
+        }
+      ],
+      "rewards": {
+        "items": [
+          {
+            "count": 1,
+            "equipLoc": "INVTYPE_RANGEDRIGHT",
+            "id": 3567,
+            "itemLevel": 19,
+            "name": "Dwarven Fishing Pole",
+            "quality": 2,
+            "requiredLevel": 0,
+            "sellPrice": 922,
+            "stats": {
+              "Strength": 2,
+              "damage per second": 7.4
+            },
+            "subType": "Guns",
+            "tooltip": [
+              "Dwarven Fishing Pole",
+              "Binds when picked up",
+              "Ranged | Gun",
+              "9 - 19 Damage | Speed 1.90",
+              "(7.4 damage per second)",
+              "+2 Strength",
+              "\"Dwarves aren't known for their subtlety.\"",
+              "You haven't collected this appearance"
+            ],
+            "type": "Weapon",
+            "usable": false
+          }
+        ],
+        "xp": 1550
+      },
+      "title": "Murloc Poachers",
+      "zone": "Redridge Mountains"
+    },
+    {
+      "complete": true,
+      "id": 94,
+      "level": 21,
+      "objectives": [
+        {
+          "done": true,
+          "have": 1,
+          "need": 1,
+          "text": "Take the Glyph of Azora to the Lion Statue near the Tower of Ilgalar in Redridge."
+        }
+      ],
+      "rewards": {
+        "xp": 1250
+      },
+      "title": "A Watchful Eye",
+      "zone": "Redridge Mountains"
+    },
+    {
+      "complete": false,
+      "id": 127,
+      "level": 21,
+      "objectives": [
+        {
+          "done": false,
+          "have": 0,
+          "need": 10,
+          "text": "0/10 Spotted Sunfish"
+        }
+      ],
+      "rewards": {
+        "items": [
+          {
+            "count": 1,
+            "id": 3663,
+            "itemLevel": 10,
+            "name": "Murloc Fin Soup",
+            "quality": 1,
+            "requiredLevel": 1,
+            "sellPrice": 125,
+            "subType": "Food \u0026 Drink",
+            "type": "Consumable"
+          },
+          {
+            "count": 1,
+            "id": 3680,
+            "itemLevel": 25,
+            "name": "Recipe: Murloc Fin Soup",
+            "quality": 1,
+            "requiredLevel": 0,
+            "sellPrice": 400,
+            "subType": "Cooking",
+            "type": "Recipe",
+            "usable": false
+          },
+          {
+            "count": 5,
+            "id": 1322,
+            "itemLevel": 21,
+            "name": "Fishliver Oil",
+            "quality": 1,
+            "requiredLevel": 0,
+            "sellPrice": 68,
+            "subType": "Other",
+            "type": "Consumable"
+          }
+        ],
+        "money": 1000,
+        "xp": 1250
+      },
+      "title": "Selling Fish",
+      "zone": "Redridge Mountains"
+    },
+    {
+      "complete": false,
+      "id": 91,
+      "level": 23,
+      "objectives": [
+        {
+          "done": false,
+          "have": 0,
+          "need": 10,
+          "text": "0/10 Shadowhide Pendant"
+        }
+      ],
+      "rewards": {
+        "money": 1500,
+        "xp": 1850
+      },
+      "title": "Solomon's Law",
+      "zone": "Redridge Mountains"
+    },
+    {
+      "complete": false,
+      "id": 180,
+      "level": 26,
+      "objectives": [
+        {
+          "done": false,
+          "have": 0,
+          "need": 1,
+          "text": "0/1 Fangore's Paw"
+        }
+      ],
+      "rewards": {
+        "money": 4000,
+        "xp": 2650
+      },
+      "title": "WANTED: Lieutenant Fangore",
+      "zone": "Redridge Mountains"
+    },
+    {
+      "complete": false,
+      "id": 399,
+      "level": 15,
+      "objectives": [
+        {
+          "done": false,
+          "have": 0,
+          "need": 1,
+          "text": "0/1 A Simple Compass"
+        }
+      ],
+      "rewards": {
+        "money": 700,
+        "xp": 625
+      },
+      "title": "Humble Beginnings",
+      "zone": "Stormwind City"
+    },
+    {
+      "complete": true,
+      "id": 373,
+      "level": 22,
+      "objectives": [
+        {
+          "done": true,
+          "have": 1,
+          "need": 1,
+          "text": "Deliver the Letter to the City Architect to Baros Alexston in Stormwind."
+        }
+      ],
+      "rewards": {
+        "money": 700,
+        "xp": 2050
+      },
+      "title": "The Unsent Letter",
+      "zone": "Stormwind City"
+    },
+    {
+      "complete": false,
+      "id": 168,
+      "level": 18,
+      "objectives": [
+        {
+          "done": false,
+          "have": 0,
+          "need": 4,
+          "text": "0/4 Miners' Union Card"
+        }
+      ],
+      "rewards": {
+        "choices": [
+          {
+            "count": 1,
+            "equipLoc": "INVTYPE_FEET",
+            "id": 2037,
+            "itemLevel": 18,
+            "name": "Tunneler's Boots",
+            "quality": 2,
+            "requiredLevel": 0,
+            "sellPrice": 469,
+            "stats": {
+              "Armor": 111,
+              "Spirit": 2,
+              "Stamina": 3
+            },
+            "subType": "Mail",
+            "tooltip": [
+              "Tunneler's Boots",
+              "Binds when picked up",
+              "Feet | Mail",
+              "111 Armor",
+              "+3 Stamina",
+              "+2 Spirit",
+              "You haven't collected this appearance"
+            ],
+            "type": "Armor",
+            "usable": false
+          },
+          {
+            "count": 1,
+            "equipLoc": "INVTYPE_HAND",
+            "id": 2036,
+            "itemLevel": 18,
+            "name": "Dusty Mining Gloves",
+            "quality": 2,
+            "requiredLevel": 0,
+            "sellPrice": 258,
+            "stats": {
+              "Agility": 2,
+              "Armor": 46,
+              "Strength": 3
+            },
+            "subType": "Leather",
+            "tooltip": [
+              "Dusty Mining Gloves",
+              "Binds when picked up",
+              "Hands | Leather",
+              "46 Armor",
+              "+3 Strength",
+              "+2 Agility",
+              "You haven't collected this appearance"
+            ],
+            "type": "Armor"
+          },
+          {
+            "count": 1,
+            "equipLoc": "INVTYPE_WAIST",
+            "id": 270007,
+            "itemLevel": 18,
+            "name": "Worn Miner's Waistcord",
+            "quality": 2,
+            "requiredLevel": 0,
+            "sellPrice": 281,
+            "stats": {
+              "Armor": 18,
+              "Intellect": 3,
+              "Stamina": 2
+            },
+            "subType": "Cloth",
+            "tooltip": [
+              "Worn Miner's Waistcord",
+              "Binds when picked up",
+              "Waist | Cloth",
+              "18 Armor",
+              "+2 Stamina",
+              "+3 Intellect",
+              "You haven't collected this appearance"
+            ],
+            "type": "Armor"
+          }
+        ],
+        "xp": 1350
+      },
+      "title": "Collecting Memories",
+      "zone": "The Deadmines"
+    },
+    {
+      "complete": true,
+      "id": 2040,
+      "level": 20,
+      "objectives": [
+        {
+          "done": true,
+          "have": 1,
+          "need": 1,
+          "text": "1/1 Gnoam Sprecklesprocket"
+        }
+      ],
+      "rewards": {
+        "choices": [
+          {
+            "count": 1,
+            "equipLoc": "INVTYPE_HAND",
+            "id": 7606,
+            "itemLevel": 22,
+            "name": "Polar Gauntlets",
+            "quality": 2,
+            "requiredLevel": 0,
+            "sellPrice": 564,
+            "stats": {
+              "Armor": 109,
+              "Spirit": 2,
+              "Strength": 4
+            },
+            "subType": "Mail",
+            "tooltip": [
+              "Polar Gauntlets",
+              "Binds when picked up",
+              "Hands | Mail",
+              "109 Armor",
+              "+4 Strength",
+              "+2 Spirit"
+            ],
+            "type": "Armor",
+            "usable": false
+          },
+          {
+            "count": 1,
+            "equipLoc": "INVTYPE_RANGEDRIGHT",
+            "id": 7607,
+            "itemLevel": 22,
+            "name": "Sable Wand",
+            "quality": 2,
+            "requiredLevel": 0,
+            "sellPrice": 1411,
+            "stats": {
+              "Spirit": 2,
+              "damage per second": 16.9
+            },
+            "subType": "Wands",
+            "tooltip": [
+              "Sable Wand",
+              "Binds when picked up",
+              "Ranged | Wand",
+              "21 - 40 Shadow Damage | Speed 1.80",
+              "(16.9 damage per second)",
+              "+2 Spirit"
+            ],
+            "type": "Weapon",
+            "usable": false
+          },
+          {
+            "count": 1,
+            "equipLoc": "INVTYPE_WRIST",
+            "id": 270015,
+            "itemLevel": 22,
+            "name": "Bravo's Armbands",
+            "quality": 2,
+            "requiredLevel": 0,
+            "sellPrice": 462,
+            "stats": {
+              "Agility": 3,
+              "Armor": 35,
+              "Strength": 3
+            },
+            "subType": "Leather",
+            "tooltip": [
+              "Bravo's Armbands",
+              "Binds when picked up",
+              "Wrist | Leather",
+              "35 Armor",
+              "+3 Strength",
+              "+3 Agility"
+            ],
+            "type": "Armor"
+          },
+          {
+            "count": 1,
+            "equipLoc": "INVTYPE_LEGS",
+            "id": 270016,
+            "itemLevel": 22,
+            "name": "Dreamer's Leggings",
+            "quality": 2,
+            "requiredLevel": 0,
+            "sellPrice": 921,
+            "stats": {
+              "Armor": 71,
+              "Intellect": 6,
+              "Spell Power": 2
+            },
+            "subType": "Leather",
+            "tooltip": [
+              "Dreamer's Leggings",
+              "Binds when picked up",
+              "Legs | Leather",
+              "71 Armor",
+              "+6 Intellect",
+              "Equip: Increases damage and healing done by magical spells and effects by up to 2."
+            ],
+            "type": "Armor"
+          }
+        ],
+        "xp": 3700
+      },
+      "title": "Underground Assault",
+      "zone": "The Deadmines"
+    },
+    {
+      "complete": false,
+      "id": 12,
+      "level": 12,
+      "objectives": [
+        {
+          "done": false,
+          "have": 0,
+          "need": 15,
+          "text": "0/15 Defias Trapper slain"
+        },
+        {
+          "done": false,
+          "have": 2,
+          "need": 15,
+          "text": "2/15 Defias Smuggler slain"
+        }
+      ],
+      "rewards": {
+        "money": 500,
+        "xp": 460
+      },
+      "title": "The People's Militia",
+      "zone": "Westfall"
+    },
+    {
+      "complete": false,
+      "id": 1138,
+      "level": 17,
+      "objectives": [
+        {
+          "done": false,
+          "have": 0,
+          "need": 6,
+          "text": "0/6 Fine Crab Chunks"
+        }
+      ],
+      "rewards": {
+        "choices": [
+          {
+            "count": 1,
+            "equipLoc": "INVTYPE_HAND",
+            "id": 15405,
+            "itemLevel": 17,
+            "name": "Shucking Gloves",
+            "quality": 2,
+            "requiredLevel": 0,
+            "sellPrice": 245,
+            "stats": {
+              "Armor": 45,
+              "Intellect": 2,
+              "Stamina": 2
+            },
+            "subType": "Leather",
+            "tooltip": [
+              "Shucking Gloves",
+              "Binds when picked up",
+              "Hands | Leather",
+              "45 Armor",
+              "+2 Stamina",
+              "+2 Intellect",
+              "You haven't collected this appearance"
+            ],
+            "type": "Armor"
+          },
+          {
+            "count": 1,
+            "equipLoc": "INVTYPE_FEET",
+            "id": 15406,
+            "itemLevel": 17,
+            "name": "Crustacean Boots",
+            "quality": 2,
+            "requiredLevel": 0,
+            "sellPrice": 402,
+            "stats": {
+              "Armor": 109,
+              "Stamina": 3
+            },
+            "subType": "Mail",
+            "tooltip": [
+              "Crustacean Boots",
+              "Binds when picked up",
+              "Feet | Mail",
+              "109 Armor",
+              "+3 Stamina",
+              "You haven't collected this appearance"
+            ],
+            "type": "Armor",
+            "usable": false
+          }
+        ],
+        "xp": 1250
+      },
+      "title": "Fruit of the Sea",
+      "zone": "Darkshore"
+    },
+    {
+      "complete": true,
+      "id": 968,
+      "level": 18,
+      "objectives": [
+        {
+          "done": true,
+          "have": 1,
+          "need": 1,
+          "text": "Bring the Book: The Powers Below to Gerrig Bonegrip in the Forlorn Cavern, Ironforge."
+        }
+      ],
+      "rewards": {
+        "xp": 1700
+      },
+      "title": "The Powers Below",
+      "zone": "Darkshore"
+    },
+    {
+      "complete": false,
+      "id": 966,
+      "level": 18,
+      "objectives": [
+        {
+          "done": false,
+          "have": 0,
+          "need": 4,
+          "text": "0/4 Worn Parchment"
+        }
+      ],
+      "rewards": {
+        "money": 1000,
+        "xp": 1350
+      },
+      "title": "The Tower of Althalaxx",
+      "zone": "Darkshore"
+    },
+    {
+      "complete": false,
+      "id": 986,
+      "level": 20,
+      "objectives": [
+        {
+          "done": false,
+          "have": 0,
+          "need": 5,
+          "text": "0/5 Fine Moonstalker Pelt"
+        }
+      ],
+      "rewards": {
+        "xp": 1550
+      },
+      "title": "A Lost Master",
+      "zone": "Darkshore"
+    },
+    {
+      "complete": false,
+      "id": 95212,
+      "level": 10,
+      "objectives": [
+        {
+          "done": false,
+          "have": 0,
+          "need": 6,
+          "text": "0/6 Pristine Leopard Pelt"
+        }
+      ],
+      "rewards": {
+        "xp": 320
+      },
+      "title": "Never Saddle on Quality",
+      "zone": "Dun Morogh"
+    },
+    {
+      "complete": true,
+      "id": 95161,
+      "level": 22,
+      "objectives": [
+        {
+          "done": true,
+          "have": 1,
+          "need": 1,
+          "text": "Deliver the Blood-Stained Letter to Avette Fellwood in Duskwood."
+        }
+      ],
+      "rewards": {
+        "choices": [
+          {
+            "count": 1,
+            "equipLoc": "INVTYPE_NECK",
+            "id": 279870,
+            "itemLevel": 24,
+            "name": "Tarnished Locket",
+            "quality": 2,
+            "requiredLevel": 1,
+            "sellPrice": 932,
+            "stats": {
+              "Stamina": 6,
+              "Strength": -3
+            },
+            "subType": "Miscellaneous",
+            "tooltip": [
+              "Tarnished Locket",
+              "Binds when picked up",
+              "Neck",
+              "-3 Strength",
+              "+6 Stamina",
+              "\"Some memories are best forgotten.\""
+            ],
+            "type": "Armor"
+          }
+        ],
+        "xp": 180
+      },
+      "title": "Remember That I Love You",
+      "zone": "Duskwood"
+    },
+    {
+      "complete": false,
+      "id": 2038,
+      "level": 15,
+      "objectives": [
+        {
+          "done": false,
+          "have": 0,
+          "need": 1,
+          "text": "0/1 Bingles' Wrench"
+        },
+        {
+          "done": false,
+          "have": 0,
+          "need": 1,
+          "text": "0/1 Bingles' Screwdriver"
+        },
+        {
+          "done": false,
+          "have": 0,
+          "need": 1,
+          "text": "0/1 Bingles' Hammer"
+        },
+        {
+          "done": false,
+          "have": 0,
+          "need": 1,
+          "text": "0/1 Bingles' Blastencapper"
+        }
+      ],
+      "rewards": {
+        "items": [
+          {
+            "count": 1,
+            "equipLoc": "INVTYPE_HAND",
+            "id": 12522,
+            "itemLevel": 15,
+            "name": "Bingles' Flying Gloves",
+            "quality": 2,
+            "requiredLevel": 0,
+            "sellPrice": 182,
+            "stats": {
+              "Agility": 2,
+              "Armor": 43,
+              "Intellect": 2
+            },
+            "subType": "Leather",
+            "tooltip": [
+              "Bingles' Flying Gloves",
+              "Binds when picked up",
+              "Hands | Leather",
+              "43 Armor",
+              "+2 Agility",
+              "+2 Intellect",
+              "You haven't collected this appearance"
+            ],
+            "type": "Armor"
+          }
+        ],
+        "money": 700,
+        "xp": 625
+      },
+      "title": "Bingles' Missing Supplies",
+      "zone": "Loch Modan"
+    },
+    {
+      "complete": true,
+      "id": 98461,
+      "level": 21,
+      "objectives": [
+        {
+          "done": true,
+          "have": 1,
+          "need": 1,
+          "text": "Deliver Hollee's Note to Tarrel Rockweaver near Menethil Harbor in the Wetlands."
+        }
+      ],
+      "rewards": {
+        "money": 125,
+        "xp": 170
+      },
+      "title": "Unrequited Love",
+      "zone": "Wetlands"
+    }
+  ],
+  "readyToTurnIn": 7,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  }
+}

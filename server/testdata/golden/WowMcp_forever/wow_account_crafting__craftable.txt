@@ -1,0 +1,47 @@
+# tool wow_account_crafting variant=craftable
+# args: {"craftable":true}
+# isError: false
+--- content[0] ---
+{
+  "count": 1,
+  "crafters": [
+    {
+      "character": "Piekasz",
+      "professions": [
+        {
+          "capturedAgeMinutes": 30,
+          "capturedAt": "2026-11-15 16:26",
+          "maxRank": 150,
+          "name": "Leatherworking",
+          "rank": 87,
+          "recipes": [
+            {
+              "accountCanMake": 7,
+              "crafterCanMake": 7,
+              "difficulty": "trivial",
+              "itemId": 2304,
+              "name": "Light Armor Kit",
+              "reagents": [
+                {
+                  "accountHas": 7,
+                  "crafterHas": 7,
+                  "holders": [
+                    {
+                      "character": "Piekasz",
+                      "count": 7
+                    }
+                  ],
+                  "name": "Light Leather",
+                  "need": 1
+                }
+              ]
+            }
+          ],
+          "shown": 1,
+          "total": 1
+        }
+      ]
+    }
+  ],
+  "note": "accountCanMake = how many can be crafted from the materials in the bags and banks of all characters combined; crafterCanMake = from the crafter's own materials only. borrowFrom suggests where to send missing materials from (mail between characters on the same realm and faction; the server sends nothing). Banks show the state from the last visits. Recipes under collapsed headers of the profession window are not included in the dump."
+}

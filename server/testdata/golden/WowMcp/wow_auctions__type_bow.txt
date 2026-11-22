@@ -1,0 +1,87 @@
+# tool wow_auctions variant=type_bow
+# args: {"type":"Bow"}
+# isError: false
+--- content[0] ---
+{
+  "assumptions": "Profit is computed from the lowest buyout price per unit minus the 5% auction house cut. The listing deposit is lost if the item does not sell and is not counted here. Bound (Soulbound) and quest items cannot be listed.",
+  "count": 2,
+  "detailsNote": "3 saved prices have no item details and are left out of this answer (non-gear never has them; gear needs addon 0.13.0 and a browse with the item data cached). Item details (type, level, stats, DPS) are saved from addon 0.13.0, only for gear and only when the client already holds the item data. Update the addon, browse the auction house for the items again and type /mcp reload.",
+  "lastSearchPartial": "The last search had 120 results, and a page of 6 was saved. The lowest price may be on another page; sort the results by price.",
+  "lastVisit": "30 min ago",
+  "myAuctions": {
+    "auctions": [
+      {
+        "bid": "2s 0c",
+        "buyout": "4s 0c",
+        "count": 10,
+        "name": "Copper Ore",
+        "sold": true
+      }
+    ],
+    "checkedAgo": "30 min",
+    "count": 1,
+    "sold": 1
+  },
+  "prices": [
+    {
+      "bindType": 2,
+      "canAfford": true,
+      "classID": 2,
+      "dps": 9.7,
+      "equipLoc": "INVTYPE_RANGEDRIGHT",
+      "id": 2506,
+      "itemLevel": 19,
+      "levelOk": true,
+      "listings": 1,
+      "minBidPerUnit": "30s 0c",
+      "minBuyoutPerUnit": "42s 0c",
+      "name": "Hornwood Recurve Bow",
+      "quality": 2,
+      "qualityName": "Uncommon",
+      "quantity": 1,
+      "requiredLevel": 14,
+      "seenAgo": "30 min",
+      "sellPrice": 1500,
+      "source": "list",
+      "statTokens": {
+        "ITEM_MOD_AGILITY_SHORT": 3,
+        "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 9.7
+      },
+      "subType": "Bows",
+      "subclassID": 2,
+      "type": "Weapon",
+      "vsEquipped": {
+        "delta": {
+          "Agility": 3,
+          "DPS": 9.7,
+          "Item Level": 19
+        },
+        "equipped": "Light Hunting Bow",
+        "equippedNumbers": {},
+        "slot": "ranged"
+      }
+    },
+    {
+      "canAfford": true,
+      "classID": 2,
+      "equipLoc": "INVTYPE_RANGEDRIGHT",
+      "id": 2507,
+      "listings": 1,
+      "minBidPerUnit": "20s 0c",
+      "minBuyoutPerUnit": "31s 0c",
+      "name": "Ranger's Shortbow",
+      "quantity": 1,
+      "seenAgo": "30 min",
+      "source": "list",
+      "subType": "Bows",
+      "subclassID": 2,
+      "type": "Weapon"
+    }
+  ],
+  "sellOnAH": [],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

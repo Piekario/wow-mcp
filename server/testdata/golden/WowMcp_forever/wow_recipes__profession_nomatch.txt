@@ -1,0 +1,13 @@
+# tool wow_recipes variant=profession_nomatch
+# args: {"profession":"Zzzz"}
+# isError: false
+--- content[0] ---
+{
+  "note": "Recipes under collapsed headers in the profession window are not included in the dump. canCraft = how many can be crafted from the materials in bags; inBank = how much of a given material is in the bank (state from the last visit).",
+  "professions": [],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

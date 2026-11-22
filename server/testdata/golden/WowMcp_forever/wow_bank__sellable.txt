@@ -1,0 +1,37 @@
+# tool wow_bank variant=sellable
+# args: {"sellable":true}
+# isError: false
+--- content[0] ---
+{
+  "capturedAgeMinutes": 30,
+  "capturedAt": "2026-11-15 16:26",
+  "count": 1,
+  "freeSlots": 23,
+  "items": [
+    {
+      "bindType": 0,
+      "classID": 7,
+      "container": "Bank",
+      "count": 20,
+      "id": 2589,
+      "itemLevel": 10,
+      "name": "Linen Cloth",
+      "quality": 1,
+      "qualityName": "Common",
+      "requiredLevel": 1,
+      "sellPrice": 13,
+      "slot": 1,
+      "subType": "Cloth",
+      "subclassID": 5,
+      "type": "Trade Goods",
+      "vendorValue": "2s 60c"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "totalSlots": 24,
+  "totalVendorValue": "2s 60c"
+}

@@ -1,0 +1,29 @@
+# binaries (built locally or by install.ps1)
+bin/*.exe
+
+# addon backups made by install.ps1
+backup/
+
+# dump history and server logs
+history/
+*.log
+
+# Python (addon tests)
+__pycache__/
+*.pyc
+dist/
+
+# release archives and built binaries (make dist / make build)
+dist/
+bin/wow-mcp
+bin/wow-mcp.exe
+bin/wow-mcp.new.exe
+bin/wow-mcp-*.old.exe
+bin/history/
+/wow-mcp
+/wow-mcp.exe
+*.tar.gz
+*.zip
+
+# MCP client configuration with local paths
+.mcp.json

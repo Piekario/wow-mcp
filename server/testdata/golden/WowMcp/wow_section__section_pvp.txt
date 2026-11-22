@@ -1,0 +1,21 @@
+# tool wow_section variant=section_pvp
+# args: {"section":"pvp"}
+# isError: false
+--- content[0] ---
+{
+  "pvp": {
+    "dishonorableKills": 5,
+    "highestRank": 0,
+    "honor": 340,
+    "honorLevel": 7,
+    "honorMax": 500,
+    "honorableKills": 1234,
+    "rank": 4,
+    "rankName": "Knight"
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

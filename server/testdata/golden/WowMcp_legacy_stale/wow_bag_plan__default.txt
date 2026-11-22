@@ -1,0 +1,39 @@
+# tool wow_bag_plan variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game.
+--- content[1] ---
+{
+  "bagSlots": {
+    "free": 15,
+    "freeAfterPlan": 15,
+    "total": 16
+  },
+  "bankNote": "No saved bank (it was never opened), so it is unknown whether there is room in it for items with the bank action.",
+  "howDecided": "Rule order: quest items, ammo for the equipped weapon, materials for known recipes and profession tools, consumables, auction offer (price after the cut with a 20% margin over the vendor), possible upgrades, then selling grey and ordinary items, while trade materials and better quality go to the bank.",
+  "items": [
+    {
+      "action": "keep",
+      "count": 14,
+      "name": "Linen Cloth",
+      "reason": "no vendor will buy it (price 0), so selling frees nothing; keep it or move it to the bank",
+      "slots": 1
+    }
+  ],
+  "limits": "The server cannot see what your other characters need, nor does it know every recipe (only those from opened profession windows, wow_recipes). Bound items are known from the dump (isBound, bindType) and are never suggested for the auction house. The plan has no destroy or discard action; nothing is sold or removed, you make the decisions in game.",
+  "slotsFreed": 0,
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  },
+  "summary": {
+    "keep": {
+      "items": 1,
+      "slots": 1
+    }
+  }
+}

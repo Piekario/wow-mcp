@@ -1,0 +1,528 @@
+# prompt gear_upgrades variant=default
+# args: {}
+# description: Which items from the bags, bank, the last vendor and the auction house prices the player browsed are upgrades over the equipped gear, with stat and DPS differences.
+--- message[0] role=user ---
+Assess which of the candidates are upgrades for this class and level. The delta in comparisons is the candidate minus the equipped item (positive = gain). Take into account which stats matter for the class, the required level and the price. auctionUpgrades (when present) are gear prices from the auction house the player browsed, best upgrade first: vsEquipped is the difference to the equipped item, minBuyoutPerUnit the price, canAfford and levelOk say whether it is within reach. Give a short list: what to equip right away, what to buy (also on the auction house), what to leave alone.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz-CAMWOW EU4 Realm 7 PvE from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "candidates": [
+    {
+      "comparisons": [
+        {
+          "delta": {
+            "Agility": -3,
+            "DPS": -23.1,
+            "Fishing Skill": 3,
+            "Item Level": 10,
+            "Stamina": -8
+          },
+          "equipped": "Buzz Saw + Meathook Slicer",
+          "equippedNumbers": {
+            "Agility": 3,
+            "DPS": 28.799999999999997,
+            "Stamina": 8
+          },
+          "slot": "mainHand"
+        }
+      ],
+      "equipLoc": "INVTYPE_2HWEAPON",
+      "id": 12225,
+      "itemLevel": 10,
+      "name": "Blump Family Fishing Pole",
+      "numbers": {
+        "DPS": 5.7,
+        "Fishing Skill": 3,
+        "Item Level": 10,
+        "Speed": 3
+      },
+      "quality": "Common",
+      "requiredLevel": 0,
+      "source": "bags",
+      "subType": "Fishing Pole"
+    },
+    {
+      "comparisons": [
+        {
+          "delta": {
+            "Agility": -3,
+            "DPS": -14,
+            "Item Level": -19,
+            "Stamina": -3
+          },
+          "equipped": "Buzz Saw",
+          "equippedNumbers": {
+            "Agility": 3,
+            "DPS": 15.2,
+            "Item Level": 23,
+            "Speed": 2.3,
+            "Stamina": 3
+          },
+          "slot": "mainHand"
+        },
+        {
+          "delta": {
+            "DPS": -12.4,
+            "Item Level": -16,
+            "Stamina": -5
+          },
+          "equipped": "Meathook Slicer",
+          "equippedNumbers": {
+            "DPS": 13.6,
+            "Item Level": 20,
+            "Speed": 1.8,
+            "Stamina": 5
+          },
+          "slot": "offHand"
+        }
+      ],
+      "equipLoc": "INVTYPE_WEAPON",
+      "id": 7005,
+      "itemLevel": 4,
+      "name": "Skinning Knife",
+      "numbers": {
+        "DPS": 1.2,
+        "Item Level": 4,
+        "Speed": 1.6
+      },
+      "quality": "Common",
+      "requiredLevel": 1,
+      "source": "bags",
+      "subType": "Miscellaneous"
+    },
+    {
+      "comparisons": [
+        {
+          "delta": {
+            "Agility": -3,
+            "DPS": -13.7,
+            "Item Level": -19,
+            "Stamina": -3
+          },
+          "equipped": "Buzz Saw",
+          "equippedNumbers": {
+            "Agility": 3,
+            "DPS": 15.2,
+            "Item Level": 23,
+            "Speed": 2.3,
+            "Stamina": 3
+          },
+          "slot": "mainHand"
+        }
+      ],
+      "equipLoc": "INVTYPE_WEAPONMAINHAND",
+      "id": 2901,
+      "itemLevel": 4,
+      "name": "Mining Pick",
+      "numbers": {
+        "DPS": 1.5,
+        "Item Level": 4,
+        "Speed": 2
+      },
+      "quality": "Common",
+      "requiredLevel": 1,
+      "source": "bags",
+      "subType": "Miscellaneous"
+    },
+    {
+      "comparisons": [
+        {
+          "delta": {
+            "Agility": 3,
+            "DPS": -16.2,
+            "Item Level": 19,
+            "Stamina": -8
+          },
+          "equipped": "Buzz Saw + Meathook Slicer",
+          "equippedNumbers": {
+            "Agility": 3,
+            "DPS": 28.799999999999997,
+            "Stamina": 8
+          },
+          "slot": "mainHand"
+        }
+      ],
+      "equipLoc": "INVTYPE_2HWEAPON",
+      "id": 6094,
+      "itemLevel": 19,
+      "name": "Piercing Axe",
+      "numbers": {
+        "Agility": 6,
+        "DPS": 12.6,
+        "Item Level": 19,
+        "Speed": 3.3
+      },
+      "quality": "Uncommon",
+      "requiredLevel": 0,
+      "source": "bags",
+      "subType": "Two-Handed Axes"
+    },
+    {
+      "comparisons": [
+        {
+          "delta": {
+            "Agility": -2,
+            "DPS": -6.9,
+            "Item Level": -18
+          },
+          "equipped": "Light Bow",
+          "equippedNumbers": {
+            "Agility": 2,
+            "DPS": 7.9,
+            "Item Level": 21,
+            "Speed": 1.7
+          },
+          "slot": "ranged"
+        }
+      ],
+      "equipLoc": "INVTYPE_THROWN",
+      "id": 2947,
+      "itemLevel": 3,
+      "name": "Small Throwing Knife",
+      "numbers": {
+        "DPS": 1,
+        "Item Level": 3,
+        "Speed": 2
+      },
+      "price": "42c",
+      "requiredLevel": 1,
+      "source": "vendor",
+      "subType": "Thrown"
+    },
+    {
+      "comparisons": [
+        {
+          "delta": {
+            "Agility": -2,
+            "DPS": -4.9,
+            "Item Level": -13
+          },
+          "equipped": "Light Bow",
+          "equippedNumbers": {
+            "Agility": 2,
+            "DPS": 7.9,
+            "Item Level": 21,
+            "Speed": 1.7
+          },
+          "slot": "ranged"
+        }
+      ],
+      "equipLoc": "INVTYPE_THROWN",
+      "id": 2946,
+      "itemLevel": 8,
+      "name": "Balanced Throwing Dagger",
+      "numbers": {
+        "DPS": 3,
+        "Item Level": 8,
+        "Speed": 2.2
+      },
+      "price": "2s 99c",
+      "requiredLevel": 3,
+      "source": "vendor",
+      "subType": "Thrown"
+    },
+    {
+      "comparisons": [
+        {
+          "delta": {
+            "Agility": -2,
+            "DPS": -6.9,
+            "Item Level": -18
+          },
+          "equipped": "Light Bow",
+          "equippedNumbers": {
+            "Agility": 2,
+            "DPS": 7.9,
+            "Item Level": 21,
+            "Speed": 1.7
+          },
+          "slot": "ranged"
+        }
+      ],
+      "equipLoc": "INVTYPE_THROWN",
+      "id": 3111,
+      "itemLevel": 3,
+      "name": "Crude Throwing Axe",
+      "numbers": {
+        "DPS": 1,
+        "Item Level": 3,
+        "Speed": 2
+      },
+      "price": "42c",
+      "requiredLevel": 1,
+      "source": "vendor",
+      "subType": "Thrown"
+    },
+    {
+      "comparisons": [
+        {
+          "delta": {
+            "Agility": -2,
+            "DPS": -4.9,
+            "Item Level": -13
+          },
+          "equipped": "Light Bow",
+          "equippedNumbers": {
+            "Agility": 2,
+            "DPS": 7.9,
+            "Item Level": 21,
+            "Speed": 1.7
+          },
+          "slot": "ranged"
+        }
+      ],
+      "equipLoc": "INVTYPE_THROWN",
+      "id": 3131,
+      "itemLevel": 8,
+      "name": "Weighted Throwing Axe",
+      "numbers": {
+        "DPS": 3,
+        "Item Level": 8,
+        "Speed": 2.2
+      },
+      "price": "2s 99c",
+      "requiredLevel": 3,
+      "source": "vendor",
+      "subType": "Thrown"
+    }
+  ],
+  "class": "Hunter",
+  "equipped": [
+    {
+      "equipLoc": "INVTYPE_SHOULDER",
+      "id": 1769,
+      "itemLevel": 20,
+      "name": "Canvas Shoulderpads",
+      "numbers": {
+        "Armor": 23,
+        "Item Level": 20
+      },
+      "quality": "Poor",
+      "requiredLevel": 15,
+      "slot": "shoulder",
+      "subType": "Cloth"
+    },
+    {
+      "equipLoc": "INVTYPE_BODY",
+      "id": 148,
+      "itemLevel": 1,
+      "name": "Rugged Trapper's Shirt",
+      "numbers": {
+        "Item Level": 1
+      },
+      "quality": "Common",
+      "requiredLevel": 0,
+      "slot": "shirt",
+      "subType": "Miscellaneous"
+    },
+    {
+      "equipLoc": "INVTYPE_CHEST",
+      "id": 2041,
+      "itemLevel": 24,
+      "name": "Tunic of Westfall",
+      "numbers": {
+        "Agility": 11,
+        "Armor": 92,
+        "Item Level": 24,
+        "Stamina": 5
+      },
+      "quality": "Rare",
+      "requiredLevel": 0,
+      "slot": "chest",
+      "subType": "Leather"
+    },
+    {
+      "equipLoc": "INVTYPE_WAIST",
+      "id": 11936,
+      "itemLevel": 20,
+      "name": "Relic Hunter Belt",
+      "numbers": {
+        "Armor": 19,
+        "Intellect": 4,
+        "Item Level": 20,
+        "Spirit": 2,
+        "Strength": 2
+      },
+      "quality": "Uncommon",
+      "requiredLevel": 0,
+      "slot": "waist",
+      "subType": "Cloth"
+    },
+    {
+      "equipLoc": "INVTYPE_LEGS",
+      "id": 279868,
+      "itemLevel": 24,
+      "name": "Duty Bound Leggings",
+      "numbers": {
+        "Agility": 6,
+        "Armor": 73,
+        "Intellect": 4,
+        "Item Level": 24
+      },
+      "quality": "Uncommon",
+      "requiredLevel": 1,
+      "slot": "legs",
+      "subType": "Leather"
+    },
+    {
+      "equipLoc": "INVTYPE_FEET",
+      "id": 4788,
+      "itemLevel": 20,
+      "name": "Agile Boots",
+      "numbers": {
+        "Agility": 5,
+        "Armor": 53,
+        "Item Level": 20
+      },
+      "quality": "Uncommon",
+      "requiredLevel": 15,
+      "slot": "feet",
+      "subType": "Leather"
+    },
+    {
+      "equipLoc": "INVTYPE_WRIST",
+      "id": 281256,
+      "itemLevel": 20,
+      "name": "Repurposed Hair Band",
+      "numbers": {
+        "Armor": 15,
+        "Intellect": 2,
+        "Item Level": 20,
+        "Spirit": 2
+      },
+      "quality": "Uncommon",
+      "requiredLevel": 0,
+      "slot": "wrist",
+      "subType": "Cloth"
+    },
+    {
+      "equipLoc": "INVTYPE_HAND",
+      "id": 6586,
+      "itemLevel": 23,
+      "name": "Scouting Gloves of Power",
+      "numbers": {
+        "Armor": 51,
+        "Attack Power": 12,
+        "Item Level": 23
+      },
+      "quality": "Uncommon",
+      "requiredLevel": 18,
+      "slot": "hands",
+      "subType": "Leather"
+    },
+    {
+      "equipLoc": "INVTYPE_FINGER",
+      "id": 279867,
+      "itemLevel": 23,
+      "name": "Slain Baron's Signet",
+      "numbers": {
+        "Defense": 1,
+        "Item Level": 23,
+        "Stamina": 3
+      },
+      "quality": "Uncommon",
+      "requiredLevel": 1,
+      "slot": "finger1",
+      "subType": "Miscellaneous"
+    },
+    {
+      "equipLoc": "INVTYPE_CLOAK",
+      "id": 9786,
+      "itemLevel": 16,
+      "name": "Raider's Cloak of Agility",
+      "numbers": {
+        "Agility": 2,
+        "Armor": 15,
+        "Item Level": 16
+      },
+      "quality": "Uncommon",
+      "requiredLevel": 11,
+      "slot": "back",
+      "subType": "Cloth"
+    },
+    {
+      "equipLoc": "INVTYPE_WEAPON",
+      "id": 1937,
+      "itemLevel": 23,
+      "name": "Buzz Saw",
+      "numbers": {
+        "Agility": 3,
+        "DPS": 15.2,
+        "Item Level": 23,
+        "Speed": 2.3,
+        "Stamina": 3
+      },
+      "quality": "Rare",
+      "requiredLevel": 18,
+      "slot": "mainHand",
+      "subType": "One-Handed Swords"
+    },
+    {
+      "equipLoc": "INVTYPE_WEAPON",
+      "id": 271204,
+      "itemLevel": 20,
+      "name": "Meathook Slicer",
+      "numbers": {
+        "DPS": 13.6,
+        "Item Level": 20,
+        "Speed": 1.8,
+        "Stamina": 5
+      },
+      "quality": "Rare",
+      "requiredLevel": 15,
+      "slot": "offHand",
+      "subType": "Daggers"
+    },
+    {
+      "equipLoc": "INVTYPE_RANGED",
+      "id": 4576,
+      "itemLevel": 21,
+      "name": "Light Bow",
+      "numbers": {
+        "Agility": 2,
+        "DPS": 7.9,
+        "Item Level": 21,
+        "Speed": 1.7
+      },
+      "quality": "Uncommon",
+      "requiredLevel": 16,
+      "slot": "ranged",
+      "subType": "Bows"
+    }
+  ],
+  "level": 22,
+  "money": "3g 68s 97c",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "stats": {
+    "agility": 89,
+    "armor": 661,
+    "attackPower": 159,
+    "critChance": 3.2,
+    "dodgeChance": 11,
+    "healthMax": 1058,
+    "intellect": 46,
+    "manaMax": 925,
+    "meleeDamageMax": 73.6,
+    "meleeDamageMin": 51.1,
+    "meleeSpeed": 2,
+    "parryChance": 4.4,
+    "rangedAttackPower": 214,
+    "rangedCritChance": 5.3,
+    "rangedDamageMax": 50.9,
+    "rangedDamageMin": 41.7,
+    "rangedSpeed": 1.3,
+    "spirit": 43,
+    "stamina": 70,
+    "strength": 34
+  }
+}
+```
+

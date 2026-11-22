@@ -1,0 +1,59 @@
+# tool wow_search variant=quest_objective
+# args: {"query":"death cap"}
+# isError: false
+--- content[0] ---
+{
+  "groups": [
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Death Cap: 0/1",
+          "matchedIn": "text",
+          "path": [
+            "quests",
+            "Cave Mushrooms",
+            "Death Cap: 0/1"
+          ]
+        }
+      ],
+      "section": "quests",
+      "shown": 1,
+      "truncated": false
+    }
+  ],
+  "notInSnapshot": [
+    "questOffer",
+    "questTurnIn",
+    "bank",
+    "vendor",
+    "vendors",
+    "recipes",
+    "mail",
+    "currencies",
+    "macros",
+    "flightPaths"
+  ],
+  "note": "Bank, vendors, trainers, stable, quest windows, recipes, mail and auctions are the state from the last visits to those windows (check their age in the relevant tools); loot is the loot since the previous save.",
+  "query": "death cap",
+  "searched": [
+    "quests",
+    "bags",
+    "equipment",
+    "spells",
+    "trainer",
+    "trainers",
+    "loot",
+    "stable",
+    "reputation",
+    "auctions",
+    "professions"
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "totalHits": 1,
+  "truncated": false
+}

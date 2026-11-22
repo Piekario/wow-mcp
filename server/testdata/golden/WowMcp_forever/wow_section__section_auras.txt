@@ -1,0 +1,26 @@
+# tool wow_section variant=section_auras
+# args: {"section":"auras"}
+# isError: false
+--- content[0] ---
+{
+  "auras": [
+    {
+      "duration": 600,
+      "expiresAt": 1794760450,
+      "icon": 136076,
+      "id": 13165,
+      "name": "Aspect of the Hawk"
+    },
+    {
+      "harmful": true,
+      "icon": 136135,
+      "id": 8326,
+      "name": "Ghost"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

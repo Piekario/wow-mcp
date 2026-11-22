@@ -1,0 +1,90 @@
+# tool wow_dungeons variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "fitNow": [
+    {
+      "id": 1982,
+      "levels": "15-22",
+      "name": "Ruins of Lordaeron",
+      "players": 5
+    },
+    {
+      "id": 796,
+      "levels": "15-24",
+      "name": "Wailing Caverns",
+      "players": 5,
+      "zone": "The Barrens"
+    },
+    {
+      "id": 800,
+      "levels": "20-30",
+      "name": "Shadowfang Keep",
+      "players": 5,
+      "zone": "Silverpine Forest"
+    },
+    {
+      "id": 799,
+      "levels": "17-26",
+      "name": "Deadmines",
+      "players": 5,
+      "quests": [
+        {
+          "difficulty": "green",
+          "id": 168,
+          "level": 18,
+          "objectives": "0/4 Miners' Union Card",
+          "title": "Collecting Memories"
+        },
+        {
+          "complete": true,
+          "difficulty": "yellow",
+          "id": 2040,
+          "level": 20,
+          "title": "Underground Assault"
+        }
+      ],
+      "zone": "Westfall"
+    }
+  ],
+  "level": 22,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "soon": [
+    {
+      "id": 1983,
+      "levels": "28-35",
+      "levelsToGo": 5,
+      "name": "City of Dalaran",
+      "players": 5
+    },
+    {
+      "id": 1981,
+      "levels": "26-33",
+      "levelsToGo": 3,
+      "name": "Excavation Site: Wetlands",
+      "players": 5
+    },
+    {
+      "id": 802,
+      "levels": "24-32",
+      "levelsToGo": 1,
+      "name": "Stormwind Stockades",
+      "players": 5
+    },
+    {
+      "id": 801,
+      "levels": "24-32",
+      "levelsToGo": 1,
+      "name": "Blackfathom Deeps",
+      "players": 5,
+      "zone": "Ashenvale"
+    }
+  ],
+  "source": "game",
+  "sourceNote": "The level ranges come from the game client (the group finder tool)."
+}

@@ -1,0 +1,5 @@
+# tool wow_gold_history variant=unknown_character
+# args: {"character":"Unknown"}
+# isError: true
+--- content[0] ---
+no character "Unknown" in the snapshot. Available: [Piekasz]

@@ -1,0 +1,12 @@
+# tool wow_auctions variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "note": "No auction house prices. In game, open the auction house and search for the items you want to check (the addon saves what the results window shows), then type /mcp reload. Prices accumulate between visits.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  }
+}

@@ -1,0 +1,53 @@
+# tool wow_character variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "auras": [],
+  "character": {
+    "addonVersion": "0.16.0",
+    "bindLocation": "Auberdine",
+    "class": "Hunter",
+    "classToken": "HUNTER",
+    "clientBuild": "70938",
+    "clientInterface": 16001,
+    "clientVersion": "1.60.1",
+    "faction": "Alliance",
+    "level": 20,
+    "locale": "enUS",
+    "moneyCopper": 5212,
+    "name": "Piekasz",
+    "race": "Night Elf",
+    "raceToken": "NightElf",
+    "restedXp": 4000,
+    "resting": true,
+    "subZone": "Old Town",
+    "xp": 1200,
+    "xpMax": 21300,
+    "zone": "Stormwind City"
+  },
+  "money": "52s 12c",
+  "playedTime": {
+    "thisLevel": "2 h",
+    "total": "4 d 4 h",
+    "totalSeconds": 360000
+  },
+  "professions": [
+    {
+      "group": "Professions",
+      "maxRank": 150,
+      "name": "Skinning",
+      "rank": 96
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "stats": [],
+  "talents": {
+    "nodes": [],
+    "points": []
+  }
+}

@@ -1,0 +1,35 @@
+# tool wow_goal_set variant=level
+# args: {"note":"for Deadmines","target":25,"type":"level"}
+# isError: false
+--- content[0] ---
+{
+  "added": {
+    "id": "g1",
+    "type": "level",
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "target": 25,
+    "note": "for Deadmines"
+  },
+  "file": "<GOALS>",
+  "goal": "Level 25",
+  "progress": {
+    "current": "level 22 (68.4% XP)",
+    "done": false,
+    "eta": {
+      "assumption": "the server does not know the XP table of later levels, so I assume each needs as much XP as the current one; in reality it is often more, so this is a lower bound",
+      "basis": "XP rate: 13800 per hour of play (current session, play time from /played)",
+      "duration": "4 h 34 min",
+      "playHours": 4.6,
+      "sessionLength": "on average 2 h of play per session from history",
+      "sessions": 2.3
+    },
+    "goal": "Level 25",
+    "id": "g1",
+    "missing": "3 levels",
+    "note": "for Deadmines",
+    "percent": 90.4,
+    "percentBasis": "computed from level 1 to the target level, with the fraction of XP of the current level",
+    "type": "level",
+    "xpNeededAtLeast": 63224
+  }
+}

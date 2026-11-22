@@ -1,0 +1,33 @@
+# tool wow_flights variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "assumption": "Flight points and quests are matched by the zone's map ID when both have one (addon 0.10.0; the same in every game language). Otherwise, and for points without a zone field, I match the zone from the point name (the part after the last comma, or, if there is none, the whole name containing the zone name, or an abbreviation: Lakeshire, Redridge -\u003e Redridge Mountains, Stormwind, Elwynn -\u003e Stormwind City). The zone field of a quest is sometimes a subzone or a city, so a missing match does not prove there is no flight point nearby. The list from the flight master window is the points known to the character; the meaning of the unreachable state is NOT confirmed: it is an assumption (probably no connection from the current point rather than an undiscovered one), to be verified in game.",
+  "capturedAge": "30 min",
+  "capturedAt": "2026-11-15 16:26",
+  "knownFlightPoints": 3,
+  "questZonesWithFlightPoint": [
+    {
+      "flightPoints": [
+        {
+          "matchedBy": "zone map ID",
+          "name": "Auberdine, Darkshore",
+          "state": "current"
+        }
+      ],
+      "quests": 2,
+      "titles": [
+        "Cave Mushrooms",
+        "WANTED: Murkdeep!"
+      ],
+      "zone": "Darkshore"
+    }
+  ],
+  "questZonesWithoutFlightPoint": [],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

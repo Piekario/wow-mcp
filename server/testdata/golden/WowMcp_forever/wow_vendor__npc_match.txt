@@ -1,0 +1,92 @@
+# tool wow_vendor variant=npc_match
+# args: {"npc":"laird"}
+# isError: false
+--- content[0] ---
+{
+  "canRepair": true,
+  "capturedAgeMinutes": 40,
+  "capturedAt": "2026-11-15 16:16",
+  "count": 2,
+  "items": [
+    {
+      "bindType": 0,
+      "canAfford": true,
+      "classID": 7,
+      "id": 2515,
+      "index": 1,
+      "itemLevel": 10,
+      "levelOk": true,
+      "name": "Sharp Arrow",
+      "price": "3s 0c",
+      "priceCopper": 300,
+      "quality": 1,
+      "qualityName": "Common",
+      "requiredLevel": 1,
+      "sellPrice": 13,
+      "stack": 200,
+      "subType": "Cloth",
+      "subclassID": 5,
+      "type": "Trade Goods"
+    },
+    {
+      "bindType": 2,
+      "canAfford": false,
+      "classID": 2,
+      "equipLoc": "INVTYPE_WEAPON",
+      "id": 5586,
+      "index": 2,
+      "itemLevel": 18,
+      "levelOk": true,
+      "limitedStock": 1,
+      "name": "Laminated Recurve Bow",
+      "price": "72s 95c",
+      "priceCopper": 7295,
+      "quality": 2,
+      "qualityName": "Uncommon",
+      "requiredLevel": 13,
+      "sellPrice": 812,
+      "stack": 1,
+      "statTokens": {
+        "ITEM_MOD_AGILITY_SHORT": 3,
+        "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 8.4,
+        "ITEM_MOD_STAMINA_SHORT": 2
+      },
+      "stats": {
+        "Agility": 3,
+        "Damage Per Second": 8.4,
+        "ITEM_MOD_STAMINA_SHORT": 2
+      },
+      "subType": "Dagger",
+      "subclassID": 15,
+      "tooltip": [
+        "Laminated Recurve Bow"
+      ],
+      "type": "Weapon",
+      "vsEquipped": {
+        "delta": {
+          "Agility": 3,
+          "Item Level": 8,
+          "Stamina": 2
+        },
+        "equipped": "Webwood Slicer",
+        "equippedNumbers": {
+          "DPS": 8.4,
+          "Item Level": 10,
+          "Speed": 1.6
+        },
+        "slot": "offHand"
+      }
+    }
+  ],
+  "known": [
+    "Einris Brightspear",
+    "Laird"
+  ],
+  "money": "52s 12c",
+  "npc": "Laird",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

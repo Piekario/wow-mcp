@@ -1,0 +1,171 @@
+# prompt week_in_game variant=default
+# args: {}
+# description: A summary of the last 7 days from the snapshot history: level-ups, gold change day by day, played time, the best session and the most important events. Combines wow_gold_history, wow_journal and wow_timeline; requires snapshot history.
+--- message[0] role=user ---
+Summarize the last 7 days of this character's play based on the snapshot history: levels gained, gold change (a balance, not income) and the largest inflows and expenses, total played time, the best session (from journal.sessions take only those from the last 7 days, and treat records as all-time records) and the most important events from the timeline. Events carry the time of the first snapshot in which they are visible, so do not present them as exact. When the history is shorter than a week or missing, say so at the start. End with one piece of advice for the next week.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "character": {
+    "addonVersion": "0.16.0",
+    "bindLocation": "Auberdine",
+    "class": "Hunter",
+    "classToken": "HUNTER",
+    "clientBuild": "70938",
+    "clientInterface": 16001,
+    "clientVersion": "1.60.1",
+    "faction": "Alliance",
+    "level": 20,
+    "locale": "enUS",
+    "mapID": 1453,
+    "maxQuests": 20,
+    "moneyCopper": 5212,
+    "name": "Piekasz",
+    "questGreenRange": 9,
+    "race": "Night Elf",
+    "raceToken": "NightElf",
+    "restedXp": 4000,
+    "resting": true,
+    "subZone": "Old Town",
+    "x": 67.9,
+    "xp": 1200,
+    "xpMax": 21300,
+    "y": 15.4,
+    "zone": "Stormwind City"
+  },
+  "gold": {
+    "biggestGains": [
+      {
+        "change": "+15s 0c",
+        "elapsed": "1 h",
+        "from": "2026-11-15 14:26",
+        "to": "2026-11-15 15:26"
+      },
+      {
+        "change": "+10s 0c",
+        "elapsed": "1 h",
+        "from": "2026-11-15 15:26",
+        "to": "2026-11-15 16:26"
+      }
+    ],
+    "days": [
+      {
+        "day": "2026-11-15",
+        "delta": "+25s 0c",
+        "first": "27s 12c",
+        "last": "52s 12c",
+        "snapshots": 3
+      }
+    ],
+    "first": "27s 12c",
+    "from": "2026-11-15 14:26",
+    "last": "52s 12c",
+    "note": "This is the balance change between dumps, without a breakdown by source (loot, sales, auctions, repairs). A day's change is the difference from the first to the last dump of that day; what happened between days appears only in totalChange. Days without a dump do not appear in the list.",
+    "snapshots": 3,
+    "to": "2026-11-15 16:26",
+    "totalChange": "+25s 0c",
+    "totalChangeCopper": 2500,
+    "window": "last 7 days"
+  },
+  "journal": {
+    "howSessionsAreSplit": "the same rule as wow_progress: a new session after a gap longer than 30 min offline (from /played) or 120 min between dumps; the data comes only from dumps (/mcp reload, logout), so what happened between them shows only as differences",
+    "order": "from the newest session to the oldest",
+    "records": {
+      "bestGoldSession": {
+        "goldChange": "+25s 0c",
+        "goldPerHour": "+12s 50c",
+        "note": "balance change in the session (includes spending), not income",
+        "start": "2026-11-15 14:26"
+      },
+      "fastestLevel": {
+        "how": "play time at this level from /played (levelSeconds and totalSeconds from the two dumps around the level-up); single-level advances only",
+        "level": 19,
+        "playTime": "2 h",
+        "reachedBy": "2026-11-15 15:26"
+      },
+      "longestSession": {
+        "duration": "2 h",
+        "durationBasis": "play time from /played",
+        "start": "2026-11-15 14:26"
+      }
+    },
+    "sessions": [
+      {
+        "deaths": {
+          "count": 1,
+          "zones": [
+            "Stormwind City"
+          ]
+        },
+        "duration": "2 h",
+        "durationBasis": "play time from /played",
+        "end": "2026-11-15 16:26",
+        "goldChange": "+25s 0c",
+        "level": "19 -\u003e 20",
+        "levelsGained": 1,
+        "questsAccepted": {
+          "count": 1,
+          "more": 0,
+          "titles": [
+            "Cave Mushrooms"
+          ]
+        },
+        "questsCompleted": {
+          "count": 1,
+          "more": 0,
+          "titles": [
+            "quest #918"
+          ]
+        },
+        "snapshots": 3,
+        "start": "2026-11-15 14:26",
+        "xpGained": 21600,
+        "zones": [
+          "Stormwind City"
+        ]
+      }
+    ],
+    "totalSessions": 1
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "timeline": {
+    "assumption": "an event gets the time of the first dump in which it is visible (the game saves data only on /reload and logout), so the real time may be earlier; the exception is deaths, which the addon saves with an exact time",
+    "events": [
+      {
+        "at": 1794756400,
+        "atText": "2026-11-15 15:26",
+        "details": {
+          "levelAfter": 20,
+          "levelBefore": 19
+        },
+        "kind": "level_up",
+        "text": "Level up: level 19 -\u003e 20"
+      },
+      {
+        "at": 1794760000,
+        "atText": "2026-11-15 16:26",
+        "details": {
+          "level": 20,
+          "subZone": "Old Town",
+          "zone": "Stormwind City"
+        },
+        "kind": "death",
+        "text": "Death: Stormwind City"
+      }
+    ],
+    "order": "from the oldest to the newest event (with a limit the newest are kept)",
+    "snapshotsRead": 3,
+    "total": 2
+  },
+  "windowDays": 7
+}
+```
+

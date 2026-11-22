@@ -1,0 +1,64 @@
+# tool wow_group variant=named
+# args: {"character":"Piekasz"}
+# isError: false
+--- content[0] ---
+{
+  "classes": {
+    "Hunter": 1,
+    "Paladin": 1,
+    "Priest": 1
+  },
+  "levels": {
+    "average": 20.3,
+    "max": 22,
+    "min": 19
+  },
+  "lootMethod": "group",
+  "members": [
+    {
+      "class": "Hunter",
+      "classToken": "HUNTER",
+      "level": 20,
+      "name": "Piekasz",
+      "online": true,
+      "race": "Night Elf",
+      "role": "dps"
+    },
+    {
+      "class": "Paladin",
+      "classToken": "PALADIN",
+      "inRange": true,
+      "leader": true,
+      "level": 22,
+      "name": "Tankadin",
+      "online": true,
+      "race": "Human",
+      "role": "tank"
+    },
+    {
+      "class": "Priest",
+      "classToken": "PRIEST",
+      "inRange": false,
+      "level": 19,
+      "name": "Healbot",
+      "online": true,
+      "race": "Dwarf",
+      "role": "healer"
+    }
+  ],
+  "roles": {
+    "dps": 1,
+    "healer": 1,
+    "tank": 1
+  },
+  "size": 3,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "type": "party",
+  "warnings": [
+    "Healbot is out of range"
+  ]
+}

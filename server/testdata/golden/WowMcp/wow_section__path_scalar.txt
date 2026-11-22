@@ -1,0 +1,13 @@
+# tool wow_section variant=path_scalar
+# args: {"path":"level","section":"character"}
+# isError: false
+--- content[0] ---
+{
+  "character": 20,
+  "path": "level",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

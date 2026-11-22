@@ -1,0 +1,12 @@
+# tool wow_section variant=section_actionBars
+# args: {"section":"actionBars"}
+# isError: false
+--- content[0] ---
+{
+  "actionBars": [],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

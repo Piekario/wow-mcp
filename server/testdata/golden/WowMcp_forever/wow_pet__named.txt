@@ -1,0 +1,87 @@
+# tool wow_pet variant=named
+# args: {"character":"Piekasz"}
+# isError: false
+--- content[0] ---
+{
+  "pet": {
+    "abilities": [
+      {
+        "id": 2649,
+        "name": "Growl",
+        "rank": "Rank 3"
+      },
+      {
+        "id": 16827,
+        "name": "Claw",
+        "rank": "Rank 2"
+      }
+    ],
+    "actionBar": [
+      {
+        "name": "Attack",
+        "slot": 1
+      },
+      {
+        "autoCast": true,
+        "id": 2649,
+        "name": "Growl",
+        "slot": 4
+      },
+      {
+        "autoCast": false,
+        "id": 16827,
+        "name": "Claw",
+        "slot": 5
+      }
+    ],
+    "damagePercent": 125,
+    "dead": false,
+    "exists": true,
+    "family": "Cat",
+    "happiness": 3,
+    "healthMax": 620,
+    "level": 19,
+    "loyaltyRate": 1,
+    "name": "Cat",
+    "xp": 1200,
+    "xpMax": 4300
+  },
+  "rankReview": {
+    "learnableNote": "no data: open the Beast Training window (Hunter) in game and run /mcp reload, then I will see which ranks you know and can teach the pet",
+    "source": "only data from the dump (the Beast Training window, pet abilities, trainer offers); the server has no rank table of its own"
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "stable": {
+    "active": {
+      "family": "Cat",
+      "level": 19,
+      "name": "Cat"
+    },
+    "capturedAgeMinutes": 30,
+    "capturedAt": "2026-11-15 16:26",
+    "count": 1,
+    "limits": "the addon saves for stabled pets only the slot, name, level, family and specialization; there is no data on their abilities, loyalty and diet",
+    "pets": [
+      {
+        "family": "Owl",
+        "level": 18,
+        "name": "Owl",
+        "slot": 6,
+        "specialization": "Cunning",
+        "vsActive": {
+          "levelDiff": -1,
+          "sameFamily": false
+        }
+      }
+    ],
+    "slots": 5
+  },
+  "trainingPlan": {
+    "learnableNote": "no data: open the Beast Training window in game and run /mcp reload, then I will compute the lesson costs",
+    "note": "the addon did not save the pet's training points (trainingPointsFree); I do not know how many are free"
+  }
+}

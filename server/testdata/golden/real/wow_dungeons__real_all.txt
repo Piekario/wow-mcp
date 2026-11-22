@@ -1,0 +1,260 @@
+# tool wow_dungeons variant=real_all
+# args: {"all":true}
+# isError: false
+--- content[0] ---
+{
+  "fitNow": [
+    {
+      "id": 1982,
+      "levels": "15-22",
+      "name": "Ruins of Lordaeron",
+      "players": 5
+    },
+    {
+      "id": 796,
+      "levels": "15-24",
+      "name": "Wailing Caverns",
+      "players": 5,
+      "zone": "The Barrens"
+    },
+    {
+      "id": 800,
+      "levels": "20-30",
+      "name": "Shadowfang Keep",
+      "players": 5,
+      "zone": "Silverpine Forest"
+    },
+    {
+      "id": 799,
+      "levels": "17-26",
+      "name": "Deadmines",
+      "players": 5,
+      "quests": [
+        {
+          "difficulty": "green",
+          "id": 168,
+          "level": 18,
+          "objectives": "0/4 Miners' Union Card",
+          "title": "Collecting Memories"
+        },
+        {
+          "complete": true,
+          "difficulty": "yellow",
+          "id": 2040,
+          "level": 20,
+          "title": "Underground Assault"
+        }
+      ],
+      "zone": "Westfall"
+    }
+  ],
+  "level": 22,
+  "other": [
+    {
+      "id": 1986,
+      "levels": "40-47",
+      "name": "Krol'dok Stronghold",
+      "players": 5
+    },
+    {
+      "id": 1984,
+      "levels": "13-20",
+      "name": "Hall of Thanes",
+      "players": 5
+    },
+    {
+      "id": 1980,
+      "levels": "48-55",
+      "name": "Alcaz Prison",
+      "players": 5
+    },
+    {
+      "id": 1979,
+      "levels": "55-60",
+      "name": "Blackmaw Hold",
+      "players": 5
+    },
+    {
+      "id": 1978,
+      "levels": "58-60",
+      "name": "The Shaper's Terrace",
+      "players": 5
+    },
+    {
+      "id": 1603,
+      "levels": "58-60",
+      "name": "Stratholme (Service Gate)",
+      "players": 5
+    },
+    {
+      "id": 837,
+      "levels": "59-60",
+      "name": "Upper Blackrock Spire",
+      "players": 10,
+      "raid": true,
+      "zone": "Burning Steppes"
+    },
+    {
+      "id": 829,
+      "levels": "33-41",
+      "name": "Scarlet Monastery - Library",
+      "players": 5
+    },
+    {
+      "id": 828,
+      "levels": "38-46",
+      "name": "Scarlet Monastery - Cathedral",
+      "players": 5
+    },
+    {
+      "id": 827,
+      "levels": "36-44",
+      "name": "Scarlet Monastery - Armory",
+      "players": 5
+    },
+    {
+      "id": 816,
+      "levels": "58-60",
+      "name": "Stratholme (Main Gate)",
+      "players": 5
+    },
+    {
+      "id": 815,
+      "levels": "56-60",
+      "name": "Dire Maul (North)",
+      "players": 5
+    },
+    {
+      "id": 1985,
+      "levels": "35-42",
+      "name": "The Drowned City",
+      "players": 5
+    },
+    {
+      "id": 814,
+      "levels": "56-60",
+      "name": "Dire Maul (West)",
+      "players": 5
+    },
+    {
+      "id": 811,
+      "levels": "52-60",
+      "name": "Blackrock Depths",
+      "players": 5,
+      "zone": "Burning Steppes"
+    },
+    {
+      "id": 810,
+      "levels": "50-60",
+      "name": "Sunken Temple",
+      "players": 5,
+      "zone": "Swamp of Sorrows"
+    },
+    {
+      "id": 809,
+      "levels": "46-55",
+      "name": "Maraudon",
+      "players": 5,
+      "zone": "Desolace"
+    },
+    {
+      "id": 808,
+      "levels": "44-54",
+      "name": "Zul'Farrak",
+      "players": 5,
+      "zone": "Tanaris"
+    },
+    {
+      "id": 807,
+      "levels": "41-51",
+      "name": "Uldaman",
+      "players": 5,
+      "zone": "Badlands"
+    },
+    {
+      "id": 806,
+      "levels": "37-46",
+      "name": "Razorfen Downs",
+      "players": 5,
+      "zone": "The Barrens"
+    },
+    {
+      "id": 805,
+      "levels": "30-38",
+      "name": "Scarlet Monastery - Graveyard",
+      "players": 5
+    },
+    {
+      "id": 804,
+      "levels": "29-38",
+      "name": "Razorfen Kraul",
+      "players": 5,
+      "zone": "The Barrens"
+    },
+    {
+      "id": 803,
+      "levels": "29-38",
+      "name": "Gnomeregan",
+      "players": 5,
+      "zone": "Dun Morogh"
+    },
+    {
+      "id": 797,
+      "levels": "58-60",
+      "name": "Scholomance",
+      "players": 5,
+      "zone": "Western Plaguelands"
+    },
+    {
+      "id": 812,
+      "levels": "55-60",
+      "name": "Lower Blackrock Spire",
+      "players": 5,
+      "zone": "Burning Steppes"
+    },
+    {
+      "id": 813,
+      "levels": "54-60",
+      "name": "Dire Maul (East)",
+      "players": 5
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "soon": [
+    {
+      "id": 1983,
+      "levels": "28-35",
+      "levelsToGo": 5,
+      "name": "City of Dalaran",
+      "players": 5
+    },
+    {
+      "id": 1981,
+      "levels": "26-33",
+      "levelsToGo": 3,
+      "name": "Excavation Site: Wetlands",
+      "players": 5
+    },
+    {
+      "id": 802,
+      "levels": "24-32",
+      "levelsToGo": 1,
+      "name": "Stormwind Stockades",
+      "players": 5
+    },
+    {
+      "id": 801,
+      "levels": "24-32",
+      "levelsToGo": 1,
+      "name": "Blackfathom Deeps",
+      "players": 5,
+      "zone": "Ashenvale"
+    }
+  ],
+  "source": "game",
+  "sourceNote": "The level ranges come from the game client (the group finder tool)."
+}

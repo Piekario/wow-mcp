@@ -1,0 +1,43 @@
+# tool wow_gold_history variant=real_days_3
+# args: {"days":3}
+# isError: false
+--- content[0] ---
+{
+  "biggestGains": [
+    {
+      "change": "+15s 0c",
+      "elapsed": "1 h",
+      "from": "2026-11-15 20:43",
+      "to": "2026-11-15 21:43"
+    },
+    {
+      "change": "+10s 0c",
+      "elapsed": "1 h",
+      "from": "2026-11-15 21:43",
+      "to": "2026-11-15 22:43"
+    }
+  ],
+  "days": [
+    {
+      "day": "2026-11-15",
+      "delta": "+25s 0c",
+      "first": "3g 43s 97c",
+      "last": "3g 68s 97c",
+      "snapshots": 3
+    }
+  ],
+  "first": "3g 43s 97c",
+  "from": "2026-11-15 20:43",
+  "last": "3g 68s 97c",
+  "note": "This is the balance change between dumps, without a breakdown by source (loot, sales, auctions, repairs). A day's change is the difference from the first to the last dump of that day; what happened between days appears only in totalChange. Days without a dump do not appear in the list.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "snapshots": 3,
+  "to": "2026-11-15 22:43",
+  "totalChange": "+25s 0c",
+  "totalChangeCopper": 2500,
+  "window": "last 3 days"
+}

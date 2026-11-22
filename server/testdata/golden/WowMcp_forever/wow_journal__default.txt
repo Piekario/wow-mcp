@@ -1,0 +1,69 @@
+# tool wow_journal variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "howSessionsAreSplit": "the same rule as wow_progress: a new session after a gap longer than 30 min offline (from /played) or 120 min between dumps; the data comes only from dumps (/mcp reload, logout), so what happened between them shows only as differences",
+  "order": "from the newest session to the oldest",
+  "records": {
+    "bestGoldSession": {
+      "goldChange": "+25s 0c",
+      "goldPerHour": "+12s 50c",
+      "note": "balance change in the session (includes spending), not income",
+      "start": "2026-11-15 14:26"
+    },
+    "fastestLevel": {
+      "how": "play time at this level from /played (levelSeconds and totalSeconds from the two dumps around the level-up); single-level advances only",
+      "level": 19,
+      "playTime": "2 h",
+      "reachedBy": "2026-11-15 15:26"
+    },
+    "longestSession": {
+      "duration": "2 h",
+      "durationBasis": "play time from /played",
+      "start": "2026-11-15 14:26"
+    }
+  },
+  "sessions": [
+    {
+      "deaths": {
+        "count": 1,
+        "zones": [
+          "Stormwind City"
+        ]
+      },
+      "duration": "2 h",
+      "durationBasis": "play time from /played",
+      "end": "2026-11-15 16:26",
+      "goldChange": "+25s 0c",
+      "level": "19 -\u003e 20",
+      "levelsGained": 1,
+      "questsAccepted": {
+        "count": 1,
+        "more": 0,
+        "titles": [
+          "Cave Mushrooms"
+        ]
+      },
+      "questsCompleted": {
+        "count": 1,
+        "more": 0,
+        "titles": [
+          "quest #918"
+        ]
+      },
+      "snapshots": 3,
+      "start": "2026-11-15 14:26",
+      "xpGained": 21600,
+      "zones": [
+        "Stormwind City"
+      ]
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "totalSessions": 1
+}

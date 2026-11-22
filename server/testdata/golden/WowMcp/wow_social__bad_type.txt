@@ -1,0 +1,5 @@
+# tool wow_social variant=bad_type
+# args: {"includeOffline":"yes"}
+# isError: true
+--- content[0] ---
+validating "arguments": validating root: validating /properties/includeOffline: type: yes has type "string", want "boolean"

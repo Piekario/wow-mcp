@@ -1,0 +1,121 @@
+# prompt what_to_auction variant=default
+# args: {}
+# description: What from the bags and bank is worth listing on the auction house and what to sell to a vendor, based on prices saved during recent auction house visits.
+--- message[0] role=user ---
+Based on auctionHouse, advise what to list on the auction house and at what price (slightly below the lowest buyout), and what to hand to a vendor. Skip things needed for the character's quests and professions. Warn when a price is old (stale) or the last search showed only part of the results. Summarize how much gold can be earned. If there are myAuctions, say what has sold and what is about to expire. Do not guess prices of items that are not in the data: list them as things to check on the auction house. Gear in auctionHouse.prices has vsEquipped: when a price is an upgrade for the character, say so (it is something to buy, not to sell).
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz-CAMWOW EU4 Realm 7 PvE from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "auctionHouse": {
+    "note": "No auction house prices. In game, open the auction house and search for the items you want to check (the addon saves what the results window shows), then type /mcp reload. Prices accumulate between visits."
+  },
+  "money": "3g 68s 97c",
+  "professions": [
+    "Mining 62/150",
+    "Skinning 75/75",
+    "First Aid 37/75",
+    "Fishing 21/75",
+    "Cooking 13/75"
+  ],
+  "quests": [
+    {
+      "objectives": "Bring Parker's lunch to Guard Parker.  He patrols the road leading to Darkshire.",
+      "title": "A Free Lunch"
+    },
+    {
+      "objectives": "0/1 Keg of Thunderbrew; 0/1 Cask of Merlot; 0/1 Bottle of Moonshine; 0/1 Skin of Sweet Rum",
+      "title": "Dry Times"
+    },
+    {
+      "objectives": "0/10 Redridge Mongrel slain; 0/6 Redridge Poacher slain",
+      "title": "Assessing the Threat"
+    },
+    {
+      "objectives": "0/5 Spiked Collar",
+      "title": "Show of Force"
+    },
+    {
+      "objectives": "0/8 Murloc Fin",
+      "title": "Murloc Poachers"
+    },
+    {
+      "objectives": "Take the Glyph of Azora to the Lion Statue near the Tower of Ilgalar in Redridge.",
+      "title": "A Watchful Eye"
+    },
+    {
+      "objectives": "0/10 Spotted Sunfish",
+      "title": "Selling Fish"
+    },
+    {
+      "objectives": "0/10 Shadowhide Pendant",
+      "title": "Solomon's Law"
+    },
+    {
+      "objectives": "0/1 Fangore's Paw",
+      "title": "WANTED: Lieutenant Fangore"
+    },
+    {
+      "objectives": "0/1 A Simple Compass",
+      "title": "Humble Beginnings"
+    },
+    {
+      "objectives": "Deliver the Letter to the City Architect to Baros Alexston in Stormwind.",
+      "title": "The Unsent Letter"
+    },
+    {
+      "objectives": "0/4 Miners' Union Card",
+      "title": "Collecting Memories"
+    },
+    {
+      "objectives": "1/1 Gnoam Sprecklesprocket",
+      "title": "Underground Assault"
+    },
+    {
+      "objectives": "0/15 Defias Trapper slain; 2/15 Defias Smuggler slain",
+      "title": "The People's Militia"
+    },
+    {
+      "objectives": "0/6 Fine Crab Chunks",
+      "title": "Fruit of the Sea"
+    },
+    {
+      "objectives": "Bring the Book: The Powers Below to Gerrig Bonegrip in the Forlorn Cavern, Ironforge.",
+      "title": "The Powers Below"
+    },
+    {
+      "objectives": "0/4 Worn Parchment",
+      "title": "The Tower of Althalaxx"
+    },
+    {
+      "objectives": "0/5 Fine Moonstalker Pelt",
+      "title": "A Lost Master"
+    },
+    {
+      "objectives": "0/6 Pristine Leopard Pelt",
+      "title": "Never Saddle on Quality"
+    },
+    {
+      "objectives": "Deliver the Blood-Stained Letter to Avette Fellwood in Duskwood.",
+      "title": "Remember That I Love You"
+    },
+    {
+      "objectives": "0/1 Bingles' Wrench; 0/1 Bingles' Screwdriver; 0/1 Bingles' Hammer; 0/1 Bingles' Blastencapper",
+      "title": "Bingles' Missing Supplies"
+    },
+    {
+      "objectives": "Deliver Hollee's Note to Tarrel Rockweaver near Menethil Harbor in the Wetlands.",
+      "title": "Unrequited Love"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  }
+}
+```
+

@@ -1,0 +1,62 @@
+# CI: server tests (Go, three operating systems), addon tests (Lua) and shell script lint.
+# Prepared for the day the repository is published.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  go:
+    name: Server (Go, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: server/go.mod
+      - name: go vet
+        run: go vet ./...
+      - name: go test (with the race detector: tool calls may run concurrently)
+        run: go test -race ./...
+
+  addon:
+    name: Addon (Lua)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Addon test dependencies
+        run: pip install lupa
+      - name: Test dumps match the approved ones
+        run: scripts/check-addon-fixtures.sh
+      - name: luacheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua-check
+          make lint
+
+  scripts:
+    name: Shell scripts and release build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: server/go.mod
+      - name: shellcheck
+        run: shellcheck install.sh scripts/*.sh
+      - name: Release archives build
+        run: make dist

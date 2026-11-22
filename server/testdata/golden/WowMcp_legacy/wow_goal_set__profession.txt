@@ -1,0 +1,26 @@
+# tool wow_goal_set variant=profession
+# args: {"name":"Mining","target":100,"type":"profession"}
+# isError: false
+--- content[0] ---
+{
+  "added": {
+    "id": "g5",
+    "type": "profession",
+    "character": "Piekasz",
+    "target": 100,
+    "name": "Mining"
+  },
+  "file": "<GOALS>",
+  "goal": "Mining 100",
+  "progress": {
+    "done": false,
+    "goal": "Mining 100",
+    "id": "g5",
+    "missing": "the whole profession",
+    "notes": [
+      "the character has no profession or skill \"Mining\" (dump: Skinning)"
+    ],
+    "percent": 0,
+    "type": "profession"
+  }
+}

@@ -1,0 +1,12 @@
+# tool wow_section variant=limit_object
+# args: {"limit":3,"section":"stats"}
+# isError: false
+--- content[0] ---
+{
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "stats": []
+}

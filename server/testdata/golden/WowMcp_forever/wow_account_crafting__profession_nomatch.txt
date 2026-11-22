@@ -1,0 +1,9 @@
+# tool wow_account_crafting variant=profession_nomatch
+# args: {"profession":"Zzzz"}
+# isError: false
+--- content[0] ---
+{
+  "count": 0,
+  "crafters": [],
+  "note": "accountCanMake = how many can be crafted from the materials in the bags and banks of all characters combined; crafterCanMake = from the crafter's own materials only. borrowFrom suggests where to send missing materials from (mail between characters on the same realm and faction; the server sends nothing). Banks show the state from the last visits. Recipes under collapsed headers of the profession window are not included in the dump."
+}

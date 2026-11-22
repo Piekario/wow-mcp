@@ -1,0 +1,26 @@
+# tool wow_session_rating variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game.
+--- content[1] ---
+{
+  "assumption": "Pace is the per-hour-of-play value from a session (dumps without a longer gap, time from /played or from the clock). Gold is the change in balance, not income: expenses reduce it. The median is computed only from sessions with at least 2 dumps and 5 minutes of play.",
+  "comparedSessions": 0,
+  "current": {
+    "goldPerHour": "+12s 50c",
+    "hours": 2,
+    "questsPerHour": 0,
+    "start": "2026-11-15 14:26",
+    "xpPerHour": 10800
+  },
+  "note": "Too few sessions to compare: 1 reliable, at least 3 needed (the current one and two earlier ones).",
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  },
+  "totalSessions": 1
+}

@@ -1,0 +1,5 @@
+# tool wow_compare_item variant=empty_item
+# args: {"item":""}
+# isError: true
+--- content[0] ---
+give an item name or ID in the item parameter

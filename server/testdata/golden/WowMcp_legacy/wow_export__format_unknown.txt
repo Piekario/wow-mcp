@@ -1,0 +1,5 @@
+# tool wow_export variant=format_unknown
+# args: {"format":"pdf"}
+# isError: true
+--- content[0] ---
+unknown format "pdf": use discord, forum or text

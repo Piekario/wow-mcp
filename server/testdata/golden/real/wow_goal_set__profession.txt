@@ -1,0 +1,24 @@
+# tool wow_goal_set variant=profession
+# args: {"name":"Mining","target":100,"type":"profession"}
+# isError: false
+--- content[0] ---
+{
+  "added": {
+    "id": "g5",
+    "type": "profession",
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "target": 100,
+    "name": "Mining"
+  },
+  "file": "<GOALS>",
+  "goal": "Mining 100",
+  "progress": {
+    "current": "62/150",
+    "done": false,
+    "goal": "Mining 100",
+    "id": "g5",
+    "missing": 38,
+    "percent": 62,
+    "type": "profession"
+  }
+}

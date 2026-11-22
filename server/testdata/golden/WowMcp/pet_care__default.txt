@@ -1,0 +1,78 @@
+# prompt pet_care variant=default
+# args: {}
+# description: The state of a Hunter's pet: happiness, loyalty, training points, diet versus food in the bags, abilities, Beast Training (missing ranks, point plan) and a comparison with the stable. Only useful when the snapshot has a pet section; otherwise it says what is missing.
+--- message[0] role=user ---
+Assess the pet's state and say what to improve. Check happiness (happiness) and loyalty, how many training points are left (trainingPoints; if they are not in the data, say the addon did not save them) and whether the pet has auto-cast enabled where it is useful (autoCast). Compare the diet (foodTypes) with the food in the bags (foodInBags) and say how many feedings it will last, honestly noting that you match food to diet by name. If there is beastTraining, point out the ranks to buy with the free points. From rankReview give the ranks the Hunter knows that the pet lacks (learnable), and the ranks to buy from the trainer (notLearnedByHunter); from trainingPlan, what fits into the free points; from stable compare the stabled pets with the active one (level, family), remembering that there is no data on their abilities. When a field says data is missing, say which window to open in game. Do not give numbers that are not in the data.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "class": "Hunter",
+  "foodInBags": [],
+  "foodNote": "foodInBags is food from bags by item subtype; the server has no table of which food is meat, fish, cheese etc. Match it to the pet's foodTypes by name, and when unsure, say so plainly.",
+  "pet": {
+    "damagePercent": 125,
+    "dead": false,
+    "exists": true,
+    "family": "Cat",
+    "foodTypes": [
+      "Meat",
+      "Fish"
+    ],
+    "happiness": {
+      "name": "Happy",
+      "value": 3
+    },
+    "level": 19,
+    "loyalty": "Loyalty Level 3",
+    "name": "Cat",
+    "trainingPoints": {
+      "free": 17,
+      "spent": 21,
+      "total": 38
+    }
+  },
+  "rankReview": {
+    "learnableNote": "no data: open the Beast Training window (Hunter) in game and run /mcp reload, then I will see which ranks you know and can teach the pet",
+    "source": "only data from the dump (the Beast Training window, pet abilities, trainer offers); the server has no rank table of its own"
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "stable": {
+    "active": {
+      "family": "Cat",
+      "level": 19,
+      "name": "Cat"
+    },
+    "capturedAgeMinutes": 30,
+    "capturedAt": "2026-11-15 16:26",
+    "count": 1,
+    "limits": "the addon saves for stabled pets only the slot, name, level, family and specialization; there is no data on their abilities, loyalty and diet",
+    "pets": [
+      {
+        "family": "Bear",
+        "level": 15,
+        "loyalty": "Loyalty Level 2",
+        "name": "Bear",
+        "slot": 1,
+        "vsActive": {
+          "levelDiff": -4,
+          "sameFamily": false
+        }
+      }
+    ],
+    "slots": 2
+  },
+  "trainingPlan": {
+    "freePoints": 17,
+    "learnableNote": "no data: open the Beast Training window in game and run /mcp reload, then I will compute the lesson costs"
+  }
+}
+```
+

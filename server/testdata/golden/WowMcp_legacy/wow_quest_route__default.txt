@@ -1,0 +1,37 @@
+# tool wow_quest_route variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "assumption": "The server has no world map or distances between zones, so the order is NOT the shortest route: it is the current zone, then zones by the number of quests ready to turn in and of all quests (alphabetical on a tie), and at the end red quests (5+ levels above the character) and zones made up only of them. Flight points are matched by the zone's map ID when the dump has it (addon 0.10.0), otherwise from the point name (the part after the last comma or its abbreviation, e.g. Redridge -\u003e Redridge Mountains), and the flight window usually knows only one continent, so a missing match does not prove there is no flight point; the zone name in a quest may be a subzone or a city. Treat the order as a proposal and adjust it to the geography you know.",
+  "count": 1,
+  "currentZone": "Stormwind City",
+  "currentZoneNote": "The character is in a zone with no quests from the log (or the quests use a different zone name), so the route starts with the best zone by the numbers.",
+  "flightHint": "The dump has no flightPaths section: open the flight master window and run /mcp reload to see flight points next to zones.",
+  "playerLevel": 20,
+  "route": [
+    {
+      "current": false,
+      "inProgress": 1,
+      "phase": "to do",
+      "quests": [
+        {
+          "difficulty": "green",
+          "level": 17,
+          "status": "in progress",
+          "title": "Cave Mushrooms"
+        }
+      ],
+      "readyToTurnIn": 0,
+      "step": 1,
+      "tooHard": 0,
+      "total": 1,
+      "zone": "Darkshore"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

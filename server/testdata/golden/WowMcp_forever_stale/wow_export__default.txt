@@ -1,0 +1,19 @@
+# tool wow_export variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game.
+--- content[1] ---
+{
+  "format": "discord",
+  "howToUse": "Show the player the text field in a code block so they can copy it whole.",
+  "length": 477,
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  },
+  "text": "### Piekasz, 20 Night Elf Hunter\n**Faction:** Alliance\n**Talents:** 7/4/0 (Beast Mastery)\n**Average item level:** 12.7\n**Professions:** Skinning 96/150, Mining 71/75, Cooking 52/75\n**Pet:** Cat (Cat), level 19\n**Played:** 4 d 4 h\n\n**Gear**\n- Main Hand: Curvewood Dagger (ilvl 18)\n- Off Hand: Webwood Slicer (ilvl 10)\n- Ranged: Light Hunting Bow (ilvl 10)\n\n**Talents**\n- Endurance Training 5/5 (Beast Mastery)\n- Focused Fire 2/2 (Beast Mastery)\n- Lethal Shots 4/5 (Marksmanship)"
+}

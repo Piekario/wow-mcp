@@ -1,0 +1,39 @@
+# tool wow_section variant=section_inspect
+# args: {"section":"inspect"}
+# isError: false
+--- content[0] ---
+{
+  "inspect": {
+    "Tankadin": {
+      "averageItemLevel": 18,
+      "capturedAt": 1794760000,
+      "class": "Paladin",
+      "classToken": "PALADIN",
+      "equipment": [
+        {
+          "id": 5586,
+          "itemLevel": 18,
+          "name": "Curvewood Dagger",
+          "quality": 2,
+          "slot": "head"
+        },
+        {
+          "id": 5586,
+          "itemLevel": 18,
+          "name": "Curvewood Dagger",
+          "quality": 2,
+          "slot": "mainHand"
+        }
+      ],
+      "guild": "Night Watch",
+      "level": 22,
+      "name": "Tankadin",
+      "race": "Human"
+    }
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

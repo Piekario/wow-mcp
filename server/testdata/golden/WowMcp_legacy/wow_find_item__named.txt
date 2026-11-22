@@ -1,0 +1,18 @@
+# tool wow_find_item variant=named
+# args: {"character":"Piekasz","item":"Leather"}
+# isError: false
+--- content[0] ---
+{
+  "count": 0,
+  "matches": [],
+  "note": "Nothing found. The bank and mail appear in the dump only after they are opened in game and /mcp reload is run. A character appears here after logging in with it with the addon enabled and running /mcp reload (or after logging out, because the addon dumps then by itself).",
+  "query": "Leather",
+  "searched": {
+    "characters": [
+      "Piekasz"
+    ],
+    "where": "bags, equipment, bank (state from the last visit) and mail (state from the last time the mailbox was opened)"
+  },
+  "total": 0,
+  "totals": {}
+}

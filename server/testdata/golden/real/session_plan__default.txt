@@ -1,0 +1,509 @@
+# prompt session_plan variant=default
+# args: {}
+# description: A plan for the next game session: quests to do and turn in, ordered by zone, a trainer visit, bag space, the pet. Combines the character, quest log, trainer offer, changes since the previous snapshot and the return-to-town forecast (returnToTown).
+--- message[0] role=user ---
+Propose a plan for the next session (about 1-2 hours). Order the quests sensibly by zone (questPlan already has them grouped and rated with difficulty colors as in the game), point out those ready to turn in, discourage red ones and suggest abandoning gray ones if the log is full. Say whether it is worth visiting the trainer, repairing gear, collecting mail that is about to expire, and whether bag space needs to be freed. If there is an XP pace (progress), say roughly how long the next level will take. If something changed since the previous snapshot, mention it briefly. From returnToTown say when it is worth returning to town (in how many levels there are new spells at the trainer, in how many game hours the bags fill up, how long the ammo lasts); when the field says "no data", say so plainly and do not guess. Finish with a checklist of items to tick off.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz-CAMWOW EU4 Realm 7 PvE from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "bagSpace": {
+    "freeSlots": 14,
+    "totalSlots": 60
+  },
+  "character": {
+    "addonVersion": "0.7.0",
+    "bindLocation": "Auberdine",
+    "class": "Hunter",
+    "classToken": "HUNTER",
+    "clientBuild": "70938",
+    "clientInterface": 16001,
+    "clientVersion": "1.60.1",
+    "faction": "Alliance",
+    "level": 22,
+    "mapID": 1436,
+    "maxQuests": 40,
+    "moneyCopper": 36897,
+    "name": "Piekasz",
+    "questGreenRange": 5,
+    "race": "Night Elf",
+    "raceToken": "NightElf",
+    "restedXp": 2,
+    "resting": false,
+    "subZone": "Stendel's Pond",
+    "x": 47.6,
+    "xp": 18676,
+    "xpMax": 27300,
+    "y": 57.1,
+    "zone": "Westfall"
+  },
+  "durability": {
+    "lowest": "Canvas Shoulderpads 100%",
+    "overallPercent": 100
+  },
+  "pet": {
+    "happiness": 3,
+    "level": 21,
+    "name": "Cat"
+  },
+  "progress": {
+    "levelUps": [
+      {
+        "level": 22,
+        "playedAt": "28 h 54 min",
+        "seenAt": "2026-11-15 21:43"
+      }
+    ],
+    "nextLevel": {
+      "etaAtOverallRate": "37 min",
+      "etaAtSessionRate": "37 min",
+      "level": 23,
+      "percent": 68.4,
+      "restedNote": "rested XP doubles the XP from monsters until it runs out, so the real time will be shorter",
+      "restedXp": 2,
+      "xpToGo": 8624
+    },
+    "overall": {
+      "basis": "play time from /played",
+      "duration": "2 h",
+      "from": "2026-11-15 20:43",
+      "levelsGained": 1,
+      "moneyChange": "+25s 0c",
+      "moneyPerHour": "+12s 50c",
+      "questsTurnedIn": 1,
+      "snapshots": 3,
+      "to": "2026-11-15 22:43",
+      "window": "whole history",
+      "xpGained": 27600,
+      "xpPerHour": 13800
+    },
+    "played": {
+      "thisLevel": "1 h 53 min",
+      "total": "29 h 54 min",
+      "totalSeconds": 107687
+    },
+    "session": {
+      "basis": "play time from /played",
+      "duration": "2 h",
+      "from": "2026-11-15 20:43",
+      "levelsGained": 1,
+      "moneyChange": "+25s 0c",
+      "moneyPerHour": "+12s 50c",
+      "questsTurnedIn": 1,
+      "snapshots": 3,
+      "to": "2026-11-15 22:43",
+      "xpGained": 27600,
+      "xpPerHour": 13800
+    },
+    "snapshotsInHistory": 3
+  },
+  "questPlan": {
+    "byDifficulty": {
+      "gray": 6,
+      "green": 6,
+      "orange": 1,
+      "yellow": 9
+    },
+    "count": 22,
+    "grayBelow": "quests of level 16 and below are gray (green range: 5, from the game)",
+    "log": "22/40",
+    "playerLevel": 22,
+    "readyToTurnIn": [
+      "A Free Lunch [15] (Redridge Mountains)",
+      "A Watchful Eye [21] (Redridge Mountains)",
+      "The Unsent Letter [22] (Stormwind City)",
+      "Underground Assault [20] (The Deadmines)",
+      "The Powers Below [18] (Darkshore)",
+      "Remember That I Love You [22] (Duskwood)",
+      "Unrequited Love [21] (Wetlands)"
+    ],
+    "warnings": [
+      "Gray, almost no XP: Dry Times [15] (Redridge Mountains); Humble Beginnings [15] (Stormwind City); The People's Militia [12] (Westfall); Never Saddle on Quality [10] (Dun Morogh); Bingles' Missing Supplies [15] (Loch Modan). Turn in on the way or abandon if they take up space."
+    ],
+    "zones": [
+      {
+        "inProgress": 7,
+        "quests": [
+          {
+            "difficulty": "gray",
+            "difficultyInfo": "gray: almost no XP, worth turning in on the way or abandoning",
+            "id": 129,
+            "level": 15,
+            "progressPercent": 100,
+            "status": "ready to turn in",
+            "title": "A Free Lunch"
+          },
+          {
+            "difficulty": "gray",
+            "difficultyInfo": "gray: almost no XP, worth turning in on the way or abandoning",
+            "id": 116,
+            "level": 15,
+            "progressPercent": 0,
+            "status": "in progress",
+            "title": "Dry Times",
+            "todo": [
+              "0/1 Keg of Thunderbrew",
+              "0/1 Cask of Merlot",
+              "0/1 Bottle of Moonshine",
+              "0/1 Skin of Sweet Rum"
+            ]
+          },
+          {
+            "difficulty": "green",
+            "difficultyInfo": "easy: less XP",
+            "id": 246,
+            "level": 17,
+            "progressPercent": 0,
+            "status": "in progress",
+            "title": "Assessing the Threat",
+            "todo": [
+              "0/10 Redridge Mongrel slain",
+              "0/6 Redridge Poacher slain"
+            ]
+          },
+          {
+            "difficulty": "green",
+            "difficultyInfo": "easy: less XP",
+            "id": 98407,
+            "level": 17,
+            "progressPercent": 0,
+            "status": "in progress",
+            "title": "Show of Force",
+            "todo": [
+              "0/5 Spiked Collar"
+            ]
+          },
+          {
+            "difficulty": "yellow",
+            "difficultyInfo": "just right",
+            "id": 150,
+            "level": 20,
+            "progressPercent": 0,
+            "status": "in progress",
+            "title": "Murloc Poachers",
+            "todo": [
+              "0/8 Murloc Fin"
+            ]
+          },
+          {
+            "difficulty": "yellow",
+            "difficultyInfo": "just right",
+            "id": 94,
+            "level": 21,
+            "progressPercent": 100,
+            "status": "ready to turn in",
+            "title": "A Watchful Eye"
+          },
+          {
+            "difficulty": "yellow",
+            "difficultyInfo": "just right",
+            "id": 127,
+            "level": 21,
+            "progressPercent": 0,
+            "status": "in progress",
+            "title": "Selling Fish",
+            "todo": [
+              "0/10 Spotted Sunfish"
+            ]
+          },
+          {
+            "difficulty": "yellow",
+            "difficultyInfo": "just right",
+            "id": 91,
+            "level": 23,
+            "progressPercent": 0,
+            "status": "in progress",
+            "title": "Solomon's Law",
+            "todo": [
+              "0/10 Shadowhide Pendant"
+            ]
+          },
+          {
+            "difficulty": "orange",
+            "difficultyInfo": "hard: 3-4 levels higher, be careful",
+            "id": 180,
+            "level": 26,
+            "progressPercent": 0,
+            "status": "in progress",
+            "title": "WANTED: Lieutenant Fangore",
+            "todo": [
+              "0/1 Fangore's Paw"
+            ]
+          }
+        ],
+        "readyToTurnIn": 2,
+        "zone": "Redridge Mountains"
+      },
+      {
+        "inProgress": 3,
+        "quests": [
+          {
+            "difficulty": "green",
+            "difficultyInfo": "easy: less XP",
+            "id": 1138,
+            "level": 17,
+            "progressPercent": 0,
+            "status": "in progress",
+            "title": "Fruit of the Sea",
+            "todo": [
+              "0/6 Fine Crab Chunks"
+            ]
+          },
+          {
+            "difficulty": "green",
+            "difficultyInfo": "easy: less XP",
+            "id": 968,
+            "level": 18,
+            "progressPercent": 100,
+            "status": "ready to turn in",
+            "title": "The Powers Below"
+          },
+          {
+            "difficulty": "green",
+            "difficultyInfo": "easy: less XP",
+            "id": 966,
+            "level": 18,
+            "progressPercent": 0,
+            "status": "in progress",
+            "title": "The Tower of Althalaxx",
+            "todo": [
+              "0/4 Worn Parchment"
+            ]
+          },
+          {
+            "difficulty": "yellow",
+            "difficultyInfo": "just right",
+            "id": 986,
+            "level": 20,
+            "progressPercent": 0,
+            "status": "in progress",
+            "title": "A Lost Master",
+            "todo": [
+              "0/5 Fine Moonstalker Pelt"
+            ]
+          }
+        ],
+        "readyToTurnIn": 1,
+        "zone": "Darkshore"
+      },
+      {
+        "inProgress": 1,
+        "quests": [
+          {
+            "difficulty": "gray",
+            "difficultyInfo": "gray: almost no XP, worth turning in on the way or abandoning",
+            "id": 399,
+            "level": 15,
+            "progressPercent": 0,
+            "status": "in progress",
+            "title": "Humble Beginnings",
+            "todo": [
+              "0/1 A Simple Compass"
+            ]
+          },
+          {
+            "difficulty": "yellow",
+            "difficultyInfo": "just right",
+            "id": 373,
+            "level": 22,
+            "progressPercent": 100,
+            "status": "ready to turn in",
+            "title": "The Unsent Letter"
+          }
+        ],
+        "readyToTurnIn": 1,
+        "zone": "Stormwind City"
+      },
+      {
+        "inProgress": 1,
+        "quests": [
+          {
+            "difficulty": "green",
+            "difficultyInfo": "easy: less XP",
+            "id": 168,
+            "level": 18,
+            "progressPercent": 0,
+            "status": "in progress",
+            "title": "Collecting Memories",
+            "todo": [
+              "0/4 Miners' Union Card"
+            ]
+          },
+          {
+            "difficulty": "yellow",
+            "difficultyInfo": "just right",
+            "id": 2040,
+            "level": 20,
+            "progressPercent": 100,
+            "status": "ready to turn in",
+            "title": "Underground Assault"
+          }
+        ],
+        "readyToTurnIn": 1,
+        "zone": "The Deadmines"
+      },
+      {
+        "inProgress": 1,
+        "quests": [
+          {
+            "difficulty": "gray",
+            "difficultyInfo": "gray: almost no XP, worth turning in on the way or abandoning",
+            "id": 95212,
+            "level": 10,
+            "progressPercent": 0,
+            "status": "in progress",
+            "title": "Never Saddle on Quality",
+            "todo": [
+              "0/6 Pristine Leopard Pelt"
+            ]
+          }
+        ],
+        "readyToTurnIn": 0,
+        "zone": "Dun Morogh"
+      },
+      {
+        "inProgress": 0,
+        "quests": [
+          {
+            "difficulty": "yellow",
+            "difficultyInfo": "just right",
+            "id": 95161,
+            "level": 22,
+            "progressPercent": 100,
+            "status": "ready to turn in",
+            "title": "Remember That I Love You"
+          }
+        ],
+        "readyToTurnIn": 1,
+        "zone": "Duskwood"
+      },
+      {
+        "inProgress": 1,
+        "quests": [
+          {
+            "difficulty": "gray",
+            "difficultyInfo": "gray: almost no XP, worth turning in on the way or abandoning",
+            "id": 2038,
+            "level": 15,
+            "progressPercent": 0,
+            "status": "in progress",
+            "title": "Bingles' Missing Supplies",
+            "todo": [
+              "0/1 Bingles' Wrench",
+              "0/1 Bingles' Screwdriver",
+              "0/1 Bingles' Hammer",
+              "0/1 Bingles' Blastencapper"
+            ]
+          }
+        ],
+        "readyToTurnIn": 0,
+        "zone": "Loch Modan"
+      },
+      {
+        "inProgress": 1,
+        "quests": [
+          {
+            "difficulty": "gray",
+            "difficultyInfo": "gray: almost no XP, worth turning in on the way or abandoning",
+            "id": 12,
+            "level": 12,
+            "progressPercent": 6,
+            "status": "in progress",
+            "title": "The People's Militia",
+            "todo": [
+              "0/15 Defias Trapper slain",
+              "2/15 Defias Smuggler slain"
+            ]
+          }
+        ],
+        "readyToTurnIn": 0,
+        "zone": "Westfall"
+      },
+      {
+        "inProgress": 0,
+        "quests": [
+          {
+            "difficulty": "yellow",
+            "difficultyInfo": "just right",
+            "id": 98461,
+            "level": 21,
+            "progressPercent": 100,
+            "status": "ready to turn in",
+            "title": "Unrequited Love"
+          }
+        ],
+        "readyToTurnIn": 1,
+        "zone": "Wetlands"
+      }
+    ]
+  },
+  "returnToTown": {
+    "ammo": {
+      "hoursLeft": "no data",
+      "name": "Sharp Arrow",
+      "note": "ammo did not decrease in the measured stretch of history",
+      "total": 2124
+    },
+    "bags": {
+      "freeSlots": 14,
+      "gainedSlotsPerHour": 0,
+      "hoursUntilFull": "no data",
+      "note": "used bag slots did not grow in the measured stretch of history",
+      "totalSlots": 60,
+      "window": "current session"
+    },
+    "durability": {
+      "lowest": "Canvas Shoulderpads 100%",
+      "overallPercent": 100
+    },
+    "note": "Forecasts rely on the rate from dump history (the same window as wow_progress), so they are approximations; purchases and sales between dumps distort the bag-filling rate.",
+    "soonestHours": "no data",
+    "trainer": {
+      "note": "no data: no saved trainer offers (open a trainer window in game and run /mcp reload)"
+    }
+  },
+  "sinceLastSnapshot": {
+    "bags": {
+      "lost": [
+        {
+          "after": 0,
+          "before": 1,
+          "change": -1,
+          "id": 99999,
+          "name": "Old Scroll"
+        }
+      ]
+    },
+    "elapsed": "1 h",
+    "experience": {
+      "levelAfter": 22,
+      "levelBefore": 22,
+      "xpAfter": 18676,
+      "xpBefore": 18576,
+      "xpGained": 100
+    },
+    "from": "2026-11-15 21:43",
+    "history": [
+      "2026-11-15 20:43",
+      "2026-11-15 21:43",
+      "2026-11-15 22:43"
+    ],
+    "money": {
+      "after": "3g 68s 97c",
+      "before": "3g 58s 97c",
+      "change": "+10s 0c"
+    },
+    "playedBetween": "1 h",
+    "to": "2026-11-15 22:43"
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  }
+}
+```
+

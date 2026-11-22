@@ -1,0 +1,153 @@
+# prompt first_run variant=default
+# args: {}
+# description: An introduction after installation or for a new character: what the assistant can see, which windows to open in game so the addon saves the trainer, vendor, bank, mail and auctions, and example questions.
+--- message[0] role=user ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game. Start your answer with this information.
+
+This is the player's first encounter with this server, or a new character. Briefly (in the user's language, without overdoing it) present what you can see: the character state, quests, bags, equipment, spells, talents, professions, reputation, the pet, and, once the windows are opened in game, also the trainer, vendor, bank, mail, auction house, recipes and flight map. Show which windows the player still has to open (windows, captured = false), and remind them that after opening them they have to type /mcp reload, because the data refreshes only then. If addon.addonUpdate or addon.disabledNote say anything, state it at the start. If anything looks off (stale data, missing sections, errors), call wow_doctor and relay its nextStep. Suggest 5-7 example questions suited to the character's class and level (e.g. what to buy from the trainer, which quests to do in order, what to sell, whether something is an upgrade). Point out that the server only reads data and does nothing in the game for the player.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "addon": {
+    "addonVersion": "0.16.0"
+  },
+  "character": {
+    "class": "Hunter",
+    "level": 20,
+    "name": "Piekasz",
+    "race": "Night Elf",
+    "zone": "Stormwind City"
+  },
+  "expectedAddonVersion": "0.16.0",
+  "sectionsInSnapshot": [
+    "actionBars",
+    "auras",
+    "bags",
+    "character",
+    "equipment",
+    "equipmentSets",
+    "friends",
+    "guild",
+    "legacy",
+    "loot",
+    "pet",
+    "played",
+    "professions",
+    "quests",
+    "reputation",
+    "spells",
+    "stats",
+    "talents",
+    "trainer",
+    "trainers",
+    "xpGains"
+  ],
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  },
+  "windows": [
+    {
+      "captured": true,
+      "capturedAgeMinutes": 200,
+      "capturedAt": "2026-11-15 16:26",
+      "capturedNote": "This is the state from a visit 3 h 20 min ago; it may have changed. For fresh data: open the window in game and type /mcp reload.",
+      "open": "class or profession trainer window (the addon remembers up to 10 latest in the trainers field)",
+      "section": "trainer",
+      "tool": "wow_trainer"
+    },
+    {
+      "captured": false,
+      "open": "vendor window (preferably one that repairs; up to 10 latest in the vendors field)",
+      "section": "vendor",
+      "tool": "wow_vendor"
+    },
+    {
+      "captured": false,
+      "open": "vendor window after selling something (buyback list; the client loses it on logout)",
+      "section": "buyback",
+      "tool": "wow_vendor"
+    },
+    {
+      "captured": false,
+      "open": "bank window",
+      "section": "bank",
+      "tool": "wow_bank"
+    },
+    {
+      "captured": false,
+      "open": "flight map at a flight master",
+      "section": "flightPaths",
+      "tool": "wow_section flightPaths"
+    },
+    {
+      "captured": false,
+      "open": "each profession window (and Beast Training for a Hunter)",
+      "section": "recipes",
+      "tool": "wow_recipes"
+    },
+    {
+      "captured": false,
+      "open": "mailbox",
+      "section": "mail",
+      "tool": "wow_mail"
+    },
+    {
+      "captured": false,
+      "open": "auction house: search for items and open the Auctions tab",
+      "section": "auctions",
+      "tool": "wow_auctions"
+    },
+    {
+      "captured": false,
+      "open": "stable window (Stable Master)",
+      "section": "stable",
+      "tool": "wow_pet"
+    },
+    {
+      "captured": false,
+      "open": "quest window at an NPC, before you accept it",
+      "section": "questOffer",
+      "tool": "wow_quest_rewards"
+    },
+    {
+      "captured": false,
+      "open": "quest turn-in window at an NPC (with the reward choice)",
+      "section": "questTurnIn",
+      "tool": "wow_quest_rewards"
+    },
+    {
+      "captured": true,
+      "capturedAgeMinutes": 200,
+      "capturedAt": "2026-11-15 16:26",
+      "capturedNote": "This is the state from a visit 3 h 20 min ago; it may have changed. For fresh data: open the window in game and type /mcp reload.",
+      "open": "social window with the friends list (the addon does not request the list from the server itself)",
+      "section": "friends",
+      "tool": "wow_social"
+    },
+    {
+      "captured": true,
+      "capturedAgeMinutes": 200,
+      "capturedAt": "2026-11-15 16:26",
+      "capturedNote": "This is the state from a visit 3 h 20 min ago; it may have changed. For fresh data: open the window in game and type /mcp reload.",
+      "open": "guild window (only when the character is in a guild; the addon does not request the list from the server itself)",
+      "section": "guild",
+      "tool": "wow_social"
+    },
+    {
+      "captured": false,
+      "open": "Inspect window on another player",
+      "section": "inspect",
+      "tool": "wow_group"
+    }
+  ]
+}
+```
+

@@ -1,0 +1,5 @@
+# tool wow_changes variant=bad_type
+# args: {"steps":"abc"}
+# isError: true
+--- content[0] ---
+validating "arguments": validating root: validating /properties/steps: type: abc has type "string", want "integer"

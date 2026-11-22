@@ -1,0 +1,62 @@
+# tool wow_progress variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "levelUps": [
+    {
+      "level": 20,
+      "playedAt": "4 d 3 h",
+      "seenAt": "2026-11-15 15:26"
+    }
+  ],
+  "nextLevel": {
+    "etaAtOverallRate": "1 h 51 min",
+    "etaAtSessionRate": "1 h 51 min",
+    "level": 21,
+    "percent": 5.6,
+    "restedNote": "rested XP doubles the XP from monsters until it runs out, so the real time will be shorter",
+    "restedXp": 4000,
+    "xpToGo": 20100
+  },
+  "overall": {
+    "basis": "play time from /played",
+    "deaths": 1,
+    "duration": "2 h",
+    "from": "2026-11-15 14:26",
+    "levelsGained": 1,
+    "moneyChange": "+25s 0c",
+    "moneyPerHour": "+12s 50c",
+    "questsTurnedIn": 1,
+    "snapshots": 3,
+    "to": "2026-11-15 16:26",
+    "window": "whole history",
+    "xpGained": 21600,
+    "xpPerHour": 10800
+  },
+  "played": {
+    "thisLevel": "2 h",
+    "total": "4 d 4 h",
+    "totalSeconds": 360000
+  },
+  "session": {
+    "basis": "play time from /played",
+    "deaths": 1,
+    "duration": "2 h",
+    "from": "2026-11-15 14:26",
+    "levelsGained": 1,
+    "moneyChange": "+25s 0c",
+    "moneyPerHour": "+12s 50c",
+    "questsTurnedIn": 1,
+    "snapshots": 3,
+    "to": "2026-11-15 16:26",
+    "xpGained": 21600,
+    "xpPerHour": 10800
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "snapshotsInHistory": 3
+}

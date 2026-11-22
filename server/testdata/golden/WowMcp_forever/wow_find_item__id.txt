@@ -1,0 +1,46 @@
+# tool wow_find_item variant=id
+# args: {"item":"2589"}
+# isError: false
+--- content[0] ---
+{
+  "count": 3,
+  "matches": [
+    {
+      "character": "Piekasz",
+      "container": "Backpack",
+      "count": 14,
+      "id": 2589,
+      "name": "Linen Cloth",
+      "where": "bags"
+    },
+    {
+      "character": "Piekasz",
+      "container": "Bank",
+      "count": 20,
+      "id": 2589,
+      "name": "Linen Cloth",
+      "seenAt": "2026-11-15 16:26",
+      "where": "bank"
+    },
+    {
+      "character": "Piekasz",
+      "count": 20,
+      "from": "Altpiekasz",
+      "id": 2589,
+      "name": "Linen Cloth",
+      "subject": "mats",
+      "where": "mail"
+    }
+  ],
+  "query": "2589",
+  "searched": {
+    "characters": [
+      "Piekasz"
+    ],
+    "where": "bags, equipment, bank (state from the last visit) and mail (state from the last time the mailbox was opened)"
+  },
+  "total": 54,
+  "totals": {
+    "Linen Cloth": 54
+  }
+}

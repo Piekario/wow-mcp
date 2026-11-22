@@ -1,0 +1,9 @@
+# tool wow_alt_mail variant=unknown_from
+# args: {"from":"Unknown"}
+# isError: false
+--- content[0] ---
+{
+  "count": 0,
+  "note": "Mail suggestions need at least two characters in the dump. A character appears here after logging in with it with the addon enabled and running /mcp reload (or after logging out, because the addon dumps then by itself).",
+  "transfers": []
+}

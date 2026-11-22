@@ -1,0 +1,88 @@
+# tool wow_compare_item variant=real_skinning_knife
+# args: {"item":"Skinning Knife"}
+# isError: false
+--- content[0] ---
+{
+  "bestWeighted": {
+    "slot": "offHand",
+    "weightedDelta": -38.2
+  },
+  "comparisons": [
+    {
+      "delta": {
+        "Agility": -3,
+        "DPS": -14,
+        "Item Level": -19,
+        "Stamina": -3
+      },
+      "equipped": "Buzz Saw",
+      "equippedNumbers": {
+        "Agility": 3,
+        "DPS": 15.2,
+        "Item Level": 23,
+        "Speed": 2.3,
+        "Stamina": 3
+      },
+      "slot": "mainHand",
+      "weightedDelta": -45.6
+    },
+    {
+      "delta": {
+        "DPS": -12.4,
+        "Item Level": -16,
+        "Stamina": -5
+      },
+      "equipped": "Meathook Slicer",
+      "equippedNumbers": {
+        "DPS": 13.6,
+        "Item Level": 20,
+        "Speed": 1.8,
+        "Stamina": 5
+      },
+      "slot": "offHand",
+      "weightedDelta": -38.2
+    }
+  ],
+  "item": {
+    "equipLoc": "INVTYPE_WEAPON",
+    "id": 7005,
+    "itemLevel": 4,
+    "levelOk": true,
+    "name": "Skinning Knife",
+    "numbers": {
+      "DPS": 1.2,
+      "Item Level": 4,
+      "Speed": 1.6
+    },
+    "quality": "Common",
+    "requiredLevel": 1,
+    "source": "bags",
+    "subType": "Miscellaneous",
+    "tooltip": [
+      "Skinning Knife",
+      "One-Hand",
+      "1 - 3 Damage | Speed 1.60",
+      "(1.2 damage per second)",
+      "Durability 20 / 20"
+    ]
+  },
+  "note": "Delta = item minus equipped (positive = gain). The numbers come from the stats and tooltip in the dump; Equip/Use effects appear only in the tooltip.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "weights": {
+    "source": "<TMP>/weights.json (class)",
+    "values": {
+      "agility": 1,
+      "attackPower": 0.5,
+      "dps": 3,
+      "stamina": 0.2
+    }
+  },
+  "weightsIgnored": [
+    "Item Level"
+  ],
+  "weightsIgnoredNote": "stats without a weight are not included in weightedDelta"
+}

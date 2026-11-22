@@ -1,0 +1,5 @@
+# tool wow_search variant=empty_query
+# args: {"query":""}
+# isError: true
+--- content[0] ---
+provide the text to search for in the query parameter

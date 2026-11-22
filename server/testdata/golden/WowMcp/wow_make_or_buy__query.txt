@@ -1,0 +1,12 @@
+# tool wow_make_or_buy variant=query
+# args: {"query":"Gloves"}
+# isError: false
+--- content[0] ---
+{
+  "note": "No saved recipes. Open the profession window in game (e.g. Leatherworking), then type /mcp reload. Each profession is saved separately.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

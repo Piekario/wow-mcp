@@ -1,0 +1,15 @@
+{
+  "name": "wow-mcp",
+  "version": "0.0.0-dev",
+  "description": "MCP server that lets AI assistants read your World of Warcraft character state (read-only), plus its in-game addon.",
+  "keywords": ["mcp", "model-context-protocol", "world-of-warcraft", "wow", "addon"],
+  "homepage": "https://github.com/Piekario/wow-mcp#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/Piekario/wow-mcp.git" },
+  "bugs": { "url": "https://github.com/Piekario/wow-mcp/issues" },
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "Piekasz (https://github.com/Piekario)",
+  "bin": { "wow-mcp": "bin/wow-mcp.js" },
+  "files": ["bin/", "addon/", "README.md", "LICENSE", "NOTICE"],
+  "engines": { "node": ">=18" },
+  "optionalDependencies": {}
+}

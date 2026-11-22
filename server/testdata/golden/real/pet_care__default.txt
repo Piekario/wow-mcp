@@ -1,0 +1,110 @@
+# prompt pet_care variant=default
+# args: {}
+# description: The state of a Hunter's pet: happiness, loyalty, training points, diet versus food in the bags, abilities, Beast Training (missing ranks, point plan) and a comparison with the stable. Only useful when the snapshot has a pet section; otherwise it says what is missing.
+--- message[0] role=user ---
+Assess the pet's state and say what to improve. Check happiness (happiness) and loyalty, how many training points are left (trainingPoints; if they are not in the data, say the addon did not save them) and whether the pet has auto-cast enabled where it is useful (autoCast). Compare the diet (foodTypes) with the food in the bags (foodInBags) and say how many feedings it will last, honestly noting that you match food to diet by name. If there is beastTraining, point out the ranks to buy with the free points. From rankReview give the ranks the Hunter knows that the pet lacks (learnable), and the ranks to buy from the trainer (notLearnedByHunter); from trainingPlan, what fits into the free points; from stable compare the stabled pets with the active one (level, family), remembering that there is no data on their abilities. When a field says data is missing, say which window to open in game. Do not give numbers that are not in the data.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz-CAMWOW EU4 Realm 7 PvE from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "class": "Hunter",
+  "foodInBags": [
+    {
+      "count": 4,
+      "id": 3220,
+      "name": "Blood Sausage"
+    },
+    {
+      "count": 8,
+      "id": 414,
+      "name": "Dalaran Sharp"
+    },
+    {
+      "count": 1,
+      "id": 2287,
+      "name": "Haunch of Meat"
+    },
+    {
+      "count": 2,
+      "id": 1179,
+      "name": "Ice Cold Milk"
+    },
+    {
+      "count": 10,
+      "id": 159,
+      "name": "Refreshing Spring Water"
+    },
+    {
+      "count": 5,
+      "id": 117,
+      "name": "Tough Jerky"
+    }
+  ],
+  "foodNote": "foodInBags is food from bags by item subtype; the server has no table of which food is meat, fish, cheese etc. Match it to the pet's foodTypes by name, and when unsure, say so plainly.",
+  "pet": {
+    "abilities": [
+      "Arcane Resistance Rank 1",
+      "Cower Rank 1",
+      "Faster Attack V",
+      "Fire Resistance Rank 1",
+      "Frost Resistance Rank 1",
+      "Great Stamina Rank 3",
+      "Growl Rank 3",
+      "Natural Armor Rank 3",
+      "Nature Resistance Rank 1",
+      "Shadow Resistance Rank 1"
+    ],
+    "autoCast": {
+      "Cower": true,
+      "Growl": true
+    },
+    "damagePercent": 125,
+    "dead": false,
+    "exists": true,
+    "family": "Cat",
+    "foodTypes": [
+      "Meat",
+      "Fish"
+    ],
+    "happiness": {
+      "name": "Happy",
+      "value": 3
+    },
+    "level": 21,
+    "loyalty": "Best Friend",
+    "loyaltyRate": 20,
+    "name": "Cat",
+    "trainingPoints": {
+      "free": 47,
+      "spent": 58,
+      "total": 105
+    },
+    "xpPercent": 39.4
+  },
+  "rankReview": {
+    "learnable": [],
+    "learnableNote": "the Beast Training window has no ranks higher than those the pet already has",
+    "source": "only data from the dump (the Beast Training window, pet abilities, trainer offers); the server has no rank table of its own",
+    "windowNote": "The Beast Training window was saved as a trainer window without an NPC (this is how Forever 1.60.1 shows it). Assumption, not confirmed in game: its cost is the pet's training points, and the list contains what the window showed under the in-game filters."
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "stable": {
+    "note": "no data: open the stable window (Stable Master) in game and run /mcp reload"
+  },
+  "trainingPlan": {
+    "freePoints": 47,
+    "learnableNote": "there are no lessons the Hunter knows that the pet does not have",
+    "order": "server heuristic: higher ranks of abilities the pet already has first, then new ones, cheapest first; the player decides how valuable an ability is",
+    "pointsLeftAfter": 47,
+    "suggested": []
+  }
+}
+```
+

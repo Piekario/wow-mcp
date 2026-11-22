@@ -1,0 +1,23 @@
+# tool wow_goal_set variant=item
+# args: {"item":"Sharp Arrow","target":1500,"type":"item"}
+# isError: false
+--- content[0] ---
+{
+  "added": {
+    "id": "g7",
+    "type": "item",
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "target": 1500,
+    "item": "Sharp Arrow"
+  },
+  "file": "<GOALS>",
+  "goal": "1500 x Sharp Arrow",
+  "progress": {
+    "current": "2124 (bags 2124, bank 0, equipped 0)",
+    "done": true,
+    "goal": "1500 x Sharp Arrow",
+    "id": "g7",
+    "percent": 100,
+    "type": "item"
+  }
+}

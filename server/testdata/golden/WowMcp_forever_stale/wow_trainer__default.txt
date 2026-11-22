@@ -1,0 +1,55 @@
+# tool wow_trainer variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game.
+--- content[1] ---
+{
+  "capturedAgeMinutes": 200,
+  "capturedAt": "2026-11-15 16:26",
+  "capturedNote": "This is the state from a visit 3 h 20 min ago; it may have changed. For fresh data: open the window in game and type /mcp reload.",
+  "known": [
+    "Einris Brightspear",
+    "Astaia"
+  ],
+  "money": "52s 12c",
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  },
+  "trainer": {
+    "capturedAt": 1794760000,
+    "npc": "Einris Brightspear",
+    "services": [
+      {
+        "canAfford": true,
+        "category": "available",
+        "cost": "21s 0c",
+        "costCopper": 2100,
+        "levelRequired": 20,
+        "name": "Disengage",
+        "rank": "Rank 1"
+      },
+      {
+        "canAfford": true,
+        "category": "available",
+        "cost": "16s 0c",
+        "costCopper": 1600,
+        "levelRequired": 18,
+        "name": "Track Undead"
+      },
+      {
+        "canAfford": false,
+        "category": "unavailable",
+        "cost": "18g 0s 0c",
+        "costCopper": 180000,
+        "levelRequired": 40,
+        "name": "Volley",
+        "rank": "Rank 1"
+      }
+    ]
+  }
+}

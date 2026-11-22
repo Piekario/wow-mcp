@@ -1,0 +1,127 @@
+# tool wow_vendor variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game.
+--- content[1] ---
+{
+  "buyback": {
+    "assumption": "The buyback list is an assumption, not a certainty: the addon saves it from the vendor window, and the client keeps it only until logout, so after a relog the items on the list may no longer be buyable (the server cannot see this; see capturedAge). priceCopper is the price for the whole batch (count units), as in the vendor offer.",
+    "capturedAge": "3 h 20 min",
+    "capturedAgeMinutes": 200,
+    "capturedAt": "2026-11-15 16:26",
+    "capturedNote": "This is the state from a visit 3 h 20 min ago; it may have changed. For fresh data: open the window in game and type /mcp reload.",
+    "count": 2,
+    "items": [
+      {
+        "canAfford": true,
+        "count": 20,
+        "id": 2589,
+        "index": 1,
+        "name": "Linen Cloth",
+        "price": "1s 50c",
+        "priceCopper": 150
+      },
+      {
+        "canAfford": true,
+        "count": 1,
+        "id": 7005,
+        "index": 2,
+        "name": "Skinning Knife",
+        "price": "16c",
+        "priceCopper": 16
+      }
+    ],
+    "npc": "Einris Brightspear",
+    "totalPrice": "1s 66c"
+  },
+  "canRepair": true,
+  "capturedAgeMinutes": 200,
+  "capturedAt": "2026-11-15 16:26",
+  "capturedNote": "This is the state from a visit 3 h 20 min ago; it may have changed. For fresh data: open the window in game and type /mcp reload.",
+  "count": 2,
+  "items": [
+    {
+      "bindType": 0,
+      "canAfford": true,
+      "classID": 7,
+      "id": 2515,
+      "index": 1,
+      "itemLevel": 10,
+      "levelOk": true,
+      "name": "Sharp Arrow",
+      "price": "3s 0c",
+      "priceCopper": 300,
+      "quality": 1,
+      "qualityName": "Common",
+      "requiredLevel": 1,
+      "sellPrice": 13,
+      "stack": 200,
+      "subType": "Cloth",
+      "subclassID": 5,
+      "type": "Trade Goods"
+    },
+    {
+      "bindType": 2,
+      "canAfford": false,
+      "classID": 2,
+      "equipLoc": "INVTYPE_WEAPON",
+      "id": 5586,
+      "index": 2,
+      "itemLevel": 18,
+      "levelOk": true,
+      "limitedStock": 1,
+      "name": "Laminated Recurve Bow",
+      "price": "72s 95c",
+      "priceCopper": 7295,
+      "quality": 2,
+      "qualityName": "Uncommon",
+      "requiredLevel": 13,
+      "sellPrice": 812,
+      "stack": 1,
+      "statTokens": {
+        "ITEM_MOD_AGILITY_SHORT": 3,
+        "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 8.4,
+        "ITEM_MOD_STAMINA_SHORT": 2
+      },
+      "stats": {
+        "Agility": 3,
+        "Damage Per Second": 8.4,
+        "ITEM_MOD_STAMINA_SHORT": 2
+      },
+      "subType": "Dagger",
+      "subclassID": 15,
+      "tooltip": [
+        "Laminated Recurve Bow"
+      ],
+      "type": "Weapon",
+      "vsEquipped": {
+        "delta": {
+          "Agility": 3,
+          "Item Level": 8,
+          "Stamina": 2
+        },
+        "equipped": "Webwood Slicer",
+        "equippedNumbers": {
+          "DPS": 8.4,
+          "Item Level": 10,
+          "Speed": 1.6
+        },
+        "slot": "offHand"
+      }
+    }
+  ],
+  "known": [
+    "Einris Brightspear",
+    "Laird"
+  ],
+  "money": "52s 12c",
+  "npc": "Einris Brightspear",
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  }
+}

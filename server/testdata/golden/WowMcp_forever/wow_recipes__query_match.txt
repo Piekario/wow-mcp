@@ -1,0 +1,53 @@
+# tool wow_recipes variant=query_match
+# args: {"query":"Leather"}
+# isError: false
+--- content[0] ---
+{
+  "note": "Recipes under collapsed headers in the profession window are not included in the dump. canCraft = how many can be crafted from the materials in bags; inBank = how much of a given material is in the bank (state from the last visit).",
+  "professions": [
+    {
+      "byDifficulty": {
+        "easy": 1,
+        "optimal": 1,
+        "trivial": 1
+      },
+      "capturedAgeMinutes": 30,
+      "capturedAt": "2026-11-15 16:26",
+      "maxRank": 150,
+      "name": "Leatherworking",
+      "rank": 87,
+      "recipes": [
+        {
+          "difficulty": "optimal",
+          "difficultyInfo": "orange: always gives a skill point",
+          "id": 3756,
+          "itemId": 4239,
+          "missingForOne": [
+            "Coarse Thread 2"
+          ],
+          "name": "Embossed Leather Gloves",
+          "reagents": [
+            {
+              "have": 7,
+              "id": 2318,
+              "name": "Light Leather",
+              "need": 3
+            },
+            {
+              "have": 0,
+              "id": 2320,
+              "name": "Coarse Thread",
+              "need": 2
+            }
+          ]
+        }
+      ],
+      "shown": 1
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

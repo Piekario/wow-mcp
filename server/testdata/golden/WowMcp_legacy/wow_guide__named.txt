@@ -1,0 +1,13 @@
+# tool wow_guide variant=named
+# args: {"character":"Piekasz"}
+# isError: false
+--- content[0] ---
+{
+  "available": false,
+  "hint": "The dump has no guide section. It needs addon 0.14.0 or newer and the Guidelime addon with a guide (for example TUGs) selected in game; then run /mcp reload. Without it, do not invent the guide's steps.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

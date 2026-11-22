@@ -1,0 +1,49 @@
+# tool wow_spells variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game.
+--- content[1] ---
+{
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  },
+  "spells": [
+    {
+      "id": 6603,
+      "name": "Auto Attack",
+      "tab": "General"
+    },
+    {
+      "id": 136,
+      "name": "Mend Pet",
+      "rank": "Rank 2",
+      "tab": "Beast Mastery"
+    },
+    {
+      "icon": 136076,
+      "id": 13165,
+      "name": "Aspect of the Hawk",
+      "rank": "Rank 2",
+      "selfBuff": true,
+      "tab": "Beast Mastery"
+    },
+    {
+      "icon": 135130,
+      "id": 19434,
+      "name": "Aimed Shot",
+      "rank": "Rank 1",
+      "tab": "Marksmanship"
+    },
+    {
+      "id": 1130,
+      "name": "Hunter's Mark",
+      "rank": "Rank 1",
+      "tab": "Marksmanship"
+    }
+  ]
+}

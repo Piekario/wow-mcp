@@ -1,0 +1,15 @@
+# tool wow_export variant=real_forum
+# args: {"format":"forum"}
+# isError: false
+--- content[0] ---
+{
+  "format": "forum",
+  "howToUse": "Show the player the text field in a code block so they can copy it whole.",
+  "length": 1335,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "text": "[size=5][b]Piekasz, 22 Night Elf Hunter[/b][/size]\n[b]Faction:[/b] Alliance\n[b]Talents:[/b] 13/0/0 (Beast Mastery)\n[b]Average item level:[/b] 21.2\n[b]Professions:[/b] Mining 62/150, Skinning 75/75, First Aid 37/75, Fishing 21/75, Cooking 13/75\n[b]Pet:[/b] Cat (Cat), level 21\n[b]Played:[/b] 29 h 54 min\n\n[b]Gear[/b]\n[list]\n[*]Shoulder: [color=#9d9d9d]Canvas Shoulderpads[/color] (ilvl 20)\n[*]Back: [color=#1eff00]Raider's Cloak of Agility[/color] (ilvl 16)\n[*]Chest: [color=#0070dd]Tunic of Westfall[/color] (ilvl 24)\n[*]Wrist: [color=#1eff00]Repurposed Hair Band[/color] (ilvl 20)\n[*]Hands: [color=#1eff00]Scouting Gloves of Power[/color] (ilvl 23)\n[*]Waist: [color=#1eff00]Relic Hunter Belt[/color] (ilvl 20)\n[*]Legs: [color=#1eff00]Duty Bound Leggings[/color] (ilvl 24)\n[*]Feet: [color=#1eff00]Agile Boots[/color] (ilvl 20)\n[*]Ring: [color=#1eff00]Slain Baron's Signet[/color] (ilvl 23)\n[*]Main Hand: [color=#0070dd]Buzz Saw[/color] (ilvl 23)\n[*]Off Hand: [color=#0070dd]Meathook Slicer[/color] (ilvl 20)\n[*]Ranged: [color=#1eff00]Light Bow[/color] (ilvl 21)\n[/list]\n\n[b]Talents[/b]\n[list]\n[*]Deadly Aspects 5/5 (Beast Mastery)\n[*]Bestial Swiftness 1/1 (Beast Mastery)\n[*]Improved Revive Pet 2/2 (Beast Mastery)\n[*]Pathfinding 2/2 (Beast Mastery)\n[*]Focused Fire 2/2 (Beast Mastery)\n[*]Endurance Training 1/5 (Beast Mastery)\n[/list]"
+}

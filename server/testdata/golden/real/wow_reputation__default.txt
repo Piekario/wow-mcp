@@ -1,0 +1,49 @@
+# tool wow_reputation variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "count": 5,
+  "factions": [
+    {
+      "name": "Darnassus",
+      "percent": 24.8,
+      "progress": "2972/12000",
+      "standing": "Honored",
+      "toNextStanding": 9028
+    },
+    {
+      "name": "Gnomeregan Exiles",
+      "percent": 36.8,
+      "progress": "2207/6000",
+      "standing": "Friendly",
+      "toNextStanding": 3793
+    },
+    {
+      "name": "Ironforge",
+      "percent": 49.3,
+      "progress": "2957/6000",
+      "standing": "Friendly",
+      "toNextStanding": 3043
+    },
+    {
+      "name": "Stormwind",
+      "percent": 40.8,
+      "progress": "2445/6000",
+      "standing": "Friendly",
+      "toNextStanding": 3555
+    },
+    {
+      "name": "Azeroth Commerce Authority",
+      "percent": 66.7,
+      "progress": "2000/3000",
+      "standing": "Neutral",
+      "toNextStanding": 1000
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  }
+}

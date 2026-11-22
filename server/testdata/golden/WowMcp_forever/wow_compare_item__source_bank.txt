@@ -1,0 +1,5 @@
+# tool wow_compare_item variant=source_bank
+# args: {"item":"Cloth","source":"bank"}
+# isError: true
+--- content[0] ---
+Linen Cloth cannot be equipped (no equipLoc in the dump), so there is nothing to compare with

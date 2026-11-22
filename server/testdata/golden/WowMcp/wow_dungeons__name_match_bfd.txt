@@ -1,0 +1,15 @@
+# tool wow_dungeons variant=name_match_bfd
+# args: {"name":"Blackfathom"}
+# isError: false
+--- content[0] ---
+{
+  "fitNow": [],
+  "level": 20,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "source": "game",
+  "sourceNote": "The level ranges come from the game client (the group finder tool)."
+}

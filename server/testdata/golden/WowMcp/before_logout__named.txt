@@ -1,0 +1,89 @@
+# prompt before_logout variant=named
+# args: {"character":"Piekasz"}
+# description: What to do before logging out: an inn for rested XP, mail and auctions, gear repairs, bag space and warnings from wow_status. Combines the character (resting, bindLocation), rested XP, mail, auctions, durability and bags.
+--- message[0] role=user ---
+The player is about to log out. Make a short checklist before leaving, in order of importance: 1) rested XP: if the pool is not full and the character is not resting (where.resting = false), suggest logging out in an inn or a city; bindLocation is the Hearthstone location, do not assume the inn you are in now is there, and when you do not know where the nearest one is, say so. The rested rules are classic and approximate (rested.source), mention that briefly. 2) mail: what to collect, especially letters that are about to expire. 3) auctions: what is ending, what has sold. 4) gear repairs, if durability is low. 5) bag space and junk to sell. Add the remaining alerts and, if there is a playerNote, remind the player of their goal. The data saves itself on logout, but if the snapshot is older than the session, suggest /mcp reload so the numbers are fresh. Skip points that add nothing.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "alerts": [],
+  "auctionsEndingSoon": null,
+  "bagSpace": {
+    "freeSlots": 27,
+    "totalSlots": 32
+  },
+  "durability": {
+    "lowest": "Curvewood Dagger 85.7%",
+    "overallPercent": 85.7
+  },
+  "myAuctions": {
+    "auctions": [
+      {
+        "bid": "2s 0c",
+        "buyout": "4s 0c",
+        "count": 10,
+        "name": "Copper Ore",
+        "sold": true
+      }
+    ],
+    "checkedAgo": "30 min",
+    "count": 1,
+    "sold": 1
+  },
+  "rested": {
+    "bindLocation": "Auberdine",
+    "bubbles": 3.8,
+    "bubblesPerLevel": 20,
+    "coversRestOfLevel": false,
+    "level": 20,
+    "levelsWorth": 0.19,
+    "percentOfLevel": 18.8,
+    "pool": {
+      "cap": 31950,
+      "full": false,
+      "inn": {
+        "assumption": "from now, with the pool from the dump, without playing (classic rule, approximate)",
+        "fullAfter": "8 d 17 h",
+        "fullAt": "2026-11-24 10:53",
+        "hoursToFull": 210,
+        "xpPer8h": 1065
+      },
+      "missing": 27950,
+      "outsideInn": {
+        "assumption": "from now, with the pool from the dump, without playing (classic rule, approximate)",
+        "fullAfter": "34 d 23 h",
+        "fullAt": "2026-12-20 16:45",
+        "hoursToFull": 839.8,
+        "xpPer8h": 266
+      },
+      "percentOfCap": 12.5
+    },
+    "restedXp": 4000,
+    "resting": true,
+    "restingNote": "According to the dump the character is resting (inn or city), so by the classic rules the pool is growing now.",
+    "rule": "The rested pool grows by 5% of the level's XP per 8 h in an inn or city, up to 150% of the level's XP; outside an inn it grows four times slower. While the pool lasts, monsters give double XP and the pool shrinks by the bonus XP. This is how it works in classic WoW; Forever may count differently.",
+    "source": "classic rule, approximate",
+    "xp": 1200,
+    "xpLeftAfterPool": 12100,
+    "xpMax": 21300,
+    "xpToNextLevel": 20100
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "where": {
+    "bindLocation": "Auberdine",
+    "level": 20,
+    "resting": true,
+    "subZone": "Old Town",
+    "zone": "Stormwind City"
+  }
+}
+```
+

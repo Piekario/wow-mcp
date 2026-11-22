@@ -1,0 +1,22 @@
+# tool wow_session_rating variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "assumption": "Pace is the per-hour-of-play value from a session (dumps without a longer gap, time from /played or from the clock). Gold is the change in balance, not income: expenses reduce it. The median is computed only from sessions with at least 2 dumps and 5 minutes of play.",
+  "comparedSessions": 0,
+  "current": {
+    "goldPerHour": "+12s 50c",
+    "hours": 2,
+    "questsPerHour": 0.5,
+    "start": "2026-11-15 20:43",
+    "xpPerHour": 13800
+  },
+  "note": "Too few sessions to compare: 1 reliable, at least 3 needed (the current one and two earlier ones).",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "totalSessions": 1
+}

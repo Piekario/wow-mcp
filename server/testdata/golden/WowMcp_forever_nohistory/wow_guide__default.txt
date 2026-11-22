@@ -1,0 +1,178 @@
+# tool wow_guide variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "character": {
+    "x": 67.9,
+    "y": 15.4,
+    "zone": "Stormwind City"
+  },
+  "guide": "Mock Guides 17-19 Darkshore",
+  "guideAddon": "Guidelime",
+  "nextGuide": "19-21 Ashenvale",
+  "note": "Steps are the player's own guide in guide order; follow that order rather than a shortest path. Quest locations come from the installed quest database. A step marked passedEarlier is a quest step before the player's furthest progress that is still open (skipped or optional); only the first few are listed, passedEarlierSteps counts all of them, and the steps after them are where the player is now.",
+  "progress": {
+    "doneSteps": 5,
+    "remainingSteps": 7,
+    "totalSteps": 12
+  },
+  "shownSteps": 7,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "steps": [
+    {
+      "line": 11,
+      "optional": true,
+      "quests": [
+        {
+          "action": "complete",
+          "id": 4740,
+          "name": "WANTED: Murkdeep!",
+          "status": "in log, in progress",
+          "where": [
+            {
+              "id": 10323,
+              "kind": "npc",
+              "name": "Murkdeep",
+              "spawnCount": 1,
+              "where": [
+                {
+                  "x": 36.4,
+                  "y": 76.6,
+                  "zone": "Darkshore"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "text": "Do alongside other quests: \"WANTED: Murkdeep!\""
+    },
+    {
+      "line": 12,
+      "text": "Fly to Auberdine"
+    },
+    {
+      "line": 13,
+      "quests": [
+        {
+          "action": "turnin",
+          "id": 947,
+          "name": "Cave Mushrooms",
+          "status": "in log, in progress",
+          "where": [
+            {
+              "friendlyTo": "A",
+              "id": 3583,
+              "kind": "npc",
+              "name": "Barithras Moonshade",
+              "spawnCount": 1,
+              "title": "Mushroom Collector",
+              "where": [
+                {
+                  "x": 37.3,
+                  "y": 43.6,
+                  "zone": "Darkshore"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "text": "TurnIn: \"Cave Mushrooms\""
+    },
+    {
+      "line": 14,
+      "quests": [
+        {
+          "action": "accept",
+          "id": 948,
+          "name": "Onu",
+          "status": "not in log",
+          "where": [
+            {
+              "friendlyTo": "A",
+              "id": 3583,
+              "kind": "npc",
+              "name": "Barithras Moonshade",
+              "spawnCount": 1,
+              "title": "Mushroom Collector",
+              "where": [
+                {
+                  "x": 37.3,
+                  "y": 43.6,
+                  "zone": "Darkshore"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "text": "Accept: \"Onu\""
+    },
+    {
+      "line": 15,
+      "quests": [
+        {
+          "action": "turnin",
+          "id": 4740,
+          "name": "WANTED: Murkdeep!",
+          "status": "in log, in progress",
+          "where": [
+            {
+              "friendlyTo": "A",
+              "id": 3693,
+              "kind": "npc",
+              "name": "Terenthis",
+              "spawnCount": 1,
+              "where": [
+                {
+                  "x": 39.4,
+                  "y": 43.5,
+                  "zone": "Darkshore"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "text": "TurnIn: \"WANTED: Murkdeep!\""
+    },
+    {
+      "line": 16,
+      "quests": [
+        {
+          "action": "accept",
+          "id": 982,
+          "name": "Deep Ocean, Vast Sea",
+          "status": "not in log",
+          "where": [
+            {
+              "friendlyTo": "A",
+              "id": 3644,
+              "kind": "npc",
+              "name": "Cerellean Whiteclaw",
+              "spawnCount": 1,
+              "where": [
+                {
+                  "x": 35.7,
+                  "y": 43.7,
+                  "zone": "Darkshore"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "text": "Accept: \"Deep Ocean, Vast Sea\""
+    },
+    {
+      "line": 18,
+      "text": "Use your Hearthstone."
+    }
+  ]
+}

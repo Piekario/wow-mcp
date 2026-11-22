@@ -1,0 +1,283 @@
+# tool wow_section variant=section_probe
+# args: {"section":"probe"}
+# isError: false
+--- content[0] ---
+{
+  "capturedAgeMinutes": 30,
+  "capturedAt": "2026-11-15 16:26",
+  "probe": {
+    "capturedAt": 1794760000,
+    "events": {
+      "AUCTION_HOUSE_BROWSE_RESULTS_ADDED": true,
+      "AUCTION_HOUSE_BROWSE_RESULTS_UPDATED": true,
+      "AUCTION_HOUSE_SHOW": true,
+      "AUCTION_ITEM_LIST_UPDATE": false,
+      "AUCTION_OWNED_LIST_UPDATE": false,
+      "BANKFRAME_OPENED": true,
+      "CHAT_MSG_COMBAT_XP_GAIN": true,
+      "CHAT_MSG_LOOT": true,
+      "COMMODITY_SEARCH_RESULTS_UPDATED": true,
+      "CRAFT_SHOW": false,
+      "CRAFT_UPDATE": false,
+      "FRIENDLIST_UPDATE": true,
+      "GUILD_ROSTER_UPDATE": true,
+      "INSPECT_READY": true,
+      "ITEM_SEARCH_RESULTS_UPDATED": true,
+      "MAIL_INBOX_UPDATE": true,
+      "MAIL_SHOW": true,
+      "MERCHANT_SHOW": true,
+      "MERCHANT_UPDATE": true,
+      "OWNED_AUCTIONS_UPDATED": true,
+      "PET_STABLE_SHOW": true,
+      "PET_STABLE_UPDATE": true,
+      "PLAYER_DEAD": true,
+      "PLAYER_GUILD_UPDATE": true,
+      "PLAYER_LOGIN": true,
+      "PLAYER_LOGOUT": true,
+      "PLAYER_XP_UPDATE": true,
+      "QUEST_COMPLETE": true,
+      "QUEST_DETAIL": true,
+      "QUEST_TURNED_IN": true,
+      "TAXIMAP_OPENED": true,
+      "TIME_PLAYED_MSG": true,
+      "TRADE_SKILL_LIST_UPDATE": true,
+      "TRADE_SKILL_SHOW": true,
+      "TRADE_SKILL_UPDATE": false,
+      "TRAINER_SHOW": true,
+      "TRAINER_UPDATE": true
+    },
+    "globals": [
+      "CanMerchantRepair",
+      "GetAchievementInfo",
+      "GetBuybackItemInfo",
+      "GetBuybackItemLink",
+      "GetCategoryInfo",
+      "GetCategoryList",
+      "GetCategoryNumAchievements",
+      "GetCritChance",
+      "GetCursorPosition",
+      "GetGuildInfo",
+      "GetGuildRosterInfo",
+      "GetInboxHeaderInfo",
+      "GetInboxItem",
+      "GetInboxItemLink",
+      "GetInboxNumItems",
+      "GetInventoryItemCount",
+      "GetInventoryItemDurability",
+      "GetInventoryItemID",
+      "GetInventoryItemLink",
+      "GetInventoryItemQuality",
+      "GetLFDChoiceOrder",
+      "GetLFGDungeonInfo",
+      "GetMerchantItemLink",
+      "GetMerchantNumItems",
+      "GetNumBuybackItems",
+      "GetNumGuildMembers",
+      "GetNumQuestChoices",
+      "GetNumQuestLogChoices",
+      "GetNumQuestLogRewards",
+      "GetNumQuestRewards",
+      "GetNumSavedInstances",
+      "GetNumTrainerServices",
+      "GetObjectiveText",
+      "GetPVPLifetimeStats",
+      "GetPetActionInfo",
+      "GetPetExperience",
+      "GetQuestID",
+      "GetQuestItemInfo",
+      "GetQuestItemLink",
+      "GetQuestLogChoiceInfo",
+      "GetQuestLogRewardInfo",
+      "GetQuestLogRewardMoney",
+      "GetQuestLogRewardXP",
+      "GetRaidRosterInfo",
+      "GetRangedCritChance",
+      "GetRepairAllCost",
+      "GetRewardMoney",
+      "GetRewardText",
+      "GetRewardXP",
+      "GetSavedInstanceInfo",
+      "GetTaxiMapID",
+      "GetTitleText",
+      "GetTrainerServiceCost",
+      "GetTrainerServiceInfo",
+      "GetTrainerServiceLevelReq",
+      "GetXPExhaustion",
+      "IsInGuild",
+      "RequestTimePlayed",
+      "UnitHonor",
+      "UnitHonorLevel",
+      "UnitHonorMax",
+      "UnitRangedAttackPower",
+      "UnitRangedDamage",
+      "UnitStat",
+      "UnitXP",
+      "UnitXPMax"
+    ],
+    "namespaces": {
+      "C_AuctionHouse": [
+        "GetBrowseResults",
+        "GetCommoditySearchResultInfo",
+        "GetItemSearchResultInfo",
+        "GetNumCommoditySearchResults",
+        "GetNumItemSearchResults",
+        "GetNumOwnedAuctions",
+        "GetOwnedAuctionInfo",
+        "PlaceBid",
+        "PostItem",
+        "QueryOwnedAuctions",
+        "RefreshCommoditySearchResults",
+        "RefreshItemSearchResults",
+        "ReplicateItems",
+        "SendBrowseQuery",
+        "SendSearchQuery"
+      ],
+      "C_ClassTalents": [
+        "GetActiveConfigID"
+      ],
+      "C_Container": [
+        "GetBagName",
+        "GetContainerItemCooldown",
+        "GetContainerItemInfo",
+        "GetContainerItemLink",
+        "GetContainerItemQuestInfo",
+        "GetContainerNumFreeSlots",
+        "GetContainerNumSlots"
+      ],
+      "C_CurrencyInfo": [
+        "GetCurrencyInfo",
+        "GetCurrencyListInfo",
+        "GetCurrencyListLink",
+        "GetCurrencyListSize"
+      ],
+      "C_EquipmentSet": [
+        "GetEquipmentSetIDs",
+        "GetEquipmentSetInfo",
+        "GetItemIDs"
+      ],
+      "C_FriendList": [
+        "GetFriendInfoByIndex",
+        "GetNumFriends",
+        "SendWho",
+        "ShowFriends"
+      ],
+      "C_GuildInfo": [
+        "GuildRoster"
+      ],
+      "C_Item": [
+        "GetItemCount",
+        "GetItemInfo",
+        "GetItemInfoInstant",
+        "GetItemNameByID",
+        "GetItemStats",
+        "IsItemDataCachedByID"
+      ],
+      "C_LFGList": [
+        "GetActivityInfoTable",
+        "GetAvailableActivities",
+        "GetAvailableCategories",
+        "GetLfgCategoryInfo"
+      ],
+      "C_Map": [
+        "GetAreaInfo",
+        "GetBestMapForUnit",
+        "GetFallbackWorldMapID",
+        "GetMapChildrenInfo",
+        "GetMapInfo",
+        "GetMapInfoAtPosition",
+        "GetPlayerMapPosition"
+      ],
+      "C_MerchantFrame": [
+        "GetItemInfo"
+      ],
+      "C_PartyInfo": [
+        "GetLootMethod"
+      ],
+      "C_PetInfo": [
+        "GetPetHappiness"
+      ],
+      "C_QuestLog": [
+        "GetAllCompletedQuestIDs",
+        "GetInfo",
+        "GetNumQuestLogEntries",
+        "GetQuestObjectives",
+        "IsComplete",
+        "IsFailed",
+        "IsQuestFlaggedCompleted"
+      ],
+      "C_Reputation": [
+        "GetFactionDataByIndex",
+        "GetNumFactions"
+      ],
+      "C_SkillInfo": [
+        "GetSkillLineInfoByID"
+      ],
+      "C_Spell": [
+        "GetSpellCooldown",
+        "GetSpellDescription",
+        "GetSpellName",
+        "IsSelfBuff",
+        "RequestLoadSpellData"
+      ],
+      "C_SpellBook": [
+        "GetNumSpellBookSkillLines",
+        "GetSpellBookItemInfo",
+        "GetSpellBookSkillLineInfo",
+        "HasPetSpells"
+      ],
+      "C_StableInfo": [
+        "GetActivePetList",
+        "GetNumStablePets",
+        "GetNumStableSlots",
+        "GetStablePetInfo",
+        "GetStabledPetList"
+      ],
+      "C_TaxiMap": [
+        "GetAllTaxiNodes",
+        "GetTaxiNodesForMap"
+      ],
+      "C_TooltipInfo": [
+        "GetBagItem",
+        "GetInventoryItem",
+        "GetItemByID",
+        "GetMerchantItem",
+        "GetQuestItem",
+        "GetSpellByID"
+      ],
+      "C_TradeSkillUI": [
+        "GetAllRecipeIDs",
+        "GetBaseProfessionInfo",
+        "GetRecipeCooldown",
+        "GetRecipeInfo",
+        "GetRecipeSchematic"
+      ],
+      "C_Traits": [
+        "CommitConfig",
+        "GetConditionInfo",
+        "GetConfigInfo",
+        "GetConfigsByType",
+        "GetDefinitionInfo",
+        "GetEntryInfo",
+        "GetGroupDisplayInfoByTreeID",
+        "GetMaxAvailableTraitCurrency",
+        "GetNodeInfo",
+        "GetTraitCurrencyInfo",
+        "GetTraitDescription",
+        "GetTreeCurrencyInfo",
+        "GetTreeNodes",
+        "PurchaseRank"
+      ],
+      "C_UnitAuras": [
+        "GetAuraDataByIndex"
+      ],
+      "TooltipDataProcessor": [
+        "AddTooltipPostCall"
+      ]
+    }
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

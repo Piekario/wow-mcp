@@ -1,0 +1,63 @@
+# tool wow_dungeons variant=all
+# args: {"all":true}
+# isError: false
+--- content[0] ---
+{
+  "fitNow": [
+    {
+      "id": 802,
+      "levels": "17-25",
+      "name": "Wailing Caverns",
+      "players": 5,
+      "zone": "The Barrens"
+    },
+    {
+      "id": 18,
+      "levels": "17-26",
+      "mapID": 36,
+      "name": "The Deadmines",
+      "players": 5,
+      "zone": "Westfall"
+    }
+  ],
+  "level": 20,
+  "lockouts": [
+    {
+      "difficulty": "Normal",
+      "difficultyID": 1,
+      "instanceID": 48,
+      "maxPlayers": 5,
+      "name": "Blackfathom Deeps",
+      "progress": "3/7",
+      "resetIn": "30 min"
+    }
+  ],
+  "other": [
+    {
+      "id": 1,
+      "levels": "13-18",
+      "mapID": 389,
+      "name": "Ragefire Chasm",
+      "note": "entrance in the Horde capital",
+      "players": 5,
+      "zone": "Orgrimmar"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "soon": [
+    {
+      "id": 801,
+      "levels": "24-32",
+      "levelsToGo": 3,
+      "name": "Blackfathom Deeps",
+      "players": 5,
+      "zone": "Ashenvale"
+    }
+  ],
+  "source": "game",
+  "sourceNote": "The level ranges come from the game client (the group finder tool)."
+}

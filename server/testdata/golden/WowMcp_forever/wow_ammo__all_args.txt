@@ -1,0 +1,40 @@
+# tool wow_ammo variant=all_args
+# args: {"character":"Piekasz","hours":1}
+# isError: false
+--- content[0] ---
+{
+  "ammo": {
+    "equipped": 812,
+    "inBags": 0,
+    "name": "Sharp Arrow",
+    "total": 812
+  },
+  "consumption": {
+    "basis": "play time from /played",
+    "how": "sum of drops in the count between consecutive dumps (purchases and increases do not count); this is an approximation, because the loss can have causes other than shooting",
+    "perHour": 200,
+    "playHours": 2,
+    "snapshots": 3,
+    "used": 400,
+    "window": "current session"
+  },
+  "hoursLeft": 4.1,
+  "plan": {
+    "have": 812,
+    "hours": 1,
+    "needed": 200,
+    "note": "The stock will last for the planned play time.",
+    "toBuy": 0,
+    "vendor": {
+      "note": "offer from the last vendor visit",
+      "npc": "Einris Brightspear",
+      "stack": 200
+    }
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "timeLeft": "4 h 3 min"
+}

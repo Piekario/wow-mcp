@@ -1,0 +1,5 @@
+# tool wow_search variant=unknown_character
+# args: {"character":"Unknown","query":"cloth"}
+# isError: true
+--- content[0] ---
+no character "Unknown" in the snapshot. Available: [Piekasz]

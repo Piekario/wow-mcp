@@ -1,0 +1,5 @@
+# tool wow_goal_set variant=remove_unknown
+# args: {"remove":"g99"}
+# isError: true
+--- content[0] ---
+no goal "g99". Goals: g1, g3, g4, g5, g6, g7, g8

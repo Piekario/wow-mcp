@@ -1,0 +1,16 @@
+# tool wow_ammo variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game.
+--- content[1] ---
+{
+  "note": "The character has no ammo: the ammo slot is empty and there are no arrows or bullets in bags. Ammo applies to characters with a ranged weapon that uses it (e.g. Hunter); if you have some, open your bags and run /mcp reload.",
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  }
+}

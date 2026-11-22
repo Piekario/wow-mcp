@@ -1,0 +1,48 @@
+# prompt session_summary variant=default
+# args: {}
+# description: A summary of the last game session: XP and gold gained, pace per hour, quests turned in, new items and spells, time to level. Combines wow_progress and wow_changes since the start of the session.
+--- message[0] role=user ---
+Summarize the last game session in a few sentences: what was achieved (XP, level-ups, gold, quests turned in, new items and spells), what the pace per hour was and how much is left to the next level. End with one piece of advice for the next session.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "character": {
+    "addonVersion": "0.16.0",
+    "bindLocation": "Auberdine",
+    "class": "Hunter",
+    "classToken": "HUNTER",
+    "clientBuild": "70938",
+    "clientInterface": 16001,
+    "clientVersion": "1.60.1",
+    "faction": "Alliance",
+    "level": 20,
+    "locale": "enUS",
+    "mapID": 1453,
+    "maxQuests": 20,
+    "moneyCopper": 5212,
+    "name": "Piekasz",
+    "questGreenRange": 9,
+    "race": "Night Elf",
+    "raceToken": "NightElf",
+    "restedXp": 4000,
+    "resting": true,
+    "subZone": "Old Town",
+    "x": 67.9,
+    "xp": 1200,
+    "xpMax": 21300,
+    "y": 15.4,
+    "zone": "Stormwind City"
+  },
+  "progressError": "dump history is disabled (the server was started with --history-dir \"\"), and the progress statistics are computed from it",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}
+```
+

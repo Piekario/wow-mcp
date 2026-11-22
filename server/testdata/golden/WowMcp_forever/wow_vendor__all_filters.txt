@@ -1,0 +1,31 @@
+# tool wow_vendor variant=all_filters
+# args: {"affordable":true,"character":"Piekasz","equippable":true,"minQuality":0,"query":"Bow","type":"Weapon","usable":true}
+# isError: false
+--- content[0] ---
+{
+  "buyback": {
+    "assumption": "The buyback list is an assumption, not a certainty: the addon saves it from the vendor window, and the client keeps it only until logout, so after a relog the items on the list may no longer be buyable (the server cannot see this; see capturedAge). priceCopper is the price for the whole batch (count units), as in the vendor offer.",
+    "capturedAge": "30 min",
+    "capturedAgeMinutes": 30,
+    "capturedAt": "2026-11-15 16:26",
+    "count": 0,
+    "items": [],
+    "npc": "Einris Brightspear"
+  },
+  "canRepair": true,
+  "capturedAgeMinutes": 30,
+  "capturedAt": "2026-11-15 16:26",
+  "count": 0,
+  "items": [],
+  "known": [
+    "Einris Brightspear",
+    "Laird"
+  ],
+  "money": "52s 12c",
+  "npc": "Einris Brightspear",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

@@ -1,0 +1,35 @@
+# tool wow_goal_set variant=named_with_note
+# args: {"character":"Piekasz","note":"alt","target":30,"type":"level"}
+# isError: false
+--- content[0] ---
+{
+  "added": {
+    "id": "g8",
+    "type": "level",
+    "character": "Piekasz",
+    "target": 30,
+    "note": "alt"
+  },
+  "file": "<GOALS>",
+  "goal": "Level 30",
+  "progress": {
+    "current": "level 20 (5.6% XP)",
+    "done": false,
+    "eta": {
+      "assumption": "the server does not know the XP table of later levels, so I assume each needs as much XP as the current one; in reality it is often more, so this is a lower bound",
+      "basis": "XP rate: 10800 per hour of play (current session, play time from /played)",
+      "duration": "19 h 36 min",
+      "playHours": 19.6,
+      "sessionLength": "on average 2 h of play per session from history",
+      "sessions": 9.8
+    },
+    "goal": "Level 30",
+    "id": "g8",
+    "missing": "10 levels",
+    "note": "alt",
+    "percent": 65.7,
+    "percentBasis": "computed from level 1 to the target level, with the fraction of XP of the current level",
+    "type": "level",
+    "xpNeededAtLeast": 211800
+  }
+}

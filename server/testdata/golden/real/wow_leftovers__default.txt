@@ -1,0 +1,95 @@
+# tool wow_leftovers variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "advice": "These are only candidates. The server does not know whether the item is needed for a quest not yet taken or later in a chain. Before discarding, check the item tooltip in game; nothing is removed and nothing should be removed automatically.",
+  "completedQuestsKnown": 192,
+  "confidence": "medium",
+  "keep": [
+    {
+      "count": 1,
+      "forQuests": [
+        "Remember That I Love You"
+      ],
+      "name": "Blood-Stained Letter",
+      "reason": "mentioned in a quest from the log",
+      "where": [
+        "bags"
+      ]
+    },
+    {
+      "count": 1,
+      "forQuests": [
+        "The Powers Below"
+      ],
+      "name": "Book: The Powers Below",
+      "reason": "mentioned in a quest from the log",
+      "where": [
+        "bags"
+      ]
+    },
+    {
+      "count": 1,
+      "forQuests": [
+        "A Watchful Eye"
+      ],
+      "name": "Glyph of Azora",
+      "reason": "mentioned in a quest from the log",
+      "where": [
+        "bags"
+      ]
+    },
+    {
+      "count": 1,
+      "forQuests": [
+        "Underground Assault"
+      ],
+      "name": "Gnoam Sprecklesprocket",
+      "reason": "mentioned in a quest from the log",
+      "where": [
+        "bags"
+      ]
+    },
+    {
+      "count": 1,
+      "forQuests": [
+        "Unrequited Love"
+      ],
+      "name": "Hollee's Note",
+      "reason": "mentioned in a quest from the log",
+      "where": [
+        "bags"
+      ]
+    },
+    {
+      "count": 1,
+      "forQuests": [
+        "A Free Lunch"
+      ],
+      "name": "Parker's Lunch",
+      "reason": "mentioned in a quest from the log",
+      "where": [
+        "bags"
+      ]
+    }
+  ],
+  "leftovers": [
+    {
+      "confidence": "medium",
+      "count": 1,
+      "name": "An Unsent Letter",
+      "reason": "no quest from the log mentions this item in its title or objectives",
+      "where": [
+        "bags"
+      ]
+    }
+  ],
+  "limits": "Matching is by item name against quest titles and objectives from the log. completedQuests contains only IDs, without names, so an item cannot be tied to a turned-in quest. The bank shows the state from the last visit.",
+  "questItems": 7,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  }
+}

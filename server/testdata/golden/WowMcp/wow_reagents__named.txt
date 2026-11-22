@@ -1,0 +1,12 @@
+# tool wow_reagents variant=named
+# args: {"character":"Piekasz"}
+# isError: false
+--- content[0] ---
+{
+  "note": "There is no ammo, food, bandages, potions or reagents in the bags (types Projectile, Consumable and Reagent). Open the bags in game and run /mcp reload.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

@@ -1,0 +1,5 @@
+# tool wow_goal_set variant=bad_target
+# args: {"target":2.5,"type":"level"}
+# isError: true
+--- content[0] ---
+target (level) must be an integer from 1 to 1000000000, got 2.5

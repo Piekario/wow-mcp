@@ -1,0 +1,5 @@
+# tool wow_ammo variant=hours_negative
+# args: {"hours":-2}
+# isError: true
+--- content[0] ---
+hours must be positive (default 2), got -2

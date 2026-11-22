@@ -1,0 +1,73 @@
+# tool wow_talents variant=named
+# args: {"character":"Piekasz"}
+# isError: false
+--- content[0] ---
+{
+  "canBuyNow": [],
+  "class": "Hunter",
+  "expectedPointsClassic": 11,
+  "fullTrees": [
+    {
+      "points": 7,
+      "talents": [
+        {
+          "column": 1,
+          "maxRank": 5,
+          "name": "Endurance Training",
+          "prereqMet": true,
+          "rank": 5,
+          "row": 1
+        },
+        {
+          "column": 1,
+          "maxRank": 2,
+          "name": "Focused Fire",
+          "prereqMet": true,
+          "rank": 2,
+          "row": 2
+        },
+        {
+          "column": 1,
+          "maxRank": 2,
+          "name": "Improved Revive Pet",
+          "prereqMet": false,
+          "rank": 0,
+          "row": 3
+        }
+      ],
+      "tree": "Beast Mastery"
+    }
+  ],
+  "howToUse": "Forever trees differ from the classic ones, so base advice on the descriptions (description) from this dump, not on builds from the classic version of the game. row and column are the row and column numbers in the tree (from 1); posY and posX are the raw position from the dump (pixels) when the addon saved it that way.",
+  "learned": [
+    "Endurance Training 5/5 (Beast Mastery)",
+    "Focused Fire 2/2 (Beast Mastery)"
+  ],
+  "level": 20,
+  "mainTree": "Beast Mastery",
+  "missingDescriptions": 3,
+  "note": "There are free points, but the dump does not say which talents are available. Check the tree in game. 3 of 3 talents have no description. Assumption: the game provides descriptions only after the talent window is opened, so open it in game, type /mcp reload and ask again. Do not judge a talent by its name alone without a description.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "source": "classic",
+  "spent": 7,
+  "split": "7/0/0",
+  "trees": [
+    {
+      "name": "Beast Mastery",
+      "points": 7
+    },
+    {
+      "name": "Marksmanship",
+      "points": 0
+    },
+    {
+      "name": "Survival",
+      "points": 0
+    }
+  ],
+  "unspent": 1
+}

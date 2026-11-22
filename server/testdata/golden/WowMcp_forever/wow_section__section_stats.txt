@@ -1,0 +1,33 @@
+# tool wow_section variant=section_stats
+# args: {"section":"stats"}
+# isError: false
+--- content[0] ---
+{
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "stats": {
+    "agility": 32,
+    "armor": 412,
+    "attackPower": 134,
+    "critChance": 6,
+    "dodgeChance": 9.5,
+    "healthMax": 780,
+    "intellect": 34,
+    "manaMax": 1050,
+    "meleeDamageMax": 33.8,
+    "meleeDamageMin": 21.4,
+    "meleeSpeed": 1.8,
+    "parryChance": 5,
+    "rangedAttackPower": 170,
+    "rangedCritChance": 8.3,
+    "rangedDamageMax": 58.9,
+    "rangedDamageMin": 31.2,
+    "rangedSpeed": 2.5,
+    "spirit": 35,
+    "stamina": 33,
+    "strength": 31
+  }
+}

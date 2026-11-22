@@ -1,0 +1,15 @@
+# tool wow_export variant=format_text
+# args: {"format":"text"}
+# isError: false
+--- content[0] ---
+{
+  "format": "text",
+  "howToUse": "Show the player the text field in a code block so they can copy it whole.",
+  "length": 243,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "text": "Piekasz, 20 Night Elf Hunter\n============================\nFaction: Alliance\nProfessions: Skinning 96/150\nPet: Cat (Cat), level 19\nPlayed: 4 d 4 h\n\nGear:\n  - Main Hand: Curvewood Dagger\n  - Off Hand: Webwood Slicer\n  - Ranged: Light Hunting Bow"
+}

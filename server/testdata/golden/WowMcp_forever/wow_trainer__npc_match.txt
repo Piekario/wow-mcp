@@ -1,0 +1,50 @@
+# tool wow_trainer variant=npc_match
+# args: {"npc":"astaia"}
+# isError: false
+--- content[0] ---
+{
+  "capturedAgeMinutes": 40,
+  "capturedAt": "2026-11-15 16:16",
+  "known": [
+    "Einris Brightspear",
+    "Astaia"
+  ],
+  "money": "52s 12c",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "trainer": {
+    "capturedAt": 1794759400,
+    "npc": "Astaia",
+    "services": [
+      {
+        "canAfford": true,
+        "category": "available",
+        "cost": "21s 0c",
+        "costCopper": 2100,
+        "levelRequired": 20,
+        "name": "Disengage",
+        "rank": "Rank 1"
+      },
+      {
+        "canAfford": true,
+        "category": "available",
+        "cost": "16s 0c",
+        "costCopper": 1600,
+        "levelRequired": 18,
+        "name": "Track Undead"
+      },
+      {
+        "canAfford": false,
+        "category": "unavailable",
+        "cost": "18g 0s 0c",
+        "costCopper": 180000,
+        "levelRequired": 40,
+        "name": "Volley",
+        "rank": "Rank 1"
+      }
+    ]
+  }
+}

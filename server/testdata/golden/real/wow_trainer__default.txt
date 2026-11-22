@@ -1,0 +1,30 @@
+# tool wow_trainer variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "capturedAgeMinutes": 215,
+  "capturedAt": "2026-11-15 19:37",
+  "capturedNote": "This is the state from a visit 3 h 35 min ago; it may have changed. For fresh data: open the window in game and type /mcp reload.",
+  "money": "3g 68s 97c",
+  "npcNote": "An offer without an NPC name: the window was opened without talking to a trainer. Assumption (not confirmed in game): it is the pet's Beast Training window, and costCopper is then the pet's training points, not copper, so cost and canAfford may make no sense.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "trainer": {
+    "capturedAt": 1794771422,
+    "services": [
+      {
+        "canAfford": true,
+        "category": "available",
+        "cost": "5c",
+        "costCopper": 5,
+        "levelRequired": 20,
+        "name": "Arcane Resistance",
+        "rank": "Rank 1"
+      }
+    ]
+  }
+}

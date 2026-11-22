@@ -1,0 +1,167 @@
+# prompt dungeon_finder variant=default
+# args: {}
+# description: Which dungeons fit the character's level now, which quests from the log can be done along the way, and how to prepare.
+--- message[0] role=user ---
+Recommend 1-3 dungeons for now from fitNow, starting with those the character has quests for in the log. For each: where the entrance is, which quests to turn in or do along the way (and which are worth picking up, if you know them for certain), what to expect. Mention soon if it is close. Check preparation: gear repairs, bag space, and if there is a group, its composition and roles. If source = classic, point out that the level ranges are approximate.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz-CAMWOW EU4 Realm 7 PvE from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "bagSpace": {
+    "freeSlots": 14,
+    "totalSlots": 60
+  },
+  "class": "Hunter",
+  "dungeons": {
+    "fitNow": [
+      {
+        "id": 1982,
+        "levels": "15-22",
+        "name": "Ruins of Lordaeron",
+        "players": 5
+      },
+      {
+        "id": 796,
+        "levels": "15-24",
+        "name": "Wailing Caverns",
+        "players": 5,
+        "zone": "The Barrens"
+      },
+      {
+        "id": 800,
+        "levels": "20-30",
+        "name": "Shadowfang Keep",
+        "players": 5,
+        "zone": "Silverpine Forest"
+      },
+      {
+        "id": 799,
+        "levels": "17-26",
+        "name": "Deadmines",
+        "players": 5,
+        "quests": [
+          {
+            "difficulty": "green",
+            "id": 168,
+            "level": 18,
+            "objectives": "0/4 Miners' Union Card",
+            "title": "Collecting Memories"
+          },
+          {
+            "complete": true,
+            "difficulty": "yellow",
+            "id": 2040,
+            "level": 20,
+            "title": "Underground Assault"
+          }
+        ],
+        "zone": "Westfall"
+      }
+    ],
+    "level": 22,
+    "soon": [
+      {
+        "id": 1983,
+        "levels": "28-35",
+        "levelsToGo": 5,
+        "name": "City of Dalaran",
+        "players": 5
+      },
+      {
+        "id": 1981,
+        "levels": "26-33",
+        "levelsToGo": 3,
+        "name": "Excavation Site: Wetlands",
+        "players": 5
+      },
+      {
+        "id": 802,
+        "levels": "24-32",
+        "levelsToGo": 1,
+        "name": "Stormwind Stockades",
+        "players": 5
+      },
+      {
+        "id": 801,
+        "levels": "24-32",
+        "levelsToGo": 1,
+        "name": "Blackfathom Deeps",
+        "players": 5,
+        "zone": "Ashenvale"
+      }
+    ],
+    "source": "game",
+    "sourceNote": "The level ranges come from the game client (the group finder tool)."
+  },
+  "durability": {
+    "lowest": "Canvas Shoulderpads 100%",
+    "overallPercent": 100
+  },
+  "equipment": {
+    "back": {
+      "itemLevel": 16,
+      "name": "Raider's Cloak of Agility"
+    },
+    "chest": {
+      "itemLevel": 24,
+      "name": "Tunic of Westfall"
+    },
+    "feet": {
+      "itemLevel": 20,
+      "name": "Agile Boots"
+    },
+    "finger1": {
+      "itemLevel": 23,
+      "name": "Slain Baron's Signet"
+    },
+    "hands": {
+      "itemLevel": 23,
+      "name": "Scouting Gloves of Power"
+    },
+    "legs": {
+      "itemLevel": 24,
+      "name": "Duty Bound Leggings"
+    },
+    "mainHand": {
+      "itemLevel": 23,
+      "name": "Buzz Saw"
+    },
+    "offHand": {
+      "itemLevel": 20,
+      "name": "Meathook Slicer"
+    },
+    "ranged": {
+      "itemLevel": 21,
+      "name": "Light Bow"
+    },
+    "shirt": {
+      "itemLevel": 1,
+      "name": "Rugged Trapper's Shirt"
+    },
+    "shoulder": {
+      "itemLevel": 20,
+      "name": "Canvas Shoulderpads"
+    },
+    "waist": {
+      "itemLevel": 20,
+      "name": "Relic Hunter Belt"
+    },
+    "wrist": {
+      "itemLevel": 20,
+      "name": "Repurposed Hair Band"
+    }
+  },
+  "faction": "Alliance",
+  "level": 22,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "zone": "Westfall"
+}
+```
+

@@ -1,0 +1,122 @@
+# tool wow_goals variant=after_set
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "count": 8,
+  "done": 1,
+  "goals": [
+    {
+      "current": "level 20 (5.6% XP)",
+      "done": false,
+      "eta": {
+        "assumption": "the server does not know the XP table of later levels, so I assume each needs as much XP as the current one; in reality it is often more, so this is a lower bound",
+        "basis": "XP rate: 10800 per hour of play (current session, play time from /played)",
+        "duration": "9 h 45 min",
+        "playHours": 9.8,
+        "sessionLength": "on average 2 h of play per session from history",
+        "sessions": 4.9
+      },
+      "goal": "Level 25",
+      "id": "g1",
+      "missing": "5 levels",
+      "note": "for Deadmines",
+      "percent": 79.4,
+      "percentBasis": "computed from level 1 to the target level, with the fraction of XP of the current level",
+      "type": "level",
+      "xpNeededAtLeast": 105300
+    },
+    {
+      "current": "52s 12c",
+      "done": false,
+      "eta": {
+        "assumption": "this is the change in balance (it includes spending), not income; it will change when you start spending or earning differently",
+        "basis": "gold balance: 12s 50c per hour of play (current session, play time from /played)",
+        "duration": "3 d 3 h",
+        "playHours": 75.8,
+        "sessionLength": "on average 2 h of play per session from history",
+        "sessions": 37.9
+      },
+      "goal": "Gold: 10g 0s 0c",
+      "id": "g2",
+      "missing": "9g 47s 88c",
+      "percent": 5.2,
+      "type": "gold"
+    },
+    {
+      "done": false,
+      "goal": "Revered with Darnassus",
+      "id": "g3",
+      "missing": "the whole goal",
+      "notes": [
+        "faction \"Darnassus\" is not in the dump (reputation section); the character does not know it yet or the name does not match"
+      ],
+      "percent": 0,
+      "type": "reputation"
+    },
+    {
+      "done": false,
+      "goal": "9000 reputation with Stormwind",
+      "id": "g4",
+      "missing": "the whole goal",
+      "notes": [
+        "faction \"Stormwind\" is not in the dump (reputation section); the character does not know it yet or the name does not match"
+      ],
+      "percent": 0,
+      "type": "reputation"
+    },
+    {
+      "done": false,
+      "goal": "Mining 100",
+      "id": "g5",
+      "missing": "the whole profession",
+      "notes": [
+        "the character has no profession or skill \"Mining\" (dump: Skinning)"
+      ],
+      "percent": 0,
+      "type": "profession"
+    },
+    {
+      "current": "known",
+      "done": true,
+      "goal": "Learn: Aimed Shot",
+      "id": "g6",
+      "percent": 100,
+      "type": "spell"
+    },
+    {
+      "current": "0 (bags 0, bank 0, equipped 0)",
+      "done": false,
+      "goal": "1500 x Sharp Arrow",
+      "id": "g7",
+      "missing": 1500,
+      "percent": 0,
+      "type": "item"
+    },
+    {
+      "current": "level 20 (5.6% XP)",
+      "done": false,
+      "eta": {
+        "assumption": "the server does not know the XP table of later levels, so I assume each needs as much XP as the current one; in reality it is often more, so this is a lower bound",
+        "basis": "XP rate: 10800 per hour of play (current session, play time from /played)",
+        "duration": "19 h 36 min",
+        "playHours": 19.6,
+        "sessionLength": "on average 2 h of play per session from history",
+        "sessions": 9.8
+      },
+      "goal": "Level 30",
+      "id": "g8",
+      "missing": "10 levels",
+      "note": "alt",
+      "percent": 65.7,
+      "percentBasis": "computed from level 1 to the target level, with the fraction of XP of the current level",
+      "type": "level",
+      "xpNeededAtLeast": 211800
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

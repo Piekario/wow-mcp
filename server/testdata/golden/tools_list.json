@@ -1,0 +1,1365 @@
+[
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "All characters"
+    },
+    "description": "Overview of all characters on the account: level, class, zone, gold (and the account total), XP percent, rested XP, professions, free bag slots, played time, mail and ready cooldowns. Each character has the age of its data (ageMinutes). Use it for questions about alts or total gold.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "name": "wow_account"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Account-wide crafting"
+    },
+    "description": "What can be crafted on the account and from whose materials: for every saved recipe of every character it computes how many can be made from the crafter's own materials (crafterCanMake) and from the bags and banks of all characters together (accountCanMake), shows who holds each material, what is missing (missing) and where to mail it from (borrowFrom). Filters: character, profession, query (recipe or material), craftable=true (only what can be made from account stock), limit (recipes per profession, default 40). Banks are the state from the last visits. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "only this character's recipes; empty = all characters",
+          "type": "string"
+        },
+        "craftable": {
+          "description": "true = only recipes that can be crafted at least once from account materials",
+          "type": "boolean"
+        },
+        "limit": {
+          "description": "max recipes per character profession; default 40",
+          "type": "integer"
+        },
+        "profession": {
+          "description": "profession name or a fragment of it; empty = all",
+          "type": "string"
+        },
+        "query": {
+          "description": "fragment of a recipe or material name",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_account_crafting"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Mail between characters"
+    },
+    "description": "Suggests what to mail between characters of the account: materials from one character's bags and bank that are ingredients of another's saved recipes (evidence=recipe, strong evidence; recipientHas is how many the recipient already has). When the recipient has no saved recipes of a profession, entries matched only by material kind have evidence=profession, weakEvidence=true and an assumption text: a weak lead to check in game. It skips bound and quest items. Filters: from (sender), to (recipient), query (material name fragment). It sends nothing; it assumes the same realm and faction. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "from": {
+          "description": "only materials of this character (sender); empty = all characters",
+          "type": "string"
+        },
+        "query": {
+          "description": "material name fragment",
+          "type": "string"
+        },
+        "to": {
+          "description": "only for this character (recipient); empty = all characters",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_alt_mail"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Ammo"
+    },
+    "description": "Ammunition (arrows, bullets): how much is in the ammo slot and in the bags, how much is used per game hour (from snapshot history, computed as in wow_progress: the current session, or the whole history when it is too short), how many hours it lasts and how much to buy for hours of play (default 2). Without history it returns just the stock. For a character without ammunition it returns an explanation. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "hours": {
+          "description": "how many hours of play to plan the ammo purchase for; default 2",
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_ammo"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Auction house"
+    },
+    "description": "Auction house prices saved when the player browsed search results (lowest buyout and bid per unit, quantity, number of auctions, when seen, trend over recent visits), the player's own auctions (myAuctions) and an assessment of what is worth listing (sellOnAH): for items in the bags and bank, the price after the 5% fee compared with the vendor price, sorted by highest profit. checkPrices lists valuable items without a saved price. From addon 0.13.0 gear prices also carry the item details the client had cached when the player browsed (type, equipLoc, itemLevel, requiredLevel, quality, stats, DPS), plus canAfford, levelOk and, for equippable items, vsEquipped: the difference in stats, DPS and item level versus the equipped item, the same as wow_vendor. Use it for \"which bow should I buy\": equippable=true with type (e.g. Bow) lists the best upgrade first. Filters: query, mine (only what the character has), type, affordable, usable, equippable. Prices saved by an older addon have no details (detailsNote says to update and browse again). Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "affordable": {
+          "description": "true = only what the character can pay for now (lowest buyout)",
+          "type": "boolean"
+        },
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "equippable": {
+          "description": "true = only equippable things (weapons, armor, jewelry), the best upgrade first",
+          "type": "boolean"
+        },
+        "mine": {
+          "description": "true = only prices of items the character has in bags or bank",
+          "type": "boolean"
+        },
+        "query": {
+          "description": "fragment of an item name",
+          "type": "string"
+        },
+        "type": {
+          "description": "item type or subtype, e.g. Weapon, Armor, Bow (only prices saved with item details, addon 0.13.0)",
+          "type": "string"
+        },
+        "usable": {
+          "description": "true = only items whose required level the character already has",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_auctions"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Bag plan"
+    },
+    "description": "What to do with full bags: for each item (by name) an action keep, bank, sell or auction with a one-sentence reason, plus totals (slots freed, vendor value, auction profit after the fee). It uses quest assessments (wow_leftovers), recipes, auction prices, the pet and gear comparisons. It sells or deletes nothing and never advises destroying items; a quest item without a quest goes to the bank. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_bag_plan"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Bags"
+    },
+    "description": "Bag contents: each bag with its size, number of free slots and items (ID, name, count, quality 0-5, type, level, vendor sell price, stats; equippable items also have the full tooltip text in the tooltip field). Use it for questions about inventory space, what to sell, or whether the character has a given item. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_bags"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Bank"
+    },
+    "description": "Bank contents from the last visit with filters: name fragment, type/subtype, minimum quality, sellable=true (only what a vendor will buy). Every item has vendorValue (sell price x count), and the response has the total totalVendorValue and the free slots. Good for questions like: what can I sell from the bank. The capturedAgeMinutes field says how long ago the bank was open. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "minQuality": {
+          "description": "minimum quality: 0 Poor, 1 Common, 2 Uncommon, 3 Rare, 4 Epic",
+          "type": "integer"
+        },
+        "query": {
+          "description": "fragment of an item name",
+          "type": "string"
+        },
+        "sellable": {
+          "description": "true = only items a vendor will buy (sell price \u003e 0)",
+          "type": "boolean"
+        },
+        "type": {
+          "description": "item type or subtype, e.g. Weapon, Armor, Trade Goods, Cloth",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_bank"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Buffs and debuffs"
+    },
+    "description": "The character's active effects (auras): buffs and debuffs with stack counts, and a list of missing typical class buffs (e.g. Hunter's Aspect, Mage's Arcane Intellect, Paladin's Blessing, no pet while Call Pet is known). The missing-buff warning is a heuristic: it appears only when the character knows the spell and none of the effects of its group is among the auras. The server gives the time left on an aura only when the snapshot contains its end time (addon 0.7.0+ saves expiresAt when the client gives it; otherwise the response says so in timingNote). State at the time of saving. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_buffs"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Changes since the previous snapshot"
+    },
+    "description": "What changed since an earlier snapshot: gold, XP and level-ups, items gained or lost in the bags, equipment changes, new, progressing, ready-to-turn-in and turned-in quests, reputation, new spells, professions and talents. It also shows new deaths, own loot (loot) and XP by source (xpSources: kills, quests, the rest) gained after the older snapshot, including periods of saves the server never read (periodsMerged). The server remembers every snapshot it has read (list in the history field). By default it compares with the previous one; steps or sinceHours reach further back, e.g. sinceHours=4 summarizes the whole session. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "sinceHours": {
+          "description": "instead of steps: compare with the oldest dump from the last N hours, e.g. 3 = the whole session today",
+          "type": "number"
+        },
+        "steps": {
+          "description": "which earlier dump to compare with: 1 = the previous one (default), 2 = the one before that, etc.",
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_changes"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Character"
+    },
+    "description": "Basic character data: level, class, race, faction, gold, experience, zone and coordinates, stats (attributes, armor, attack power, crit chances, weapon damage and speed), active buffs and debuffs, professions together with weapon skills (group = weapon or Weapon Skills), spent talent points, currencies and tokens (currencies), played time from /played (playedTime), the player's note for the assistant (note, set with /mcp note in game) and deaths (deaths: counter and the last death with its zone). The character section also has resting (whether the character is resting in an inn or city) and bindLocation (where the Hearthstone returns). Auras have expiresAt (Unix end time) and duration when the client provides them. The pvp section (from addon 0.7.0, if the client provides it): honorable kills, honor, rank. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_character"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Character comparison"
+    },
+    "description": "Puts two characters of the account side by side: level, class, race, gold, played time, professions, average item level and equipment slot by slot (better = which side has the higher ilvl), with a short summary of differences and the snapshot age of each character (it warns when the snapshots differ a lot in age). a (empty = most recently dumped) and b (empty = the only other character) accept a full name, a name without the realm, or an unambiguous prefix.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "a": {
+          "description": "first character; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "b": {
+          "description": "second character; empty = the only other character on the account (when there is just one)",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_compare_characters"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Item comparison"
+    },
+    "description": "Compares an item from the bags, bank or a vendor with what the character has equipped in the matching slot (rings, trinkets and one-handed weapons in both slots; a two-handed weapon against the sum of mainHand + offHand). Returns the difference in stats, DPS, armor and item level, the required level, the price and the character's weapon skill. Give the item as a name, a name fragment or an ID. Optional weights (e.g. {\"agility\":1,\"attackPower\":0.5}) or a weights.json file next to the goals file add weightedDelta: the sum of stat differences times weights; the server has no built-in class builds. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "item": {
+          "description": "item name (or a fragment of it) or its ID",
+          "type": "string"
+        },
+        "source": {
+          "description": "where to look: bags, bank, vendor; empty = everywhere",
+          "type": "string"
+        },
+        "weights": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "description": "optional stat weights, e.g. {\"agility\":1,\"attackPower\":0.5}; each comparison then gets weightedDelta (sum of difference x weight). Without it the server uses weights.json if the player has one",
+          "type": "object"
+        }
+      },
+      "required": [
+        "item"
+      ],
+      "type": "object"
+    },
+    "name": "wow_compare_item"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Cooldowns"
+    },
+    "description": "Long cooldowns: Hearthstone and other items, spells, profession cooldowns (e.g. transmutes, Mooncloth). For each: the time left relative to now, or ready = true if it has already passed. all = true shows all characters on the account, e.g. to check which alt has a profession cooldown ready. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "all": {
+          "description": "true = cooldowns of all characters on the account",
+          "type": "boolean"
+        },
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_cooldowns"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Diagnose the setup"
+    },
+    "description": "One-call diagnosis when something looks wrong or missing: an ordered list of checks, each with status ok, warn or fail, a detail and a fix (dump file found and which account was chosen, dump age, addon version versus the expected one, section errors from the addon, slow dump, disabled sections, window sections never captured and which window to open, unloaded dump from exiting the game, non-English client notes, history writable), plus a one-line summary and the nextStep to tell the player. Call it first, together with or instead of wow_status, when a tool returns an error, an empty section or stale data. It reads the same file as the other tools and changes nothing in the game.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_doctor"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Dungeons"
+    },
+    "description": "Dungeons matching the character's level (fitNow), those available in a few levels (soon) and, with all=true, the rest including raids. Each dungeon has its level range, entrance zone and the quests from the log that relate to it (with difficulty color and progress). Ranges come from the in-game group finder, and when the client does not provide them, from an approximate table for the classic version (the source field says which). lockouts are saved instance lockouts with the time until reset. name narrows it to one dungeon. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "all": {
+          "description": "true = all dungeons and raids, not just those matching the level",
+          "type": "boolean"
+        },
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "name": {
+          "description": "fragment of a dungeon name: only that dungeon, with its quests",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_dungeons"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Equipment"
+    },
+    "description": "Equipped gear: slot, ID, name, quality, durability, type, item level, stats and the full in-game tooltip text (tooltip field: damage, speed, DPS, bonuses); the ammo slot is the ammunition with its count. The durability field summarizes durability (lowest percentage, items close to breaking) and the repair cost from the last vendor who repairs. The equipmentSets section (from addon 0.7.0) holds the in-game equipment sets: name, isEquipped (the set is currently worn), missing (how many items are missing) and items (slot, ID, name). To compare with an item from the bags, also use wow_bags. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_equipment"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Character export"
+    },
+    "description": "A ready-made character summary to paste elsewhere: format discord (Markdown, default), forum (BBCode with quality colors) or text. Contains level, race, class, faction, talent layout, average item level, professions, pet, played time, equipment and talents (short=true omits them). Gold only with gold=true. Labels are in English. Show the text field in a code block. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "english": {
+          "description": "deprecated and ignored: labels are always in English",
+          "type": "boolean"
+        },
+        "format": {
+          "description": "discord (default, Markdown), forum (BBCode) or text",
+          "type": "string"
+        },
+        "gold": {
+          "description": "true = include gold (omitted by default)",
+          "type": "boolean"
+        },
+        "short": {
+          "description": "true = without the gear and talent lists, only the header, professions and talent split",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_export"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Find item"
+    },
+    "description": "Searches for an item across all characters on the account at once: in the bags, equipped gear, bank and mail. Returns where it is and how many, with a total for each item. Give the item as a name, a name fragment or an ID; character narrows it to one character.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "only this character; empty = all characters on the account",
+          "type": "string"
+        },
+        "item": {
+          "description": "item name (or a fragment of it) or its ID",
+          "type": "string"
+        }
+      },
+      "required": [
+        "item"
+      ],
+      "type": "object"
+    },
+    "name": "wow_find_item"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Flight points"
+    },
+    "description": "Matches known flight points (the flightPaths section from the flight master window) with the zones of quests in the log: in which zones with quests the character knows a flight point and in which it does not. Points and quests are matched by the zone's map ID when both have one; otherwise the zone comes from the point's zone field or, for older dumps, is guessed from the point name (an assumption described in the assumption field); the unreachable state has no confirmed meaning. Requires opening the flight map earlier and /mcp reload. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_flights"
+  },
+  {
+    "annotations": {
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "readOnlyHint": false,
+      "title": "Add or remove a goal"
+    },
+    "description": "Adds a player goal (type: level, gold, reputation, profession, spell, item; with target, name, faction, standing, item, note, character) or removes one (remove = ID from wow_goals). This is the ONLY tool that writes anything, and it writes only the server's goals file (goals.json next to the snapshot history); it changes nothing in the game or in the game directory. Examples: type=level target=25; type=gold target=10 (gold); type=reputation faction=Darnassus standing=Revered; type=profession name=Mining target=150; type=spell name=Aimed Shot; type=item item=Linen Cloth target=40.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character the goal applies to; empty = most recently dumped character",
+          "type": "string"
+        },
+        "faction": {
+          "description": "faction name (reputation)",
+          "type": "string"
+        },
+        "item": {
+          "description": "item name (item)",
+          "type": "string"
+        },
+        "name": {
+          "description": "profession name (profession) or spell name (spell)",
+          "type": "string"
+        },
+        "note": {
+          "description": "optional note for the goal",
+          "type": "string"
+        },
+        "remove": {
+          "description": "ID of the goal to remove (e.g. g2); the other fields are then not needed",
+          "type": "string"
+        },
+        "standing": {
+          "description": "target reputation standing instead of target, e.g. Honored (reputation)",
+          "type": "string"
+        },
+        "target": {
+          "description": "numeric target: level (level), amount in gold (gold), reputation value (reputation without standing), rank (profession), item count (item); not needed for spell",
+          "type": "number"
+        },
+        "type": {
+          "description": "goal type: level, gold, reputation, profession, spell, item",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_goal_set"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Goals"
+    },
+    "description": "The player's goals saved with wow_goal_set (level, gold, reputation, profession, trainer spell, items): for each the current state, how much is missing, the percentage and, when history allows, the ETA in game hours and sessions (pace from wow_progress). It shows the goals of the chosen character; goals of others are only counted. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_goals"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Gold history"
+    },
+    "description": "Character gold over time from the snapshot history: day by day (first, last, change), the three largest inflows and three largest expenses between consecutive snapshots, and the change over the whole window. days (default 14) is the window counted from the newest snapshot. This is a balance, not a breakdown by source. Requires snapshot history (the --history-dir \"\" flag disables it and gives an error). Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "days": {
+          "description": "how many recent days of history to show; default 14",
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_gold_history"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Group and raid"
+    },
+    "description": "The composition of the group or raid at the time of the snapshot: name, level, class, race, role (tank/healer/dps), leader, subgroup and zone in a raid, online, health and max mana/energy, range; a summary of classes, roles and levels with warnings (no tank or healer, someone offline or far away, a large level difference). For players examined with the Inspect window: average item level and guild; the player parameter returns their whole equipment. myAverageItemLevel is the character's average item level. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "player": {
+          "description": "player name: full gear from their latest Inspect",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_group"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Leveling guide steps"
+    },
+    "description": "The next steps of the leveling guide the player follows in the Guidelime addon (for example a TUGs guide): the guide name, how many steps are done, and up to 15 open steps in guide order as readable text, each quest with its name, state and the place to go (from the installed quest database). USE THIS for \"what should I do next\" when the player uses a guide: follow the guide's order instead of inventing a route. Steps for other races or classes are left out; quest steps count as done from the quest log, other steps when the player ticked them or moved past them. Requires addon 0.14.0, Guidelime with a guide selected and /mcp reload. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_guide"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Session journal"
+    },
+    "description": "A journal from the snapshot history: the last N sessions (the sessions argument, default 5, the same splitting rule as wow_progress), each with its start and end, duration, levels and XP gained, gold change, quests turned in and accepted, notable new items (from Uncommon quality), own loot from the loot section (counts and the more notable ones, by quality), XP by source from the xpGains section (xpSources: kills, quests, the rest), deaths and zones. records are the longest session, the best by gold and the fastest level (from /played). markdown=true adds ready Markdown text in the text field; the server itself does not write .md files. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "markdown": {
+          "description": "true = additionally a ready Markdown text in the text field (the server does not write .md files itself)",
+          "type": "boolean"
+        },
+        "sessions": {
+          "description": "how many recent sessions to describe; default 5",
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_journal"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Leftover quest items"
+    },
+    "description": "Quest items (type Quest) in the bags and bank whose quest is no longer in the log: keep are those needed by quests in the log or that start a quest, leftovers are candidates for leftovers with a confidence rating (confidence). The assessment is by name and is never certain; the tool deletes nothing and does not advise deleting automatically. The bank is the state from the last visit. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_leftovers"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Legacy perks"
+    },
+    "description": "The Forever Legacy system: unspent and spent Legacy Points of the character (points: unspent, spent, characterCap, and the account currency with accountTotalEarned when the client links it), the three perk trees (Professions, Adventure, Resourcefulness) with every perk, its rank, the in-game description, what it requires (an arrow from another perk, requiresSpent points in the tree) and status (available, locked, maxed), canLearnNow with the perks a point can go to right now, and the Legacy challenges (achievements in the Legacy category: completed and open, with what they ask and reward). Advise only from the descriptions in this snapshot. The tool never spends points: the player learns perks and clicks Apply Changes in the Legacy window. The tree filter narrows it to one tab; discovery=true adds what the addon found about the client's Legacy API (shown anyway when no perk tree was found). Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "discovery": {
+          "description": "true = also return what the addon found about the client's Legacy API (names of namespaces, functions, frames and their readings); shown anyway when no perk tree was found",
+          "type": "boolean"
+        },
+        "tree": {
+          "description": "Legacy tree (tab) name, e.g. Adventure; empty = all",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_legacy"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Mail"
+    },
+    "description": "The mailbox from the last time it was opened: sender, subject, gold, cash on delivery (COD), attachments, whether the letter was returned and when it expires (expiringSoon = less than 3 days). The capturedAgeMinutes field says how long ago the mailbox was open. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_mail"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Craft or buy"
+    },
+    "description": "Compares the cost of crafting a recipe with the price of the finished item on the auction house: ingredients at saved auction house or vendor prices (whichever is cheaper), the finished item at the auction price; the verdict is make, buy or unknown, with the margin and the margin after the 5% fee. It assumes one craft yields one item and never treats a missing price as zero (then unknown and missingPrices; prices older than 48 h in stalePrices). Filters: profession, query, sort (margin or name), limit (default 50). Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "limit": {
+          "description": "max recipes in the response; default 50",
+          "type": "integer"
+        },
+        "profession": {
+          "description": "profession name or a fragment of it; empty = all saved",
+          "type": "string"
+        },
+        "query": {
+          "description": "fragment of a recipe or item name",
+          "type": "string"
+        },
+        "sort": {
+          "description": "margin (default, biggest saving first) or name",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_make_or_buy"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Pet"
+    },
+    "description": "The active Hunter pet: name, level, family, happiness (1-3), loyalty, training points (trainingPointsFree = free), experience, food types, the pet action bar (autoCast = whether the ability is cast automatically) and learned abilities with ranks. exists=false means no pet is summoned. Extras derived from snapshot data: rankReview (ranks the Hunter knows from the Beast Training window that the pet lacks; ranks from trainer offers the Hunter does not know yet), trainingPlan (which lessons fit into the free training points) and stable (stabled pets compared with the active one by level and family; data from the Stable Master window). Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_pet"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Progress and pace"
+    },
+    "description": "Progress statistics from the snapshot history: XP and gold per hour in the current session and over the whole history (or the last sinceHours), how many quests were turned in, level-ups, how much XP is missing to the next level and the estimated time to level at the current pace. When the addon records played time (/played), pace is computed from in-game time rather than wall-clock time. If the death counter increased, the session shows the number of deaths. When snapshots have an xpGains section (addon 0.7.0), session and overall have xpSources: XP from kills, quests and the rest. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "breakMinutes": {
+          "description": "gap after which a new session starts; default 30 min offline (from /played) or 120 min between dumps",
+          "type": "integer"
+        },
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "sinceHours": {
+          "description": "period for the overall section: the last N hours; empty = whole history",
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_progress"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Quest locations"
+    },
+    "description": "Where a quest is picked up, done and turned in: the NPC or object, the zone and map coordinates, the objective targets and the next quest of the chain, with nextStep as a one-line answer for the quest's current state (ready to turn in, in progress, not in log). USE THIS before telling the player where to go for a quest: World of Warcraft: Forever differs from Classic and the quest text is often out of date, so never answer quest locations from memory. The data is read by the addon from the quest database the player has installed in the game (QuestieDB, what Questie shows on the map) and covers the quests in the log, the quests of the next guide steps and the answers to /mcp quest \u003cname or ID\u003e typed in game. Without quest it lists the quest log; quest is an ID or a fragment of a quest or NPC name. When the quest is not in the dump, the answer says what the player should type in game. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        },
+        "quest": {
+          "description": "quest ID, or a fragment of a quest or NPC name; empty = every quest in the log",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_quest_lookup"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Quest plan"
+    },
+    "description": "Quest helper: the log grouped by zone (zones with the most things to do first), each quest with its difficulty color as in the game (red, orange, yellow, green, gray), objective progress in percent and the list of objectives still to do. It warns about quests that are too hard, gray (almost no XP), failed, group quests, and about a full quest log. The zone filter narrows it to one zone. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "zone": {
+          "description": "only quests from this zone (name fragment)",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_quest_plan"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Quest rewards"
+    },
+    "description": "Assessment of the quest reward choices against the equipped gear: for the quest being turned in or currently offered by an NPC (questTurnIn, questOffer; at the top when the window is fresh) and for quests in the log. Each reward has the slot, the stat differences, a score (from stat weights: the weights argument or weights.json; without them item level + DPS) and the vendor value; best points to a choice with a justification (an upgrade, and when there is none, the highest vendor price). It also lists fixed rewards, gold and XP. WARNING: the addon reads rewards by quest ID; when several quests in the log have an identical reward list they are marked suspect and have no recommendation (the client may have returned another quest's rewards). The quest filter: name or ID. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "quest": {
+          "description": "quest name (or fragment) or ID; empty = all quests with rewards",
+          "type": "string"
+        },
+        "weights": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "description": "optional stat weights, e.g. {\"agility\":1,\"attackPower\":0.5}; without them the server uses weights.json (if present), and without that item level and DPS",
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_quest_rewards"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Quest zone order"
+    },
+    "description": "Suggests an order for visiting zones with quests from the log: first the character's current zone, then zones by the number of quests ready to turn in and of all quests, and last the red (too hard) quests. Each zone comes with its quests (status, difficulty) and known flight points. The server has no world map or distances between zones, so this is NOT the shortest route (see assumption). Flight points require opening the flight map earlier and /mcp reload. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_quest_route"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Quest log"
+    },
+    "description": "Quest log: title, ID, level, zone, whether completed, and the progress of every objective. Use it for questions about quests, missing prerequisite quests, or what to turn in. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_quests"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Supplies and consumption"
+    },
+    "description": "The character's consumables: ammunition, food and water, bandages, potions, other consumables and reagents. For each: how much there is now (bags and equipped, inBank separately), how much is used per game hour (from snapshot history, the same window as wow_progress and wow_ammo) and how many hours it lasts (hoursLeft); lowStock is items that last under an hour. petFood is food in the bags and the pet's diet. Without history it returns just the stock. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_reagents"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Recipes"
+    },
+    "description": "Recipes known to the character from the last opened window of each profession (including the Hunter's Beast Training with its training point cost): difficulty color (whether it still gives skill points), how many can be made from the materials in the bags (canCraft), materials with counts in the bags and in the bank, missing materials and recipe cooldowns. The skillUpCraftableNow field says what to craft now to raise the skill. Filters: profession, query, skillUp, craftable. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "craftable": {
+          "description": "true = only what can be crafted right now from materials in bags",
+          "type": "boolean"
+        },
+        "profession": {
+          "description": "profession name or a fragment of it, e.g. Leatherworking, Beast Training; empty = all saved",
+          "type": "string"
+        },
+        "query": {
+          "description": "fragment of a recipe name",
+          "type": "string"
+        },
+        "skillUp": {
+          "description": "true = only recipes that still give skill points (orange, yellow, green)",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_recipes"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Reputation"
+    },
+    "description": "Faction reputation with filtering by name and standing. Each faction has progress within the current standing (progress, percent) and how much is left to the next one (toNextStanding). Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "query": {
+          "description": "faction name fragment, e.g. Darnassus",
+          "type": "string"
+        },
+        "standing": {
+          "description": "only factions with this standing, e.g. Friendly, Honored, Neutral",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_reputation"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Rested XP"
+    },
+    "description": "Rested XP: how much is in the pool, what percent of a level, how many levels and bubbles of the bar that is, how much is missing to level up, whether the pool covers the rest of the level, whether the character is resting now (resting) and when the pool will be full if the character logs out in an inn (and when outside one). The accumulation rules (5% of a level per 8 h in an inn, cap 150%) come from classic WoW and are approximate (source: classic rule, approximate): Forever may count differently. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_rested"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Snapshot search"
+    },
+    "description": "Searches for text (case-insensitive) across one character's whole snapshot at once: quests (title, objectives, zone), items in the bags, bank and equipped (name, type, description), spells, trainer and vendor offers (including remembered ones), quest rewards, quests from NPC windows, stable, loot, recipes and their materials, mail, reputation, prices and own auctions, professions, currencies, macros and flight points. Returns hits grouped by section, with the location (path) and a short summary; up to 20 hits per section, truncated says how many were cut. To find an item across all characters use wow_find_item. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "query": {
+          "description": "text to search for (case-insensitive), e.g. an item, quest, skill or zone name or a fragment of a description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "type": "object"
+    },
+    "name": "wow_search"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Snapshot section"
+    },
+    "description": "Any snapshot section by name, without filters. Reputation, bank, vendor, recipes, mail, cooldowns, talents, auctions, group (and inspect) and dungeons have more convenient tools: wow_reputation, wow_bank, wow_vendor, wow_recipes, wow_mail, wow_cooldowns, wow_talents, wow_auctions, wow_group, wow_dungeons. Big sections (probe is about 60 kB) can be read in pieces: path (a dot path into the section, e.g. namespaces.C_AuctionHouse or events) and limit (first N items or keys). Other sections: actionBars (what sits on which action bar button), macros, completedQuests (IDs of all completed quests; for checking prerequisite quests), flightPaths (flight points from the last opened flight map), probe (list of client API functions after /mcp probe), loot (own loot since the previous save, plus periods: earlier saves carried by the addon; summarized by wow_changes and wow_journal), xpGains (own XP by source: kills, quests, the rest, with periods like loot; also in wow_changes and wow_journal as xpSources), buyback (the vendor buyback list; see wow_vendor), friends and guild (see wow_social), equipmentSets (see wow_equipment), pvp (see wow_character), vendors and trainers (up to 10 remembered NPCs: name -\u003e offer; more convenient via npc in wow_vendor and wow_trainer), legacy (Forever Legacy perk trees, challenges and API discovery; see wow_legacy), stable (stabled pets; see wow_pet), questOffer and questTurnIn (NPC quest windows; see wow_quest_rewards). The list of sections available for a character is given by wow_status. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        },
+        "limit": {
+          "description": "optional: keep only the first N items of the list, or the first N keys (alphabetical) of the object, at the end of the path; lists directly inside that object are cut to N items too; the answer says how many there are in total (limited)",
+          "type": "integer"
+        },
+        "path": {
+          "description": "optional dot path into the section to read only a part of a big section, e.g. namespaces.C_AuctionHouse (probe) or events; list items by 0-based index",
+          "type": "string"
+        },
+        "section": {
+          "description": "snapshot section name, e.g. actionBars, reputation, vendor, bank, flightPaths, macros, completedQuests, stats, auras, probe",
+          "type": "string"
+        }
+      },
+      "required": [
+        "section"
+      ],
+      "type": "object"
+    },
+    "name": "wow_section"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Session rating"
+    },
+    "description": "Compares the pace of the last game session with the median of earlier sessions: XP, gold balance change and quests turned in per hour, with a ratio (faster, similar, slower) and a short verdict. Sessions and played time are computed the same way as in wow_progress and wow_journal. It needs at least three sessions with at least 2 snapshots and 5 minutes of play each; otherwise it says what is missing. Gold is a balance, not income. Requires snapshot history. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_session_rating"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Shopping list"
+    },
+    "description": "What to buy before leaving town: spells at the trainer (available from all remembered trainers, the newest offer of each, with the total cost and flags for an old or outdated offer), repairs, ammo (how much to buy for hours of play), pet food, running-low consumables, with information on WHO sells them and for how much (from remembered vendors), plus a budget in priority order (trainer, repairs, ammo, food) and whether the gold covers everything. returnToTown says when to return to town: in how many levels there are new spells at the trainer, in how many game hours the bags fill up, how many hours the ammo lasts and the durability state (from snapshot history; when there is too little of it, the field says: no data). It buys nothing. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "hours": {
+          "description": "for how many hours of play to compute the ammo and materials purchase; default 2",
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_shopping_list"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Friends and guild"
+    },
+    "description": "The character's friends and guild lists from the most recently opened windows (from addon 0.7.0): who is online, level, class, zone, guild rank, counts and the age of the save (capturedAge). By default it shows only online guild members; includeOffline=true shows everyone. The addon reads only client memory and NEVER asks the game server for the friends or guild list itself, so when a list is missing, the response says which window to open in game and that /mcp reload is needed afterwards. The list is the state at the time of saving, not live. PvP stats are in wow_character (pvp). Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "includeOffline": {
+          "description": "true = also show guild members who were offline (default online only; the rest as a count)",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_social"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Spells"
+    },
+    "description": "Known spells from the spellbook: name, rank, tab, whether passive. Use it to find out what the character already knows before advising on a rotation or trainer purchases. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_spells"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Snapshot status"
+    },
+    "description": "Connection status with the game: server version and expected addon version, where the snapshot file is read from, which characters it contains and how old the data is. For each character: addon version, snapshot collection time (dumpTimeMs), disabled sections, the player's note (note) and alerts, i.e. what needs attention (mail and auctions about to expire, broken gear, full bags, a slow dump, addon errors). Start here when another tool returns an error or the data looks stale; for a full diagnosis with fixes call wow_doctor.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "name": "wow_status"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Talents"
+    },
+    "description": "Character talents: the point layout (split, e.g. 11/0/0), free points, learned talents, those not maxed out, and the full trees (fullTrees) with every talent, its rank, position (row/column), the in-game description and a canBuyNow field; canBuyNow at the top collects the talents in which a point can be spent now. Forever trees differ from classic ones, so advise based on the descriptions in this snapshot, not on classic builds. The tree filter narrows it to one tab. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "tree": {
+          "description": "tree (tab) name, e.g. Beast Mastery; empty = all",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_talents"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Character timeline"
+    },
+    "description": "The character timeline from snapshot history: a chronological list of events (level-ups, new spells, equipment changes, quests turned in, deaths, new professions and the 75/150/225/300 thresholds). An event gets the time of the first snapshot in which it is visible (the game saves data only at /reload and logout), so the real time may be earlier; deaths have an exact time. Arguments: limit (default 50, the newest are kept), kind (level_up, new_spell, equipment, quest_turned_in, death, profession) and days (the last N days from the latest snapshot). Requires snapshot history. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        },
+        "days": {
+          "description": "only events from the last N days (counted from the time of the last dump)",
+          "type": "number"
+        },
+        "kind": {
+          "description": "only one kind: level_up, new_spell, equipment, quest_turned_in, death, profession",
+          "type": "string"
+        },
+        "limit": {
+          "description": "how many of the newest events to show; default 50, max 500",
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_timeline"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Trainer offer"
+    },
+    "description": "The trainer offer from the last visit (or from the one given by npc): NPC name and the list of services with rank, category (available = can be bought, unavailable = not yet, used = already known), price and required level. Every entry has a canAfford field computed from current gold. The addon remembers up to 10 recent trainers (class, profession, weapons): known holds their names. Empty if the character never opened a trainer window. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "npc": {
+          "description": "name (or fragment) of one of the remembered trainers; empty = the most recently visited. The list of remembered ones is in the known field",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_trainer"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Vendor"
+    },
+    "description": "The offer of the most recently opened vendor (or the one given by npc; known holds the names of up to 10 remembered) with filters: name fragment, type/subtype, minimum quality, affordable (can afford), usable (required level reached), equippable (only equippable items). Every entry has the price, canAfford, levelOk, and equippable items also have vsEquipped: the difference in stats, DPS and item level versus the equipped item. The capturedAgeMinutes field says how long ago the window was open. The buyback field (from addon 0.7.0) is the buyback list from the vendor window: what can still be bought back, for how much and how long ago it was saved. This is an assumption: the client loses the buyback list after logout, so do not treat an old list as certain. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "affordable": {
+          "description": "true = only what the character can afford right now",
+          "type": "boolean"
+        },
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "equippable": {
+          "description": "true = only equippable things (weapons, armor, jewelry)",
+          "type": "boolean"
+        },
+        "minQuality": {
+          "description": "minimum quality: 0 Poor, 1 Common, 2 Uncommon, 3 Rare, 4 Epic",
+          "type": "integer"
+        },
+        "npc": {
+          "description": "name (or fragment) of one of the remembered vendors; empty = the most recently visited. The list of remembered ones is in the known field",
+          "type": "string"
+        },
+        "query": {
+          "description": "fragment of an item name (also narrows the buyback list)",
+          "type": "string"
+        },
+        "type": {
+          "description": "item type or subtype, e.g. Weapon, Armor, Projectile, Bow",
+          "type": "string"
+        },
+        "usable": {
+          "description": "true = only items whose required level the character already has",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_vendor"
+  }
+]

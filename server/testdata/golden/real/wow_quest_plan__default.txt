@@ -1,0 +1,349 @@
+# tool wow_quest_plan variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "byDifficulty": {
+    "gray": 6,
+    "green": 6,
+    "orange": 1,
+    "yellow": 9
+  },
+  "count": 22,
+  "grayBelow": "quests of level 16 and below are gray (green range: 5, from the game)",
+  "log": "22/40",
+  "playerLevel": 22,
+  "readyToTurnIn": [
+    "A Free Lunch [15] (Redridge Mountains)",
+    "A Watchful Eye [21] (Redridge Mountains)",
+    "The Unsent Letter [22] (Stormwind City)",
+    "Underground Assault [20] (The Deadmines)",
+    "The Powers Below [18] (Darkshore)",
+    "Remember That I Love You [22] (Duskwood)",
+    "Unrequited Love [21] (Wetlands)"
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "warnings": [
+    "Gray, almost no XP: Dry Times [15] (Redridge Mountains); Humble Beginnings [15] (Stormwind City); The People's Militia [12] (Westfall); Never Saddle on Quality [10] (Dun Morogh); Bingles' Missing Supplies [15] (Loch Modan). Turn in on the way or abandon if they take up space."
+  ],
+  "zones": [
+    {
+      "inProgress": 7,
+      "quests": [
+        {
+          "difficulty": "gray",
+          "difficultyInfo": "gray: almost no XP, worth turning in on the way or abandoning",
+          "id": 129,
+          "level": 15,
+          "progressPercent": 100,
+          "status": "ready to turn in",
+          "title": "A Free Lunch"
+        },
+        {
+          "difficulty": "gray",
+          "difficultyInfo": "gray: almost no XP, worth turning in on the way or abandoning",
+          "id": 116,
+          "level": 15,
+          "progressPercent": 0,
+          "status": "in progress",
+          "title": "Dry Times",
+          "todo": [
+            "0/1 Keg of Thunderbrew",
+            "0/1 Cask of Merlot",
+            "0/1 Bottle of Moonshine",
+            "0/1 Skin of Sweet Rum"
+          ]
+        },
+        {
+          "difficulty": "green",
+          "difficultyInfo": "easy: less XP",
+          "id": 246,
+          "level": 17,
+          "progressPercent": 0,
+          "status": "in progress",
+          "title": "Assessing the Threat",
+          "todo": [
+            "0/10 Redridge Mongrel slain",
+            "0/6 Redridge Poacher slain"
+          ]
+        },
+        {
+          "difficulty": "green",
+          "difficultyInfo": "easy: less XP",
+          "id": 98407,
+          "level": 17,
+          "progressPercent": 0,
+          "status": "in progress",
+          "title": "Show of Force",
+          "todo": [
+            "0/5 Spiked Collar"
+          ]
+        },
+        {
+          "difficulty": "yellow",
+          "difficultyInfo": "just right",
+          "id": 150,
+          "level": 20,
+          "progressPercent": 0,
+          "status": "in progress",
+          "title": "Murloc Poachers",
+          "todo": [
+            "0/8 Murloc Fin"
+          ]
+        },
+        {
+          "difficulty": "yellow",
+          "difficultyInfo": "just right",
+          "id": 94,
+          "level": 21,
+          "progressPercent": 100,
+          "status": "ready to turn in",
+          "title": "A Watchful Eye"
+        },
+        {
+          "difficulty": "yellow",
+          "difficultyInfo": "just right",
+          "id": 127,
+          "level": 21,
+          "progressPercent": 0,
+          "status": "in progress",
+          "title": "Selling Fish",
+          "todo": [
+            "0/10 Spotted Sunfish"
+          ]
+        },
+        {
+          "difficulty": "yellow",
+          "difficultyInfo": "just right",
+          "id": 91,
+          "level": 23,
+          "progressPercent": 0,
+          "status": "in progress",
+          "title": "Solomon's Law",
+          "todo": [
+            "0/10 Shadowhide Pendant"
+          ]
+        },
+        {
+          "difficulty": "orange",
+          "difficultyInfo": "hard: 3-4 levels higher, be careful",
+          "id": 180,
+          "level": 26,
+          "progressPercent": 0,
+          "status": "in progress",
+          "title": "WANTED: Lieutenant Fangore",
+          "todo": [
+            "0/1 Fangore's Paw"
+          ]
+        }
+      ],
+      "readyToTurnIn": 2,
+      "zone": "Redridge Mountains"
+    },
+    {
+      "inProgress": 3,
+      "quests": [
+        {
+          "difficulty": "green",
+          "difficultyInfo": "easy: less XP",
+          "id": 1138,
+          "level": 17,
+          "progressPercent": 0,
+          "status": "in progress",
+          "title": "Fruit of the Sea",
+          "todo": [
+            "0/6 Fine Crab Chunks"
+          ]
+        },
+        {
+          "difficulty": "green",
+          "difficultyInfo": "easy: less XP",
+          "id": 968,
+          "level": 18,
+          "progressPercent": 100,
+          "status": "ready to turn in",
+          "title": "The Powers Below"
+        },
+        {
+          "difficulty": "green",
+          "difficultyInfo": "easy: less XP",
+          "id": 966,
+          "level": 18,
+          "progressPercent": 0,
+          "status": "in progress",
+          "title": "The Tower of Althalaxx",
+          "todo": [
+            "0/4 Worn Parchment"
+          ]
+        },
+        {
+          "difficulty": "yellow",
+          "difficultyInfo": "just right",
+          "id": 986,
+          "level": 20,
+          "progressPercent": 0,
+          "status": "in progress",
+          "title": "A Lost Master",
+          "todo": [
+            "0/5 Fine Moonstalker Pelt"
+          ]
+        }
+      ],
+      "readyToTurnIn": 1,
+      "zone": "Darkshore"
+    },
+    {
+      "inProgress": 1,
+      "quests": [
+        {
+          "difficulty": "gray",
+          "difficultyInfo": "gray: almost no XP, worth turning in on the way or abandoning",
+          "id": 399,
+          "level": 15,
+          "progressPercent": 0,
+          "status": "in progress",
+          "title": "Humble Beginnings",
+          "todo": [
+            "0/1 A Simple Compass"
+          ]
+        },
+        {
+          "difficulty": "yellow",
+          "difficultyInfo": "just right",
+          "id": 373,
+          "level": 22,
+          "progressPercent": 100,
+          "status": "ready to turn in",
+          "title": "The Unsent Letter"
+        }
+      ],
+      "readyToTurnIn": 1,
+      "zone": "Stormwind City"
+    },
+    {
+      "inProgress": 1,
+      "quests": [
+        {
+          "difficulty": "green",
+          "difficultyInfo": "easy: less XP",
+          "id": 168,
+          "level": 18,
+          "progressPercent": 0,
+          "status": "in progress",
+          "title": "Collecting Memories",
+          "todo": [
+            "0/4 Miners' Union Card"
+          ]
+        },
+        {
+          "difficulty": "yellow",
+          "difficultyInfo": "just right",
+          "id": 2040,
+          "level": 20,
+          "progressPercent": 100,
+          "status": "ready to turn in",
+          "title": "Underground Assault"
+        }
+      ],
+      "readyToTurnIn": 1,
+      "zone": "The Deadmines"
+    },
+    {
+      "inProgress": 1,
+      "quests": [
+        {
+          "difficulty": "gray",
+          "difficultyInfo": "gray: almost no XP, worth turning in on the way or abandoning",
+          "id": 95212,
+          "level": 10,
+          "progressPercent": 0,
+          "status": "in progress",
+          "title": "Never Saddle on Quality",
+          "todo": [
+            "0/6 Pristine Leopard Pelt"
+          ]
+        }
+      ],
+      "readyToTurnIn": 0,
+      "zone": "Dun Morogh"
+    },
+    {
+      "inProgress": 0,
+      "quests": [
+        {
+          "difficulty": "yellow",
+          "difficultyInfo": "just right",
+          "id": 95161,
+          "level": 22,
+          "progressPercent": 100,
+          "status": "ready to turn in",
+          "title": "Remember That I Love You"
+        }
+      ],
+      "readyToTurnIn": 1,
+      "zone": "Duskwood"
+    },
+    {
+      "inProgress": 1,
+      "quests": [
+        {
+          "difficulty": "gray",
+          "difficultyInfo": "gray: almost no XP, worth turning in on the way or abandoning",
+          "id": 2038,
+          "level": 15,
+          "progressPercent": 0,
+          "status": "in progress",
+          "title": "Bingles' Missing Supplies",
+          "todo": [
+            "0/1 Bingles' Wrench",
+            "0/1 Bingles' Screwdriver",
+            "0/1 Bingles' Hammer",
+            "0/1 Bingles' Blastencapper"
+          ]
+        }
+      ],
+      "readyToTurnIn": 0,
+      "zone": "Loch Modan"
+    },
+    {
+      "inProgress": 1,
+      "quests": [
+        {
+          "difficulty": "gray",
+          "difficultyInfo": "gray: almost no XP, worth turning in on the way or abandoning",
+          "id": 12,
+          "level": 12,
+          "progressPercent": 6,
+          "status": "in progress",
+          "title": "The People's Militia",
+          "todo": [
+            "0/15 Defias Trapper slain",
+            "2/15 Defias Smuggler slain"
+          ]
+        }
+      ],
+      "readyToTurnIn": 0,
+      "zone": "Westfall"
+    },
+    {
+      "inProgress": 0,
+      "quests": [
+        {
+          "difficulty": "yellow",
+          "difficultyInfo": "just right",
+          "id": 98461,
+          "level": 21,
+          "progressPercent": 100,
+          "status": "ready to turn in",
+          "title": "Unrequited Love"
+        }
+      ],
+      "readyToTurnIn": 1,
+      "zone": "Wetlands"
+    }
+  ]
+}

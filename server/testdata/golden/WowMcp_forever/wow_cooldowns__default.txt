@@ -1,0 +1,39 @@
+# tool wow_cooldowns variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "cooldowns": [
+    {
+      "kind": "spell",
+      "name": "Aspect of the Hawk",
+      "ready": true,
+      "readyAt": "2026-11-15 16:31"
+    },
+    {
+      "kind": "item",
+      "name": "Hearthstone",
+      "ready": false,
+      "readyAt": "2026-11-15 17:16",
+      "remaining": "20 min"
+    },
+    {
+      "kind": "profession",
+      "name": "Cured Light Hide",
+      "profession": "Leatherworking",
+      "ready": false,
+      "readyAt": "2026-11-16 04:26",
+      "remaining": "11 h 30 min"
+    }
+  ],
+  "count": 3,
+  "note": "The list contains cooldowns longer than 90 s that were running at dump time (abilities, items like Hearthstone, recipes from the profession window). Entries with ready = true have already passed. Recipe cooldowns refresh when the profession window is opened.",
+  "readyNow": [
+    "Aspect of the Hawk"
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

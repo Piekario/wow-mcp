@@ -1,0 +1,151 @@
+# prompt trainer_shopping variant=named
+# args: {"character":"Piekasz"}
+# description: What is worth buying from the trainer with the current gold: spell priorities, what to postpone, how much gold is left. Combines the trainer offer, known spells, talents and gold.
+--- message[0] role=user ---
+Advise what to buy from this trainer. Rank the available entries (category = available) from the most important, taking into account the class, talents and what the character actually uses. Work out what the gold covers and how much is left. Point out entries that can be skipped and what unlocks at later levels.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "capturedAt": "2026-11-15 16:26",
+  "class": "Hunter",
+  "level": 20,
+  "money": "52s 12c",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "spells": [
+    {
+      "id": 6603,
+      "name": "Auto Attack",
+      "tab": "General"
+    },
+    {
+      "id": 136,
+      "name": "Mend Pet",
+      "rank": "Rank 2",
+      "tab": "Beast Mastery"
+    },
+    {
+      "icon": 136076,
+      "id": 13165,
+      "name": "Aspect of the Hawk",
+      "rank": "Rank 2",
+      "tab": "Beast Mastery"
+    },
+    {
+      "icon": 135130,
+      "id": 19434,
+      "name": "Aimed Shot",
+      "rank": "Rank 1",
+      "tab": "Marksmanship"
+    },
+    {
+      "id": 1130,
+      "name": "Hunter's Mark",
+      "rank": "Rank 1",
+      "tab": "Marksmanship"
+    }
+  ],
+  "talents": {
+    "nodes": [
+      {
+        "column": 1,
+        "maxRank": 5,
+        "name": "Endurance Training",
+        "prereqMet": true,
+        "rank": 5,
+        "row": 1,
+        "tree": "Beast Mastery"
+      },
+      {
+        "column": 1,
+        "maxRank": 2,
+        "name": "Focused Fire",
+        "prereqMet": true,
+        "rank": 2,
+        "row": 2,
+        "tree": "Beast Mastery"
+      },
+      {
+        "column": 1,
+        "maxRank": 2,
+        "name": "Improved Revive Pet",
+        "prereqMet": false,
+        "rank": 0,
+        "row": 3,
+        "tree": "Beast Mastery"
+      }
+    ],
+    "points": [
+      {
+        "maxRank": 5,
+        "name": "Endurance Training",
+        "rank": 5,
+        "tree": "Beast Mastery"
+      },
+      {
+        "maxRank": 2,
+        "name": "Focused Fire",
+        "rank": 2,
+        "tree": "Beast Mastery"
+      }
+    ],
+    "source": "classic",
+    "spent": 7,
+    "trees": [
+      {
+        "name": "Beast Mastery",
+        "points": 7
+      },
+      {
+        "name": "Marksmanship",
+        "points": 0
+      },
+      {
+        "name": "Survival",
+        "points": 0
+      }
+    ],
+    "unspent": 1
+  },
+  "trainer": {
+    "capturedAt": 1794760000,
+    "npc": "Einris Brightspear",
+    "services": [
+      {
+        "canAfford": true,
+        "category": "available",
+        "cost": "21s 0c",
+        "costCopper": 2100,
+        "levelRequired": 20,
+        "name": "Disengage",
+        "rank": "Rank 1"
+      },
+      {
+        "canAfford": true,
+        "category": "available",
+        "cost": "16s 0c",
+        "costCopper": 1600,
+        "levelRequired": 18,
+        "name": "Track Undead"
+      },
+      {
+        "canAfford": false,
+        "category": "unavailable",
+        "cost": "18g 0s 0c",
+        "costCopper": 180000,
+        "levelRequired": 40,
+        "name": "Volley",
+        "rank": "Rank 1"
+      }
+    ]
+  }
+}
+```
+

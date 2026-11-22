@@ -1,0 +1,43 @@
+# tool wow_buffs variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "assumption": "Heuristic: I warn about a missing buff only when you know the spell (spells section) and none of its group is among the auras. I do not know whether the buff is needed right now (e.g. in combat or in town), and the auras of other players and the pet are not in the dump visible other than as player auras. The dump shows the state at save time: after /reload it may already differ.",
+  "buffs": [
+    {
+      "id": 5118,
+      "name": "Aspect of the Cheetah"
+    },
+    {
+      "expired": true,
+      "expiresAt": "2026-11-15 22:44",
+      "id": 1244,
+      "leftAtDump": "1 min",
+      "name": "Power Word: Fortitude"
+    },
+    {
+      "expired": true,
+      "expiresAt": "2026-11-15 22:44",
+      "id": 6756,
+      "leftAtDump": "1 min",
+      "name": "Mark of the Wild"
+    },
+    {
+      "expiresAt": "2026-11-15 23:42",
+      "id": 460939,
+      "leftAtDump": "59 min",
+      "leftNow": "29 min",
+      "name": "Might of Stormwind"
+    }
+  ],
+  "debuffs": [],
+  "dumpAge": "30 min",
+  "dumpedAt": "2026-11-15 22:43",
+  "missing": [],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  }
+}

@@ -1,0 +1,51 @@
+# prompt week_in_game variant=default
+# args: {}
+# description: A summary of the last 7 days from the snapshot history: level-ups, gold change day by day, played time, the best session and the most important events. Combines wow_gold_history, wow_journal and wow_timeline; requires snapshot history.
+--- message[0] role=user ---
+Summarize the last 7 days of this character's play based on the snapshot history: levels gained, gold change (a balance, not income) and the largest inflows and expenses, total played time, the best session (from journal.sessions take only those from the last 7 days, and treat records as all-time records) and the most important events from the timeline. Events carry the time of the first snapshot in which they are visible, so do not present them as exact. When the history is shorter than a week or missing, say so at the start. End with one piece of advice for the next week.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "character": {
+    "addonVersion": "0.16.0",
+    "bindLocation": "Auberdine",
+    "class": "Hunter",
+    "classToken": "HUNTER",
+    "clientBuild": "70938",
+    "clientInterface": 16001,
+    "clientVersion": "1.60.1",
+    "faction": "Alliance",
+    "level": 20,
+    "locale": "enUS",
+    "mapID": 1453,
+    "maxQuests": 20,
+    "moneyCopper": 5212,
+    "name": "Piekasz",
+    "questGreenRange": 9,
+    "race": "Night Elf",
+    "raceToken": "NightElf",
+    "restedXp": 4000,
+    "resting": true,
+    "subZone": "Old Town",
+    "x": 67.9,
+    "xp": 1200,
+    "xpMax": 21300,
+    "y": 15.4,
+    "zone": "Stormwind City"
+  },
+  "goldError": "dump history is disabled (the server was started with --history-dir \"\"), and the gold history is computed from it",
+  "journalError": "dump history is disabled (the server was started with --history-dir \"\"), and the journal is built from it",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "timelineError": "dump history is disabled (the server was started with --history-dir \"\"), and the timeline is built from it",
+  "windowDays": 7
+}
+```
+

@@ -1,0 +1,5 @@
+# tool wow_timeline variant=bad_kind
+# args: {"kind":"dance"}
+# isError: true
+--- content[0] ---
+unknown kind "dance"; allowed: [level_up new_spell equipment quest_turned_in death profession]

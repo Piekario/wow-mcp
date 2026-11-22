@@ -1,0 +1,35 @@
+# tool wow_mail variant=named
+# args: {"character":"Piekasz"}
+# isError: false
+--- content[0] ---
+{
+  "capturedAgeMinutes": 30,
+  "capturedAt": "2026-11-15 16:26",
+  "count": 2,
+  "expiringSoon": [
+    "Auction successful: Copper Ore (2 d 11 h)"
+  ],
+  "messages": [
+    {
+      "expiresIn": "2 d 11 h",
+      "money": "54s 0c",
+      "sender": "Auction House",
+      "subject": "Auction successful: Copper Ore"
+    },
+    {
+      "expiresIn": "29 d 21 h",
+      "items": [
+        "Linen Cloth x20"
+      ],
+      "sender": "Altpiekasz",
+      "subject": "mats",
+      "unread": true
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "totalMoney": "54s 0c"
+}

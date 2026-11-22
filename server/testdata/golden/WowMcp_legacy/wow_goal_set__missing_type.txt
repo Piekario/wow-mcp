@@ -1,0 +1,5 @@
+# tool wow_goal_set variant=missing_type
+# args: {}
+# isError: true
+--- content[0] ---
+give the type of the new goal ([level gold reputation profession spell item]) or remove with the ID of the goal to delete

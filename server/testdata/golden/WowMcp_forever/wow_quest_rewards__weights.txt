@@ -1,0 +1,188 @@
+# tool wow_quest_rewards variant=weights
+# args: {"weights":{"agility":1,"dps":2,"stamina":0.5}}
+# isError: false
+--- content[0] ---
+{
+  "count": 3,
+  "quests": [
+    {
+      "best": {
+        "name": "Curvewood Dagger",
+        "reason": "biggest gain in slot offHand: score +4 (stat weights)"
+      },
+      "capturedAgeMinutes": 30,
+      "capturedAt": "2026-11-15 16:26",
+      "choices": [
+        {
+          "count": 1,
+          "delta": {
+            "Agility": 3,
+            "Item Level": 8,
+            "Stamina": 2
+          },
+          "equippable": true,
+          "id": 5586,
+          "ignoredStats": [
+            "Item Level"
+          ],
+          "levelOk": true,
+          "name": "Curvewood Dagger",
+          "requiredLevel": 13,
+          "score": 4,
+          "slot": "offHand",
+          "usable": true,
+          "vendorValue": "8s 12c"
+        },
+        {
+          "count": 1,
+          "equippable": false,
+          "id": 5540,
+          "levelOk": true,
+          "name": "Webwood Slicer",
+          "note": "the addon marked this reward as unusable by the character (usable = false): vendor value",
+          "requiredLevel": 1,
+          "usable": false,
+          "vendorValue": "13c"
+        }
+      ],
+      "fixed": {
+        "items": [
+          "Linen Cloth x5"
+        ],
+        "money": "15s 0c",
+        "xp": 1150
+      },
+      "id": 65,
+      "npc": "Gryan Stoutmantle",
+      "source": "turnIn",
+      "title": "Red Leather Bandanas",
+      "where": "quest turn-in at the NPC (questTurnIn)"
+    },
+    {
+      "best": {
+        "name": "Curvewood Dagger",
+        "reason": "biggest gain in slot offHand: score +4 (stat weights)"
+      },
+      "capturedAgeMinutes": 30,
+      "capturedAt": "2026-11-15 16:26",
+      "choices": [
+        {
+          "count": 1,
+          "delta": {
+            "Agility": 3,
+            "Item Level": 8,
+            "Stamina": 2
+          },
+          "equippable": true,
+          "id": 5586,
+          "ignoredStats": [
+            "Item Level"
+          ],
+          "levelOk": true,
+          "name": "Curvewood Dagger",
+          "requiredLevel": 13,
+          "score": 4,
+          "slot": "offHand",
+          "usable": true,
+          "vendorValue": "8s 12c"
+        },
+        {
+          "count": 1,
+          "equippable": false,
+          "id": 5540,
+          "levelOk": true,
+          "name": "Webwood Slicer",
+          "note": "the addon marked this reward as unusable by the character (usable = false): vendor value",
+          "requiredLevel": 1,
+          "usable": false,
+          "vendorValue": "13c"
+        }
+      ],
+      "fixed": {
+        "items": [
+          "Linen Cloth x5"
+        ],
+        "money": "15s 0c",
+        "xp": 1150
+      },
+      "id": 65,
+      "npc": "Gryan Stoutmantle",
+      "source": "offer",
+      "title": "The Defias Brotherhood",
+      "where": "quest offered by the NPC (questOffer)"
+    },
+    {
+      "best": {
+        "name": "Curvewood Dagger",
+        "reason": "biggest gain in slot offHand: score +4 (stat weights)"
+      },
+      "choices": [
+        {
+          "count": 1,
+          "delta": {
+            "Agility": 3,
+            "Item Level": 8,
+            "Stamina": 2
+          },
+          "equippable": true,
+          "id": 5586,
+          "ignoredStats": [
+            "Item Level"
+          ],
+          "levelOk": true,
+          "name": "Curvewood Dagger",
+          "requiredLevel": 13,
+          "score": 4,
+          "slot": "offHand",
+          "usable": true,
+          "vendorValue": "8s 12c"
+        },
+        {
+          "count": 1,
+          "equippable": false,
+          "id": 5540,
+          "levelOk": true,
+          "name": "Webwood Slicer",
+          "note": "the addon marked this reward as unusable by the character (usable = false): vendor value",
+          "requiredLevel": 1,
+          "usable": false,
+          "vendorValue": "13c"
+        }
+      ],
+      "complete": false,
+      "fixed": {
+        "items": [
+          "Linen Cloth x5"
+        ],
+        "money": "3s 50c"
+      },
+      "id": 947,
+      "source": "log",
+      "title": "Cave Mushrooms",
+      "where": "quest log"
+    }
+  ],
+  "scoring": {
+    "how": "score = sum of stat differences (reward minus equipped in that slot) times weight; best slot for each reward",
+    "method": "stat weights",
+    "source": "argument weights",
+    "values": {
+      "agility": 1,
+      "dps": 2,
+      "stamina": 0.5
+    }
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "withoutChoices": [
+    {
+      "complete": false,
+      "id": 4740,
+      "title": "WANTED: Murkdeep!",
+      "xp": 1450
+    }
+  ]
+}

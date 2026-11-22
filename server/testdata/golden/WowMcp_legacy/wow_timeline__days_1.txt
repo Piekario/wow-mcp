@@ -1,0 +1,27 @@
+# tool wow_timeline variant=days_1
+# args: {"days":1}
+# isError: false
+--- content[0] ---
+{
+  "assumption": "an event gets the time of the first dump in which it is visible (the game saves data only on /reload and logout), so the real time may be earlier; the exception is deaths, which the addon saves with an exact time",
+  "events": [
+    {
+      "at": 1794756400,
+      "atText": "2026-11-15 15:26",
+      "details": {
+        "levelAfter": 20,
+        "levelBefore": 19
+      },
+      "kind": "level_up",
+      "text": "Level up: level 19 -\u003e 20"
+    }
+  ],
+  "order": "from the oldest to the newest event (with a limit the newest are kept)",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "snapshotsRead": 3,
+  "total": 1
+}

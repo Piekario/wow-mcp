@@ -1,0 +1,71 @@
+# tool wow_compare_item variant=name_match
+# args: {"item":"Bow"}
+# isError: false
+--- content[0] ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game.
+--- content[1] ---
+{
+  "comparisons": [
+    {
+      "delta": {},
+      "equipped": "Curvewood Dagger",
+      "equippedNumbers": {
+        "Agility": 3,
+        "DPS": 8.4,
+        "Item Level": 18,
+        "Speed": 1.6,
+        "Stamina": 2
+      },
+      "slot": "mainHand"
+    },
+    {
+      "delta": {
+        "Agility": 3,
+        "Item Level": 8,
+        "Stamina": 2
+      },
+      "equipped": "Webwood Slicer",
+      "equippedNumbers": {
+        "DPS": 8.4,
+        "Item Level": 10,
+        "Speed": 1.6
+      },
+      "slot": "offHand"
+    }
+  ],
+  "item": {
+    "canAfford": false,
+    "equipLoc": "INVTYPE_WEAPON",
+    "id": 5586,
+    "itemLevel": 18,
+    "levelOk": true,
+    "name": "Laminated Recurve Bow",
+    "numbers": {
+      "Agility": 3,
+      "DPS": 8.4,
+      "Item Level": 18,
+      "Stamina": 2
+    },
+    "price": "72s 95c",
+    "quality": "Uncommon",
+    "requiredLevel": 13,
+    "source": "vendor",
+    "subType": "Dagger",
+    "tooltip": [
+      "Laminated Recurve Bow"
+    ]
+  },
+  "note": "Delta = item minus equipped (positive = gain). The numbers come from the stats and tooltip in the dump; Equip/Use effects appear only in the tooltip.",
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  },
+  "weaponSkill": {
+    "maxRank": 100,
+    "name": "Daggers",
+    "rank": 98
+  }
+}

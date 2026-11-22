@@ -1,0 +1,5 @@
+# tool wow_gold_history variant=days_negative
+# args: {"days":-1}
+# isError: true
+--- content[0] ---
+days must be positive (default 14), got -1

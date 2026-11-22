@@ -1,0 +1,97 @@
+# tool wow_group variant=named
+# args: {"character":"Piekasz"}
+# isError: false
+--- content[0] ---
+{
+  "classes": {
+    "Hunter": 1,
+    "Paladin": 2
+  },
+  "inspected": [
+    {
+      "averageItemLevel": 18,
+      "class": "Paladin",
+      "guild": "Night Watch",
+      "inspectedAgo": "30 min",
+      "level": 22,
+      "name": "Tankadin"
+    }
+  ],
+  "inspectedNote": "A player's full gear: wow_group with the player parameter.",
+  "levels": {
+    "average": 20.3,
+    "max": 22,
+    "min": 19
+  },
+  "lootMethod": "group",
+  "members": [
+    {
+      "class": "Hunter",
+      "classToken": "HUNTER",
+      "healthMax": 780,
+      "inRange": false,
+      "level": 20,
+      "name": "Piekasz",
+      "online": true,
+      "powerMax": 1050,
+      "race": "Night Elf",
+      "raidRank": 0,
+      "role": "dps",
+      "subgroup": 1,
+      "zone": "Blackfathom Deeps"
+    },
+    {
+      "class": "Paladin",
+      "classToken": "PALADIN",
+      "healthMax": 780,
+      "inRange": false,
+      "inspect": {
+        "averageItemLevel": 18,
+        "guild": "Night Watch",
+        "inspectedAgo": "30 min"
+      },
+      "level": 22,
+      "masterLooter": true,
+      "name": "Tankadin",
+      "online": true,
+      "powerMax": 1050,
+      "race": "Human",
+      "raidRank": 2,
+      "role": "tank",
+      "subgroup": 1,
+      "zone": "Blackfathom Deeps"
+    },
+    {
+      "class": "Paladin",
+      "classToken": "PALADIN",
+      "healthMax": 780,
+      "inRange": false,
+      "level": 19,
+      "name": "Healbot",
+      "online": true,
+      "powerMax": 1050,
+      "race": "Human",
+      "raidRank": 0,
+      "role": "tank",
+      "subgroup": 1,
+      "zone": "Blackfathom Deeps"
+    }
+  ],
+  "myAverageItemLevel": 12.7,
+  "roles": {
+    "dps": 1,
+    "tank": 2
+  },
+  "size": 3,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "type": "raid",
+  "warnings": [
+    "Piekasz is out of range",
+    "Tankadin is out of range",
+    "Healbot is out of range"
+  ]
+}

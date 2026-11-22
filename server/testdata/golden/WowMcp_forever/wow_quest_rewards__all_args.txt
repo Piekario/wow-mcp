@@ -1,0 +1,73 @@
+# tool wow_quest_rewards variant=all_args
+# args: {"character":"Piekasz","quest":"Cave","weights":{"agility":2}}
+# isError: false
+--- content[0] ---
+{
+  "count": 1,
+  "quests": [
+    {
+      "best": {
+        "name": "Curvewood Dagger",
+        "reason": "biggest gain in slot offHand: score +6 (stat weights)"
+      },
+      "choices": [
+        {
+          "count": 1,
+          "delta": {
+            "Agility": 3,
+            "Item Level": 8,
+            "Stamina": 2
+          },
+          "equippable": true,
+          "id": 5586,
+          "ignoredStats": [
+            "Item Level",
+            "Stamina"
+          ],
+          "levelOk": true,
+          "name": "Curvewood Dagger",
+          "requiredLevel": 13,
+          "score": 6,
+          "slot": "offHand",
+          "usable": true,
+          "vendorValue": "8s 12c"
+        },
+        {
+          "count": 1,
+          "equippable": false,
+          "id": 5540,
+          "levelOk": true,
+          "name": "Webwood Slicer",
+          "note": "the addon marked this reward as unusable by the character (usable = false): vendor value",
+          "requiredLevel": 1,
+          "usable": false,
+          "vendorValue": "13c"
+        }
+      ],
+      "complete": false,
+      "fixed": {
+        "items": [
+          "Linen Cloth x5"
+        ],
+        "money": "3s 50c"
+      },
+      "id": 947,
+      "source": "log",
+      "title": "Cave Mushrooms",
+      "where": "quest log"
+    }
+  ],
+  "scoring": {
+    "how": "score = sum of stat differences (reward minus equipped in that slot) times weight; best slot for each reward",
+    "method": "stat weights",
+    "source": "argument weights",
+    "values": {
+      "agility": 2
+    }
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

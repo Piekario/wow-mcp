@@ -1,0 +1,83 @@
+# tool wow_doctor variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "status": "ok",
+  "summary": "12 checks: 12 ok, 0 warnings, 0 failures (server 0.17.0, expected addon 0.16.0)",
+  "nextStep": "Nothing to fix. If an answer still looks wrong, ask for wow_status (alerts) and the section in question (wow_section).",
+  "checks": [
+    {
+      "check": "dump file",
+      "status": "ok",
+      "detail": "Reading <FILE> (modified 2026-11-15 16:26:45, 29 min ago)",
+      "fix": ""
+    },
+    {
+      "check": "account",
+      "status": "ok",
+      "detail": "The account folder is not part of the path (--file was used), so there is nothing to choose between.",
+      "fix": ""
+    },
+    {
+      "check": "dump age",
+      "status": "ok",
+      "detail": "The snapshot is 30 min old.",
+      "fix": ""
+    },
+    {
+      "check": "addon version",
+      "status": "ok",
+      "detail": "Addon 0.16.0, the server expects 0.16.0.",
+      "fix": ""
+    },
+    {
+      "check": "section errors",
+      "status": "ok",
+      "detail": "The addon reported no errors while collecting sections.",
+      "fix": ""
+    },
+    {
+      "check": "dump speed",
+      "status": "ok",
+      "detail": "Collecting the dump took 66.5 ms.",
+      "fix": ""
+    },
+    {
+      "check": "disabled sections",
+      "status": "ok",
+      "detail": "No section is turned off in the addon.",
+      "fix": ""
+    },
+    {
+      "check": "window sections",
+      "status": "ok",
+      "detail": "Every window-based section has been captured at least once.",
+      "fix": ""
+    },
+    {
+      "check": "unloaded dump",
+      "status": "ok",
+      "detail": "The dump holds a loaded character.",
+      "fix": ""
+    },
+    {
+      "check": "client language",
+      "status": "ok",
+      "detail": "Client locale enUS.",
+      "fix": ""
+    },
+    {
+      "check": "history",
+      "status": "ok",
+      "detail": "<HISTORY> is writable; 3 usable snapshot(s) of Piekasz.",
+      "fix": ""
+    },
+    {
+      "check": "goals file",
+      "status": "ok",
+      "detail": "Goals are stored in <GOALS>.",
+      "fix": ""
+    }
+  ]
+}

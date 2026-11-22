@@ -1,0 +1,104 @@
+# prompt gear_upgrades variant=default
+# args: {}
+# description: Which items from the bags, bank, the last vendor and the auction house prices the player browsed are upgrades over the equipped gear, with stat and DPS differences.
+--- message[0] role=user ---
+Assess which of the candidates are upgrades for this class and level. The delta in comparisons is the candidate minus the equipped item (positive = gain). Take into account which stats matter for the class, the required level and the price. auctionUpgrades (when present) are gear prices from the auction house the player browsed, best upgrade first: vsEquipped is the difference to the equipped item, minBuyoutPerUnit the price, canAfford and levelOk say whether it is within reach. Give a short list: what to equip right away, what to buy (also on the auction house), what to leave alone.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "auctionUpgrades": [
+    {
+      "bindType": 2,
+      "canAfford": true,
+      "classID": 2,
+      "dps": 9.7,
+      "equipLoc": "INVTYPE_RANGEDRIGHT",
+      "id": 2506,
+      "itemLevel": 19,
+      "levelOk": true,
+      "listings": 1,
+      "minBidPerUnit": "30s 0c",
+      "minBuyoutPerUnit": "42s 0c",
+      "name": "Hornwood Recurve Bow",
+      "quality": 2,
+      "qualityName": "Uncommon",
+      "quantity": 1,
+      "requiredLevel": 14,
+      "seenAgo": "30 min",
+      "sellPrice": 1500,
+      "source": "list",
+      "statTokens": {
+        "ITEM_MOD_AGILITY_SHORT": 3,
+        "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 9.7
+      },
+      "subType": "Bows",
+      "subclassID": 2,
+      "type": "Weapon",
+      "vsEquipped": {
+        "delta": {
+          "Agility": 3,
+          "DPS": 9.7,
+          "Item Level": 19
+        },
+        "equipped": "Light Hunting Bow",
+        "equippedNumbers": {},
+        "slot": "ranged"
+      }
+    },
+    {
+      "canAfford": true,
+      "classID": 2,
+      "equipLoc": "INVTYPE_RANGEDRIGHT",
+      "id": 2507,
+      "listings": 1,
+      "minBidPerUnit": "20s 0c",
+      "minBuyoutPerUnit": "31s 0c",
+      "name": "Ranger's Shortbow",
+      "quantity": 1,
+      "seenAgo": "30 min",
+      "source": "list",
+      "subType": "Bows",
+      "subclassID": 2,
+      "type": "Weapon"
+    }
+  ],
+  "candidates": [],
+  "class": "Hunter",
+  "equipped": [
+    {
+      "id": 5586,
+      "name": "Curvewood Dagger",
+      "numbers": {},
+      "quality": "Uncommon",
+      "slot": "mainHand"
+    },
+    {
+      "id": 5540,
+      "name": "Webwood Slicer",
+      "numbers": {},
+      "quality": "Uncommon",
+      "slot": "offHand"
+    },
+    {
+      "id": 2780,
+      "name": "Light Hunting Bow",
+      "numbers": {},
+      "quality": "Uncommon",
+      "slot": "ranged"
+    }
+  ],
+  "level": 20,
+  "money": "52s 12c",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "stats": []
+}
+```
+

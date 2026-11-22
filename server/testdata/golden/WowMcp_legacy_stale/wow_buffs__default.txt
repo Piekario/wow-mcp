@@ -1,0 +1,23 @@
+# tool wow_buffs variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+WARNING: The dump is old, so auras may have expired or new ones appeared; run /mcp reload.
+--- content[1] ---
+{
+  "assumption": "Heuristic: I warn about a missing buff only when you know the spell (spells section) and none of its group is among the auras. I do not know whether the buff is needed right now (e.g. in combat or in town), and the auras of other players and the pet are not in the dump visible other than as player auras. The dump shows the state at save time: after /reload it may already differ.",
+  "buffs": [],
+  "debuffs": [],
+  "dumpAge": "3 h 20 min",
+  "dumpedAt": "2026-11-15 16:26",
+  "missing": [],
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  },
+  "timingNote": "The dump has no aura end times (the client did not give them, or the dump comes from an addon older than 0.7.0), so the time left is not given.",
+  "warning": "The dump is old, so auras may have expired or new ones appeared; run /mcp reload."
+}

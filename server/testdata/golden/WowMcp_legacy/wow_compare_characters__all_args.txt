@@ -1,0 +1,5 @@
+# tool wow_compare_characters variant=all_args
+# args: {"a":"Piekasz","b":"Unknown"}
+# isError: true
+--- content[0] ---
+the account has only one character ([Piekasz]), nothing to compare with. A character appears here after logging in with it with the addon enabled and running /mcp reload (or after logging out, because the addon dumps then by itself).

@@ -1,0 +1,33 @@
+# prompt what_to_auction variant=default
+# args: {}
+# description: What from the bags and bank is worth listing on the auction house and what to sell to a vendor, based on prices saved during recent auction house visits.
+--- message[0] role=user ---
+Based on auctionHouse, advise what to list on the auction house and at what price (slightly below the lowest buyout), and what to hand to a vendor. Skip things needed for the character's quests and professions. Warn when a price is old (stale) or the last search showed only part of the results. Summarize how much gold can be earned. If there are myAuctions, say what has sold and what is about to expire. Do not guess prices of items that are not in the data: list them as things to check on the auction house. Gear in auctionHouse.prices has vsEquipped: when a price is an upgrade for the character, say so (it is something to buy, not to sell).
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "auctionHouse": {
+    "note": "No auction house prices. In game, open the auction house and search for the items you want to check (the addon saves what the results window shows), then type /mcp reload. Prices accumulate between visits."
+  },
+  "money": "52s 12c",
+  "professions": [
+    "Skinning 96/150"
+  ],
+  "quests": [
+    {
+      "objectives": "Scaber Stalk: 5/5; Death Cap: 0/1",
+      "title": "Cave Mushrooms"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}
+```
+

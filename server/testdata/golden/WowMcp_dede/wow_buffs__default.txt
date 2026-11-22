@@ -1,0 +1,31 @@
+# tool wow_buffs variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "assumption": "Heuristic: I warn about a missing buff only when you know the spell (spells section) and none of its group is among the auras. I do not know whether the buff is needed right now (e.g. in combat or in town), and the auras of other players and the pet are not in the dump visible other than as player auras. The dump shows the state at save time: after /reload it may already differ.",
+  "buffs": [
+    {
+      "expired": true,
+      "expiresAt": "2026-11-15 16:34",
+      "id": 13165,
+      "leftAtDump": "7 min",
+      "name": "Aspect of the Hawk"
+    }
+  ],
+  "debuffs": [
+    {
+      "id": 8326,
+      "name": "Ghost"
+    }
+  ],
+  "dumpAge": "30 min",
+  "dumpedAt": "2026-11-15 16:26",
+  "localeNote": "Missing class buff groups (the \"missing\" list) are matched by English spell names (e.g. Aspect of the ..., Arcane Intellect), because no language-independent spell grouping is in the dump; the selfBuffsNotActive list uses spell IDs and icons instead; this heuristic only works on English game clients, and this dump comes from a deDE client, so treat its result as incomplete.",
+  "missing": [],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

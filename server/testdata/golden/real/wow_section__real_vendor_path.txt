@@ -1,0 +1,62 @@
+# tool wow_section variant=real_vendor_path
+# args: {"limit":3,"path":"items","section":"vendor"}
+# isError: false
+--- content[0] ---
+{
+  "capturedAgeMinutes": 32,
+  "capturedAt": "2026-11-15 22:40",
+  "limited": {
+    "kind": "list",
+    "shown": 3,
+    "total": 15
+  },
+  "path": "items",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "vendor": [
+    {
+      "id": 159,
+      "index": 1,
+      "itemLevel": 5,
+      "name": "Refreshing Spring Water",
+      "priceCopper": 25,
+      "requiredLevel": 1,
+      "sellPrice": 1,
+      "stack": 5,
+      "subType": "Food \u0026 Drink",
+      "type": "Consumable"
+    },
+    {
+      "id": 1179,
+      "index": 2,
+      "itemLevel": 15,
+      "name": "Ice Cold Milk",
+      "priceCopper": 125,
+      "requiredLevel": 5,
+      "sellPrice": 6,
+      "stack": 5,
+      "subType": "Food \u0026 Drink",
+      "type": "Consumable"
+    },
+    {
+      "equipLoc": "INVTYPE_BAG",
+      "id": 4496,
+      "index": 3,
+      "itemLevel": 5,
+      "name": "Small Brown Pouch",
+      "priceCopper": 500,
+      "requiredLevel": 0,
+      "sellPrice": 125,
+      "stack": 1,
+      "subType": "Bag",
+      "tooltip": [
+        "Small Brown Pouch",
+        "6 Slot Bag"
+      ],
+      "type": "Container"
+    }
+  ]
+}

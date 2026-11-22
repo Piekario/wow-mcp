@@ -1,0 +1,32 @@
+# prompt profession_progress variant=default
+# args: {}
+# description: How to raise professions as cheaply as possible: what to craft now from the materials in the bags and bank, what is missing, which recipes no longer give skill points. Combines wow_recipes, professions and bags.
+--- message[0] role=user ---
+Advise how to raise the character's professions. First what can be crafted right away from materials (skillUpCraftableNow, canCraft, materials in the bank), then what is missing and where to get it (without guessing auction prices). Point out recipes that have stopped giving skill points, and say at which skill rank it is worth returning to the trainer for new ones. If there is Beast Training, compare the cost of the abilities with the pet's free training points.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz-CAMWOW EU4 Realm 7 PvE from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "money": "3g 68s 97c",
+  "professions": [
+    "Mining 62/150",
+    "Skinning 75/75",
+    "First Aid 37/75",
+    "Fishing 21/75",
+    "Cooking 13/75"
+  ],
+  "recipes": {
+    "note": "No saved recipes. Open the profession window in game (e.g. Leatherworking or a Hunter's Beast Training), then type /mcp reload. Each profession is saved separately."
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "trainer": null
+}
+```
+

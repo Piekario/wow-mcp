@@ -1,0 +1,77 @@
+# tool wow_search variant=real_gnomeregan
+# args: {"query":"gnomeregan"}
+# isError: false
+--- content[0] ---
+{
+  "groups": [
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Rumi of Gnomeregan: The Collected Works",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Backpack",
+            "Rumi of Gnomeregan: The Collected Works"
+          ],
+          "summary": "count 1, Reagent, Reagent"
+        }
+      ],
+      "section": "bags",
+      "shown": 1,
+      "truncated": false
+    },
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Gnomeregan Exiles",
+          "matchedIn": "name",
+          "path": [
+            "reputation",
+            "Gnomeregan Exiles"
+          ],
+          "summary": "Friendly, value 5207"
+        }
+      ],
+      "section": "reputation",
+      "shown": 1,
+      "truncated": false
+    }
+  ],
+  "notInSnapshot": [
+    "questOffer",
+    "questTurnIn",
+    "bank",
+    "vendors",
+    "trainers",
+    "loot",
+    "stable",
+    "recipes",
+    "auctions"
+  ],
+  "note": "Bank, vendors, trainers, stable, quest windows, recipes, mail and auctions are the state from the last visits to those windows (check their age in the relevant tools); loot is the loot since the previous save.",
+  "query": "gnomeregan",
+  "searched": [
+    "quests",
+    "bags",
+    "equipment",
+    "spells",
+    "trainer",
+    "vendor",
+    "mail",
+    "reputation",
+    "professions",
+    "currencies",
+    "macros",
+    "flightPaths"
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "totalHits": 2,
+  "truncated": false
+}

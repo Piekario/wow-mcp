@@ -1,0 +1,82 @@
+# tool wow_quest_lookup variant=npc_name
+# args: {"quest":"murkdeep"}
+# isError: false
+--- content[0] ---
+{
+  "character": {
+    "x": 67.9,
+    "y": 15.4,
+    "zone": "Stormwind City"
+  },
+  "count": 1,
+  "note": "Locations come from the quest database installed in the player's game (the same data Questie shows on the map), not from the quest text. Coordinates are map percentages (x from the left, y from the top) in the named zone.",
+  "npcs": [
+    {
+      "id": 10323,
+      "kind": "npc",
+      "name": "Murkdeep",
+      "spawnCount": 1,
+      "where": [
+        {
+          "x": 36.4,
+          "y": 76.6,
+          "zone": "Darkshore"
+        }
+      ]
+    }
+  ],
+  "quests": [
+    {
+      "id": 4740,
+      "inGuide": true,
+      "level": 18,
+      "name": "WANTED: Murkdeep!",
+      "nextStep": "Finish the objectives, then turn in at Terenthis (Darkshore 39.4, 43.5)",
+      "objectives": [
+        {
+          "id": 10323,
+          "kind": "npc",
+          "name": "Murkdeep",
+          "spawnCount": 1,
+          "where": [
+            {
+              "x": 36.4,
+              "y": 76.6,
+              "zone": "Darkshore"
+            }
+          ]
+        }
+      ],
+      "requiredLevel": 12,
+      "status": "in log, in progress",
+      "turnIn": [
+        {
+          "friendlyTo": "A",
+          "id": 3693,
+          "kind": "npc",
+          "name": "Terenthis",
+          "spawnCount": 1,
+          "where": [
+            {
+              "x": 39.4,
+              "y": 43.5,
+              "zone": "Darkshore"
+            }
+          ]
+        }
+      ],
+      "zone": "Darkshore"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "source": {
+    "contract": 4,
+    "name": "QuestieDB",
+    "readMode": "baked",
+    "version": "1.1.3"
+  }
+}

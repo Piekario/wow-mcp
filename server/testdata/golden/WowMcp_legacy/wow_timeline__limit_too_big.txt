@@ -1,0 +1,5 @@
+# tool wow_timeline variant=limit_too_big
+# args: {"limit":9999}
+# isError: true
+--- content[0] ---
+limit must be from 1 to 500 (default 50), got 9999

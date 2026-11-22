@@ -1,0 +1,52 @@
+# tool wow_auctions variant=query_match
+# args: {"query":"Cloth"}
+# isError: false
+--- content[0] ---
+{
+  "assumptions": "Profit is computed from the lowest buyout price per unit minus the 5% auction house cut. The listing deposit is lost if the item does not sell and is not counted here. Bound (Soulbound) and quest items cannot be listed.",
+  "count": 1,
+  "lastVisit": "30 min ago",
+  "myAuctions": {
+    "auctions": [
+      {
+        "buyout": "6s 0c",
+        "count": 10,
+        "name": "Copper Ore",
+        "timeLeft": "2 h"
+      }
+    ],
+    "checkedAgo": "30 min",
+    "count": 1,
+    "totalBuyout": "6s 0c"
+  },
+  "prices": [
+    {
+      "have": 34,
+      "id": 2589,
+      "listings": 2,
+      "minBuyoutPerUnit": "12c",
+      "name": "Linen Cloth",
+      "quantity": 140,
+      "seenAgo": "30 min",
+      "source": "commodity",
+      "vendorPerUnit": "13c",
+      "where": "bags+bank"
+    }
+  ],
+  "sellOnAH": [
+    {
+      "advice": "vendor: the auction adds almost nothing",
+      "afterCutTotal": "3s 74c",
+      "auctionPerUnit": "12c",
+      "have": 34,
+      "name": "Linen Cloth",
+      "vendorTotal": "4s 42c",
+      "where": "bags+bank"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

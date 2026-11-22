@@ -1,0 +1,42 @@
+# tool wow_section variant=section_equipmentSets
+# args: {"section":"equipmentSets"}
+# isError: false
+--- content[0] ---
+{
+  "equipmentSets": [
+    {
+      "id": 0,
+      "isEquipped": true,
+      "items": [
+        {
+          "id": 5586,
+          "name": "Curvewood Dagger",
+          "slot": "mainHand"
+        },
+        {
+          "id": 5540,
+          "slot": "offHand"
+        }
+      ],
+      "missing": 0,
+      "name": "Leveling"
+    },
+    {
+      "id": 1,
+      "isEquipped": false,
+      "items": [
+        {
+          "id": 7005,
+          "slot": "mainHand"
+        }
+      ],
+      "missing": 1,
+      "name": "Tanking"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

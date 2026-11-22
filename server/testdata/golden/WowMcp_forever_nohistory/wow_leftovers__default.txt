@@ -1,0 +1,13 @@
+# tool wow_leftovers variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "note": "No quest items (type Quest) in bags and bank. The bank shows the state from the last visit.",
+  "questItems": 0,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

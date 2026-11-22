@@ -1,0 +1,48 @@
+# tool wow_changes variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "bags": {
+    "lost": [
+      {
+        "after": 0,
+        "before": 1,
+        "change": -1,
+        "id": 99999,
+        "name": "Old Scroll"
+      }
+    ]
+  },
+  "deaths": {
+    "after": 1,
+    "before": 0,
+    "new": 1
+  },
+  "elapsed": "1 h",
+  "experience": {
+    "levelAfter": 20,
+    "levelBefore": 20,
+    "xpAfter": 1200,
+    "xpBefore": 1100,
+    "xpGained": 100
+  },
+  "from": "2026-11-15 15:26",
+  "history": [
+    "2026-11-15 14:26",
+    "2026-11-15 15:26",
+    "2026-11-15 16:26"
+  ],
+  "money": {
+    "after": "52s 12c",
+    "before": "42s 12c",
+    "change": "+10s 0c"
+  },
+  "playedBetween": "1 h",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "to": "2026-11-15 16:26"
+}

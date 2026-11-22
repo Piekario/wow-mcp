@@ -1,0 +1,167 @@
+# tool wow_equipment variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "durability": {
+    "lastRepairQuote": {
+      "at": "Einris Brightspear",
+      "capturedAgeMinutes": 30,
+      "capturedAt": "2026-11-15 16:26",
+      "cost": "12s 34c"
+    },
+    "lowest": "Curvewood Dagger 85.7%",
+    "overallPercent": 85.7
+  },
+  "equipment": [
+    {
+      "bindType": 2,
+      "classID": 2,
+      "damageMax": 18,
+      "damageMin": 9,
+      "dps": 8.4,
+      "durability": 30,
+      "durabilityMax": 35,
+      "equipLoc": "INVTYPE_WEAPON",
+      "id": 5586,
+      "itemLevel": 18,
+      "name": "Curvewood Dagger",
+      "quality": 2,
+      "requiredLevel": 13,
+      "sellPrice": 812,
+      "slot": "mainHand",
+      "speed": 1.6,
+      "statTokens": {
+        "ITEM_MOD_AGILITY_SHORT": 3,
+        "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 8.4,
+        "ITEM_MOD_STAMINA_SHORT": 2
+      },
+      "stats": {
+        "Ausdauer": 2,
+        "Beweglichkeit": 3,
+        "Schaden pro Sekunde": 8.4
+      },
+      "subType": "Dolch",
+      "subclassID": 15,
+      "tooltip": [
+        "Curvewood Dagger",
+        "Einhändig | Dolch",
+        "9 - 18 Schaden | Tempo 1,60"
+      ],
+      "type": "Waffe"
+    },
+    {
+      "bindType": 0,
+      "classID": 7,
+      "damageMax": 18,
+      "damageMin": 9,
+      "dps": 8.4,
+      "durability": 30,
+      "durabilityMax": 35,
+      "id": 5540,
+      "itemLevel": 10,
+      "name": "Webwood Slicer",
+      "quality": 2,
+      "requiredLevel": 1,
+      "sellPrice": 13,
+      "slot": "offHand",
+      "speed": 1.6,
+      "statTokens": {
+        "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 8.4
+      },
+      "stats": {
+        "Schaden pro Sekunde": 8.4
+      },
+      "subType": "Stoff",
+      "subclassID": 5,
+      "tooltip": [
+        "Curvewood Dagger",
+        "Einhändig | Dolch",
+        "9 - 18 Schaden | Tempo 1,60"
+      ],
+      "type": "Handwerkswaren"
+    },
+    {
+      "bindType": 0,
+      "classID": 7,
+      "damageMax": 18,
+      "damageMin": 9,
+      "dps": 8.4,
+      "durability": 30,
+      "durabilityMax": 35,
+      "id": 2780,
+      "itemLevel": 10,
+      "name": "Light Hunting Bow",
+      "quality": 2,
+      "requiredLevel": 1,
+      "sellPrice": 13,
+      "slot": "ranged",
+      "speed": 1.6,
+      "statTokens": {
+        "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 8.4
+      },
+      "stats": {
+        "Schaden pro Sekunde": 8.4
+      },
+      "subType": "Stoff",
+      "subclassID": 5,
+      "tooltip": [
+        "Curvewood Dagger",
+        "Einhändig | Dolch",
+        "9 - 18 Schaden | Tempo 1,60"
+      ],
+      "type": "Handwerkswaren"
+    },
+    {
+      "bindType": 0,
+      "classID": 7,
+      "count": 812,
+      "id": 2515,
+      "itemLevel": 10,
+      "name": "Scharfer Pfeil",
+      "quality": 1,
+      "requiredLevel": 1,
+      "sellPrice": 13,
+      "slot": "ammo",
+      "subType": "Stoff",
+      "subclassID": 5,
+      "type": "Handwerkswaren"
+    }
+  ],
+  "equipmentSets": [
+    {
+      "id": 0,
+      "isEquipped": true,
+      "items": [
+        {
+          "id": 5586,
+          "name": "Curvewood Dagger",
+          "slot": "mainHand"
+        },
+        {
+          "id": 5540,
+          "slot": "offHand"
+        }
+      ],
+      "missing": 0,
+      "name": "Leveling"
+    },
+    {
+      "id": 1,
+      "isEquipped": false,
+      "items": [
+        {
+          "id": 7005,
+          "slot": "mainHand"
+        }
+      ],
+      "missing": 1,
+      "name": "Tanking"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

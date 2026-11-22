@@ -1,0 +1,106 @@
+# tool wow_quest_lookup variant=quest_id
+# args: {"quest":"982"}
+# isError: false
+--- content[0] ---
+{
+  "character": {
+    "x": 67.9,
+    "y": 15.4,
+    "zone": "Stormwind City"
+  },
+  "count": 1,
+  "note": "Locations come from the quest database installed in the player's game (the same data Questie shows on the map), not from the quest text. Coordinates are map percentages (x from the left, y from the top) in the named zone.",
+  "quests": [
+    {
+      "id": 982,
+      "inGuide": true,
+      "level": 17,
+      "name": "Deep Ocean, Vast Sea",
+      "nextStep": "Pick up from Cerellean Whiteclaw (Darkshore 35.7, 43.7)",
+      "objectives": [
+        {
+          "id": 2165,
+          "kind": "npc",
+          "name": "Grizzled Thistle Bear",
+          "note": "6 spawn points in total; 3 shown",
+          "spawnCount": 6,
+          "text": "Grizzled Thistle Bear slain",
+          "where": [
+            {
+              "x": 41.2,
+              "y": 80.1,
+              "zone": "Darkshore"
+            },
+            {
+              "x": 42.7,
+              "y": 83.9,
+              "zone": "Darkshore"
+            },
+            {
+              "x": 39.9,
+              "y": 85.3,
+              "zone": "Darkshore"
+            }
+          ],
+          "zoneCount": 3,
+          "zones": [
+            "Darkshore",
+            "Ashenvale",
+            "Blackfathom Deeps"
+          ]
+        }
+      ],
+      "pickUp": [
+        {
+          "friendlyTo": "A",
+          "id": 3644,
+          "kind": "npc",
+          "name": "Cerellean Whiteclaw",
+          "spawnCount": 1,
+          "where": [
+            {
+              "x": 35.7,
+              "y": 43.7,
+              "zone": "Darkshore"
+            }
+          ]
+        }
+      ],
+      "requiredLevel": 13,
+      "status": "not in log",
+      "turnIn": [
+        {
+          "friendlyTo": "A",
+          "id": 3644,
+          "kind": "npc",
+          "name": "Cerellean Whiteclaw",
+          "spawnCount": 1,
+          "where": [
+            {
+              "x": 35.7,
+              "y": 43.7,
+              "zone": "Darkshore"
+            }
+          ]
+        },
+        {
+          "id": 9999001,
+          "kind": "object",
+          "note": "not in the quest database"
+        }
+      ],
+      "zone": "Darkshore"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "source": {
+    "contract": 4,
+    "name": "QuestieDB",
+    "readMode": "baked",
+    "version": "1.1.3"
+  }
+}

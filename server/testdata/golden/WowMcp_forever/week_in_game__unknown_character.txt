@@ -1,0 +1,3 @@
+# prompt week_in_game variant=unknown_character
+# args: {"character":"Unknown"}
+# PROTOCOL ERROR: calling "prompts/get": no character "Unknown" in the snapshot. Available: [Piekasz]

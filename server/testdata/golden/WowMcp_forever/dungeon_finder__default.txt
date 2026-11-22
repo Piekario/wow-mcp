@@ -1,0 +1,187 @@
+# prompt dungeon_finder variant=default
+# args: {}
+# description: Which dungeons fit the character's level now, which quests from the log can be done along the way, and how to prepare.
+--- message[0] role=user ---
+Recommend 1-3 dungeons for now from fitNow, starting with those the character has quests for in the log. For each: where the entrance is, which quests to turn in or do along the way (and which are worth picking up, if you know them for certain), what to expect. Mention soon if it is close. Check preparation: gear repairs, bag space, and if there is a group, its composition and roles. If source = classic, point out that the level ranges are approximate.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "bagSpace": {
+    "freeSlots": 26,
+    "totalSlots": 32
+  },
+  "class": "Hunter",
+  "dungeons": {
+    "fitNow": [
+      {
+        "id": 802,
+        "levels": "17-25",
+        "name": "Wailing Caverns",
+        "players": 5,
+        "zone": "The Barrens"
+      },
+      {
+        "id": 18,
+        "levels": "17-26",
+        "mapID": 36,
+        "name": "The Deadmines",
+        "players": 5,
+        "zone": "Westfall"
+      }
+    ],
+    "level": 20,
+    "lockouts": [
+      {
+        "difficulty": "Normal",
+        "difficultyID": 1,
+        "instanceID": 48,
+        "maxPlayers": 5,
+        "name": "Blackfathom Deeps",
+        "progress": "3/7",
+        "resetIn": "30 min"
+      }
+    ],
+    "soon": [
+      {
+        "id": 801,
+        "levels": "24-32",
+        "levelsToGo": 3,
+        "name": "Blackfathom Deeps",
+        "players": 5,
+        "zone": "Ashenvale"
+      }
+    ],
+    "source": "game",
+    "sourceNote": "The level ranges come from the game client (the group finder tool)."
+  },
+  "durability": {
+    "lastRepairQuote": {
+      "at": "Einris Brightspear",
+      "capturedAgeMinutes": 30,
+      "capturedAt": "2026-11-15 16:26",
+      "cost": "12s 34c"
+    },
+    "lowest": "Curvewood Dagger 85.7%",
+    "overallPercent": 85.7
+  },
+  "equipment": {
+    "ammo": {
+      "itemLevel": 10,
+      "name": "Sharp Arrow"
+    },
+    "mainHand": {
+      "itemLevel": 18,
+      "name": "Curvewood Dagger"
+    },
+    "offHand": {
+      "itemLevel": 10,
+      "name": "Webwood Slicer"
+    },
+    "ranged": {
+      "itemLevel": 10,
+      "name": "Light Hunting Bow"
+    }
+  },
+  "faction": "Alliance",
+  "group": {
+    "classes": {
+      "Hunter": 1,
+      "Paladin": 2
+    },
+    "inspected": [
+      {
+        "averageItemLevel": 18,
+        "class": "Paladin",
+        "guild": "Night Watch",
+        "inspectedAgo": "30 min",
+        "level": 22,
+        "name": "Tankadin"
+      }
+    ],
+    "inspectedNote": "A player's full gear: wow_group with the player parameter.",
+    "levels": {
+      "average": 20.3,
+      "max": 22,
+      "min": 19
+    },
+    "lootMethod": "group",
+    "members": [
+      {
+        "class": "Hunter",
+        "classToken": "HUNTER",
+        "healthMax": 780,
+        "inRange": false,
+        "level": 20,
+        "name": "Piekasz",
+        "online": true,
+        "powerMax": 1050,
+        "race": "Night Elf",
+        "raidRank": 0,
+        "role": "dps",
+        "subgroup": 1,
+        "zone": "Blackfathom Deeps"
+      },
+      {
+        "class": "Paladin",
+        "classToken": "PALADIN",
+        "healthMax": 780,
+        "inRange": false,
+        "inspect": {
+          "averageItemLevel": 18,
+          "guild": "Night Watch",
+          "inspectedAgo": "30 min"
+        },
+        "level": 22,
+        "masterLooter": true,
+        "name": "Tankadin",
+        "online": true,
+        "powerMax": 1050,
+        "race": "Human",
+        "raidRank": 2,
+        "role": "tank",
+        "subgroup": 1,
+        "zone": "Blackfathom Deeps"
+      },
+      {
+        "class": "Paladin",
+        "classToken": "PALADIN",
+        "healthMax": 780,
+        "inRange": false,
+        "level": 19,
+        "name": "Healbot",
+        "online": true,
+        "powerMax": 1050,
+        "race": "Human",
+        "raidRank": 0,
+        "role": "tank",
+        "subgroup": 1,
+        "zone": "Blackfathom Deeps"
+      }
+    ],
+    "myAverageItemLevel": 12.7,
+    "roles": {
+      "dps": 1,
+      "tank": 2
+    },
+    "size": 3,
+    "type": "raid",
+    "warnings": [
+      "Piekasz is out of range",
+      "Tankadin is out of range",
+      "Healbot is out of range"
+    ]
+  },
+  "level": 20,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "zone": "Stormwind City"
+}
+```
+

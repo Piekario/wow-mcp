@@ -1,0 +1,26 @@
+# tool wow_goal_set variant=reputation_standing
+# args: {"faction":"Darnassus","standing":"Revered","type":"reputation"}
+# isError: false
+--- content[0] ---
+{
+  "added": {
+    "id": "g3",
+    "type": "reputation",
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "faction": "Darnassus",
+    "standing": "Revered"
+  },
+  "file": "<GOALS>",
+  "goal": "Revered with Darnassus",
+  "progress": {
+    "current": "Honored (11972)",
+    "done": false,
+    "goal": "Revered with Darnassus",
+    "id": "g3",
+    "missing": 9028,
+    "percent": 57,
+    "standingThreshold": 21000,
+    "thresholdSource": "classic table (approximation; Forever may have different thresholds)",
+    "type": "reputation"
+  }
+}

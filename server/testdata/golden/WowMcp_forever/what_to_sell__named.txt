@@ -1,0 +1,300 @@
+# prompt what_to_sell variant=named
+# args: {"character":"Piekasz"}
+# description: What to sell to a vendor and what to keep: items from the bags and bank with their vendor value, taking quests and professions into account.
+--- message[0] role=user ---
+Propose what to sell to a vendor and what to keep. Keep items needed for quests in the log, materials for the character's professions, and things that are an upgrade or a supply (ammo, pet food). For the things to sell, give the total value. Separately point out items that are better listed on the auction house (Uncommon quality and above). Take auction prices only from auctionHouse (sellOnAH already has the profit after the fee computed); do not guess prices that are not there, just suggest what to look up on the auction house.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "auctionHouse": {
+    "assumptions": "Profit is computed from the lowest buyout price per unit minus the 5% auction house cut. The listing deposit is lost if the item does not sell and is not counted here. Bound (Soulbound) and quest items cannot be listed.",
+    "count": 2,
+    "lastVisit": "30 min ago",
+    "myAuctions": {
+      "auctions": [
+        {
+          "buyout": "6s 0c",
+          "count": 10,
+          "name": "Copper Ore",
+          "timeLeft": "2 h"
+        }
+      ],
+      "checkedAgo": "30 min",
+      "count": 1,
+      "totalBuyout": "6s 0c"
+    },
+    "prices": [
+      {
+        "have": 7,
+        "id": 2318,
+        "minBuyoutPerUnit": "25c",
+        "name": "Light Leather",
+        "quantity": 150,
+        "seenAgo": "30 min",
+        "source": "browse",
+        "vendorPerUnit": "13c",
+        "where": "bags"
+      },
+      {
+        "have": 34,
+        "id": 2589,
+        "listings": 2,
+        "minBuyoutPerUnit": "12c",
+        "name": "Linen Cloth",
+        "quantity": 140,
+        "seenAgo": "30 min",
+        "source": "commodity",
+        "vendorPerUnit": "13c",
+        "where": "bags+bank"
+      }
+    ],
+    "sellOnAH": [
+      {
+        "advice": "auction",
+        "afterCutTotal": "1s 61c",
+        "auctionPerUnit": "25c",
+        "have": 7,
+        "name": "Light Leather",
+        "vendorTotal": "91c",
+        "where": "bags"
+      },
+      {
+        "advice": "vendor: the auction adds almost nothing",
+        "afterCutTotal": "3s 74c",
+        "auctionPerUnit": "12c",
+        "have": 34,
+        "name": "Linen Cloth",
+        "vendorTotal": "4s 42c",
+        "where": "bags+bank"
+      }
+    ],
+    "sellOnAHSummary": "Listing the items with advice=auction: about 1s 61c after the cut instead of 91c from a vendor."
+  },
+  "bags": [
+    {
+      "free": 12,
+      "index": 0,
+      "items": [
+        {
+          "bindType": 0,
+          "classID": 7,
+          "count": 14,
+          "id": 2589,
+          "isBound": false,
+          "itemLevel": 10,
+          "name": "Linen Cloth",
+          "quality": 1,
+          "requiredLevel": 1,
+          "sellPrice": 13,
+          "slot": 1,
+          "subType": "Cloth",
+          "subclassID": 5,
+          "type": "Trade Goods"
+        },
+        {
+          "bindType": 0,
+          "classID": 7,
+          "count": 1,
+          "id": 6948,
+          "isBound": true,
+          "itemLevel": 10,
+          "name": "Hearthstone",
+          "quality": 1,
+          "requiredLevel": 1,
+          "sellPrice": 13,
+          "slot": 2,
+          "subType": "Cloth",
+          "subclassID": 5,
+          "type": "Trade Goods"
+        },
+        {
+          "bindType": 0,
+          "classID": 7,
+          "count": 7,
+          "id": 2318,
+          "isBound": false,
+          "itemLevel": 10,
+          "name": "Light Leather",
+          "quality": 1,
+          "requiredLevel": 1,
+          "sellPrice": 13,
+          "slot": 3,
+          "subType": "Cloth",
+          "subclassID": 5,
+          "type": "Trade Goods"
+        },
+        {
+          "bindType": 0,
+          "classID": 2,
+          "count": 1,
+          "damageMax": 5,
+          "damageMin": 2,
+          "dps": 2.2,
+          "equipLoc": "INVTYPE_WEAPON",
+          "id": 7005,
+          "isBound": false,
+          "itemLevel": 4,
+          "name": "Skinning Knife",
+          "quality": 1,
+          "requiredLevel": 1,
+          "sellPrice": 16,
+          "slot": 4,
+          "speed": 1.6,
+          "statTokens": {
+            "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 2.2
+          },
+          "stats": {
+            "Damage Per Second": 2.2
+          },
+          "subType": "Dagger",
+          "subclassID": 15,
+          "tooltip": [
+            "Skinning Knife",
+            "2 - 5 Damage | Speed 1.60"
+          ],
+          "type": "Weapon"
+        }
+      ],
+      "name": "Backpack",
+      "size": 16
+    },
+    {
+      "free": 5,
+      "index": 1,
+      "items": [
+        {
+          "bindType": 0,
+          "classID": 7,
+          "count": 5,
+          "id": 4540,
+          "isBound": false,
+          "itemLevel": 10,
+          "name": "Tough Hunk of Bread",
+          "quality": 1,
+          "requiredLevel": 1,
+          "sellPrice": 13,
+          "slot": 2,
+          "subType": "Cloth",
+          "subclassID": 5,
+          "type": "Trade Goods"
+        }
+      ],
+      "name": "Small Brown Pouch",
+      "size": 6
+    },
+    {
+      "free": 9,
+      "index": 4,
+      "items": [
+        {
+          "bindType": 0,
+          "classID": 7,
+          "count": 200,
+          "id": 2515,
+          "isBound": false,
+          "itemLevel": 10,
+          "name": "Sharp Arrow",
+          "quality": 1,
+          "requiredLevel": 1,
+          "sellPrice": 13,
+          "slot": 1,
+          "subType": "Cloth",
+          "subclassID": 5,
+          "type": "Trade Goods"
+        }
+      ],
+      "name": "Medium Quiver",
+      "size": 10
+    }
+  ],
+  "bank": {
+    "capturedAgeMinutes": 30,
+    "capturedAt": "2026-11-15 16:26",
+    "count": 1,
+    "freeSlots": 23,
+    "items": [
+      {
+        "bindType": 0,
+        "classID": 7,
+        "container": "Bank",
+        "count": 20,
+        "id": 2589,
+        "itemLevel": 10,
+        "name": "Linen Cloth",
+        "quality": 1,
+        "qualityName": "Common",
+        "requiredLevel": 1,
+        "sellPrice": 13,
+        "slot": 1,
+        "subType": "Cloth",
+        "subclassID": 5,
+        "type": "Trade Goods",
+        "vendorValue": "2s 60c"
+      }
+    ],
+    "totalSlots": 24,
+    "totalVendorValue": "2s 60c"
+  },
+  "professions": [
+    {
+      "maxRank": 150,
+      "name": "Skinning",
+      "rank": 96,
+      "skillID": 393
+    },
+    {
+      "maxRank": 75,
+      "name": "Mining",
+      "rank": 71,
+      "skillID": 186
+    },
+    {
+      "maxRank": 75,
+      "name": "Cooking",
+      "rank": 52,
+      "skillID": 185
+    },
+    {
+      "group": "weapon",
+      "maxRank": 100,
+      "name": "Two-Handed Swords",
+      "rank": 1,
+      "skillID": 55
+    },
+    {
+      "group": "weapon",
+      "maxRank": 100,
+      "name": "Daggers",
+      "rank": 98,
+      "skillID": 173
+    },
+    {
+      "group": "weapon",
+      "maxRank": 100,
+      "name": "Bows",
+      "rank": 100,
+      "skillID": 45
+    }
+  ],
+  "quests": [
+    {
+      "objectives": "Scaber Stalk: 5/5; Death Cap: 0/1",
+      "title": "Cave Mushrooms"
+    },
+    {
+      "objectives": "Murkdeep slain: 0/1",
+      "title": "WANTED: Murkdeep!"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}
+```
+

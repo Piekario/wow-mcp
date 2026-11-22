@@ -1,0 +1,51 @@
+# tool wow_section variant=section_guild
+# args: {"section":"guild"}
+# isError: false
+--- content[0] ---
+{
+  "capturedAgeMinutes": 30,
+  "capturedAt": "2026-11-15 16:26",
+  "guild": {
+    "capturedAt": 1794760000,
+    "inGuild": true,
+    "members": [
+      {
+        "class": "Paladin",
+        "level": 22,
+        "name": "Tankadin",
+        "online": true,
+        "rank": "Officer",
+        "rankIndex": 1,
+        "zone": "Stormwind City"
+      },
+      {
+        "class": "Priest",
+        "level": 19,
+        "name": "Healbot",
+        "online": true,
+        "rank": "Member",
+        "rankIndex": 3,
+        "zone": "Darkshore"
+      },
+      {
+        "class": "Mage",
+        "level": 60,
+        "name": "Oldfriend",
+        "online": false,
+        "rank": "Veteran",
+        "rankIndex": 2,
+        "zone": "Dalaran"
+      }
+    ],
+    "name": "Night Watch",
+    "online": 2,
+    "rank": "Hunter Rank",
+    "rankIndex": 4,
+    "total": 3
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

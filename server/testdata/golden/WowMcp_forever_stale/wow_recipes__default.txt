@@ -1,0 +1,94 @@
+# tool wow_recipes variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game.
+--- content[1] ---
+{
+  "note": "Recipes under collapsed headers in the profession window are not included in the dump. canCraft = how many can be crafted from the materials in bags; inBank = how much of a given material is in the bank (state from the last visit).",
+  "professions": [
+    {
+      "byDifficulty": {
+        "easy": 1,
+        "optimal": 1,
+        "trivial": 1
+      },
+      "capturedAgeMinutes": 200,
+      "capturedAt": "2026-11-15 16:26",
+      "capturedNote": "This is the state from a visit 3 h 20 min ago; it may have changed. For fresh data: open the window in game and type /mcp reload.",
+      "maxRank": 150,
+      "name": "Leatherworking",
+      "rank": 87,
+      "recipes": [
+        {
+          "canCraft": 7,
+          "difficulty": "trivial",
+          "difficultyInfo": "gray: gives no skill points",
+          "id": 2149,
+          "itemId": 2304,
+          "name": "Light Armor Kit",
+          "reagents": [
+            {
+              "have": 7,
+              "id": 2318,
+              "name": "Light Leather",
+              "need": 1
+            }
+          ]
+        },
+        {
+          "difficulty": "optimal",
+          "difficultyInfo": "orange: always gives a skill point",
+          "id": 3756,
+          "itemId": 4239,
+          "missingForOne": [
+            "Coarse Thread 2"
+          ],
+          "name": "Embossed Leather Gloves",
+          "reagents": [
+            {
+              "have": 7,
+              "id": 2318,
+              "name": "Light Leather",
+              "need": 3
+            },
+            {
+              "have": 0,
+              "id": 2320,
+              "name": "Coarse Thread",
+              "need": 2
+            }
+          ]
+        },
+        {
+          "cooldown": "8 h 40 min",
+          "cooldownSeconds": 43200,
+          "difficulty": "easy",
+          "difficultyInfo": "green: sometimes gives a skill point",
+          "id": 3816,
+          "itemId": 4231,
+          "missingForOne": [
+            "item 783 1"
+          ],
+          "name": "Cured Light Hide",
+          "readyAt": 1794803200,
+          "reagents": [
+            {
+              "have": 0,
+              "id": 783,
+              "need": 1
+            }
+          ]
+        }
+      ],
+      "shown": 3
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  }
+}

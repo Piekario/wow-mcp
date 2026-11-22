@@ -1,0 +1,359 @@
+# tool wow_equipment variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "durability": {
+    "lowest": "Canvas Shoulderpads 100%",
+    "overallPercent": 100
+  },
+  "equipment": [
+    {
+      "durability": 35,
+      "durabilityMax": 35,
+      "equipLoc": "INVTYPE_SHOULDER",
+      "id": 1769,
+      "itemLevel": 20,
+      "name": "Canvas Shoulderpads",
+      "quality": 0,
+      "requiredLevel": 15,
+      "sellPrice": 163,
+      "slot": "shoulder",
+      "stats": {
+        "Armor": 23
+      },
+      "subType": "Cloth",
+      "tooltip": [
+        "Canvas Shoulderpads",
+        "Shoulder | Cloth",
+        "23 Armor",
+        "Durability 35 / 35",
+        "Requires Level 15"
+      ],
+      "type": "Armor"
+    },
+    {
+      "equipLoc": "INVTYPE_BODY",
+      "id": 148,
+      "itemLevel": 1,
+      "name": "Rugged Trapper's Shirt",
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 1,
+      "slot": "shirt",
+      "subType": "Miscellaneous",
+      "tooltip": [
+        "Rugged Trapper's Shirt",
+        "Shirt"
+      ],
+      "type": "Armor"
+    },
+    {
+      "durability": 90,
+      "durabilityMax": 90,
+      "equipLoc": "INVTYPE_CHEST",
+      "id": 2041,
+      "itemLevel": 24,
+      "name": "Tunic of Westfall",
+      "quality": 3,
+      "requiredLevel": 0,
+      "sellPrice": 1441,
+      "slot": "chest",
+      "stats": {
+        "Agility": 11,
+        "Armor": 92,
+        "Stamina": 5
+      },
+      "subType": "Leather",
+      "tooltip": [
+        "Tunic of Westfall",
+        "Soulbound",
+        "Chest | Leather",
+        "92 Armor",
+        "+11 Agility",
+        "+5 Stamina",
+        "Durability 90 / 90"
+      ],
+      "type": "Armor"
+    },
+    {
+      "durability": 20,
+      "durabilityMax": 20,
+      "equipLoc": "INVTYPE_WAIST",
+      "id": 11936,
+      "itemLevel": 20,
+      "name": "Relic Hunter Belt",
+      "quality": 2,
+      "requiredLevel": 0,
+      "sellPrice": 284,
+      "slot": "waist",
+      "stats": {
+        "Armor": 19,
+        "Intellect": 4,
+        "Spirit": 2,
+        "Strength": 2
+      },
+      "subType": "Cloth",
+      "tooltip": [
+        "Relic Hunter Belt",
+        "Soulbound",
+        "Waist | Cloth",
+        "19 Armor",
+        "+2 Strength",
+        "+4 Intellect",
+        "+2 Spirit",
+        "Durability 20 / 20"
+      ],
+      "type": "Armor"
+    },
+    {
+      "durability": 60,
+      "durabilityMax": 60,
+      "equipLoc": "INVTYPE_LEGS",
+      "id": 279868,
+      "itemLevel": 24,
+      "name": "Duty Bound Leggings",
+      "quality": 2,
+      "requiredLevel": 1,
+      "sellPrice": 1156,
+      "slot": "legs",
+      "stats": {
+        "Agility": 6,
+        "Armor": 73,
+        "Intellect": 4
+      },
+      "subType": "Leather",
+      "tooltip": [
+        "Duty Bound Leggings",
+        "Soulbound",
+        "Legs | Leather",
+        "73 Armor",
+        "+6 Agility",
+        "+4 Intellect",
+        "Durability 60 / 60"
+      ],
+      "type": "Armor"
+    },
+    {
+      "durability": 35,
+      "durabilityMax": 35,
+      "equipLoc": "INVTYPE_FEET",
+      "id": 4788,
+      "itemLevel": 20,
+      "name": "Agile Boots",
+      "quality": 2,
+      "requiredLevel": 15,
+      "sellPrice": 526,
+      "slot": "feet",
+      "stats": {
+        "Agility": 5,
+        "Armor": 53
+      },
+      "subType": "Leather",
+      "tooltip": [
+        "Agile Boots",
+        "Soulbound",
+        "Feet | Leather",
+        "53 Armor",
+        "+5 Agility",
+        "Durability 35 / 35",
+        "Requires Level 15"
+      ],
+      "type": "Armor"
+    },
+    {
+      "durability": 20,
+      "durabilityMax": 20,
+      "equipLoc": "INVTYPE_WRIST",
+      "id": 281256,
+      "itemLevel": 20,
+      "name": "Repurposed Hair Band",
+      "quality": 2,
+      "requiredLevel": 0,
+      "sellPrice": 294,
+      "slot": "wrist",
+      "stats": {
+        "Armor": 15,
+        "Intellect": 2,
+        "Spirit": 2
+      },
+      "subType": "Cloth",
+      "tooltip": [
+        "Repurposed Hair Band",
+        "Soulbound",
+        "Wrist | Cloth",
+        "15 Armor",
+        "+2 Intellect",
+        "+2 Spirit",
+        "Durability 20 / 20"
+      ],
+      "type": "Armor"
+    },
+    {
+      "durability": 25,
+      "durabilityMax": 25,
+      "equipLoc": "INVTYPE_HAND",
+      "id": 6586,
+      "itemLevel": 23,
+      "name": "Scouting Gloves of Power",
+      "quality": 2,
+      "requiredLevel": 18,
+      "sellPrice": 505,
+      "slot": "hands",
+      "stats": {
+        "Armor": 51,
+        "Attack Power": 12
+      },
+      "subType": "Leather",
+      "tooltip": [
+        "Scouting Gloves of Power",
+        "Soulbound",
+        "Hands | Leather",
+        "51 Armor",
+        "Equip: +12 Attack Power.",
+        "Durability 25 / 25",
+        "Requires Level 18"
+      ],
+      "type": "Armor"
+    },
+    {
+      "equipLoc": "INVTYPE_FINGER",
+      "id": 279867,
+      "itemLevel": 23,
+      "name": "Slain Baron's Signet",
+      "quality": 2,
+      "requiredLevel": 1,
+      "sellPrice": 815,
+      "slot": "finger1",
+      "stats": {
+        "Defense": 1,
+        "Stamina": 3
+      },
+      "subType": "Miscellaneous",
+      "tooltip": [
+        "Slain Baron's Signet",
+        "Soulbound",
+        "Finger",
+        "+3 Stamina",
+        "Equip: Increased Defense +1."
+      ],
+      "type": "Armor"
+    },
+    {
+      "equipLoc": "INVTYPE_CLOAK",
+      "id": 9786,
+      "itemLevel": 16,
+      "name": "Raider's Cloak of Agility",
+      "quality": 2,
+      "requiredLevel": 11,
+      "sellPrice": 234,
+      "slot": "back",
+      "stats": {
+        "Agility": 2,
+        "Armor": 15
+      },
+      "subType": "Cloth",
+      "tooltip": [
+        "Raider's Cloak of Agility",
+        "Soulbound",
+        "Back",
+        "15 Armor",
+        "+2 Agility",
+        "Requires Level 11"
+      ],
+      "type": "Armor"
+    },
+    {
+      "durability": 75,
+      "durabilityMax": 75,
+      "equipLoc": "INVTYPE_WEAPON",
+      "id": 1937,
+      "itemLevel": 23,
+      "name": "Buzz Saw",
+      "quality": 3,
+      "requiredLevel": 18,
+      "sellPrice": 2551,
+      "slot": "mainHand",
+      "stats": {
+        "Agility": 3,
+        "Stamina": 3,
+        "damage per second": 15.2
+      },
+      "subType": "One-Handed Swords",
+      "tooltip": [
+        "Buzz Saw",
+        "Soulbound",
+        "One-Hand | Sword",
+        "24 - 46 Damage | Speed 2.30",
+        "(15.2 damage per second)",
+        "+3 Agility",
+        "+3 Stamina",
+        "Durability 75 / 75",
+        "Requires Level 18"
+      ],
+      "type": "Weapon"
+    },
+    {
+      "durability": 45,
+      "durabilityMax": 45,
+      "equipLoc": "INVTYPE_WEAPON",
+      "id": 271204,
+      "itemLevel": 20,
+      "name": "Meathook Slicer",
+      "quality": 3,
+      "requiredLevel": 15,
+      "sellPrice": 1705,
+      "slot": "offHand",
+      "stats": {
+        "Stamina": 5,
+        "damage per second": 13.6
+      },
+      "subType": "Daggers",
+      "tooltip": [
+        "Meathook Slicer",
+        "Soulbound",
+        "One-Hand | Dagger",
+        "17 - 32 Damage | Speed 1.80",
+        "(13.6 damage per second)",
+        "+5 Stamina",
+        "Durability 45 / 45",
+        "Requires Level 15"
+      ],
+      "type": "Weapon"
+    },
+    {
+      "durability": 50,
+      "durabilityMax": 50,
+      "equipLoc": "INVTYPE_RANGED",
+      "id": 4576,
+      "itemLevel": 21,
+      "name": "Light Bow",
+      "quality": 2,
+      "requiredLevel": 16,
+      "sellPrice": 1184,
+      "slot": "ranged",
+      "stats": {
+        "Agility": 2,
+        "damage per second": 7.9
+      },
+      "subType": "Bows",
+      "tooltip": [
+        "Light Bow",
+        "Soulbound",
+        "Ranged | Bow",
+        "9 - 18 Damage | Speed 1.70",
+        "(7.9 damage per second)",
+        "+2 Agility",
+        "Durability 50 / 50",
+        "Requires Level 16"
+      ],
+      "type": "Weapon"
+    }
+  ],
+  "equipmentSets": [],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  }
+}

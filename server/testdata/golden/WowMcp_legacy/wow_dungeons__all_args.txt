@@ -1,0 +1,165 @@
+# tool wow_dungeons variant=all_args
+# args: {"all":true,"character":"Piekasz","name":"a"}
+# isError: false
+--- content[0] ---
+{
+  "fitNow": [
+    {
+      "levels": "13-18",
+      "name": "Ragefire Chasm",
+      "note": "entrance in the Horde capital",
+      "zone": "Orgrimmar"
+    },
+    {
+      "levels": "17-24",
+      "name": "Wailing Caverns",
+      "zone": "The Barrens"
+    },
+    {
+      "levels": "17-26",
+      "name": "The Deadmines",
+      "zone": "Westfall"
+    },
+    {
+      "levels": "22-30",
+      "name": "Shadowfang Keep",
+      "zone": "Silverpine Forest"
+    },
+    {
+      "levels": "24-32",
+      "name": "Blackfathom Deeps",
+      "zone": "Ashenvale"
+    },
+    {
+      "levels": "24-32",
+      "name": "The Stockade",
+      "note": "entrance in the Alliance capital",
+      "zone": "Stormwind City"
+    },
+    {
+      "levels": "29-38",
+      "name": "Gnomeregan",
+      "zone": "Dun Morogh"
+    },
+    {
+      "levels": "29-38",
+      "name": "Razorfen Kraul",
+      "zone": "The Barrens"
+    },
+    {
+      "levels": "28-38",
+      "name": "Scarlet Monastery: Graveyard",
+      "zone": "Tirisfal Glades"
+    },
+    {
+      "levels": "29-39",
+      "name": "Scarlet Monastery: Library",
+      "zone": "Tirisfal Glades"
+    },
+    {
+      "levels": "32-42",
+      "name": "Scarlet Monastery: Armory",
+      "zone": "Tirisfal Glades"
+    },
+    {
+      "levels": "35-45",
+      "name": "Scarlet Monastery: Cathedral",
+      "zone": "Tirisfal Glades"
+    },
+    {
+      "levels": "37-46",
+      "name": "Razorfen Downs",
+      "zone": "The Barrens"
+    },
+    {
+      "levels": "41-51",
+      "name": "Uldaman",
+      "zone": "Badlands"
+    },
+    {
+      "levels": "44-54",
+      "name": "Zul'Farrak",
+      "zone": "Tanaris"
+    },
+    {
+      "levels": "46-55",
+      "name": "Maraudon",
+      "zone": "Desolace"
+    },
+    {
+      "levels": "52-60",
+      "name": "Blackrock Depths",
+      "zone": "Burning Steppes"
+    },
+    {
+      "levels": "55-60",
+      "name": "Lower Blackrock Spire",
+      "zone": "Burning Steppes"
+    },
+    {
+      "levels": "55-60",
+      "name": "Dire Maul",
+      "zone": "Feralas"
+    },
+    {
+      "levels": "58-60",
+      "name": "Scholomance",
+      "zone": "Western Plaguelands"
+    },
+    {
+      "levels": "58-60",
+      "name": "Stratholme",
+      "zone": "Eastern Plaguelands"
+    },
+    {
+      "levels": "58-60",
+      "name": "Upper Blackrock Spire",
+      "players": 10,
+      "raid": true,
+      "zone": "Burning Steppes"
+    },
+    {
+      "levels": "60-60",
+      "name": "Ruins of Ahn'Qiraj",
+      "players": 20,
+      "raid": true,
+      "zone": "Silithus"
+    },
+    {
+      "levels": "60-60",
+      "name": "Onyxia's Lair",
+      "players": 40,
+      "raid": true,
+      "zone": "Dustwallow Marsh"
+    },
+    {
+      "levels": "60-60",
+      "name": "Blackwing Lair",
+      "players": 40,
+      "raid": true,
+      "zone": "Burning Steppes"
+    },
+    {
+      "levels": "60-60",
+      "name": "Temple of Ahn'Qiraj",
+      "players": 40,
+      "raid": true,
+      "zone": "Silithus"
+    },
+    {
+      "levels": "60-60",
+      "name": "Naxxramas",
+      "players": 40,
+      "raid": true,
+      "zone": "Eastern Plaguelands"
+    }
+  ],
+  "level": 20,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "source": "classic",
+  "sourceNote": "The client did not report a dungeon list, so the ranges come from the classic game table and are approximate; Forever may change them. If the game has a group finder tool, open it once and type /mcp reload."
+}

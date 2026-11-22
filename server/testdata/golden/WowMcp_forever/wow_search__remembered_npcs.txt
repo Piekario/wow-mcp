@@ -1,0 +1,111 @@
+# tool wow_search variant=remembered_npcs
+# args: {"query":"arrow"}
+# isError: false
+--- content[0] ---
+{
+  "groups": [
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Sharp Arrow",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Medium Quiver",
+            "Sharp Arrow"
+          ],
+          "summary": "count 200, Trade Goods, Cloth"
+        }
+      ],
+      "section": "bags",
+      "shown": 1,
+      "truncated": false
+    },
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Sharp Arrow",
+          "matchedIn": "name",
+          "path": [
+            "equipment",
+            "Sharp Arrow"
+          ],
+          "summary": "ammo, itemLevel 10, Trade Goods"
+        }
+      ],
+      "section": "equipment",
+      "shown": 1,
+      "truncated": false
+    },
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Sharp Arrow",
+          "matchedIn": "name",
+          "path": [
+            "vendor",
+            "Einris Brightspear",
+            "Sharp Arrow"
+          ],
+          "summary": "priceCopper 3s 0c, Trade Goods, requiredLevel 1"
+        }
+      ],
+      "section": "vendor",
+      "shown": 1,
+      "truncated": false
+    },
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Sharp Arrow",
+          "matchedIn": "name",
+          "path": [
+            "vendors",
+            "Laird",
+            "Sharp Arrow"
+          ],
+          "summary": "priceCopper 3s 0c, Trade Goods, requiredLevel 1"
+        }
+      ],
+      "section": "vendors",
+      "shown": 1,
+      "truncated": false
+    }
+  ],
+  "note": "Bank, vendors, trainers, stable, quest windows, recipes, mail and auctions are the state from the last visits to those windows (check their age in the relevant tools); loot is the loot since the previous save.",
+  "query": "arrow",
+  "searched": [
+    "quests",
+    "questOffer",
+    "questTurnIn",
+    "bags",
+    "bank",
+    "equipment",
+    "spells",
+    "trainer",
+    "vendor",
+    "vendors",
+    "trainers",
+    "loot",
+    "stable",
+    "recipes",
+    "mail",
+    "reputation",
+    "auctions",
+    "professions",
+    "currencies",
+    "macros",
+    "flightPaths"
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "totalHits": 4,
+  "truncated": false
+}

@@ -1,0 +1,405 @@
+# tool wow_vendor variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "canRepair": false,
+  "capturedAgeMinutes": 32,
+  "capturedAt": "2026-11-15 22:40",
+  "count": 15,
+  "items": [
+    {
+      "canAfford": true,
+      "id": 159,
+      "index": 1,
+      "itemLevel": 5,
+      "levelOk": true,
+      "name": "Refreshing Spring Water",
+      "price": "25c",
+      "priceCopper": 25,
+      "requiredLevel": 1,
+      "sellPrice": 1,
+      "stack": 5,
+      "subType": "Food \u0026 Drink",
+      "type": "Consumable"
+    },
+    {
+      "canAfford": true,
+      "id": 1179,
+      "index": 2,
+      "itemLevel": 15,
+      "levelOk": true,
+      "name": "Ice Cold Milk",
+      "price": "1s 25c",
+      "priceCopper": 125,
+      "requiredLevel": 5,
+      "sellPrice": 6,
+      "stack": 5,
+      "subType": "Food \u0026 Drink",
+      "type": "Consumable"
+    },
+    {
+      "canAfford": true,
+      "equipLoc": "INVTYPE_BAG",
+      "id": 4496,
+      "index": 3,
+      "itemLevel": 5,
+      "levelOk": true,
+      "name": "Small Brown Pouch",
+      "price": "5s 0c",
+      "priceCopper": 500,
+      "requiredLevel": 0,
+      "sellPrice": 125,
+      "stack": 1,
+      "subType": "Bag",
+      "tooltip": [
+        "Small Brown Pouch",
+        "6 Slot Bag"
+      ],
+      "type": "Container"
+    },
+    {
+      "canAfford": true,
+      "equipLoc": "INVTYPE_BAG",
+      "id": 4498,
+      "index": 4,
+      "itemLevel": 15,
+      "levelOk": true,
+      "name": "Brown Leather Satchel",
+      "price": "25s 0c",
+      "priceCopper": 2500,
+      "requiredLevel": 0,
+      "sellPrice": 625,
+      "stack": 1,
+      "subType": "Bag",
+      "tooltip": [
+        "Brown Leather Satchel",
+        "8 Slot Bag"
+      ],
+      "type": "Container"
+    },
+    {
+      "canAfford": true,
+      "equipLoc": "INVTYPE_AMMO",
+      "id": 2512,
+      "index": 5,
+      "itemLevel": 5,
+      "levelOk": true,
+      "name": "Rough Arrow",
+      "price": "10c",
+      "priceCopper": 10,
+      "requiredLevel": 1,
+      "sellPrice": 0,
+      "stack": 200,
+      "stats": {
+        "damage per second": 0.5
+      },
+      "subType": "Arrow",
+      "tooltip": [
+        "Rough Arrow",
+        "Projectile | Arrow",
+        "Adds 1.5 damage per second",
+        "\u003cShift click to buy a different amount\u003e"
+      ],
+      "type": "Projectile"
+    },
+    {
+      "canAfford": true,
+      "equipLoc": "INVTYPE_AMMO",
+      "id": 2515,
+      "index": 6,
+      "itemLevel": 15,
+      "levelOk": true,
+      "name": "Sharp Arrow",
+      "price": "50c",
+      "priceCopper": 50,
+      "requiredLevel": 10,
+      "sellPrice": 0,
+      "stack": 200,
+      "stats": {
+        "damage per second": 1.2
+      },
+      "subType": "Arrow",
+      "tooltip": [
+        "Sharp Arrow",
+        "Projectile | Arrow",
+        "Adds 3.5 damage per second",
+        "Requires Level 10",
+        "\u003cShift click to buy a different amount\u003e"
+      ],
+      "type": "Projectile"
+    },
+    {
+      "canAfford": true,
+      "equipLoc": "INVTYPE_AMMO",
+      "id": 2516,
+      "index": 7,
+      "itemLevel": 5,
+      "levelOk": true,
+      "name": "Light Shot",
+      "price": "10c",
+      "priceCopper": 10,
+      "requiredLevel": 1,
+      "sellPrice": 0,
+      "stack": 200,
+      "stats": {
+        "damage per second": 0.5
+      },
+      "subType": "Bullet",
+      "tooltip": [
+        "Light Shot",
+        "Projectile | Bullet",
+        "Adds 1.5 damage per second",
+        "\u003cShift click to buy a different amount\u003e"
+      ],
+      "type": "Projectile"
+    },
+    {
+      "canAfford": true,
+      "equipLoc": "INVTYPE_AMMO",
+      "id": 2519,
+      "index": 8,
+      "itemLevel": 15,
+      "levelOk": true,
+      "name": "Heavy Shot",
+      "price": "50c",
+      "priceCopper": 50,
+      "requiredLevel": 10,
+      "sellPrice": 0,
+      "stack": 200,
+      "stats": {
+        "damage per second": 1.2
+      },
+      "subType": "Bullet",
+      "tooltip": [
+        "Heavy Shot",
+        "Projectile | Bullet",
+        "Adds 3.5 damage per second",
+        "Requires Level 10",
+        "\u003cShift click to buy a different amount\u003e"
+      ],
+      "type": "Projectile"
+    },
+    {
+      "canAfford": true,
+      "equipLoc": "INVTYPE_THROWN",
+      "id": 2947,
+      "index": 9,
+      "itemLevel": 3,
+      "levelOk": true,
+      "name": "Small Throwing Knife",
+      "price": "42c",
+      "priceCopper": 42,
+      "requiredLevel": 1,
+      "sellPrice": 8,
+      "stack": 1,
+      "stats": {
+        "damage per second": 1
+      },
+      "subType": "Thrown",
+      "tooltip": [
+        "Small Throwing Knife",
+        "Thrown | Thrown",
+        "1 - 3 Damage | Speed 2.00",
+        "(1.0 damage per second)"
+      ],
+      "type": "Weapon",
+      "usable": false,
+      "vsEquipped": {
+        "delta": {
+          "Agility": -2,
+          "DPS": -6.9,
+          "Item Level": -18
+        },
+        "equipped": "Light Bow",
+        "equippedNumbers": {
+          "Agility": 2,
+          "DPS": 7.9,
+          "Item Level": 21,
+          "Speed": 1.7
+        },
+        "slot": "ranged"
+      }
+    },
+    {
+      "canAfford": true,
+      "equipLoc": "INVTYPE_THROWN",
+      "id": 2946,
+      "index": 10,
+      "itemLevel": 8,
+      "levelOk": true,
+      "name": "Balanced Throwing Dagger",
+      "price": "2s 99c",
+      "priceCopper": 299,
+      "requiredLevel": 3,
+      "sellPrice": 59,
+      "stack": 1,
+      "stats": {
+        "damage per second": 3
+      },
+      "subType": "Thrown",
+      "tooltip": [
+        "Balanced Throwing Dagger",
+        "Thrown | Thrown",
+        "4 - 9 Damage | Speed 2.20",
+        "(3.0 damage per second)",
+        "Requires Level 3"
+      ],
+      "type": "Weapon",
+      "usable": false,
+      "vsEquipped": {
+        "delta": {
+          "Agility": -2,
+          "DPS": -4.9,
+          "Item Level": -13
+        },
+        "equipped": "Light Bow",
+        "equippedNumbers": {
+          "Agility": 2,
+          "DPS": 7.9,
+          "Item Level": 21,
+          "Speed": 1.7
+        },
+        "slot": "ranged"
+      }
+    },
+    {
+      "canAfford": true,
+      "equipLoc": "INVTYPE_THROWN",
+      "id": 3111,
+      "index": 11,
+      "itemLevel": 3,
+      "levelOk": true,
+      "name": "Crude Throwing Axe",
+      "price": "42c",
+      "priceCopper": 42,
+      "requiredLevel": 1,
+      "sellPrice": 8,
+      "stack": 1,
+      "stats": {
+        "damage per second": 1
+      },
+      "subType": "Thrown",
+      "tooltip": [
+        "Crude Throwing Axe",
+        "Thrown | Thrown",
+        "1 - 3 Damage | Speed 2.00",
+        "(1.0 damage per second)"
+      ],
+      "type": "Weapon",
+      "usable": false,
+      "vsEquipped": {
+        "delta": {
+          "Agility": -2,
+          "DPS": -6.9,
+          "Item Level": -18
+        },
+        "equipped": "Light Bow",
+        "equippedNumbers": {
+          "Agility": 2,
+          "DPS": 7.9,
+          "Item Level": 21,
+          "Speed": 1.7
+        },
+        "slot": "ranged"
+      }
+    },
+    {
+      "canAfford": true,
+      "equipLoc": "INVTYPE_THROWN",
+      "id": 3131,
+      "index": 12,
+      "itemLevel": 8,
+      "levelOk": true,
+      "name": "Weighted Throwing Axe",
+      "price": "2s 99c",
+      "priceCopper": 299,
+      "requiredLevel": 3,
+      "sellPrice": 59,
+      "stack": 1,
+      "stats": {
+        "damage per second": 3
+      },
+      "subType": "Thrown",
+      "tooltip": [
+        "Weighted Throwing Axe",
+        "Thrown | Thrown",
+        "4 - 9 Damage | Speed 2.20",
+        "(3.0 damage per second)",
+        "Requires Level 3"
+      ],
+      "type": "Weapon",
+      "usable": false,
+      "vsEquipped": {
+        "delta": {
+          "Agility": -2,
+          "DPS": -4.9,
+          "Item Level": -13
+        },
+        "equipped": "Light Bow",
+        "equippedNumbers": {
+          "Agility": 2,
+          "DPS": 7.9,
+          "Item Level": 21,
+          "Speed": 1.7
+        },
+        "slot": "ranged"
+      }
+    },
+    {
+      "canAfford": true,
+      "id": 4470,
+      "index": 13,
+      "itemLevel": 5,
+      "levelOk": true,
+      "name": "Simple Wood",
+      "price": "38c",
+      "priceCopper": 38,
+      "requiredLevel": 0,
+      "sellPrice": 9,
+      "stack": 1,
+      "subType": "Other",
+      "type": "Trade Goods"
+    },
+    {
+      "canAfford": true,
+      "id": 4471,
+      "index": 14,
+      "itemLevel": 5,
+      "levelOk": true,
+      "name": "Flint and Tinder",
+      "price": "1s 35c",
+      "priceCopper": 135,
+      "requiredLevel": 0,
+      "sellPrice": 33,
+      "stack": 1,
+      "subType": "Other",
+      "type": "Trade Goods"
+    },
+    {
+      "canAfford": true,
+      "id": 5042,
+      "index": 15,
+      "itemLevel": 5,
+      "levelOk": true,
+      "name": "Red Ribboned Wrapping Paper",
+      "price": "50c",
+      "priceCopper": 50,
+      "requiredLevel": 0,
+      "sellPrice": 12,
+      "stack": 1,
+      "subType": "Other",
+      "type": "Consumable"
+    }
+  ],
+  "known": [
+    "Quartermaster Lewis"
+  ],
+  "money": "3g 68s 97c",
+  "npc": "Quartermaster Lewis",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  }
+}

@@ -1,0 +1,180 @@
+# prompt what_to_sell variant=default
+# args: {}
+# description: What to sell to a vendor and what to keep: items from the bags and bank with their vendor value, taking quests and professions into account.
+--- message[0] role=user ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game. Start your answer with this information.
+
+Propose what to sell to a vendor and what to keep. Keep items needed for quests in the log, materials for the character's professions, and things that are an upgrade or a supply (ammo, pet food). For the things to sell, give the total value. Separately point out items that are better listed on the auction house (Uncommon quality and above). Take auction prices only from auctionHouse (sellOnAH already has the profit after the fee computed); do not guess prices that are not there, just suggest what to look up on the auction house.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "auctionHouse": {
+    "assumptions": "Profit is computed from the lowest buyout price per unit minus the 5% auction house cut. The listing deposit is lost if the item does not sell and is not counted here. Bound (Soulbound) and quest items cannot be listed.",
+    "count": 2,
+    "lastSearchPartial": "The last search had 120 results, and a page of 6 was saved. The lowest price may be on another page; sort the results by price.",
+    "lastVisit": "3 h 20 min ago",
+    "myAuctions": {
+      "auctions": [
+        {
+          "bid": "2s 0c",
+          "buyout": "4s 0c",
+          "count": 10,
+          "name": "Copper Ore",
+          "sold": true
+        }
+      ],
+      "checkedAgo": "3 h 20 min",
+      "count": 1,
+      "sold": 1
+    },
+    "prices": [
+      {
+        "have": 7,
+        "id": 2318,
+        "listings": 2,
+        "minBidPerUnit": "8c",
+        "minBuyoutPerUnit": "15c",
+        "name": "Light Leather",
+        "quantity": 15,
+        "seenAgo": "3 h 20 min",
+        "source": "list",
+        "where": "bags"
+      },
+      {
+        "have": 14,
+        "id": 2589,
+        "listings": 1,
+        "minBidPerUnit": "5c",
+        "name": "Linen Cloth",
+        "quantity": 20,
+        "seenAgo": "3 h 20 min",
+        "source": "list",
+        "where": "bags"
+      }
+    ],
+    "sellOnAH": [
+      {
+        "advice": "auction",
+        "afterCutTotal": "98c",
+        "auctionPerUnit": "15c",
+        "have": 7,
+        "name": "Light Leather",
+        "vendorTotal": "0c",
+        "where": "bags"
+      }
+    ],
+    "sellOnAHSummary": "Listing the items with advice=auction: about 98c after the cut instead of 0c from a vendor."
+  },
+  "bags": [
+    {
+      "free": 13,
+      "index": 0,
+      "items": [
+        {
+          "count": 14,
+          "id": 2589,
+          "isBound": false,
+          "name": "Linen Cloth",
+          "quality": 1,
+          "slot": 1
+        },
+        {
+          "count": 7,
+          "id": 2318,
+          "isBound": false,
+          "name": "Light Leather",
+          "quality": 1,
+          "slot": 3
+        },
+        {
+          "count": 1,
+          "id": 7005,
+          "isBound": false,
+          "name": "Skinning Knife",
+          "quality": 1,
+          "slot": 4
+        }
+      ],
+      "name": "Backpack",
+      "size": 16
+    },
+    {
+      "free": 5,
+      "index": 1,
+      "items": [
+        {
+          "count": 5,
+          "id": 4540,
+          "isBound": false,
+          "name": "Tough Hunk of Bread",
+          "quality": 1,
+          "slot": 2
+        }
+      ],
+      "name": "Small Brown Pouch",
+      "size": 6
+    },
+    {
+      "free": 9,
+      "index": 4,
+      "items": [
+        {
+          "count": 200,
+          "id": 2515,
+          "isBound": false,
+          "name": "Sharp Arrow",
+          "quality": 1,
+          "slot": 1
+        }
+      ],
+      "name": "Medium Quiver",
+      "size": 10
+    }
+  ],
+  "bank": {
+    "note": "No saved bank. Open the bank in game, then type /mcp reload."
+  },
+  "professions": [
+    {
+      "maxRank": 150,
+      "name": "Skinning",
+      "rank": 96,
+      "skillID": 393
+    },
+    {
+      "maxRank": 75,
+      "name": "Mining",
+      "rank": 71,
+      "skillID": 186
+    },
+    {
+      "maxRank": 75,
+      "name": "Cooking",
+      "rank": 52,
+      "skillID": 185
+    }
+  ],
+  "quests": [
+    {
+      "objectives": "Scaber Stalk: 5/5; Death Cap: 0/1",
+      "title": "Cave Mushrooms"
+    },
+    {
+      "objectives": "Murkdeep slain: 0/1",
+      "title": "WANTED: Murkdeep!"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  }
+}
+```
+

@@ -1,0 +1,47 @@
+# tool wow_quests variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game.
+--- content[1] ---
+{
+  "count": 1,
+  "quests": [
+    {
+      "complete": false,
+      "id": 947,
+      "level": 17,
+      "objectives": [
+        {
+          "done": true,
+          "text": "Scaber Stalk: 5/5"
+        },
+        {
+          "done": false,
+          "text": "Death Cap: 0/1"
+        }
+      ],
+      "rewards": {
+        "choices": [
+          {
+            "count": 2,
+            "id": 4605,
+            "name": "Mushroom Cap",
+            "quality": 1
+          }
+        ],
+        "money": 120
+      },
+      "title": "Cave Mushrooms",
+      "zone": "Darkshore"
+    }
+  ],
+  "readyToTurnIn": 0,
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  }
+}

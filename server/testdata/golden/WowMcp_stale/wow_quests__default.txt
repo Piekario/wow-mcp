@@ -1,0 +1,84 @@
+# tool wow_quests variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game.
+--- content[1] ---
+{
+  "count": 2,
+  "quests": [
+    {
+      "complete": false,
+      "id": 947,
+      "level": 17,
+      "objectives": [
+        {
+          "done": true,
+          "have": 5,
+          "need": 5,
+          "text": "Scaber Stalk: 5/5"
+        },
+        {
+          "done": false,
+          "have": 0,
+          "need": 1,
+          "text": "Death Cap: 0/1"
+        }
+      ],
+      "rewards": {
+        "choices": [
+          {
+            "count": 1,
+            "id": 5586,
+            "name": "Curvewood Dagger",
+            "quality": 2
+          },
+          {
+            "count": 1,
+            "id": 5540,
+            "name": "Webwood Slicer",
+            "quality": 2,
+            "usable": false
+          }
+        ],
+        "items": [
+          {
+            "count": 5,
+            "id": 2589,
+            "name": "Linen Cloth",
+            "quality": 1
+          }
+        ],
+        "money": 350
+      },
+      "title": "Cave Mushrooms",
+      "zone": "Darkshore"
+    },
+    {
+      "complete": false,
+      "id": 4740,
+      "level": 18,
+      "objectives": [
+        {
+          "done": false,
+          "have": 0,
+          "need": 1,
+          "text": "Murkdeep slain: 0/1"
+        }
+      ],
+      "rewards": {
+        "xp": 1450
+      },
+      "title": "WANTED: Murkdeep!",
+      "zone": "Darkshore"
+    }
+  ],
+  "readyToTurnIn": 0,
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  }
+}

@@ -1,0 +1,125 @@
+# tool wow_shopping_list variant=all_args
+# args: {"character":"Piekasz","hours":1}
+# isError: false
+--- content[0] ---
+{
+  "budget": {
+    "canAffordAll": true,
+    "leftAfterAll": "15s 12c",
+    "steps": [
+      {
+        "cost": "37s 0c",
+        "covered": true,
+        "leftAfter": "15s 12c",
+        "what": "trainer skills"
+      }
+    ],
+    "totalCost": "37s 0c"
+  },
+  "level": 20,
+  "money": "52s 12c",
+  "note": "Vendor prices come from remembered windows (vendors) and may be old; the price in the vendor window is per pack (stack), the price of one piece is the pack price divided by its size. The server buys, teaches and repairs nothing.",
+  "order": "purchase priority: trainer skills, repair, ammo, food and materials",
+  "petFood": {
+    "foodInBags": 0,
+    "foodTypes": [
+      "Meat",
+      "Fish"
+    ],
+    "note": "there is no food in the bags that can be given to the pet (subtype Food); a hungry pet loses happiness"
+  },
+  "planningHours": 1,
+  "repair": {
+    "costNote": "no repair quote (no vendor has been opened since the gear was damaged)",
+    "lowest": "Curvewood Dagger 85.7%",
+    "needed": true,
+    "overallPercent": 85.7
+  },
+  "returnToTown": {
+    "bags": {
+      "freeSlots": 15,
+      "gainedSlotsPerHour": 0,
+      "hoursUntilFull": "no data",
+      "note": "used bag slots did not grow in the measured stretch of history",
+      "totalSlots": 16,
+      "window": "current session"
+    },
+    "durability": {
+      "lowest": "Curvewood Dagger 85.7%",
+      "overallPercent": 85.7
+    },
+    "note": "Forecasts rely on the rate from dump history (the same window as wow_progress), so they are approximations; purchases and sales between dumps distort the bag-filling rate.",
+    "returnNow": [
+      "skills to buy from the trainer (2)"
+    ],
+    "soonestHours": "no data",
+    "trainer": {
+      "availableNow": [
+        "Disengage Rank 1",
+        "Track Undead"
+      ],
+      "next": {
+        "level": 40,
+        "levelsAway": 20,
+        "skills": [
+          "Volley Rank 1"
+        ],
+        "trainers": [
+          "Einris Brightspear"
+        ]
+      }
+    }
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "trainer": {
+    "canAffordAll": true,
+    "offers": [
+      {
+        "capturedAgeMinutes": 30,
+        "capturedAt": "2026-11-15 16:26",
+        "npc": "Einris Brightspear",
+        "services": [
+          {
+            "canAfford": true,
+            "cost": "21s 0c",
+            "levelRequired": 20,
+            "name": "Disengage",
+            "rank": "Rank 1"
+          },
+          {
+            "canAfford": true,
+            "cost": "16s 0c",
+            "levelRequired": 18,
+            "name": "Track Undead"
+          }
+        ],
+        "totalCost": "37s 0c"
+      }
+    ],
+    "toLearn": [
+      {
+        "canAfford": true,
+        "cost": "16s 0c",
+        "levelRequired": 18,
+        "npcs": [
+          "Einris Brightspear"
+        ],
+        "skill": "Track Undead"
+      },
+      {
+        "canAfford": true,
+        "cost": "21s 0c",
+        "levelRequired": 20,
+        "npcs": [
+          "Einris Brightspear"
+        ],
+        "skill": "Disengage Rank 1"
+      }
+    ],
+    "totalCost": "37s 0c"
+  }
+}

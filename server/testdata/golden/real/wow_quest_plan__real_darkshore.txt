@@ -1,0 +1,75 @@
+# tool wow_quest_plan variant=real_darkshore
+# args: {"zone":"Darkshore"}
+# isError: false
+--- content[0] ---
+{
+  "byDifficulty": {
+    "green": 3,
+    "yellow": 1
+  },
+  "count": 4,
+  "grayBelow": "quests of level 16 and below are gray (green range: 5, from the game)",
+  "playerLevel": 22,
+  "readyToTurnIn": [
+    "The Powers Below [18] (Darkshore)"
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "zones": [
+    {
+      "inProgress": 3,
+      "quests": [
+        {
+          "difficulty": "green",
+          "difficultyInfo": "easy: less XP",
+          "id": 1138,
+          "level": 17,
+          "progressPercent": 0,
+          "status": "in progress",
+          "title": "Fruit of the Sea",
+          "todo": [
+            "0/6 Fine Crab Chunks"
+          ]
+        },
+        {
+          "difficulty": "green",
+          "difficultyInfo": "easy: less XP",
+          "id": 968,
+          "level": 18,
+          "progressPercent": 100,
+          "status": "ready to turn in",
+          "title": "The Powers Below"
+        },
+        {
+          "difficulty": "green",
+          "difficultyInfo": "easy: less XP",
+          "id": 966,
+          "level": 18,
+          "progressPercent": 0,
+          "status": "in progress",
+          "title": "The Tower of Althalaxx",
+          "todo": [
+            "0/4 Worn Parchment"
+          ]
+        },
+        {
+          "difficulty": "yellow",
+          "difficultyInfo": "just right",
+          "id": 986,
+          "level": 20,
+          "progressPercent": 0,
+          "status": "in progress",
+          "title": "A Lost Master",
+          "todo": [
+            "0/5 Fine Moonstalker Pelt"
+          ]
+        }
+      ],
+      "readyToTurnIn": 1,
+      "zone": "Darkshore"
+    }
+  ]
+}

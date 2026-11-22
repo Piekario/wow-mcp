@@ -1,0 +1,97 @@
+# tool wow_account_crafting variant=character
+# args: {"character":"Piekasz"}
+# isError: false
+--- content[0] ---
+{
+  "count": 1,
+  "crafters": [
+    {
+      "character": "Piekasz",
+      "professions": [
+        {
+          "capturedAgeMinutes": 30,
+          "capturedAt": "2026-11-15 16:26",
+          "maxRank": 150,
+          "name": "Leatherworking",
+          "rank": 87,
+          "recipes": [
+            {
+              "accountCanMake": 7,
+              "crafterCanMake": 7,
+              "difficulty": "trivial",
+              "itemId": 2304,
+              "name": "Light Armor Kit",
+              "reagents": [
+                {
+                  "accountHas": 7,
+                  "crafterHas": 7,
+                  "holders": [
+                    {
+                      "character": "Piekasz",
+                      "count": 7
+                    }
+                  ],
+                  "name": "Light Leather",
+                  "need": 1
+                }
+              ]
+            },
+            {
+              "accountCanMake": 0,
+              "crafterCanMake": 0,
+              "difficulty": "optimal",
+              "itemId": 4239,
+              "missing": [
+                "Coarse Thread: missing 2"
+              ],
+              "name": "Embossed Leather Gloves",
+              "reagents": [
+                {
+                  "accountHas": 7,
+                  "crafterHas": 7,
+                  "holders": [
+                    {
+                      "character": "Piekasz",
+                      "count": 7
+                    }
+                  ],
+                  "name": "Light Leather",
+                  "need": 3
+                },
+                {
+                  "accountHas": 0,
+                  "crafterHas": 0,
+                  "holders": [],
+                  "name": "Coarse Thread",
+                  "need": 2
+                }
+              ]
+            },
+            {
+              "accountCanMake": 0,
+              "crafterCanMake": 0,
+              "difficulty": "easy",
+              "itemId": 4231,
+              "missing": [
+                "item 783: missing 1"
+              ],
+              "name": "Cured Light Hide",
+              "reagents": [
+                {
+                  "accountHas": 0,
+                  "crafterHas": 0,
+                  "holders": [],
+                  "name": "item 783",
+                  "need": 1
+                }
+              ]
+            }
+          ],
+          "shown": 3,
+          "total": 3
+        }
+      ]
+    }
+  ],
+  "note": "accountCanMake = how many can be crafted from the materials in the bags and banks of all characters combined; crafterCanMake = from the crafter's own materials only. borrowFrom suggests where to send missing materials from (mail between characters on the same realm and faction; the server sends nothing). Banks show the state from the last visits. Recipes under collapsed headers of the profession window are not included in the dump."
+}

@@ -1,0 +1,285 @@
+# tool wow_character variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "auras": [
+    {
+      "duration": 600,
+      "expiresAt": 1794760450,
+      "icon": 136076,
+      "id": 13165,
+      "name": "Aspect of the Hawk"
+    },
+    {
+      "harmful": true,
+      "icon": 136135,
+      "id": 8326,
+      "name": "Ghost"
+    }
+  ],
+  "character": {
+    "addonVersion": "0.16.0",
+    "bindLocation": "Auberdine",
+    "class": "Hunter",
+    "classToken": "HUNTER",
+    "clientBuild": "70938",
+    "clientInterface": 16001,
+    "clientVersion": "1.60.1",
+    "faction": "Alliance",
+    "level": 20,
+    "locale": "enUS",
+    "mapID": 1453,
+    "maxQuests": 20,
+    "moneyCopper": 5212,
+    "name": "Piekasz",
+    "questGreenRange": 9,
+    "race": "Night Elf",
+    "raceToken": "NightElf",
+    "restedXp": 4000,
+    "resting": true,
+    "subZone": "Old Town",
+    "x": 67.9,
+    "xp": 1200,
+    "xpMax": 21300,
+    "y": 15.4,
+    "zone": "Stormwind City"
+  },
+  "currencies": [
+    {
+      "group": "Player vs. Player",
+      "id": 1901,
+      "max": 75000,
+      "name": "Honor Points",
+      "quantity": 1520
+    },
+    {
+      "group": "Player vs. Player",
+      "name": "Darkmoon Prize Ticket",
+      "quantity": 12
+    }
+  ],
+  "deaths": {
+    "count": 1,
+    "last": {
+      "ago": "30 min ago",
+      "at": "2026-11-15 16:26",
+      "level": 20,
+      "subZone": "Old Town",
+      "zone": "Stormwind City"
+    }
+  },
+  "money": "52s 12c",
+  "note": {
+    "setAgo": "30 min ago",
+    "setAt": "2026-11-15 16:26",
+    "text": "I want Deadmines today"
+  },
+  "playedTime": {
+    "thisLevel": "2 h",
+    "total": "4 d 4 h",
+    "totalSeconds": 360000
+  },
+  "professions": [
+    {
+      "maxRank": 150,
+      "name": "Skinning",
+      "rank": 96,
+      "skillID": 393
+    },
+    {
+      "maxRank": 75,
+      "name": "Mining",
+      "rank": 71,
+      "skillID": 186
+    },
+    {
+      "maxRank": 75,
+      "name": "Cooking",
+      "rank": 52,
+      "skillID": 185
+    },
+    {
+      "group": "weapon",
+      "maxRank": 100,
+      "name": "Two-Handed Swords",
+      "rank": 1,
+      "skillID": 55
+    },
+    {
+      "group": "weapon",
+      "maxRank": 100,
+      "name": "Daggers",
+      "rank": 98,
+      "skillID": 173
+    },
+    {
+      "group": "weapon",
+      "maxRank": 100,
+      "name": "Bows",
+      "rank": 100,
+      "skillID": 45
+    }
+  ],
+  "pvp": {
+    "dishonorableKills": 5,
+    "highestRank": 0,
+    "honor": 340,
+    "honorLevel": 7,
+    "honorMax": 500,
+    "honorableKills": 1234
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "stats": {
+    "agility": 32,
+    "armor": 412,
+    "attackPower": 134,
+    "critChance": 6,
+    "dodgeChance": 9.5,
+    "healthMax": 780,
+    "intellect": 34,
+    "manaMax": 1050,
+    "meleeDamageMax": 33.8,
+    "meleeDamageMin": 21.4,
+    "meleeSpeed": 1.8,
+    "parryChance": 5,
+    "rangedAttackPower": 170,
+    "rangedCritChance": 8.3,
+    "rangedDamageMax": 58.9,
+    "rangedDamageMin": 31.2,
+    "rangedSpeed": 2.5,
+    "spirit": 35,
+    "stamina": 33,
+    "strength": 31
+  },
+  "talents": {
+    "missingDescriptions": 1,
+    "nodes": [
+      {
+        "available": true,
+        "canPurchase": false,
+        "column": 1,
+        "maxRank": 5,
+        "name": "Endurance Training",
+        "posX": 1020,
+        "posY": 2130,
+        "rank": 5,
+        "row": 1,
+        "tree": "Beast Mastery"
+      },
+      {
+        "available": true,
+        "canPurchase": false,
+        "column": 2,
+        "maxRank": 2,
+        "name": "Focused Fire",
+        "posX": 1620,
+        "posY": 2130,
+        "rank": 2,
+        "row": 1,
+        "spellID": 1223755,
+        "tree": "Beast Mastery"
+      },
+      {
+        "available": true,
+        "canPurchase": true,
+        "column": 1,
+        "description": "Reduces the Mana cost of your Shots and Stings by 2%.",
+        "maxRank": 5,
+        "name": "Efficiency",
+        "posX": 5620,
+        "posY": 2130,
+        "rank": 0,
+        "row": 1,
+        "spellID": 19416,
+        "tree": "Marksmanship"
+      },
+      {
+        "available": true,
+        "canPurchase": true,
+        "column": 2,
+        "description": "Increases your critical strike chance with ranged weapons by 1%.",
+        "descriptionSource": "tooltip",
+        "maxRank": 5,
+        "name": "Lethal Shots",
+        "posX": 6220,
+        "posY": 27300,
+        "rank": 4,
+        "row": 2,
+        "spellID": 19426,
+        "tree": "Marksmanship"
+      },
+      {
+        "available": false,
+        "choices": [
+          "Wyvern Sting",
+          "Counterattack"
+        ],
+        "column": 1,
+        "maxRank": 1,
+        "name": "Wyvern Sting",
+        "posX": 9080,
+        "posY": 3940,
+        "rank": 0,
+        "row": 4,
+        "tree": "Survival"
+      },
+      {
+        "available": true,
+        "canPurchase": false,
+        "column": 2,
+        "description": "Increases your Parry chance by 1%.",
+        "descriptionSource": "tooltip",
+        "maxRank": 5,
+        "name": "Deflection",
+        "posX": 9680,
+        "posY": 2130,
+        "rank": 0,
+        "row": 1,
+        "spellID": 19295,
+        "tree": "Survival"
+      }
+    ],
+    "points": [
+      {
+        "maxRank": 5,
+        "name": "Endurance Training",
+        "rank": 5,
+        "tree": "Beast Mastery"
+      },
+      {
+        "maxRank": 2,
+        "name": "Focused Fire",
+        "rank": 2,
+        "tree": "Beast Mastery"
+      },
+      {
+        "maxRank": 5,
+        "name": "Lethal Shots",
+        "rank": 4,
+        "tree": "Marksmanship"
+      }
+    ],
+    "source": "traits",
+    "spent": 11,
+    "trees": [
+      {
+        "name": "Beast Mastery",
+        "points": 7
+      },
+      {
+        "name": "Marksmanship",
+        "points": 4
+      },
+      {
+        "name": "Survival",
+        "points": 0
+      }
+    ],
+    "unspent": 0
+  }
+}

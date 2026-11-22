@@ -1,0 +1,5 @@
+# tool wow_compare_item variant=id
+# args: {"item":"2589"}
+# isError: true
+--- content[0] ---
+Linen Cloth cannot be equipped (no equipLoc in the dump), so there is nothing to compare with

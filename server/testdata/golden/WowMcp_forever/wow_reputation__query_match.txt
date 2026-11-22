@@ -1,0 +1,21 @@
+# tool wow_reputation variant=query_match
+# args: {"query":"Darn"}
+# isError: false
+--- content[0] ---
+{
+  "count": 1,
+  "factions": [
+    {
+      "name": "Darnassus",
+      "percent": 20,
+      "progress": "1200/6000",
+      "standing": "Friendly",
+      "toNextStanding": 4800
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

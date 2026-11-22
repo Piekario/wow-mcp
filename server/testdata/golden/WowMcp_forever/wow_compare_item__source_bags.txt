@@ -1,0 +1,69 @@
+# tool wow_compare_item variant=source_bags
+# args: {"item":"Skinning","source":"bags"}
+# isError: false
+--- content[0] ---
+{
+  "comparisons": [
+    {
+      "delta": {
+        "Agility": -3,
+        "DPS": -6.2,
+        "Item Level": -14,
+        "Stamina": -2
+      },
+      "equipped": "Curvewood Dagger",
+      "equippedNumbers": {
+        "Agility": 3,
+        "DPS": 8.4,
+        "Item Level": 18,
+        "Speed": 1.6,
+        "Stamina": 2
+      },
+      "slot": "mainHand"
+    },
+    {
+      "delta": {
+        "DPS": -6.2,
+        "Item Level": -6
+      },
+      "equipped": "Webwood Slicer",
+      "equippedNumbers": {
+        "DPS": 8.4,
+        "Item Level": 10,
+        "Speed": 1.6
+      },
+      "slot": "offHand"
+    }
+  ],
+  "item": {
+    "equipLoc": "INVTYPE_WEAPON",
+    "id": 7005,
+    "itemLevel": 4,
+    "levelOk": true,
+    "name": "Skinning Knife",
+    "numbers": {
+      "DPS": 2.2,
+      "Item Level": 4,
+      "Speed": 1.6
+    },
+    "quality": "Common",
+    "requiredLevel": 1,
+    "source": "bags",
+    "subType": "Dagger",
+    "tooltip": [
+      "Skinning Knife",
+      "2 - 5 Damage | Speed 1.60"
+    ]
+  },
+  "note": "Delta = item minus equipped (positive = gain). The numbers come from the stats and tooltip in the dump; Equip/Use effects appear only in the tooltip.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "weaponSkill": {
+    "maxRank": 100,
+    "name": "Daggers",
+    "rank": 98
+  }
+}

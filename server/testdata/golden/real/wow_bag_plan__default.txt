@@ -1,0 +1,308 @@
+# tool wow_bag_plan variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "bagSlots": {
+    "free": 14,
+    "freeAfterPlan": 26,
+    "total": 60
+  },
+  "bankNote": "No saved bank (it was never opened), so it is unknown whether there is room in it for items with the bank action.",
+  "howDecided": "Rule order: quest items, ammo for the equipped weapon, materials for known recipes and profession tools, consumables, auction offer (price after the cut with a 20% margin over the vendor), possible upgrades, then selling grey and ordinary items, while trade materials and better quality go to the bank.",
+  "items": [
+    {
+      "action": "bank",
+      "count": 3,
+      "name": "Raw Longjaw Mud Snapper",
+      "reason": "trade material: in the bank it does not take bag space, and selling pays off only if you do not gather it",
+      "slots": 1,
+      "vendorValue": "3c"
+    },
+    {
+      "action": "bank",
+      "count": 10,
+      "name": "Clam Meat",
+      "reason": "trade material: in the bank it does not take bag space, and selling pays off only if you do not gather it",
+      "slots": 1,
+      "vendorValue": "1s 60c"
+    },
+    {
+      "action": "bank",
+      "count": 1,
+      "name": "Murloc Eye",
+      "reason": "trade material: in the bank it does not take bag space, and selling pays off only if you do not gather it",
+      "slots": 1,
+      "vendorValue": "16c"
+    },
+    {
+      "action": "bank",
+      "count": 1,
+      "name": "Pattern: Totemic Leather Armor",
+      "reason": "Rare quality with no saved auction price: move it to the bank and check the auction price instead of selling blind",
+      "slots": 1,
+      "vendorValue": "3s 50c"
+    },
+    {
+      "action": "bank",
+      "count": 1,
+      "name": "Pattern: Rugged Leather Pants",
+      "reason": "Uncommon quality with no saved auction price: move it to the bank and check the auction price instead of selling blind",
+      "slots": 1,
+      "vendorValue": "1s 25c"
+    },
+    {
+      "action": "bank",
+      "count": 1,
+      "name": "An Unsent Letter",
+      "reason": "quest item with no quest in the log (may be a leftover); bank it instead of discarding, because the server cannot be sure",
+      "slots": 1
+    },
+    {
+      "action": "bank",
+      "count": 1,
+      "name": "Coarse Blasting Powder",
+      "reason": "trade material: in the bank it does not take bag space, and selling pays off only if you do not gather it",
+      "slots": 1,
+      "vendorValue": "12c"
+    },
+    {
+      "action": "bank",
+      "count": 3,
+      "name": "Coarse Stone",
+      "reason": "trade material: in the bank it does not take bag space, and selling pays off only if you do not gather it",
+      "slots": 1,
+      "vendorValue": "45c"
+    },
+    {
+      "action": "bank",
+      "count": 19,
+      "name": "Rough Stone",
+      "reason": "trade material: in the bank it does not take bag space, and selling pays off only if you do not gather it",
+      "slots": 1,
+      "vendorValue": "38c"
+    },
+    {
+      "action": "bank",
+      "count": 3,
+      "name": "Light Leather",
+      "reason": "trade material: in the bank it does not take bag space, and selling pays off only if you do not gather it",
+      "slots": 1,
+      "vendorValue": "45c"
+    },
+    {
+      "action": "bank",
+      "count": 12,
+      "name": "Wool Cloth",
+      "reason": "trade material: in the bank it does not take bag space, and selling pays off only if you do not gather it",
+      "slots": 1,
+      "vendorValue": "3s 96c"
+    },
+    {
+      "action": "bank",
+      "count": 20,
+      "name": "Linen Cloth",
+      "reason": "trade material: in the bank it does not take bag space, and selling pays off only if you do not gather it",
+      "slots": 1,
+      "vendorValue": "2s 60c"
+    },
+    {
+      "action": "keep",
+      "count": 1,
+      "name": "Hearthstone",
+      "reason": "no vendor will buy it (price 0), so selling frees nothing; keep it or move it to the bank",
+      "slots": 1
+    },
+    {
+      "action": "keep",
+      "count": 3,
+      "name": "Scroll of Agility",
+      "reason": "consumable, used up in game",
+      "slots": 1,
+      "vendorValue": "1s 50c"
+    },
+    {
+      "action": "keep",
+      "count": 1,
+      "name": "Scroll of Stamina",
+      "reason": "consumable, used up in game",
+      "slots": 1,
+      "vendorValue": "37c"
+    },
+    {
+      "action": "keep",
+      "count": 4,
+      "name": "Blood Sausage",
+      "reason": "food: yours or your pet's (diet: Meat, Fish; the server has no food table, so it does not decide by name)",
+      "slots": 1,
+      "vendorValue": "1s 60c"
+    },
+    {
+      "action": "keep",
+      "count": 8,
+      "name": "Dalaran Sharp",
+      "reason": "food: yours or your pet's (diet: Meat, Fish; the server has no food table, so it does not decide by name)",
+      "slots": 1,
+      "vendorValue": "48c"
+    },
+    {
+      "action": "keep",
+      "count": 1,
+      "name": "Haunch of Meat",
+      "reason": "food: yours or your pet's (diet: Meat, Fish; the server has no food table, so it does not decide by name)",
+      "slots": 1,
+      "vendorValue": "6c"
+    },
+    {
+      "action": "keep",
+      "count": 2,
+      "name": "Ice Cold Milk",
+      "reason": "food: yours or your pet's (diet: Meat, Fish; the server has no food table, so it does not decide by name)",
+      "slots": 1,
+      "vendorValue": "12c"
+    },
+    {
+      "action": "keep",
+      "count": 10,
+      "name": "Refreshing Spring Water",
+      "reason": "food: yours or your pet's (diet: Meat, Fish; the server has no food table, so it does not decide by name)",
+      "slots": 1,
+      "vendorValue": "10c"
+    },
+    {
+      "action": "keep",
+      "count": 5,
+      "name": "Tough Jerky",
+      "reason": "food: yours or your pet's (diet: Meat, Fish; the server has no food table, so it does not decide by name)",
+      "slots": 1,
+      "vendorValue": "5c"
+    },
+    {
+      "action": "keep",
+      "count": 7,
+      "name": "Lodestone",
+      "reason": "consumable, used up in game",
+      "slots": 1
+    },
+    {
+      "action": "keep",
+      "count": 1,
+      "name": "Mathystral Amulet Fragment",
+      "reason": "consumable, used up in game",
+      "slots": 1
+    },
+    {
+      "action": "keep",
+      "count": 1,
+      "name": "Crude Scope",
+      "reason": "consumable, used up in game",
+      "slots": 1,
+      "vendorValue": "1s 25c"
+    },
+    {
+      "action": "keep",
+      "count": 1,
+      "name": "Rumi of Gnomeregan: The Collected Works",
+      "reason": "no vendor will buy it (price 0), so selling frees nothing; keep it or move it to the bank",
+      "slots": 1
+    },
+    {
+      "action": "keep",
+      "count": 2124,
+      "name": "Sharp Arrow",
+      "reason": "ammo for the equipped ranged weapon",
+      "slots": 11
+    },
+    {
+      "action": "keep",
+      "count": 1,
+      "name": "Blump Family Fishing Pole",
+      "reason": "profession tool: Fishing",
+      "slots": 1,
+      "vendorValue": "1s 87c"
+    },
+    {
+      "action": "keep",
+      "count": 1,
+      "name": "Skinning Knife",
+      "reason": "profession tool: Skinning",
+      "slots": 1,
+      "vendorValue": "2c"
+    },
+    {
+      "action": "keep",
+      "count": 1,
+      "name": "Mining Pick",
+      "reason": "profession tool: Mining",
+      "slots": 1,
+      "vendorValue": "2c"
+    },
+    {
+      "action": "keep",
+      "count": 1,
+      "name": "Book: The Powers Below",
+      "reason": "quest item: mentioned in a quest from the log",
+      "slots": 1
+    },
+    {
+      "action": "keep",
+      "count": 1,
+      "name": "Blood-Stained Letter",
+      "reason": "quest item: mentioned in a quest from the log",
+      "slots": 1
+    },
+    {
+      "action": "keep",
+      "count": 1,
+      "name": "Glyph of Azora",
+      "reason": "quest item: mentioned in a quest from the log",
+      "slots": 1
+    },
+    {
+      "action": "keep",
+      "count": 1,
+      "name": "Gnoam Sprecklesprocket",
+      "reason": "quest item: mentioned in a quest from the log",
+      "slots": 1
+    },
+    {
+      "action": "keep",
+      "count": 1,
+      "name": "Piercing Axe",
+      "reason": "may be an upgrade for slot mainHand (compare: wow_compare_item)",
+      "slots": 1,
+      "vendorValue": "15s 46c"
+    },
+    {
+      "action": "keep",
+      "count": 1,
+      "name": "Hollee's Note",
+      "reason": "quest item: mentioned in a quest from the log",
+      "slots": 1
+    },
+    {
+      "action": "keep",
+      "count": 1,
+      "name": "Parker's Lunch",
+      "reason": "quest item: mentioned in a quest from the log",
+      "slots": 1
+    }
+  ],
+  "limits": "The server cannot see what your other characters need, nor does it know every recipe (only those from opened profession windows, wow_recipes). The dump does not report binding (Soulbound) of bag items, so auctions are only a suggestion. The plan has no destroy or discard action; nothing is sold or removed, you make the decisions in game.",
+  "slotsFreed": 12,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "summary": {
+    "bank": {
+      "items": 12,
+      "slots": 12
+    },
+    "keep": {
+      "items": 24,
+      "slots": 34
+    }
+  }
+}

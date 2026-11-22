@@ -1,0 +1,44 @@
+# tool wow_spells variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "spells": [
+    {
+      "id": 6603,
+      "name": "Auto Attack",
+      "tab": "General"
+    },
+    {
+      "id": 136,
+      "name": "Mend Pet",
+      "rank": "Rank 2",
+      "tab": "Beast Mastery"
+    },
+    {
+      "icon": 136076,
+      "id": 13165,
+      "name": "Aspect of the Hawk",
+      "rank": "Rank 2",
+      "tab": "Beast Mastery"
+    },
+    {
+      "icon": 135130,
+      "id": 19434,
+      "name": "Aimed Shot",
+      "rank": "Rank 1",
+      "tab": "Marksmanship"
+    },
+    {
+      "id": 1130,
+      "name": "Hunter's Mark",
+      "rank": "Rank 1",
+      "tab": "Marksmanship"
+    }
+  ]
+}

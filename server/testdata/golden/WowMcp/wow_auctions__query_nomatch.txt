@@ -1,0 +1,31 @@
+# tool wow_auctions variant=query_nomatch
+# args: {"query":"Zzzz"}
+# isError: false
+--- content[0] ---
+{
+  "assumptions": "Profit is computed from the lowest buyout price per unit minus the 5% auction house cut. The listing deposit is lost if the item does not sell and is not counted here. Bound (Soulbound) and quest items cannot be listed.",
+  "count": 0,
+  "lastSearchPartial": "The last search had 120 results, and a page of 6 was saved. The lowest price may be on another page; sort the results by price.",
+  "lastVisit": "30 min ago",
+  "myAuctions": {
+    "auctions": [
+      {
+        "bid": "2s 0c",
+        "buyout": "4s 0c",
+        "count": 10,
+        "name": "Copper Ore",
+        "sold": true
+      }
+    ],
+    "checkedAgo": "30 min",
+    "count": 1,
+    "sold": 1
+  },
+  "prices": [],
+  "sellOnAH": [],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

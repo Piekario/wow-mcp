@@ -1,0 +1,75 @@
+# prompt dungeon_finder variant=default
+# args: {}
+# description: Which dungeons fit the character's level now, which quests from the log can be done along the way, and how to prepare.
+--- message[0] role=user ---
+Recommend 1-3 dungeons for now from fitNow, starting with those the character has quests for in the log. For each: where the entrance is, which quests to turn in or do along the way (and which are worth picking up, if you know them for certain), what to expect. Mention soon if it is close. Check preparation: gear repairs, bag space, and if there is a group, its composition and roles. If source = classic, point out that the level ranges are approximate.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "bagSpace": {
+    "freeSlots": 15,
+    "totalSlots": 16
+  },
+  "class": "Hunter",
+  "dungeons": {
+    "fitNow": [
+      {
+        "levels": "17-24",
+        "name": "Wailing Caverns",
+        "zone": "The Barrens"
+      },
+      {
+        "levels": "17-26",
+        "name": "The Deadmines",
+        "zone": "Westfall"
+      }
+    ],
+    "level": 20,
+    "soon": [
+      {
+        "levels": "22-30",
+        "levelsToGo": 1,
+        "name": "Shadowfang Keep",
+        "zone": "Silverpine Forest"
+      },
+      {
+        "levels": "24-32",
+        "levelsToGo": 3,
+        "name": "Blackfathom Deeps",
+        "zone": "Ashenvale"
+      },
+      {
+        "levels": "24-32",
+        "levelsToGo": 3,
+        "name": "The Stockade",
+        "note": "entrance in the Alliance capital",
+        "zone": "Stormwind City"
+      }
+    ],
+    "source": "classic",
+    "sourceNote": "The client did not report a dungeon list, so the ranges come from the classic game table and are approximate; Forever may change them. If the game has a group finder tool, open it once and type /mcp reload."
+  },
+  "durability": {
+    "lowest": "Curvewood Dagger 85.7%",
+    "overallPercent": 85.7
+  },
+  "equipment": {
+    "mainHand": "Curvewood Dagger",
+    "offHand": "Webwood Slicer",
+    "ranged": "Light Hunting Bow"
+  },
+  "faction": "Alliance",
+  "level": 20,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "zone": "Stormwind City"
+}
+```
+

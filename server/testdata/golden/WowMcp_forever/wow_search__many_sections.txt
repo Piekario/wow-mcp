@@ -1,0 +1,796 @@
+# tool wow_search variant=many_sections
+# args: {"query":"a"}
+# isError: false
+--- content[0] ---
+{
+  "groups": [
+    {
+      "count": 6,
+      "hits": [
+        {
+          "label": "Cave Mushrooms",
+          "matchedIn": "title",
+          "path": [
+            "quests",
+            "Cave Mushrooms"
+          ],
+          "summary": "level 17, Darkshore"
+        },
+        {
+          "label": "Scaber Stalk: 5/5",
+          "matchedIn": "text",
+          "path": [
+            "quests",
+            "Cave Mushrooms",
+            "Scaber Stalk: 5/5"
+          ]
+        },
+        {
+          "label": "Death Cap: 0/1",
+          "matchedIn": "text",
+          "path": [
+            "quests",
+            "Cave Mushrooms",
+            "Death Cap: 0/1"
+          ]
+        },
+        {
+          "label": "Curvewood Dagger",
+          "matchedIn": "name",
+          "path": [
+            "quests",
+            "Cave Mushrooms",
+            "Curvewood Dagger"
+          ]
+        },
+        {
+          "label": "WANTED: Murkdeep!",
+          "matchedIn": "title",
+          "path": [
+            "quests",
+            "WANTED: Murkdeep!"
+          ],
+          "summary": "level 18, Darkshore"
+        },
+        {
+          "label": "Murkdeep slain: 0/1",
+          "matchedIn": "text",
+          "path": [
+            "quests",
+            "WANTED: Murkdeep!",
+            "Murkdeep slain: 0/1"
+          ]
+        }
+      ],
+      "section": "quests",
+      "shown": 6,
+      "truncated": false
+    },
+    {
+      "count": 2,
+      "hits": [
+        {
+          "label": "The Defias Brotherhood",
+          "matchedIn": "title",
+          "path": [
+            "questOffer",
+            "The Defias Brotherhood"
+          ],
+          "summary": "Gryan Stoutmantle"
+        },
+        {
+          "label": "Curvewood Dagger",
+          "matchedIn": "name",
+          "path": [
+            "questOffer",
+            "The Defias Brotherhood",
+            "Curvewood Dagger"
+          ]
+        }
+      ],
+      "section": "questOffer",
+      "shown": 2,
+      "truncated": false
+    },
+    {
+      "count": 2,
+      "hits": [
+        {
+          "label": "Red Leather Bandanas",
+          "matchedIn": "title",
+          "path": [
+            "questTurnIn",
+            "Red Leather Bandanas"
+          ],
+          "summary": "Gryan Stoutmantle"
+        },
+        {
+          "label": "Curvewood Dagger",
+          "matchedIn": "name",
+          "path": [
+            "questTurnIn",
+            "Red Leather Bandanas",
+            "Curvewood Dagger"
+          ]
+        }
+      ],
+      "section": "questTurnIn",
+      "shown": 2,
+      "truncated": false
+    },
+    {
+      "count": 8,
+      "hits": [
+        {
+          "label": "Backpack",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Backpack"
+          ]
+        },
+        {
+          "label": "Linen Cloth",
+          "matchedIn": "type",
+          "matchedText": "Trade Goods",
+          "path": [
+            "bags",
+            "Backpack",
+            "Linen Cloth"
+          ],
+          "summary": "count 14, Trade Goods, Cloth"
+        },
+        {
+          "label": "Hearthstone",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Backpack",
+            "Hearthstone"
+          ],
+          "summary": "count 1, Trade Goods, Cloth"
+        },
+        {
+          "label": "Light Leather",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Backpack",
+            "Light Leather"
+          ],
+          "summary": "count 7, Trade Goods, Cloth"
+        },
+        {
+          "label": "Skinning Knife",
+          "matchedIn": "type",
+          "matchedText": "Weapon",
+          "path": [
+            "bags",
+            "Backpack",
+            "Skinning Knife"
+          ],
+          "summary": "count 1, Weapon, Dagger"
+        },
+        {
+          "label": "Small Brown Pouch",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Small Brown Pouch"
+          ]
+        },
+        {
+          "label": "Tough Hunk of Bread",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Small Brown Pouch",
+            "Tough Hunk of Bread"
+          ],
+          "summary": "count 5, Trade Goods, Cloth"
+        },
+        {
+          "label": "Sharp Arrow",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Medium Quiver",
+            "Sharp Arrow"
+          ],
+          "summary": "count 200, Trade Goods, Cloth"
+        }
+      ],
+      "section": "bags",
+      "shown": 8,
+      "truncated": false
+    },
+    {
+      "count": 2,
+      "hits": [
+        {
+          "label": "Bank",
+          "matchedIn": "name",
+          "path": [
+            "bank",
+            "Bank"
+          ]
+        },
+        {
+          "label": "Linen Cloth",
+          "matchedIn": "type",
+          "matchedText": "Trade Goods",
+          "path": [
+            "bank",
+            "Bank",
+            "Linen Cloth"
+          ],
+          "summary": "count 20, Trade Goods, Cloth"
+        }
+      ],
+      "section": "bank",
+      "shown": 2,
+      "truncated": false
+    },
+    {
+      "count": 4,
+      "hits": [
+        {
+          "label": "Curvewood Dagger",
+          "matchedIn": "name",
+          "path": [
+            "equipment",
+            "Curvewood Dagger"
+          ],
+          "summary": "mainHand, itemLevel 18, Weapon"
+        },
+        {
+          "label": "Webwood Slicer",
+          "matchedIn": "slot",
+          "matchedText": "offHand",
+          "path": [
+            "equipment",
+            "Webwood Slicer"
+          ],
+          "summary": "offHand, itemLevel 10, Trade Goods"
+        },
+        {
+          "label": "Light Hunting Bow",
+          "matchedIn": "slot",
+          "matchedText": "ranged",
+          "path": [
+            "equipment",
+            "Light Hunting Bow"
+          ],
+          "summary": "ranged, itemLevel 10, Trade Goods"
+        },
+        {
+          "label": "Sharp Arrow",
+          "matchedIn": "name",
+          "path": [
+            "equipment",
+            "Sharp Arrow"
+          ],
+          "summary": "ammo, itemLevel 10, Trade Goods"
+        }
+      ],
+      "section": "equipment",
+      "shown": 4,
+      "truncated": false
+    },
+    {
+      "count": 5,
+      "hits": [
+        {
+          "label": "Auto Attack",
+          "matchedIn": "name",
+          "path": [
+            "spells",
+            "Auto Attack"
+          ],
+          "summary": "General"
+        },
+        {
+          "label": "Mend Pet",
+          "matchedIn": "rank",
+          "matchedText": "Rank 2",
+          "path": [
+            "spells",
+            "Mend Pet"
+          ],
+          "summary": "Rank 2, Beast Mastery"
+        },
+        {
+          "label": "Aspect of the Hawk",
+          "matchedIn": "name",
+          "path": [
+            "spells",
+            "Aspect of the Hawk"
+          ],
+          "summary": "Rank 2, Beast Mastery"
+        },
+        {
+          "label": "Aimed Shot",
+          "matchedIn": "name",
+          "path": [
+            "spells",
+            "Aimed Shot"
+          ],
+          "summary": "Rank 1, Marksmanship"
+        },
+        {
+          "label": "Hunter's Mark",
+          "matchedIn": "name",
+          "path": [
+            "spells",
+            "Hunter's Mark"
+          ],
+          "summary": "Rank 1, Marksmanship"
+        }
+      ],
+      "section": "spells",
+      "shown": 5,
+      "truncated": false
+    },
+    {
+      "count": 3,
+      "hits": [
+        {
+          "label": "Disengage",
+          "matchedIn": "name",
+          "path": [
+            "trainer",
+            "Einris Brightspear",
+            "Disengage"
+          ],
+          "summary": "Rank 1, available, costCopper 21s 0c, levelRequired 20"
+        },
+        {
+          "label": "Track Undead",
+          "matchedIn": "name",
+          "path": [
+            "trainer",
+            "Einris Brightspear",
+            "Track Undead"
+          ],
+          "summary": "available, costCopper 16s 0c, levelRequired 18"
+        },
+        {
+          "label": "Volley",
+          "matchedIn": "rank",
+          "matchedText": "Rank 1",
+          "path": [
+            "trainer",
+            "Einris Brightspear",
+            "Volley"
+          ],
+          "summary": "Rank 1, unavailable, costCopper 18g 0s 0c, levelRequired 40"
+        }
+      ],
+      "section": "trainer",
+      "shown": 3,
+      "truncated": false
+    },
+    {
+      "count": 2,
+      "hits": [
+        {
+          "label": "Sharp Arrow",
+          "matchedIn": "name",
+          "path": [
+            "vendor",
+            "Einris Brightspear",
+            "Sharp Arrow"
+          ],
+          "summary": "priceCopper 3s 0c, Trade Goods, requiredLevel 1"
+        },
+        {
+          "label": "Laminated Recurve Bow",
+          "matchedIn": "name",
+          "path": [
+            "vendor",
+            "Einris Brightspear",
+            "Laminated Recurve Bow"
+          ],
+          "summary": "priceCopper 72s 95c, Weapon, requiredLevel 13"
+        }
+      ],
+      "section": "vendor",
+      "shown": 2,
+      "truncated": false
+    },
+    {
+      "count": 2,
+      "hits": [
+        {
+          "label": "Sharp Arrow",
+          "matchedIn": "name",
+          "path": [
+            "vendors",
+            "Laird",
+            "Sharp Arrow"
+          ],
+          "summary": "priceCopper 3s 0c, Trade Goods, requiredLevel 1"
+        },
+        {
+          "label": "Laminated Recurve Bow",
+          "matchedIn": "name",
+          "path": [
+            "vendors",
+            "Laird",
+            "Laminated Recurve Bow"
+          ],
+          "summary": "priceCopper 72s 95c, Weapon, requiredLevel 13"
+        }
+      ],
+      "section": "vendors",
+      "shown": 2,
+      "truncated": false
+    },
+    {
+      "count": 3,
+      "hits": [
+        {
+          "label": "Disengage",
+          "matchedIn": "name",
+          "path": [
+            "trainers",
+            "Astaia",
+            "Disengage"
+          ],
+          "summary": "Rank 1, available, costCopper 21s 0c, levelRequired 20"
+        },
+        {
+          "label": "Track Undead",
+          "matchedIn": "name",
+          "path": [
+            "trainers",
+            "Astaia",
+            "Track Undead"
+          ],
+          "summary": "available, costCopper 16s 0c, levelRequired 18"
+        },
+        {
+          "label": "Volley",
+          "matchedIn": "rank",
+          "matchedText": "Rank 1",
+          "path": [
+            "trainers",
+            "Astaia",
+            "Volley"
+          ],
+          "summary": "Rank 1, unavailable, costCopper 18g 0s 0c, levelRequired 40"
+        }
+      ],
+      "section": "trainers",
+      "shown": 3,
+      "truncated": false
+    },
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Cat",
+          "matchedIn": "name",
+          "path": [
+            "stable",
+            "Cat"
+          ],
+          "summary": "Cat, level 19, slot 1"
+        }
+      ],
+      "section": "stable",
+      "shown": 1,
+      "truncated": false
+    },
+    {
+      "count": 6,
+      "hits": [
+        {
+          "label": "Leatherworking",
+          "matchedIn": "name",
+          "path": [
+            "recipes",
+            "Leatherworking"
+          ]
+        },
+        {
+          "label": "Light Armor Kit",
+          "matchedIn": "name",
+          "path": [
+            "recipes",
+            "Leatherworking",
+            "Light Armor Kit"
+          ],
+          "summary": "trivial, canCraft 7"
+        },
+        {
+          "label": "Light Leather",
+          "matchedIn": "name",
+          "path": [
+            "recipes",
+            "Leatherworking",
+            "Light Armor Kit",
+            "Light Leather"
+          ],
+          "summary": "have 7, need 1"
+        },
+        {
+          "label": "Embossed Leather Gloves",
+          "matchedIn": "name",
+          "path": [
+            "recipes",
+            "Leatherworking",
+            "Embossed Leather Gloves"
+          ],
+          "summary": "optimal"
+        },
+        {
+          "label": "Light Leather",
+          "matchedIn": "name",
+          "path": [
+            "recipes",
+            "Leatherworking",
+            "Embossed Leather Gloves",
+            "Light Leather"
+          ],
+          "summary": "have 7, need 3"
+        },
+        {
+          "label": "Coarse Thread",
+          "matchedIn": "name",
+          "path": [
+            "recipes",
+            "Leatherworking",
+            "Embossed Leather Gloves",
+            "Coarse Thread"
+          ],
+          "summary": "have 0, need 2"
+        }
+      ],
+      "section": "recipes",
+      "shown": 6,
+      "truncated": false
+    },
+    {
+      "count": 2,
+      "hits": [
+        {
+          "label": "Auction successful: Copper Ore",
+          "matchedIn": "subject",
+          "path": [
+            "mail",
+            "Auction successful: Copper Ore"
+          ],
+          "summary": "Auction House, moneyCopper 54s 0c"
+        },
+        {
+          "label": "mats",
+          "matchedIn": "subject",
+          "path": [
+            "mail",
+            "mats"
+          ],
+          "summary": "Altpiekasz"
+        }
+      ],
+      "section": "mail",
+      "shown": 2,
+      "truncated": false
+    },
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Darnassus",
+          "matchedIn": "name",
+          "path": [
+            "reputation",
+            "Darnassus"
+          ],
+          "summary": "Friendly, value 4200"
+        }
+      ],
+      "section": "reputation",
+      "shown": 1,
+      "truncated": false
+    },
+    {
+      "count": 4,
+      "hits": [
+        {
+          "label": "Curvewood Dagger",
+          "matchedIn": "name",
+          "path": [
+            "auctions",
+            "Einris Brightspear",
+            "Curvewood Dagger"
+          ],
+          "summary": "minBuyout 90s 0c, minBid 70s 0c, quantity 1"
+        },
+        {
+          "label": "Light Leather",
+          "matchedIn": "name",
+          "path": [
+            "auctions",
+            "Einris Brightspear",
+            "Light Leather"
+          ],
+          "summary": "minBuyout 25c, quantity 150"
+        },
+        {
+          "label": "Ranger's Shortbow",
+          "matchedIn": "name",
+          "path": [
+            "auctions",
+            "Einris Brightspear",
+            "Ranger's Shortbow"
+          ],
+          "summary": "minBuyout 31s 0c, quantity 1"
+        },
+        {
+          "label": "Silk Thread",
+          "matchedIn": "name",
+          "path": [
+            "auctions",
+            "Einris Brightspear",
+            "Silk Thread"
+          ],
+          "summary": "minBuyout 40c, quantity 80"
+        }
+      ],
+      "section": "auctions",
+      "shown": 4,
+      "truncated": false
+    },
+    {
+      "count": 2,
+      "hits": [
+        {
+          "label": "Two-Handed Swords",
+          "matchedIn": "name",
+          "path": [
+            "professions",
+            "Two-Handed Swords"
+          ],
+          "summary": "rank 1, maxRank 100"
+        },
+        {
+          "label": "Daggers",
+          "matchedIn": "name",
+          "path": [
+            "professions",
+            "Daggers"
+          ],
+          "summary": "rank 98, maxRank 100"
+        }
+      ],
+      "section": "professions",
+      "shown": 2,
+      "truncated": false
+    },
+    {
+      "count": 2,
+      "hits": [
+        {
+          "label": "Honor Points",
+          "matchedIn": "group",
+          "matchedText": "Player vs. Player",
+          "path": [
+            "currencies",
+            "Honor Points"
+          ],
+          "summary": "quantity 1520, Player vs. Player"
+        },
+        {
+          "label": "Darkmoon Prize Ticket",
+          "matchedIn": "name",
+          "path": [
+            "currencies",
+            "Darkmoon Prize Ticket"
+          ],
+          "summary": "quantity 12, Player vs. Player"
+        }
+      ],
+      "section": "currencies",
+      "shown": 2,
+      "truncated": false
+    },
+    {
+      "count": 2,
+      "hits": [
+        {
+          "label": "Assist",
+          "matchedIn": "name",
+          "path": [
+            "macros",
+            "Assist"
+          ],
+          "summary": "account"
+        },
+        {
+          "label": "Feed",
+          "matchedIn": "body",
+          "matchedText": "/cast Feed Pet",
+          "path": [
+            "macros",
+            "Feed"
+          ],
+          "summary": "character"
+        }
+      ],
+      "section": "macros",
+      "shown": 2,
+      "truncated": false
+    },
+    {
+      "count": 3,
+      "hits": [
+        {
+          "label": "Auberdine, Darkshore",
+          "matchedIn": "name",
+          "path": [
+            "flightPaths",
+            "Einris Brightspear",
+            "Auberdine, Darkshore"
+          ],
+          "summary": "current"
+        },
+        {
+          "label": "Rut'theran Village, Teldrassil",
+          "matchedIn": "name",
+          "path": [
+            "flightPaths",
+            "Einris Brightspear",
+            "Rut'theran Village, Teldrassil"
+          ],
+          "summary": "reachable"
+        },
+        {
+          "label": "Astranaar, Ashenvale",
+          "matchedIn": "name",
+          "path": [
+            "flightPaths",
+            "Einris Brightspear",
+            "Astranaar, Ashenvale"
+          ],
+          "summary": "unreachable"
+        }
+      ],
+      "section": "flightPaths",
+      "shown": 3,
+      "truncated": false
+    }
+  ],
+  "note": "Bank, vendors, trainers, stable, quest windows, recipes, mail and auctions are the state from the last visits to those windows (check their age in the relevant tools); loot is the loot since the previous save.",
+  "query": "a",
+  "searched": [
+    "quests",
+    "questOffer",
+    "questTurnIn",
+    "bags",
+    "bank",
+    "equipment",
+    "spells",
+    "trainer",
+    "vendor",
+    "vendors",
+    "trainers",
+    "loot",
+    "stable",
+    "recipes",
+    "mail",
+    "reputation",
+    "auctions",
+    "professions",
+    "currencies",
+    "macros",
+    "flightPaths"
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "totalHits": 62,
+  "truncated": false
+}

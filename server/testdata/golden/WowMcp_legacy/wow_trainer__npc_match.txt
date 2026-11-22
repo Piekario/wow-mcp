@@ -1,0 +1,16 @@
+# tool wow_trainer variant=npc_match
+# args: {"npc":"astaia"}
+# isError: false
+--- content[0] ---
+{
+  "known": [
+    "Einris Brightspear"
+  ],
+  "money": "52s 12c",
+  "note": "I do not remember the trainer astaia. Remembered ones are in the known field; open that trainer's window in game and type /mcp reload.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

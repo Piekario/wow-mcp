@@ -1,0 +1,5 @@
+# tool wow_quest_plan variant=default
+# args: {}
+# isError: true
+--- content[0] ---
+cannot open file "<FILE>": stat <FILE>: no such file or directory

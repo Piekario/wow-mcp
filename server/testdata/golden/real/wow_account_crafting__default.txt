@@ -1,0 +1,13 @@
+# tool wow_account_crafting variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "count": 0,
+  "crafters": [],
+  "hint": "These characters have no saved recipes: log in on them, open the profession window (e.g. Leatherworking) and type /mcp reload.",
+  "note": "No saved recipes on the account. Open the profession window in game, then type /mcp reload. Each profession is saved separately.",
+  "withoutRecipes": [
+    "Piekasz-CAMWOW EU4 Realm 7 PvE"
+  ]
+}

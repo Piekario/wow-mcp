@@ -1,0 +1,37 @@
+# tool wow_section variant=section_actionBars
+# args: {"section":"actionBars"}
+# isError: false
+--- content[0] ---
+{
+  "actionBars": [
+    {
+      "bar": 1,
+      "button": 1,
+      "id": 3044,
+      "key": "1",
+      "kind": "spell",
+      "name": "Arcane Shot",
+      "slot": 1
+    },
+    {
+      "bar": 1,
+      "button": 2,
+      "id": 1,
+      "kind": "macro",
+      "name": "Assist",
+      "slot": 2
+    },
+    {
+      "bar": 2,
+      "button": 1,
+      "id": 4540,
+      "kind": "item",
+      "slot": 13
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

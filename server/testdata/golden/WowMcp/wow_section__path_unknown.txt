@@ -1,0 +1,5 @@
+# tool wow_section variant=path_unknown
+# args: {"path":"nope","section":"character"}
+# isError: true
+--- content[0] ---
+section character, path "nope": no key "nope" at the section root. Keys there: addonVersion, bindLocation, class, classToken, clientBuild, clientInterface, clientVersion, faction, level, locale, mapID, moneyCopper, name, race, raceToken, restedXp, resting, subZone, x, xp, xpMax, y, zone

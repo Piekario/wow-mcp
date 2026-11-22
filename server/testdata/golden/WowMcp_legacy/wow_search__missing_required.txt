@@ -1,0 +1,5 @@
+# tool wow_search variant=missing_required
+# args: {}
+# isError: true
+--- content[0] ---
+validating "arguments": validating root: required: missing properties: ["query"]

@@ -1,0 +1,136 @@
+# tool wow_character variant=named
+# args: {"character":"Piekasz"}
+# isError: false
+--- content[0] ---
+{
+  "auras": [],
+  "character": {
+    "addonVersion": "0.16.0",
+    "bindLocation": "Auberdine",
+    "class": "Hunter",
+    "classToken": "HUNTER",
+    "clientBuild": "70938",
+    "clientInterface": 16001,
+    "clientVersion": "1.60.1",
+    "faction": "Alliance",
+    "level": 20,
+    "locale": "enUS",
+    "mapID": 1453,
+    "moneyCopper": 5212,
+    "name": "Piekasz",
+    "race": "Night Elf",
+    "raceToken": "NightElf",
+    "restedXp": 4000,
+    "resting": true,
+    "subZone": "Old Town",
+    "x": 67.9,
+    "xp": 1200,
+    "xpMax": 21300,
+    "y": 15.4,
+    "zone": "Stormwind City"
+  },
+  "money": "52s 12c",
+  "playedTime": {
+    "thisLevel": "2 h",
+    "total": "4 d 4 h",
+    "totalSeconds": 360000
+  },
+  "professions": [
+    {
+      "maxRank": 150,
+      "name": "Skinning",
+      "rank": 96,
+      "skillID": 393
+    },
+    {
+      "maxRank": 75,
+      "name": "Mining",
+      "rank": 71,
+      "skillID": 186
+    },
+    {
+      "maxRank": 75,
+      "name": "Cooking",
+      "rank": 52,
+      "skillID": 185
+    }
+  ],
+  "pvp": {
+    "dishonorableKills": 5,
+    "highestRank": 0,
+    "honor": 340,
+    "honorLevel": 7,
+    "honorMax": 500,
+    "honorableKills": 1234,
+    "rank": 4,
+    "rankName": "Knight"
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "stats": [],
+  "talents": {
+    "nodes": [
+      {
+        "column": 1,
+        "maxRank": 5,
+        "name": "Endurance Training",
+        "prereqMet": true,
+        "rank": 5,
+        "row": 1,
+        "tree": "Beast Mastery"
+      },
+      {
+        "column": 1,
+        "maxRank": 2,
+        "name": "Focused Fire",
+        "prereqMet": true,
+        "rank": 2,
+        "row": 2,
+        "tree": "Beast Mastery"
+      },
+      {
+        "column": 1,
+        "maxRank": 2,
+        "name": "Improved Revive Pet",
+        "prereqMet": false,
+        "rank": 0,
+        "row": 3,
+        "tree": "Beast Mastery"
+      }
+    ],
+    "points": [
+      {
+        "maxRank": 5,
+        "name": "Endurance Training",
+        "rank": 5,
+        "tree": "Beast Mastery"
+      },
+      {
+        "maxRank": 2,
+        "name": "Focused Fire",
+        "rank": 2,
+        "tree": "Beast Mastery"
+      }
+    ],
+    "source": "classic",
+    "spent": 7,
+    "trees": [
+      {
+        "name": "Beast Mastery",
+        "points": 7
+      },
+      {
+        "name": "Marksmanship",
+        "points": 0
+      },
+      {
+        "name": "Survival",
+        "points": 0
+      }
+    ],
+    "unspent": 1
+  }
+}

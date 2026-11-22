@@ -1,0 +1,31 @@
+# tool wow_goal_set variant=gold
+# args: {"target":10,"type":"gold"}
+# isError: false
+--- content[0] ---
+{
+  "added": {
+    "id": "g2",
+    "type": "gold",
+    "character": "Piekasz",
+    "target": 100000
+  },
+  "file": "<GOALS>",
+  "goal": "Gold: 10g 0s 0c",
+  "progress": {
+    "current": "52s 12c",
+    "done": false,
+    "eta": {
+      "assumption": "this is the change in balance (it includes spending), not income; it will change when you start spending or earning differently",
+      "basis": "gold balance: 12s 50c per hour of play (current session, play time from /played)",
+      "duration": "3 d 3 h",
+      "playHours": 75.8,
+      "sessionLength": "on average 2 h of play per session from history",
+      "sessions": 37.9
+    },
+    "goal": "Gold: 10g 0s 0c",
+    "id": "g2",
+    "missing": "9g 47s 88c",
+    "percent": 5.2,
+    "type": "gold"
+  }
+}

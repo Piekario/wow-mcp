@@ -1,0 +1,163 @@
+# prompt session_summary variant=default
+# args: {}
+# description: A summary of the last game session: XP and gold gained, pace per hour, quests turned in, new items and spells, time to level. Combines wow_progress and wow_changes since the start of the session.
+--- message[0] role=user ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game. Start your answer with this information.
+
+Summarize the last game session in a few sentences: what was achieved (XP, level-ups, gold, quests turned in, new items and spells), what the pace per hour was and how much is left to the next level. End with one piece of advice for the next session.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "changes": {
+    "bags": {
+      "gained": [
+        {
+          "after": 14,
+          "before": 0,
+          "change": 14,
+          "id": 2589,
+          "name": "Linen Cloth"
+        }
+      ],
+      "lost": [
+        {
+          "after": 0,
+          "before": 1,
+          "change": -1,
+          "id": 99999,
+          "name": "Old Scroll"
+        }
+      ]
+    },
+    "deaths": {
+      "after": 1,
+      "before": 0,
+      "new": 1
+    },
+    "elapsed": "2 h",
+    "experience": {
+      "levelAfter": 20,
+      "levelBefore": 19,
+      "levelUp": true,
+      "xpAfter": 1200,
+      "xpBefore": 900,
+      "xpGained": 21600
+    },
+    "from": "2026-11-15 14:26",
+    "history": [
+      "2026-11-15 14:26",
+      "2026-11-15 15:26",
+      "2026-11-15 16:26"
+    ],
+    "money": {
+      "after": "52s 12c",
+      "before": "27s 12c",
+      "change": "+25s 0c"
+    },
+    "playedBetween": "2 h",
+    "quests": {
+      "completedCountChange": 1,
+      "new": [
+        {
+          "id": 947,
+          "title": "Cave Mushrooms",
+          "zone": "Darkshore"
+        }
+      ]
+    },
+    "to": "2026-11-15 16:26"
+  },
+  "character": {
+    "addonVersion": "0.16.0",
+    "bindLocation": "Auberdine",
+    "class": "Hunter",
+    "classToken": "HUNTER",
+    "clientBuild": "70938",
+    "clientInterface": 16001,
+    "clientVersion": "1.60.1",
+    "faction": "Alliance",
+    "level": 20,
+    "locale": "enUS",
+    "mapID": 1453,
+    "maxQuests": 20,
+    "moneyCopper": 5212,
+    "name": "Piekasz",
+    "questGreenRange": 9,
+    "race": "Night Elf",
+    "raceToken": "NightElf",
+    "restedXp": 4000,
+    "resting": true,
+    "subZone": "Old Town",
+    "x": 67.9,
+    "xp": 1200,
+    "xpMax": 21300,
+    "y": 15.4,
+    "zone": "Stormwind City"
+  },
+  "progress": {
+    "levelUps": [
+      {
+        "level": 20,
+        "playedAt": "4 d 3 h",
+        "seenAt": "2026-11-15 15:26"
+      }
+    ],
+    "nextLevel": {
+      "etaAtOverallRate": "1 h 51 min",
+      "etaAtSessionRate": "1 h 51 min",
+      "level": 21,
+      "percent": 5.6,
+      "restedNote": "rested XP doubles the XP from monsters until it runs out, so the real time will be shorter",
+      "restedXp": 4000,
+      "xpToGo": 20100
+    },
+    "overall": {
+      "basis": "play time from /played",
+      "deaths": 1,
+      "duration": "2 h",
+      "from": "2026-11-15 14:26",
+      "levelsGained": 1,
+      "moneyChange": "+25s 0c",
+      "moneyPerHour": "+12s 50c",
+      "questsTurnedIn": 1,
+      "snapshots": 3,
+      "to": "2026-11-15 16:26",
+      "window": "whole history",
+      "xpGained": 21600,
+      "xpPerHour": 10800
+    },
+    "played": {
+      "thisLevel": "2 h",
+      "total": "4 d 4 h",
+      "totalSeconds": 360000
+    },
+    "session": {
+      "basis": "play time from /played",
+      "deaths": 1,
+      "duration": "2 h",
+      "from": "2026-11-15 14:26",
+      "levelsGained": 1,
+      "moneyChange": "+25s 0c",
+      "moneyPerHour": "+12s 50c",
+      "questsTurnedIn": 1,
+      "snapshots": 3,
+      "to": "2026-11-15 16:26",
+      "xpGained": 21600,
+      "xpPerHour": 10800
+    },
+    "snapshotsInHistory": 3
+  },
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  }
+}
+```
+

@@ -1,0 +1,79 @@
+# tool wow_bags variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "bags": [
+    {
+      "free": 13,
+      "index": 0,
+      "items": [
+        {
+          "count": 14,
+          "id": 2589,
+          "isBound": false,
+          "name": "Linen Cloth",
+          "quality": 1,
+          "slot": 1
+        },
+        {
+          "count": 7,
+          "id": 2318,
+          "isBound": false,
+          "name": "Light Leather",
+          "quality": 1,
+          "slot": 3
+        },
+        {
+          "count": 1,
+          "id": 7005,
+          "isBound": false,
+          "name": "Skinning Knife",
+          "quality": 1,
+          "slot": 4
+        }
+      ],
+      "name": "Backpack",
+      "size": 16
+    },
+    {
+      "free": 5,
+      "index": 1,
+      "items": [
+        {
+          "count": 5,
+          "id": 4540,
+          "isBound": false,
+          "name": "Tough Hunk of Bread",
+          "quality": 1,
+          "slot": 2
+        }
+      ],
+      "name": "Small Brown Pouch",
+      "size": 6
+    },
+    {
+      "free": 9,
+      "index": 4,
+      "items": [
+        {
+          "count": 200,
+          "id": 2515,
+          "isBound": false,
+          "name": "Sharp Arrow",
+          "quality": 1,
+          "slot": 1
+        }
+      ],
+      "name": "Medium Quiver",
+      "size": 10
+    }
+  ],
+  "freeSlots": 27,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "totalSlots": 32
+}

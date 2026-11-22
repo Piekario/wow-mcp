@@ -1,0 +1,39 @@
+# tool wow_pet variant=named
+# args: {"character":"Piekasz"}
+# isError: false
+--- content[0] ---
+{
+  "pet": {
+    "damagePercent": 125,
+    "dead": false,
+    "exists": true,
+    "family": "Cat",
+    "foodTypes": [
+      "Meat",
+      "Fish"
+    ],
+    "happiness": 3,
+    "level": 19,
+    "loyalty": "Loyalty Level 3",
+    "name": "Cat",
+    "trainingPointsFree": 17,
+    "trainingPointsSpent": 21,
+    "trainingPointsTotal": 38
+  },
+  "rankReview": {
+    "learnableNote": "no data: open the Beast Training window (Hunter) in game and run /mcp reload, then I will see which ranks you know and can teach the pet",
+    "source": "only data from the dump (the Beast Training window, pet abilities, trainer offers); the server has no rank table of its own"
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "stable": {
+    "note": "no data: open the stable window (Stable Master) in game and run /mcp reload"
+  },
+  "trainingPlan": {
+    "freePoints": 17,
+    "learnableNote": "no data: open the Beast Training window in game and run /mcp reload, then I will compute the lesson costs"
+  }
+}

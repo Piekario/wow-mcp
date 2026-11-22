@@ -1,0 +1,5 @@
+# tool wow_goal_set variant=unknown_character
+# args: {"character":"Unknown","target":30,"type":"level"}
+# isError: true
+--- content[0] ---
+no character "Unknown" in the snapshot. Available: [Piekasz]

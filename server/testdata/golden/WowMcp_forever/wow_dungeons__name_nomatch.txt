@@ -1,0 +1,26 @@
+# tool wow_dungeons variant=name_nomatch
+# args: {"name":"Zzzz"}
+# isError: false
+--- content[0] ---
+{
+  "fitNow": [],
+  "level": 20,
+  "lockouts": [
+    {
+      "difficulty": "Normal",
+      "difficultyID": 1,
+      "instanceID": 48,
+      "maxPlayers": 5,
+      "name": "Blackfathom Deeps",
+      "progress": "3/7",
+      "resetIn": "30 min"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "source": "game",
+  "sourceNote": "The level ranges come from the game client (the group finder tool)."
+}

@@ -1,0 +1,306 @@
+# tool wow_quest_route variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "assumption": "The server has no world map or distances between zones, so the order is NOT the shortest route: it is the current zone, then zones by the number of quests ready to turn in and of all quests (alphabetical on a tie), and at the end red quests (5+ levels above the character) and zones made up only of them. Flight points are matched by the zone's map ID when the dump has it (addon 0.10.0), otherwise from the point name (the part after the last comma or its abbreviation, e.g. Redridge -\u003e Redridge Mountains), and the flight window usually knows only one continent, so a missing match does not prove there is no flight point; the zone name in a quest may be a subzone or a city. Treat the order as a proposal and adjust it to the geography you know.",
+  "count": 22,
+  "currentZone": "Westfall",
+  "playerLevel": 22,
+  "route": [
+    {
+      "current": true,
+      "flightPoints": [
+        {
+          "matchedBy": "name suffix",
+          "name": "Sentinel Hill, Westfall",
+          "state": "reachable"
+        }
+      ],
+      "inProgress": 1,
+      "phase": "current zone",
+      "quests": [
+        {
+          "difficulty": "gray",
+          "level": 12,
+          "status": "in progress",
+          "title": "The People's Militia"
+        }
+      ],
+      "readyToTurnIn": 0,
+      "step": 1,
+      "tooHard": 0,
+      "total": 1,
+      "zone": "Westfall"
+    },
+    {
+      "current": false,
+      "flightPoints": [
+        {
+          "matchedBy": "abbreviated zone name",
+          "name": "Lakeshire, Redridge",
+          "state": "current"
+        }
+      ],
+      "inProgress": 7,
+      "phase": "to do",
+      "quests": [
+        {
+          "difficulty": "gray",
+          "level": 15,
+          "status": "ready to turn in",
+          "title": "A Free Lunch"
+        },
+        {
+          "difficulty": "yellow",
+          "level": 21,
+          "status": "ready to turn in",
+          "title": "A Watchful Eye"
+        },
+        {
+          "difficulty": "gray",
+          "level": 15,
+          "status": "in progress",
+          "title": "Dry Times"
+        },
+        {
+          "difficulty": "green",
+          "level": 17,
+          "status": "in progress",
+          "title": "Assessing the Threat"
+        },
+        {
+          "difficulty": "green",
+          "level": 17,
+          "status": "in progress",
+          "title": "Show of Force"
+        },
+        {
+          "difficulty": "yellow",
+          "level": 20,
+          "status": "in progress",
+          "title": "Murloc Poachers"
+        },
+        {
+          "difficulty": "yellow",
+          "level": 21,
+          "status": "in progress",
+          "title": "Selling Fish"
+        },
+        {
+          "difficulty": "yellow",
+          "level": 23,
+          "status": "in progress",
+          "title": "Solomon's Law"
+        },
+        {
+          "difficulty": "orange",
+          "level": 26,
+          "status": "in progress",
+          "title": "WANTED: Lieutenant Fangore"
+        }
+      ],
+      "readyToTurnIn": 2,
+      "step": 2,
+      "tooHard": 0,
+      "total": 9,
+      "zone": "Redridge Mountains"
+    },
+    {
+      "current": false,
+      "inProgress": 3,
+      "phase": "to do",
+      "quests": [
+        {
+          "difficulty": "green",
+          "level": 18,
+          "status": "ready to turn in",
+          "title": "The Powers Below"
+        },
+        {
+          "difficulty": "green",
+          "level": 17,
+          "status": "in progress",
+          "title": "Fruit of the Sea"
+        },
+        {
+          "difficulty": "green",
+          "level": 18,
+          "status": "in progress",
+          "title": "The Tower of Althalaxx"
+        },
+        {
+          "difficulty": "yellow",
+          "level": 20,
+          "status": "in progress",
+          "title": "A Lost Master"
+        }
+      ],
+      "readyToTurnIn": 1,
+      "step": 3,
+      "tooHard": 0,
+      "total": 4,
+      "zone": "Darkshore"
+    },
+    {
+      "current": false,
+      "flightPoints": [
+        {
+          "matchedBy": "abbreviated zone name",
+          "name": "Stormwind, Elwynn",
+          "state": "reachable"
+        }
+      ],
+      "inProgress": 1,
+      "phase": "to do",
+      "quests": [
+        {
+          "difficulty": "yellow",
+          "level": 22,
+          "status": "ready to turn in",
+          "title": "The Unsent Letter"
+        },
+        {
+          "difficulty": "gray",
+          "level": 15,
+          "status": "in progress",
+          "title": "Humble Beginnings"
+        }
+      ],
+      "readyToTurnIn": 1,
+      "step": 4,
+      "tooHard": 0,
+      "total": 2,
+      "zone": "Stormwind City"
+    },
+    {
+      "current": false,
+      "inProgress": 1,
+      "phase": "to do",
+      "quests": [
+        {
+          "difficulty": "yellow",
+          "level": 20,
+          "status": "ready to turn in",
+          "title": "Underground Assault"
+        },
+        {
+          "difficulty": "green",
+          "level": 18,
+          "status": "in progress",
+          "title": "Collecting Memories"
+        }
+      ],
+      "readyToTurnIn": 1,
+      "step": 5,
+      "tooHard": 0,
+      "total": 2,
+      "zone": "The Deadmines"
+    },
+    {
+      "current": false,
+      "flightPoints": [
+        {
+          "matchedBy": "name suffix",
+          "name": "Darkshire, Duskwood",
+          "state": "unreachable"
+        }
+      ],
+      "inProgress": 0,
+      "phase": "to do",
+      "quests": [
+        {
+          "difficulty": "yellow",
+          "level": 22,
+          "status": "ready to turn in",
+          "title": "Remember That I Love You"
+        }
+      ],
+      "readyToTurnIn": 1,
+      "step": 6,
+      "tooHard": 0,
+      "total": 1,
+      "zone": "Duskwood"
+    },
+    {
+      "current": false,
+      "flightPoints": [
+        {
+          "matchedBy": "name suffix",
+          "name": "Menethil Harbor, Wetlands",
+          "state": "unreachable"
+        }
+      ],
+      "inProgress": 0,
+      "phase": "to do",
+      "quests": [
+        {
+          "difficulty": "yellow",
+          "level": 21,
+          "status": "ready to turn in",
+          "title": "Unrequited Love"
+        }
+      ],
+      "readyToTurnIn": 1,
+      "step": 7,
+      "tooHard": 0,
+      "total": 1,
+      "zone": "Wetlands"
+    },
+    {
+      "current": false,
+      "flightPoints": [
+        {
+          "matchedBy": "name suffix",
+          "name": "Ironforge, Dun Morogh",
+          "state": "reachable"
+        }
+      ],
+      "inProgress": 1,
+      "phase": "to do",
+      "quests": [
+        {
+          "difficulty": "gray",
+          "level": 10,
+          "status": "in progress",
+          "title": "Never Saddle on Quality"
+        }
+      ],
+      "readyToTurnIn": 0,
+      "step": 8,
+      "tooHard": 0,
+      "total": 1,
+      "zone": "Dun Morogh"
+    },
+    {
+      "current": false,
+      "flightPoints": [
+        {
+          "matchedBy": "name suffix",
+          "name": "Thelsamar, Loch Modan",
+          "state": "reachable"
+        }
+      ],
+      "inProgress": 1,
+      "phase": "to do",
+      "quests": [
+        {
+          "difficulty": "gray",
+          "level": 15,
+          "status": "in progress",
+          "title": "Bingles' Missing Supplies"
+        }
+      ],
+      "readyToTurnIn": 0,
+      "step": 9,
+      "tooHard": 0,
+      "total": 1,
+      "zone": "Loch Modan"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  }
+}

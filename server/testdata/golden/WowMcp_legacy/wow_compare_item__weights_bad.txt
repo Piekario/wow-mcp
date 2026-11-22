@@ -1,0 +1,5 @@
+# tool wow_compare_item variant=weights_bad
+# args: {"item":"Skinning","weights":{"agility":"a lot"}}
+# isError: true
+--- content[0] ---
+validating "arguments": validating root: validating /properties/weights: validating /properties/weights/additionalProperties: type: a lot has type "string", want "number"

@@ -1,0 +1,188 @@
+# tool wow_shopping_list variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "ammo": {
+    "hoursLeft": 4.1,
+    "name": "Sharp Arrow",
+    "needed": 400,
+    "perHour": 200,
+    "sellers": [
+      {
+        "npc": "Einris Brightspear",
+        "pack": "3s 0c",
+        "stack": 200,
+        "unitPrice": "1.5 c"
+      },
+      {
+        "npc": "Laird",
+        "pack": "3s 0c",
+        "stack": 200,
+        "unitPrice": "1.5 c"
+      }
+    ],
+    "toBuy": 0,
+    "total": 812
+  },
+  "budget": {
+    "canAffordAll": true,
+    "leftAfterAll": "2s 78c",
+    "steps": [
+      {
+        "cost": "37s 0c",
+        "covered": true,
+        "leftAfter": "15s 12c",
+        "what": "trainer skills"
+      },
+      {
+        "cost": "12s 34c",
+        "covered": true,
+        "leftAfter": "2s 78c",
+        "what": "repair"
+      }
+    ],
+    "totalCost": "49s 34c"
+  },
+  "level": 20,
+  "money": "52s 12c",
+  "note": "Vendor prices come from remembered windows (vendors) and may be old; the price in the vendor window is per pack (stack), the price of one piece is the pack price divided by its size. The server buys, teaches and repairs nothing.",
+  "order": "purchase priority: trainer skills, repair, ammo, food and materials",
+  "petFood": {
+    "foodInBags": 0,
+    "note": "there is no food in the bags that can be given to the pet (subtype Food); a hungry pet loses happiness"
+  },
+  "planningHours": 2,
+  "repair": {
+    "canRepairAt": [
+      "Einris Brightspear",
+      "Laird"
+    ],
+    "capturedAgeMinutes": 30,
+    "capturedAt": "2026-11-15 16:26",
+    "cost": "12s 34c",
+    "costNote": "quote from the last window of a vendor that repairs; the current cost depends on the current durability",
+    "lowest": "Curvewood Dagger 85.7%",
+    "needed": true,
+    "overallPercent": 85.7,
+    "quoteFrom": "Einris Brightspear"
+  },
+  "returnToTown": {
+    "ammo": {
+      "hoursLeft": 4.1,
+      "name": "Sharp Arrow",
+      "timeLeft": "4 h 3 min",
+      "total": 812
+    },
+    "bags": {
+      "freeSlots": 26,
+      "gainedSlotsPerHour": 0,
+      "hoursUntilFull": "no data",
+      "note": "used bag slots did not grow in the measured stretch of history",
+      "totalSlots": 32,
+      "window": "current session"
+    },
+    "durability": {
+      "lowest": "Curvewood Dagger 85.7%",
+      "overallPercent": 85.7
+    },
+    "note": "Forecasts rely on the rate from dump history (the same window as wow_progress), so they are approximations; purchases and sales between dumps distort the bag-filling rate.",
+    "returnNow": [
+      "skills to buy from the trainer (2)"
+    ],
+    "soonestBecause": "ammo",
+    "soonestHours": 4.1,
+    "trainer": {
+      "availableNow": [
+        "Disengage Rank 1",
+        "Track Undead"
+      ],
+      "next": {
+        "level": 40,
+        "levelsAway": 20,
+        "skills": [
+          "Volley Rank 1"
+        ],
+        "trainers": [
+          "Einris Brightspear",
+          "Astaia"
+        ]
+      }
+    }
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "trainer": {
+    "canAffordAll": true,
+    "offers": [
+      {
+        "capturedAgeMinutes": 30,
+        "capturedAt": "2026-11-15 16:26",
+        "npc": "Einris Brightspear",
+        "services": [
+          {
+            "canAfford": true,
+            "cost": "21s 0c",
+            "levelRequired": 20,
+            "name": "Disengage",
+            "rank": "Rank 1"
+          },
+          {
+            "canAfford": true,
+            "cost": "16s 0c",
+            "levelRequired": 18,
+            "name": "Track Undead"
+          }
+        ],
+        "totalCost": "37s 0c"
+      },
+      {
+        "capturedAgeMinutes": 40,
+        "capturedAt": "2026-11-15 16:16",
+        "npc": "Astaia",
+        "services": [
+          {
+            "canAfford": true,
+            "cost": "21s 0c",
+            "levelRequired": 20,
+            "name": "Disengage",
+            "rank": "Rank 1"
+          },
+          {
+            "canAfford": true,
+            "cost": "16s 0c",
+            "levelRequired": 18,
+            "name": "Track Undead"
+          }
+        ],
+        "totalCost": "37s 0c"
+      }
+    ],
+    "toLearn": [
+      {
+        "canAfford": true,
+        "cost": "16s 0c",
+        "levelRequired": 18,
+        "npcs": [
+          "Einris Brightspear",
+          "Astaia"
+        ],
+        "skill": "Track Undead"
+      },
+      {
+        "canAfford": true,
+        "cost": "21s 0c",
+        "levelRequired": 20,
+        "npcs": [
+          "Einris Brightspear",
+          "Astaia"
+        ],
+        "skill": "Disengage Rank 1"
+      }
+    ],
+    "totalCost": "37s 0c"
+  }
+}

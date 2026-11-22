@@ -1,0 +1,212 @@
+# tool wow_search variant=many_sections
+# args: {"query":"a"}
+# isError: false
+--- content[0] ---
+{
+  "groups": [
+    {
+      "count": 4,
+      "hits": [
+        {
+          "label": "Cave Mushrooms",
+          "matchedIn": "title",
+          "path": [
+            "quests",
+            "Cave Mushrooms"
+          ],
+          "summary": "level 17, Darkshore"
+        },
+        {
+          "label": "Scaber Stalk: 5/5",
+          "matchedIn": "text",
+          "path": [
+            "quests",
+            "Cave Mushrooms",
+            "Scaber Stalk: 5/5"
+          ]
+        },
+        {
+          "label": "Death Cap: 0/1",
+          "matchedIn": "text",
+          "path": [
+            "quests",
+            "Cave Mushrooms",
+            "Death Cap: 0/1"
+          ]
+        },
+        {
+          "label": "Mushroom Cap",
+          "matchedIn": "name",
+          "path": [
+            "quests",
+            "Cave Mushrooms",
+            "Mushroom Cap"
+          ]
+        }
+      ],
+      "section": "quests",
+      "shown": 4,
+      "truncated": false
+    },
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Backpack",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Backpack"
+          ]
+        }
+      ],
+      "section": "bags",
+      "shown": 1,
+      "truncated": false
+    },
+    {
+      "count": 3,
+      "hits": [
+        {
+          "label": "Curvewood Dagger",
+          "matchedIn": "name",
+          "path": [
+            "equipment",
+            "Curvewood Dagger"
+          ],
+          "summary": "mainHand"
+        },
+        {
+          "label": "Webwood Slicer",
+          "matchedIn": "slot",
+          "matchedText": "offHand",
+          "path": [
+            "equipment",
+            "Webwood Slicer"
+          ],
+          "summary": "offHand"
+        },
+        {
+          "label": "Light Hunting Bow",
+          "matchedIn": "slot",
+          "matchedText": "ranged",
+          "path": [
+            "equipment",
+            "Light Hunting Bow"
+          ],
+          "summary": "ranged"
+        }
+      ],
+      "section": "equipment",
+      "shown": 3,
+      "truncated": false
+    },
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Aimed Shot",
+          "matchedIn": "name",
+          "path": [
+            "spells",
+            "Aimed Shot"
+          ],
+          "summary": "Rank 1, Marksmanship"
+        }
+      ],
+      "section": "spells",
+      "shown": 1,
+      "truncated": false
+    },
+    {
+      "count": 3,
+      "hits": [
+        {
+          "label": "Disengage",
+          "matchedIn": "name",
+          "path": [
+            "trainer",
+            "Einris Brightspear",
+            "Disengage"
+          ],
+          "summary": "Rank 1, available, costCopper 21s 0c, levelRequired 20"
+        },
+        {
+          "label": "Track Undead",
+          "matchedIn": "name",
+          "path": [
+            "trainer",
+            "Einris Brightspear",
+            "Track Undead"
+          ],
+          "summary": "available, costCopper 16s 0c, levelRequired 18"
+        },
+        {
+          "label": "Volley",
+          "matchedIn": "rank",
+          "matchedText": "Rank 1",
+          "path": [
+            "trainer",
+            "Einris Brightspear",
+            "Volley"
+          ],
+          "summary": "Rank 1, unavailable, costCopper 18g 0s 0c, levelRequired 40"
+        }
+      ],
+      "section": "trainer",
+      "shown": 3,
+      "truncated": false
+    },
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Light Leather",
+          "matchedIn": "name",
+          "path": [
+            "loot",
+            "Light Leather"
+          ],
+          "summary": "count 1"
+        }
+      ],
+      "section": "loot",
+      "shown": 1,
+      "truncated": false
+    }
+  ],
+  "notInSnapshot": [
+    "questOffer",
+    "questTurnIn",
+    "bank",
+    "vendor",
+    "vendors",
+    "stable",
+    "recipes",
+    "mail",
+    "auctions",
+    "currencies",
+    "macros",
+    "flightPaths"
+  ],
+  "note": "Bank, vendors, trainers, stable, quest windows, recipes, mail and auctions are the state from the last visits to those windows (check their age in the relevant tools); loot is the loot since the previous save.",
+  "query": "a",
+  "searched": [
+    "quests",
+    "bags",
+    "equipment",
+    "spells",
+    "trainer",
+    "trainers",
+    "loot",
+    "reputation",
+    "professions"
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "totalHits": 13,
+  "truncated": false
+}

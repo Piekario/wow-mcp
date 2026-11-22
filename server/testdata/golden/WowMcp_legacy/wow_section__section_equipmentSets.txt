@@ -1,0 +1,29 @@
+# tool wow_section variant=section_equipmentSets
+# args: {"section":"equipmentSets"}
+# isError: false
+--- content[0] ---
+{
+  "equipmentSets": [
+    {
+      "id": 3,
+      "isEquipped": false,
+      "items": [
+        {
+          "id": 5586,
+          "slot": "mainHand"
+        },
+        {
+          "id": 2780,
+          "slot": "ranged"
+        }
+      ],
+      "missing": 1,
+      "name": "Leveling"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

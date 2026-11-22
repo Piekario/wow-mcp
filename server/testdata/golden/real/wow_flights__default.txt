@@ -1,0 +1,145 @@
+# tool wow_flights variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "assumption": "Flight points and quests are matched by the zone's map ID when both have one (addon 0.10.0; the same in every game language). Otherwise, and for points without a zone field, I match the zone from the point name (the part after the last comma, or, if there is none, the whole name containing the zone name, or an abbreviation: Lakeshire, Redridge -\u003e Redridge Mountains, Stormwind, Elwynn -\u003e Stormwind City). The zone field of a quest is sometimes a subzone or a city, so a missing match does not prove there is no flight point nearby. The list from the flight master window is the points known to the character; the meaning of the unreachable state is NOT confirmed: it is an assumption (probably no connection from the current point rather than an undiscovered one), to be verified in game.",
+  "capturedAge": "37 min",
+  "capturedAt": "2026-11-15 22:35",
+  "knownFlightPoints": 17,
+  "questZonesWithFlightPoint": [
+    {
+      "flightPoints": [
+        {
+          "matchedBy": "abbreviated zone name",
+          "name": "Lakeshire, Redridge",
+          "state": "current"
+        }
+      ],
+      "quests": 9,
+      "titles": [
+        "A Free Lunch",
+        "Dry Times",
+        "Assessing the Threat",
+        "Show of Force",
+        "Murloc Poachers",
+        "A Watchful Eye",
+        "Selling Fish",
+        "Solomon's Law",
+        "WANTED: Lieutenant Fangore"
+      ],
+      "zone": "Redridge Mountains"
+    },
+    {
+      "flightPoints": [
+        {
+          "matchedBy": "abbreviated zone name",
+          "name": "Stormwind, Elwynn",
+          "state": "reachable"
+        }
+      ],
+      "quests": 2,
+      "titles": [
+        "Humble Beginnings",
+        "The Unsent Letter"
+      ],
+      "zone": "Stormwind City"
+    },
+    {
+      "flightPoints": [
+        {
+          "matchedBy": "name suffix",
+          "name": "Ironforge, Dun Morogh",
+          "state": "reachable"
+        }
+      ],
+      "quests": 1,
+      "titles": [
+        "Never Saddle on Quality"
+      ],
+      "zone": "Dun Morogh"
+    },
+    {
+      "flightPoints": [
+        {
+          "matchedBy": "name suffix",
+          "name": "Darkshire, Duskwood",
+          "state": "unreachable"
+        }
+      ],
+      "quests": 1,
+      "titles": [
+        "Remember That I Love You"
+      ],
+      "zone": "Duskwood"
+    },
+    {
+      "flightPoints": [
+        {
+          "matchedBy": "name suffix",
+          "name": "Thelsamar, Loch Modan",
+          "state": "reachable"
+        }
+      ],
+      "quests": 1,
+      "titles": [
+        "Bingles' Missing Supplies"
+      ],
+      "zone": "Loch Modan"
+    },
+    {
+      "flightPoints": [
+        {
+          "matchedBy": "name suffix",
+          "name": "Sentinel Hill, Westfall",
+          "state": "reachable"
+        }
+      ],
+      "quests": 1,
+      "titles": [
+        "The People's Militia"
+      ],
+      "zone": "Westfall"
+    },
+    {
+      "flightPoints": [
+        {
+          "matchedBy": "name suffix",
+          "name": "Menethil Harbor, Wetlands",
+          "state": "unreachable"
+        }
+      ],
+      "quests": 1,
+      "titles": [
+        "Unrequited Love"
+      ],
+      "zone": "Wetlands"
+    }
+  ],
+  "questZonesWithoutFlightPoint": [
+    {
+      "quests": 4,
+      "titles": [
+        "Fruit of the Sea",
+        "The Powers Below",
+        "The Tower of Althalaxx",
+        "A Lost Master"
+      ],
+      "zone": "Darkshore"
+    },
+    {
+      "quests": 2,
+      "titles": [
+        "Collecting Memories",
+        "Underground Assault"
+      ],
+      "zone": "The Deadmines"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "withoutNote": "The flight master window usually shows only the points of the continent where it was opened, so a zone from another continent (e.g. Darkshore with the window opened in the Eastern Kingdoms) lands here even with a known flight point. A missing match does not prove there is no flight point."
+}

@@ -1,0 +1,55 @@
+# prompt what_to_sell variant=default
+# args: {}
+# description: What to sell to a vendor and what to keep: items from the bags and bank with their vendor value, taking quests and professions into account.
+--- message[0] role=user ---
+Propose what to sell to a vendor and what to keep. Keep items needed for quests in the log, materials for the character's professions, and things that are an upgrade or a supply (ammo, pet food). For the things to sell, give the total value. Separately point out items that are better listed on the auction house (Uncommon quality and above). Take auction prices only from auctionHouse (sellOnAH already has the profit after the fee computed); do not guess prices that are not there, just suggest what to look up on the auction house.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "bags": [
+    {
+      "free": 15,
+      "index": 0,
+      "items": [
+        {
+          "count": 14,
+          "id": 2589,
+          "isBound": false,
+          "name": "Linen Cloth",
+          "quality": 1,
+          "slot": 1
+        }
+      ],
+      "name": "Backpack",
+      "size": 16
+    }
+  ],
+  "bank": {
+    "note": "No saved bank. Open the bank in game, then type /mcp reload."
+  },
+  "professions": [
+    {
+      "group": "Professions",
+      "maxRank": 150,
+      "name": "Skinning",
+      "rank": 96
+    }
+  ],
+  "quests": [
+    {
+      "objectives": "Scaber Stalk: 5/5; Death Cap: 0/1",
+      "title": "Cave Mushrooms"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}
+```
+

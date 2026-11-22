@@ -1,0 +1,5 @@
+# tool wow_find_item variant=name_match
+# args: {"item":"Cloth"}
+# isError: true
+--- content[0] ---
+cannot open file "<FILE>": stat <FILE>: no such file or directory

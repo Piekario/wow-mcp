@@ -1,0 +1,72 @@
+# tool wow_compare_item variant=real_mining_pick_weights_arg
+# args: {"item":"Mining Pick","weights":{"agility":2}}
+# isError: false
+--- content[0] ---
+{
+  "bestWeighted": {
+    "slot": "mainHand",
+    "weightedDelta": -6
+  },
+  "comparisons": [
+    {
+      "delta": {
+        "Agility": -3,
+        "DPS": -13.7,
+        "Item Level": -19,
+        "Stamina": -3
+      },
+      "equipped": "Buzz Saw",
+      "equippedNumbers": {
+        "Agility": 3,
+        "DPS": 15.2,
+        "Item Level": 23,
+        "Speed": 2.3,
+        "Stamina": 3
+      },
+      "slot": "mainHand",
+      "weightedDelta": -6
+    }
+  ],
+  "item": {
+    "equipLoc": "INVTYPE_WEAPONMAINHAND",
+    "id": 2901,
+    "itemLevel": 4,
+    "levelOk": true,
+    "name": "Mining Pick",
+    "numbers": {
+      "DPS": 1.5,
+      "Item Level": 4,
+      "Speed": 2
+    },
+    "quality": "Common",
+    "requiredLevel": 1,
+    "source": "bags",
+    "subType": "Miscellaneous",
+    "tooltip": [
+      "Mining Pick",
+      "Main Hand",
+      "2 - 4 Damage | Speed 2.00",
+      "(1.5 damage per second)",
+      "Durability 20 / 20",
+      "\"Miners need a mining pick for digging.\""
+    ]
+  },
+  "note": "Delta = item minus equipped (positive = gain). The numbers come from the stats and tooltip in the dump; Equip/Use effects appear only in the tooltip.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "weights": {
+    "source": "argument weights",
+    "values": {
+      "agility": 2
+    }
+  },
+  "weightsIgnored": [
+    "DPS",
+    "Item Level",
+    "Stamina"
+  ],
+  "weightsIgnoredNote": "stats without a weight are not included in weightedDelta"
+}

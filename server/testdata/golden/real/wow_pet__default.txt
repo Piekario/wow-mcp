@@ -1,0 +1,187 @@
+# tool wow_pet variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "pet": {
+    "abilities": [
+      {
+        "id": 100663298,
+        "name": "Aggressive",
+        "rank": "Pet Stance"
+      },
+      {
+        "id": 24493,
+        "name": "Arcane Resistance",
+        "passive": true,
+        "rank": "Rank 1"
+      },
+      {
+        "id": 100663299,
+        "name": "Assist",
+        "rank": "Pet Stance"
+      },
+      {
+        "id": 117440514,
+        "name": "Attack",
+        "rank": "Pet Command"
+      },
+      {
+        "id": 1742,
+        "name": "Cower",
+        "rank": "Rank 1"
+      },
+      {
+        "id": 100663300,
+        "name": "Defensive",
+        "rank": "Pet Stance"
+      },
+      {
+        "id": 1263107,
+        "name": "Faster Attack V",
+        "passive": true
+      },
+      {
+        "id": 23992,
+        "name": "Fire Resistance",
+        "passive": true,
+        "rank": "Rank 1"
+      },
+      {
+        "id": 117440513,
+        "name": "Follow",
+        "rank": "Pet Command"
+      },
+      {
+        "id": 24446,
+        "name": "Frost Resistance",
+        "passive": true,
+        "rank": "Rank 1"
+      },
+      {
+        "id": 4189,
+        "name": "Great Stamina",
+        "passive": true,
+        "rank": "Rank 3"
+      },
+      {
+        "id": 14917,
+        "name": "Growl",
+        "rank": "Rank 3"
+      },
+      {
+        "id": 117440516,
+        "name": "Move To",
+        "rank": "Pet Command"
+      },
+      {
+        "id": 24550,
+        "name": "Natural Armor",
+        "passive": true,
+        "rank": "Rank 3"
+      },
+      {
+        "id": 24492,
+        "name": "Nature Resistance",
+        "passive": true,
+        "rank": "Rank 1"
+      },
+      {
+        "id": 100663296,
+        "name": "Passive",
+        "rank": "Pet Stance"
+      },
+      {
+        "id": 24488,
+        "name": "Shadow Resistance",
+        "passive": true,
+        "rank": "Rank 1"
+      },
+      {
+        "id": 117440512,
+        "name": "Stay",
+        "rank": "Pet Command"
+      }
+    ],
+    "actionBar": [
+      {
+        "name": "Attack",
+        "slot": 1
+      },
+      {
+        "active": true,
+        "name": "Follow",
+        "slot": 2
+      },
+      {
+        "name": "Move To",
+        "slot": 3
+      },
+      {
+        "autoCast": true,
+        "id": 1742,
+        "name": "Cower",
+        "slot": 4
+      },
+      {
+        "autoCast": true,
+        "id": 14917,
+        "name": "Growl",
+        "slot": 5
+      },
+      {
+        "active": true,
+        "name": "Assist",
+        "slot": 8
+      },
+      {
+        "name": "Defensive",
+        "slot": 9
+      },
+      {
+        "name": "Passive",
+        "slot": 10
+      }
+    ],
+    "damagePercent": 125,
+    "dead": false,
+    "exists": true,
+    "family": "Cat",
+    "foodTypes": [
+      "Meat",
+      "Fish"
+    ],
+    "happiness": 3,
+    "healthMax": 1038,
+    "level": 21,
+    "loyalty": "Best Friend",
+    "loyaltyRate": 20,
+    "name": "Cat",
+    "trainingPointsFree": 47,
+    "trainingPointsSpent": 58,
+    "trainingPointsTotal": 105,
+    "xp": 2484,
+    "xpMax": 6300
+  },
+  "rankReview": {
+    "learnable": [],
+    "learnableNote": "the Beast Training window has no ranks higher than those the pet already has",
+    "source": "only data from the dump (the Beast Training window, pet abilities, trainer offers); the server has no rank table of its own",
+    "windowNote": "The Beast Training window was saved as a trainer window without an NPC (this is how Forever 1.60.1 shows it). Assumption, not confirmed in game: its cost is the pet's training points, and the list contains what the window showed under the in-game filters."
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "stable": {
+    "note": "no data: open the stable window (Stable Master) in game and run /mcp reload"
+  },
+  "trainingPlan": {
+    "freePoints": 47,
+    "learnableNote": "there are no lessons the Hunter knows that the pet does not have",
+    "order": "server heuristic: higher ranks of abilities the pet already has first, then new ones, cheapest first; the player decides how valuable an ability is",
+    "pointsLeftAfter": 47,
+    "suggested": []
+  }
+}

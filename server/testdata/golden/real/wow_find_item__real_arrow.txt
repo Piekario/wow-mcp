@@ -1,0 +1,108 @@
+# tool wow_find_item variant=real_arrow
+# args: {"item":"Sharp Arrow"}
+# isError: false
+--- content[0] ---
+{
+  "count": 11,
+  "matches": [
+    {
+      "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+      "container": "Backpack",
+      "count": 124,
+      "id": 2515,
+      "name": "Sharp Arrow",
+      "where": "bags"
+    },
+    {
+      "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+      "container": "Medium Quiver",
+      "count": 200,
+      "id": 2515,
+      "name": "Sharp Arrow",
+      "where": "bags"
+    },
+    {
+      "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+      "container": "Medium Quiver",
+      "count": 200,
+      "id": 2515,
+      "name": "Sharp Arrow",
+      "where": "bags"
+    },
+    {
+      "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+      "container": "Medium Quiver",
+      "count": 200,
+      "id": 2515,
+      "name": "Sharp Arrow",
+      "where": "bags"
+    },
+    {
+      "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+      "container": "Medium Quiver",
+      "count": 200,
+      "id": 2515,
+      "name": "Sharp Arrow",
+      "where": "bags"
+    },
+    {
+      "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+      "container": "Medium Quiver",
+      "count": 200,
+      "id": 2515,
+      "name": "Sharp Arrow",
+      "where": "bags"
+    },
+    {
+      "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+      "container": "Medium Quiver",
+      "count": 200,
+      "id": 2515,
+      "name": "Sharp Arrow",
+      "where": "bags"
+    },
+    {
+      "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+      "container": "Medium Quiver",
+      "count": 200,
+      "id": 2515,
+      "name": "Sharp Arrow",
+      "where": "bags"
+    },
+    {
+      "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+      "container": "Medium Quiver",
+      "count": 200,
+      "id": 2515,
+      "name": "Sharp Arrow",
+      "where": "bags"
+    },
+    {
+      "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+      "container": "Medium Quiver",
+      "count": 200,
+      "id": 2515,
+      "name": "Sharp Arrow",
+      "where": "bags"
+    },
+    {
+      "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+      "container": "Medium Quiver",
+      "count": 200,
+      "id": 2515,
+      "name": "Sharp Arrow",
+      "where": "bags"
+    }
+  ],
+  "query": "Sharp Arrow",
+  "searched": {
+    "characters": [
+      "Piekasz-CAMWOW EU4 Realm 7 PvE"
+    ],
+    "where": "bags, equipment, bank (state from the last visit) and mail (state from the last time the mailbox was opened)"
+  },
+  "total": 2124,
+  "totals": {
+    "Sharp Arrow": 2124
+  }
+}

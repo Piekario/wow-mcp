@@ -1,0 +1,258 @@
+# prompt gear_upgrades variant=default
+# args: {}
+# description: Which items from the bags, bank, the last vendor and the auction house prices the player browsed are upgrades over the equipped gear, with stat and DPS differences.
+--- message[0] role=user ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game. Start your answer with this information.
+
+Assess which of the candidates are upgrades for this class and level. The delta in comparisons is the candidate minus the equipped item (positive = gain). Take into account which stats matter for the class, the required level and the price. auctionUpgrades (when present) are gear prices from the auction house the player browsed, best upgrade first: vsEquipped is the difference to the equipped item, minBuyoutPerUnit the price, canAfford and levelOk say whether it is within reach. Give a short list: what to equip right away, what to buy (also on the auction house), what to leave alone.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "auctionUpgrades": [
+    {
+      "bindType": 2,
+      "canAfford": true,
+      "classID": 2,
+      "dps": 9.7,
+      "equipLoc": "INVTYPE_RANGEDRIGHT",
+      "id": 2506,
+      "itemLevel": 19,
+      "levelOk": true,
+      "minBuyoutPerUnit": "42s 0c",
+      "name": "Hornwood Recurve Bow",
+      "quality": 2,
+      "qualityName": "Uncommon",
+      "quantity": 2,
+      "requiredLevel": 14,
+      "seenAgo": "3 h 20 min",
+      "sellPrice": 1500,
+      "source": "browse",
+      "statTokens": {
+        "ITEM_MOD_AGILITY_SHORT": 3,
+        "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 9.7
+      },
+      "subType": "Bows",
+      "subclassID": 2,
+      "type": "Weapon",
+      "vsEquipped": {
+        "delta": {
+          "Agility": 3,
+          "DPS": 1.3,
+          "Item Level": 9
+        },
+        "equipped": "Light Hunting Bow",
+        "equippedNumbers": {
+          "DPS": 8.4,
+          "Item Level": 10,
+          "Speed": 1.6
+        },
+        "slot": "ranged"
+      }
+    },
+    {
+      "canAfford": true,
+      "classID": 2,
+      "equipLoc": "INVTYPE_RANGEDRIGHT",
+      "id": 2507,
+      "minBuyoutPerUnit": "31s 0c",
+      "name": "Ranger's Shortbow",
+      "quantity": 1,
+      "seenAgo": "3 h 20 min",
+      "source": "browse",
+      "subType": "Bows",
+      "subclassID": 2,
+      "type": "Weapon"
+    }
+  ],
+  "candidates": [
+    {
+      "comparisons": [
+        {
+          "delta": {
+            "Agility": -3,
+            "DPS": -6.2,
+            "Item Level": -14,
+            "Stamina": -2
+          },
+          "equipped": "Curvewood Dagger",
+          "equippedNumbers": {
+            "Agility": 3,
+            "DPS": 8.4,
+            "Item Level": 18,
+            "Speed": 1.6,
+            "Stamina": 2
+          },
+          "slot": "mainHand"
+        },
+        {
+          "delta": {
+            "DPS": -6.2,
+            "Item Level": -6
+          },
+          "equipped": "Webwood Slicer",
+          "equippedNumbers": {
+            "DPS": 8.4,
+            "Item Level": 10,
+            "Speed": 1.6
+          },
+          "slot": "offHand"
+        }
+      ],
+      "equipLoc": "INVTYPE_WEAPON",
+      "id": 7005,
+      "itemLevel": 4,
+      "name": "Skinning Knife",
+      "numbers": {
+        "DPS": 2.2,
+        "Item Level": 4,
+        "Speed": 1.6
+      },
+      "quality": "Common",
+      "requiredLevel": 1,
+      "source": "bags",
+      "subType": "Dagger"
+    },
+    {
+      "comparisons": [
+        {
+          "delta": {},
+          "equipped": "Curvewood Dagger",
+          "equippedNumbers": {
+            "Agility": 3,
+            "DPS": 8.4,
+            "Item Level": 18,
+            "Speed": 1.6,
+            "Stamina": 2
+          },
+          "slot": "mainHand"
+        },
+        {
+          "delta": {
+            "Agility": 3,
+            "Item Level": 8,
+            "Stamina": 2
+          },
+          "equipped": "Webwood Slicer",
+          "equippedNumbers": {
+            "DPS": 8.4,
+            "Item Level": 10,
+            "Speed": 1.6
+          },
+          "slot": "offHand"
+        }
+      ],
+      "equipLoc": "INVTYPE_WEAPON",
+      "id": 5586,
+      "itemLevel": 18,
+      "name": "Laminated Recurve Bow",
+      "numbers": {
+        "Agility": 3,
+        "DPS": 8.4,
+        "Item Level": 18,
+        "Stamina": 2
+      },
+      "price": "72s 95c",
+      "quality": "Uncommon",
+      "requiredLevel": 13,
+      "source": "vendor",
+      "subType": "Dagger"
+    }
+  ],
+  "class": "Hunter",
+  "equipped": [
+    {
+      "equipLoc": "INVTYPE_WEAPON",
+      "id": 5586,
+      "itemLevel": 18,
+      "name": "Curvewood Dagger",
+      "numbers": {
+        "Agility": 3,
+        "DPS": 8.4,
+        "Item Level": 18,
+        "Speed": 1.6,
+        "Stamina": 2
+      },
+      "quality": "Uncommon",
+      "requiredLevel": 13,
+      "slot": "mainHand",
+      "subType": "Dagger"
+    },
+    {
+      "id": 5540,
+      "itemLevel": 10,
+      "name": "Webwood Slicer",
+      "numbers": {
+        "DPS": 8.4,
+        "Item Level": 10,
+        "Speed": 1.6
+      },
+      "quality": "Uncommon",
+      "requiredLevel": 1,
+      "slot": "offHand",
+      "subType": "Cloth"
+    },
+    {
+      "id": 2780,
+      "itemLevel": 10,
+      "name": "Light Hunting Bow",
+      "numbers": {
+        "DPS": 8.4,
+        "Item Level": 10,
+        "Speed": 1.6
+      },
+      "quality": "Uncommon",
+      "requiredLevel": 1,
+      "slot": "ranged",
+      "subType": "Cloth"
+    },
+    {
+      "id": 2515,
+      "itemLevel": 10,
+      "name": "Sharp Arrow",
+      "numbers": {
+        "Item Level": 10
+      },
+      "quality": "Common",
+      "requiredLevel": 1,
+      "slot": "ammo",
+      "subType": "Cloth"
+    }
+  ],
+  "level": 20,
+  "money": "52s 12c",
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  },
+  "stats": {
+    "agility": 32,
+    "armor": 412,
+    "attackPower": 134,
+    "critChance": 6,
+    "dodgeChance": 9.5,
+    "healthMax": 780,
+    "intellect": 34,
+    "manaMax": 1050,
+    "meleeDamageMax": 33.8,
+    "meleeDamageMin": 21.4,
+    "meleeSpeed": 1.8,
+    "parryChance": 5,
+    "rangedAttackPower": 170,
+    "rangedCritChance": 8.3,
+    "rangedDamageMax": 58.9,
+    "rangedDamageMin": 31.2,
+    "rangedSpeed": 2.5,
+    "spirit": 35,
+    "stamina": 33,
+    "strength": 31
+  }
+}
+```
+

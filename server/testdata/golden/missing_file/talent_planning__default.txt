@@ -1,0 +1,3 @@
+# prompt talent_planning variant=default
+# args: {}
+# PROTOCOL ERROR: calling "prompts/get": cannot open file "<FILE>": stat <FILE>: no such file or directory

@@ -1,0 +1,26 @@
+# tool wow_goal_set variant=reputation_standing
+# args: {"faction":"Darnassus","standing":"Revered","type":"reputation"}
+# isError: false
+--- content[0] ---
+{
+  "added": {
+    "id": "g3",
+    "type": "reputation",
+    "character": "Piekasz",
+    "faction": "Darnassus",
+    "standing": "Revered"
+  },
+  "file": "<GOALS>",
+  "goal": "Revered with Darnassus",
+  "progress": {
+    "done": false,
+    "goal": "Revered with Darnassus",
+    "id": "g3",
+    "missing": "the whole goal",
+    "notes": [
+      "faction \"Darnassus\" is not in the dump (reputation section); the character does not know it yet or the name does not match"
+    ],
+    "percent": 0,
+    "type": "reputation"
+  }
+}

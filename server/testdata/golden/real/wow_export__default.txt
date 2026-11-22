@@ -1,0 +1,15 @@
+# tool wow_export variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "format": "discord",
+  "howToUse": "Show the player the text field in a code block so they can copy it whole.",
+  "length": 969,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "text": "### Piekasz, 22 Night Elf Hunter\n**Faction:** Alliance\n**Talents:** 13/0/0 (Beast Mastery)\n**Average item level:** 21.2\n**Professions:** Mining 62/150, Skinning 75/75, First Aid 37/75, Fishing 21/75, Cooking 13/75\n**Pet:** Cat (Cat), level 21\n**Played:** 29 h 54 min\n\n**Gear**\n- Shoulder: Canvas Shoulderpads (ilvl 20)\n- Back: Raider's Cloak of Agility (ilvl 16)\n- Chest: Tunic of Westfall (ilvl 24)\n- Wrist: Repurposed Hair Band (ilvl 20)\n- Hands: Scouting Gloves of Power (ilvl 23)\n- Waist: Relic Hunter Belt (ilvl 20)\n- Legs: Duty Bound Leggings (ilvl 24)\n- Feet: Agile Boots (ilvl 20)\n- Ring: Slain Baron's Signet (ilvl 23)\n- Main Hand: Buzz Saw (ilvl 23)\n- Off Hand: Meathook Slicer (ilvl 20)\n- Ranged: Light Bow (ilvl 21)\n\n**Talents**\n- Deadly Aspects 5/5 (Beast Mastery)\n- Bestial Swiftness 1/1 (Beast Mastery)\n- Improved Revive Pet 2/2 (Beast Mastery)\n- Pathfinding 2/2 (Beast Mastery)\n- Focused Fire 2/2 (Beast Mastery)\n- Endurance Training 1/5 (Beast Mastery)"
+}

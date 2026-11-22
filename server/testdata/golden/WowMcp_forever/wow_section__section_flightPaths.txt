@@ -1,0 +1,49 @@
+# tool wow_section variant=section_flightPaths
+# args: {"section":"flightPaths"}
+# isError: false
+--- content[0] ---
+{
+  "capturedAgeMinutes": 30,
+  "capturedAt": "2026-11-15 16:26",
+  "flightPaths": {
+    "capturedAt": 1794760000,
+    "nodeFields": [
+      "name:string",
+      "nodeID:number",
+      "position:table",
+      "state:number"
+    ],
+    "nodes": [
+      {
+        "name": "Auberdine, Darkshore",
+        "nodeID": 26,
+        "state": "current",
+        "zone": "Darkshore",
+        "zoneMapID": 1439
+      },
+      {
+        "name": "Rut'theran Village, Teldrassil",
+        "nodeID": 27,
+        "state": "reachable",
+        "zone": "Teldrassil",
+        "zoneMapID": 1438
+      },
+      {
+        "name": "Astranaar, Ashenvale",
+        "nodeID": 28,
+        "state": "unreachable"
+      }
+    ],
+    "npc": "Einris Brightspear",
+    "taxiMapID": 1439,
+    "zoneSources": {
+      "position": 1,
+      "zoneMap": 1
+    }
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

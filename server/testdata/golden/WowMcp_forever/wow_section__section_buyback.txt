@@ -1,0 +1,33 @@
+# tool wow_section variant=section_buyback
+# args: {"section":"buyback"}
+# isError: false
+--- content[0] ---
+{
+  "buyback": {
+    "capturedAt": 1794760000,
+    "items": [
+      {
+        "count": 20,
+        "id": 2589,
+        "index": 1,
+        "name": "Linen Cloth",
+        "priceCopper": 150
+      },
+      {
+        "count": 1,
+        "id": 7005,
+        "index": 2,
+        "name": "Skinning Knife",
+        "priceCopper": 16
+      }
+    ],
+    "npc": "Einris Brightspear"
+  },
+  "capturedAgeMinutes": 30,
+  "capturedAt": "2026-11-15 16:26",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

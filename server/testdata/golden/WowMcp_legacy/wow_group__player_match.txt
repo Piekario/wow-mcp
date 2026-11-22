@@ -1,0 +1,5 @@
+# tool wow_group variant=player_match
+# args: {"player":"Tankadin"}
+# isError: true
+--- content[0] ---
+no Inspect data for "Tankadin". Inspected players: (empty). In game right-click a player, choose Inspect, then /mcp reload

@@ -1,0 +1,24 @@
+# tool wow_goal_set variant=item
+# args: {"item":"Sharp Arrow","target":1500,"type":"item"}
+# isError: false
+--- content[0] ---
+{
+  "added": {
+    "id": "g7",
+    "type": "item",
+    "character": "Piekasz",
+    "target": 1500,
+    "item": "Sharp Arrow"
+  },
+  "file": "<GOALS>",
+  "goal": "1500 x Sharp Arrow",
+  "progress": {
+    "current": "0 (bags 0, bank 0, equipped 0)",
+    "done": false,
+    "goal": "1500 x Sharp Arrow",
+    "id": "g7",
+    "missing": 1500,
+    "percent": 0,
+    "type": "item"
+  }
+}

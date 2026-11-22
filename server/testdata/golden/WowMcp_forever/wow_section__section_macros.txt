@@ -1,0 +1,23 @@
+# tool wow_section variant=section_macros
+# args: {"section":"macros"}
+# isError: false
+--- content[0] ---
+{
+  "macros": [
+    {
+      "body": "/petattack\n/cast Hunter's Mark",
+      "name": "Assist",
+      "scope": "account"
+    },
+    {
+      "body": "/cast Feed Pet",
+      "name": "Feed",
+      "scope": "character"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

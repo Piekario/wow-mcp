@@ -1,0 +1,110 @@
+# prompt profession_progress variant=default
+# args: {}
+# description: How to raise professions as cheaply as possible: what to craft now from the materials in the bags and bank, what is missing, which recipes no longer give skill points. Combines wow_recipes, professions and bags.
+--- message[0] role=user ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game. Start your answer with this information.
+
+Advise how to raise the character's professions. First what can be crafted right away from materials (skillUpCraftableNow, canCraft, materials in the bank), then what is missing and where to get it (without guessing auction prices). Point out recipes that have stopped giving skill points, and say at which skill rank it is worth returning to the trainer for new ones. If there is Beast Training, compare the cost of the abilities with the pet's free training points.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "money": "52s 12c",
+  "professions": [
+    "Skinning 96/150",
+    "Mining 71/75",
+    "Cooking 52/75"
+  ],
+  "recipes": {
+    "note": "Recipes under collapsed headers in the profession window are not included in the dump. canCraft = how many can be crafted from the materials in bags; inBank = how much of a given material is in the bank (state from the last visit).",
+    "professions": [
+      {
+        "byDifficulty": {
+          "easy": 1,
+          "optimal": 1,
+          "trivial": 1
+        },
+        "capturedAgeMinutes": 200,
+        "capturedAt": "2026-11-15 16:26",
+        "capturedNote": "This is the state from a visit 3 h 20 min ago; it may have changed. For fresh data: open the window in game and type /mcp reload.",
+        "maxRank": 150,
+        "name": "Leatherworking",
+        "rank": 87,
+        "recipes": [
+          {
+            "difficulty": "optimal",
+            "difficultyInfo": "orange: always gives a skill point",
+            "id": 3756,
+            "itemId": 4239,
+            "missingForOne": [
+              "Coarse Thread 2"
+            ],
+            "name": "Embossed Leather Gloves",
+            "reagents": [
+              {
+                "have": 7,
+                "id": 2318,
+                "name": "Light Leather",
+                "need": 3
+              },
+              {
+                "have": 0,
+                "id": 2320,
+                "name": "Coarse Thread",
+                "need": 2
+              }
+            ]
+          },
+          {
+            "cooldown": "8 h 40 min",
+            "cooldownSeconds": 43200,
+            "difficulty": "easy",
+            "difficultyInfo": "green: sometimes gives a skill point",
+            "id": 3816,
+            "itemId": 4231,
+            "missingForOne": [
+              "item 783 1"
+            ],
+            "name": "Cured Light Hide",
+            "readyAt": 1794803200,
+            "reagents": [
+              {
+                "have": 0,
+                "id": 783,
+                "need": 1
+              }
+            ]
+          }
+        ],
+        "shown": 2
+      }
+    ]
+  },
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  },
+  "trainer": [
+    {
+      "category": "available",
+      "costCopper": 2100,
+      "levelRequired": 20,
+      "name": "Disengage",
+      "rank": "Rank 1"
+    },
+    {
+      "category": "available",
+      "costCopper": 1600,
+      "levelRequired": 18,
+      "name": "Track Undead"
+    }
+  ]
+}
+```
+

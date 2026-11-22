@@ -1,0 +1,135 @@
+# tool wow_auctions variant=affordable
+# args: {"affordable":true}
+# isError: false
+--- content[0] ---
+{
+  "assumptions": "Profit is computed from the lowest buyout price per unit minus the 5% auction house cut. The listing deposit is lost if the item does not sell and is not counted here. Bound (Soulbound) and quest items cannot be listed.",
+  "count": 5,
+  "lastVisit": "30 min ago",
+  "myAuctions": {
+    "auctions": [
+      {
+        "buyout": "6s 0c",
+        "count": 10,
+        "name": "Copper Ore",
+        "timeLeft": "2 h"
+      }
+    ],
+    "checkedAgo": "30 min",
+    "count": 1,
+    "totalBuyout": "6s 0c"
+  },
+  "prices": [
+    {
+      "bindType": 2,
+      "canAfford": true,
+      "classID": 2,
+      "dps": 9.7,
+      "equipLoc": "INVTYPE_RANGEDRIGHT",
+      "id": 2506,
+      "itemLevel": 19,
+      "levelOk": true,
+      "minBuyoutPerUnit": "42s 0c",
+      "name": "Hornwood Recurve Bow",
+      "quality": 2,
+      "qualityName": "Uncommon",
+      "quantity": 2,
+      "requiredLevel": 14,
+      "seenAgo": "30 min",
+      "sellPrice": 1500,
+      "source": "browse",
+      "statTokens": {
+        "ITEM_MOD_AGILITY_SHORT": 3,
+        "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 9.7
+      },
+      "subType": "Bows",
+      "subclassID": 2,
+      "type": "Weapon",
+      "vsEquipped": {
+        "delta": {
+          "Agility": 3,
+          "DPS": 1.3,
+          "Item Level": 9
+        },
+        "equipped": "Light Hunting Bow",
+        "equippedNumbers": {
+          "DPS": 8.4,
+          "Item Level": 10,
+          "Speed": 1.6
+        },
+        "slot": "ranged"
+      }
+    },
+    {
+      "have": 7,
+      "id": 2318,
+      "minBuyoutPerUnit": "25c",
+      "name": "Light Leather",
+      "quantity": 150,
+      "seenAgo": "30 min",
+      "source": "browse",
+      "vendorPerUnit": "13c",
+      "where": "bags"
+    },
+    {
+      "have": 34,
+      "id": 2589,
+      "listings": 2,
+      "minBuyoutPerUnit": "12c",
+      "name": "Linen Cloth",
+      "quantity": 140,
+      "seenAgo": "30 min",
+      "source": "commodity",
+      "vendorPerUnit": "13c",
+      "where": "bags+bank"
+    },
+    {
+      "canAfford": true,
+      "classID": 2,
+      "equipLoc": "INVTYPE_RANGEDRIGHT",
+      "id": 2507,
+      "minBuyoutPerUnit": "31s 0c",
+      "name": "Ranger's Shortbow",
+      "quantity": 1,
+      "seenAgo": "30 min",
+      "source": "browse",
+      "subType": "Bows",
+      "subclassID": 2,
+      "type": "Weapon"
+    },
+    {
+      "id": 2508,
+      "minBuyoutPerUnit": "40c",
+      "name": "Silk Thread",
+      "quantity": 80,
+      "seenAgo": "30 min",
+      "source": "browse"
+    }
+  ],
+  "sellOnAH": [
+    {
+      "advice": "auction",
+      "afterCutTotal": "1s 61c",
+      "auctionPerUnit": "25c",
+      "have": 7,
+      "name": "Light Leather",
+      "vendorTotal": "91c",
+      "where": "bags"
+    },
+    {
+      "advice": "vendor: the auction adds almost nothing",
+      "afterCutTotal": "3s 74c",
+      "auctionPerUnit": "12c",
+      "have": 34,
+      "name": "Linen Cloth",
+      "vendorTotal": "4s 42c",
+      "where": "bags+bank"
+    }
+  ],
+  "sellOnAHSummary": "Listing the items with advice=auction: about 1s 61c after the cut instead of 91c from a vendor.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

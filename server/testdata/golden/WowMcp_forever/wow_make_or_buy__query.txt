@@ -1,0 +1,47 @@
+# tool wow_make_or_buy variant=query
+# args: {"query":"Gloves"}
+# isError: false
+--- content[0] ---
+{
+  "assumptions": "A recipe yields 1 unit of the item with the same name (the server does not know the number of units per craft). A reagent is priced at the lowest buyout price per unit from the auction house, or at the remembered vendor's price if lower; it does not account for what the character already has in bags. margin = finished item price minus reagent cost; marginAfterCut subtracts 5% auction cut when you want to sell it. A missing price is never counted as zero: then verdict=unknown and missingPrices. Prices older than 48 h are in stalePrices.",
+  "auctionLastVisit": "30 min ago",
+  "byVerdict": {
+    "unknown": 1
+  },
+  "recipes": [
+    {
+      "itemId": 4239,
+      "knownPartOfCost": "75c (incomplete: prices of some reagents are missing)",
+      "missingPrices": [
+        "Coarse Thread",
+        "Embossed Leather Gloves (finished item)"
+      ],
+      "name": "Embossed Leather Gloves",
+      "profession": "Leatherworking",
+      "reagents": [
+        {
+          "lineTotal": "75c",
+          "name": "Light Leather",
+          "need": 3,
+          "seenAgo": "30 min",
+          "source": "auction",
+          "unitPrice": "25c",
+          "unitPriceCopper": 25
+        },
+        {
+          "name": "Coarse Thread",
+          "need": 2,
+          "unitPrice": null
+        }
+      ],
+      "verdict": "unknown"
+    }
+  ],
+  "shown": 1,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "total": 1
+}

@@ -1,0 +1,14 @@
+# tool wow_goal_set variant=remove
+# args: {"remove":"g2"}
+# isError: false
+--- content[0] ---
+{
+  "file": "<GOALS>",
+  "goal": "Gold: 10g 0s 0c",
+  "removed": {
+    "id": "g2",
+    "type": "gold",
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "target": 100000
+  }
+}

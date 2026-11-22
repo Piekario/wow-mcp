@@ -1,0 +1,18 @@
+# tool wow_spells variant=named
+# args: {"character":"Piekasz"}
+# isError: false
+--- content[0] ---
+{
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "spells": [
+    {
+      "name": "Aimed Shot",
+      "rank": "Rank 1",
+      "tab": "Marksmanship"
+    }
+  ]
+}

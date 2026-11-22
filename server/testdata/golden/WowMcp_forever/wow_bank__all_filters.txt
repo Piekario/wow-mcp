@@ -1,0 +1,18 @@
+# tool wow_bank variant=all_filters
+# args: {"character":"Piekasz","minQuality":1,"query":"a","sellable":true,"type":"Armor"}
+# isError: false
+--- content[0] ---
+{
+  "capturedAgeMinutes": 30,
+  "capturedAt": "2026-11-15 16:26",
+  "count": 0,
+  "freeSlots": 23,
+  "items": [],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "totalSlots": 24,
+  "totalVendorValue": "0c"
+}

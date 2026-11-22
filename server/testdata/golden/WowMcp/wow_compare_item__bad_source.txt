@@ -1,0 +1,5 @@
+# tool wow_compare_item variant=bad_source
+# args: {"item":"Bow","source":"moon"}
+# isError: true
+--- content[0] ---
+"Bow" not found in bags, bank or at a vendor. The bank and vendor appear in the dump only after their window is opened and /mcp reload is run

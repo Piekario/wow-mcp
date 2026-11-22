@@ -1,0 +1,45 @@
+# tool wow_quest_rewards variant=weights
+# args: {"weights":{"agility":1,"dps":2,"stamina":0.5}}
+# isError: false
+--- content[0] ---
+{
+  "count": 1,
+  "quests": [
+    {
+      "choices": [
+        {
+          "count": 2,
+          "equippable": false,
+          "id": 4605,
+          "levelOk": true,
+          "name": "Mushroom Cap",
+          "usable": true
+        }
+      ],
+      "complete": false,
+      "fixed": {
+        "money": "1s 20c"
+      },
+      "id": 947,
+      "note": "I do not have the data to recommend a choice (no upgrades and no sell prices).",
+      "source": "log",
+      "title": "Cave Mushrooms",
+      "where": "quest log"
+    }
+  ],
+  "scoring": {
+    "how": "score = sum of stat differences (reward minus equipped in that slot) times weight; best slot for each reward",
+    "method": "stat weights",
+    "source": "argument weights",
+    "values": {
+      "agility": 1,
+      "dps": 2,
+      "stamina": 0.5
+    }
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

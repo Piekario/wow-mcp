@@ -1,0 +1,25 @@
+# tool wow_talents variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game.
+--- content[1] ---
+{
+  "class": "Hunter",
+  "expectedPointsClassic": 11,
+  "learned": [],
+  "level": 20,
+  "note": "The dump has no full tree (addon older than 0.4.0). Update the addon and type /mcp reload, then all talents with descriptions and what can be bought now will appear.",
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  },
+  "source": null,
+  "spent": null,
+  "split": "",
+  "trees": null,
+  "unspent": 0
+}

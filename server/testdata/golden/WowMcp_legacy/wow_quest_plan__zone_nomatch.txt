@@ -1,0 +1,17 @@
+# tool wow_quest_plan variant=zone_nomatch
+# args: {"zone":"Zzzz"}
+# isError: false
+--- content[0] ---
+{
+  "byDifficulty": {},
+  "count": 0,
+  "grayBelow": "quests of level 8 and below are gray (green range: 11, from the classic table)",
+  "playerLevel": 20,
+  "readyToTurnIn": null,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "zones": []
+}

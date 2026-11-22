@@ -1,0 +1,83 @@
+# tool wow_doctor variant=named
+# args: {"character":"Piekasz"}
+# isError: false
+--- content[0] ---
+{
+  "status": "warn",
+  "summary": "12 checks: 10 ok, 2 warnings, 0 failures (server 0.17.0, expected addon 0.16.0)",
+  "nextStep": "Turn a section back on with /mcp on \u003csection\u003e and type /mcp reload.",
+  "checks": [
+    {
+      "check": "dump file",
+      "status": "ok",
+      "detail": "Reading <FILE> (modified 2026-11-15 16:26:45, 29 min ago)",
+      "fix": ""
+    },
+    {
+      "check": "account",
+      "status": "ok",
+      "detail": "The account folder is not part of the path (--file was used), so there is nothing to choose between.",
+      "fix": ""
+    },
+    {
+      "check": "dump age",
+      "status": "ok",
+      "detail": "The snapshot is 30 min old.",
+      "fix": ""
+    },
+    {
+      "check": "addon version",
+      "status": "ok",
+      "detail": "Addon 0.16.0, the server expects 0.16.0.",
+      "fix": ""
+    },
+    {
+      "check": "section errors",
+      "status": "ok",
+      "detail": "The addon reported no errors while collecting sections.",
+      "fix": ""
+    },
+    {
+      "check": "dump speed",
+      "status": "ok",
+      "detail": "Collecting the dump took 61.5 ms.",
+      "fix": ""
+    },
+    {
+      "check": "disabled sections",
+      "status": "warn",
+      "detail": "Sections disabled in the addon: macros (wow_section). Tools that use them have no fresh data; enable a section in game with the command \"/mcp on section_name\" and run /mcp reload.",
+      "fix": "Turn a section back on with /mcp on \u003csection\u003e and type /mcp reload."
+    },
+    {
+      "check": "window sections",
+      "status": "warn",
+      "detail": "8 section(s) were never captured because their window was not opened with the addon enabled: vendor (open: vendor window (preferably one that repairs; up to 10 latest in the vendors field); read by wow_vendor); buyback (open: vendor window after selling something (buyback list; the client loses it on logout); read by wow_vendor); bank (open: bank window; read by wow_bank); flightPaths (open: flight map at a flight master; read by wow_section flightPaths); recipes (open: each profession window (and Beast Training for a Hunter); read by wow_recipes); mail (open: mailbox; read by wow_mail); questOffer (open: quest window at an NPC, before you accept it; read by wow_quest_rewards); questTurnIn (open: quest turn-in window at an NPC (with the reward choice); read by wow_quest_rewards)",
+      "fix": "Open the windows you want answers about (vendor, trainer, bank, mailbox, auction house, professions...) once, then type /mcp reload."
+    },
+    {
+      "check": "unloaded dump",
+      "status": "ok",
+      "detail": "The dump holds a loaded character.",
+      "fix": ""
+    },
+    {
+      "check": "client language",
+      "status": "ok",
+      "detail": "Client locale enUS.",
+      "fix": ""
+    },
+    {
+      "check": "history",
+      "status": "ok",
+      "detail": "<HISTORY> is writable; 3 usable snapshot(s) of Piekasz.",
+      "fix": ""
+    },
+    {
+      "check": "goals file",
+      "status": "ok",
+      "detail": "Goals are stored in <GOALS>.",
+      "fix": ""
+    }
+  ]
+}

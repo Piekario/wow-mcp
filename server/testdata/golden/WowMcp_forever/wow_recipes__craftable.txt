@@ -1,0 +1,45 @@
+# tool wow_recipes variant=craftable
+# args: {"craftable":true}
+# isError: false
+--- content[0] ---
+{
+  "note": "Recipes under collapsed headers in the profession window are not included in the dump. canCraft = how many can be crafted from the materials in bags; inBank = how much of a given material is in the bank (state from the last visit).",
+  "professions": [
+    {
+      "byDifficulty": {
+        "easy": 1,
+        "optimal": 1,
+        "trivial": 1
+      },
+      "capturedAgeMinutes": 30,
+      "capturedAt": "2026-11-15 16:26",
+      "maxRank": 150,
+      "name": "Leatherworking",
+      "rank": 87,
+      "recipes": [
+        {
+          "canCraft": 7,
+          "difficulty": "trivial",
+          "difficultyInfo": "gray: gives no skill points",
+          "id": 2149,
+          "itemId": 2304,
+          "name": "Light Armor Kit",
+          "reagents": [
+            {
+              "have": 7,
+              "id": 2318,
+              "name": "Light Leather",
+              "need": 1
+            }
+          ]
+        }
+      ],
+      "shown": 1
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

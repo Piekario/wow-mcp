@@ -1,0 +1,24 @@
+# tool wow_goal_set variant=reputation_value
+# args: {"faction":"Stormwind","target":9000,"type":"reputation"}
+# isError: false
+--- content[0] ---
+{
+  "added": {
+    "id": "g4",
+    "type": "reputation",
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "target": 9000,
+    "faction": "Stormwind"
+  },
+  "file": "<GOALS>",
+  "goal": "9000 reputation with Stormwind",
+  "progress": {
+    "current": "Friendly (5445)",
+    "done": false,
+    "goal": "9000 reputation with Stormwind",
+    "id": "g4",
+    "missing": 3555,
+    "percent": 60.5,
+    "type": "reputation"
+  }
+}

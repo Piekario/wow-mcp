@@ -1,0 +1,5 @@
+# tool wow_gold_history variant=bad_type
+# args: {"days":"abc"}
+# isError: true
+--- content[0] ---
+validating "arguments": validating root: validating /properties/days: type: abc has type "string", want "integer"

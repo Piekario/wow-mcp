@@ -1,0 +1,92 @@
+# tool wow_shopping_list variant=real_hours_5
+# args: {"hours":5}
+# isError: false
+--- content[0] ---
+{
+  "ammo": {
+    "name": "Sharp Arrow",
+    "note": "the ammo did not decrease in the measured stretch of history, so there is nothing to compute a purchase from",
+    "perHour": 0,
+    "sellers": [
+      {
+        "npc": "Quartermaster Lewis",
+        "pack": "50c",
+        "stack": 200,
+        "unitPrice": "0.2 c"
+      }
+    ],
+    "toBuy": 0,
+    "total": 2124
+  },
+  "budget": {
+    "canAffordAll": true,
+    "leftAfterAll": "3g 68s 97c",
+    "steps": [],
+    "totalCost": "0c"
+  },
+  "level": 22,
+  "money": "3g 68s 97c",
+  "note": "Vendor prices come from remembered windows (vendors) and may be old; the price in the vendor window is per pack (stack), the price of one piece is the pack price divided by its size. The server buys, teaches and repairs nothing.",
+  "order": "purchase priority: trainer skills, repair, ammo, food and materials",
+  "petFood": {
+    "foodInBags": 30,
+    "foodTypes": [
+      "Meat",
+      "Fish"
+    ],
+    "vendorFood": [
+      {
+        "item": "Refreshing Spring Water",
+        "npc": "Quartermaster Lewis",
+        "pack": "25c",
+        "stack": 5
+      },
+      {
+        "item": "Ice Cold Milk",
+        "npc": "Quartermaster Lewis",
+        "pack": "1s 25c",
+        "stack": 5
+      }
+    ],
+    "vendorFoodNote": "foodInBags is food from bags by item subtype; the server has no table of which food is meat, fish, cheese etc. Match it to the pet's foodTypes by name, and when unsure, say so plainly."
+  },
+  "planningHours": 5,
+  "repair": {
+    "lowest": "Canvas Shoulderpads 100%",
+    "needed": false,
+    "overallPercent": 100
+  },
+  "returnToTown": {
+    "ammo": {
+      "hoursLeft": "no data",
+      "name": "Sharp Arrow",
+      "note": "ammo did not decrease in the measured stretch of history",
+      "total": 2124
+    },
+    "bags": {
+      "freeSlots": 14,
+      "gainedSlotsPerHour": 0,
+      "hoursUntilFull": "no data",
+      "note": "used bag slots did not grow in the measured stretch of history",
+      "totalSlots": 60,
+      "window": "current session"
+    },
+    "durability": {
+      "lowest": "Canvas Shoulderpads 100%",
+      "overallPercent": 100
+    },
+    "note": "Forecasts rely on the rate from dump history (the same window as wow_progress), so they are approximations; purchases and sales between dumps distort the bag-filling rate.",
+    "soonestHours": "no data",
+    "trainer": {
+      "note": "no data: no saved trainer offers (open a trainer window in game and run /mcp reload)"
+    }
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "trainer": {
+    "note": "No saved trainer offers. Open the class (and profession) trainer window in game, then type /mcp reload."
+  }
+}

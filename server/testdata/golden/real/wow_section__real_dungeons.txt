@@ -1,0 +1,708 @@
+# tool wow_section variant=real_dungeons
+# args: {"section":"dungeons"}
+# isError: false
+--- content[0] ---
+{
+  "dungeons": {
+    "activities": [
+      {
+        "category": "Dungeons",
+        "id": 1986,
+        "maxLevelSuggestion": 47,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 40,
+        "name": "Krol'dok Stronghold"
+      },
+      {
+        "category": "Dungeons",
+        "id": 1984,
+        "maxLevelSuggestion": 20,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 13,
+        "name": "Hall of Thanes"
+      },
+      {
+        "category": "Dungeons",
+        "id": 1983,
+        "maxLevelSuggestion": 35,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 28,
+        "name": "City of Dalaran"
+      },
+      {
+        "category": "Dungeons",
+        "id": 1982,
+        "maxLevelSuggestion": 22,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 15,
+        "name": "Ruins of Lordaeron"
+      },
+      {
+        "category": "Dungeons",
+        "id": 1981,
+        "maxLevelSuggestion": 33,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 26,
+        "name": "Excavation Site: Wetlands"
+      },
+      {
+        "category": "Dungeons",
+        "id": 1980,
+        "maxLevelSuggestion": 55,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 48,
+        "name": "Alcaz Prison"
+      },
+      {
+        "category": "Dungeons",
+        "id": 1979,
+        "maxLevelSuggestion": 60,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 55,
+        "name": "Blackmaw Hold"
+      },
+      {
+        "category": "Dungeons",
+        "id": 1978,
+        "maxLevelSuggestion": 60,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 58,
+        "name": "The Shaper's Terrace"
+      },
+      {
+        "category": "Dungeons",
+        "id": 1603,
+        "maxLevelSuggestion": 60,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 58,
+        "name": "Stratholme (Service Gate)"
+      },
+      {
+        "category": "Dungeons",
+        "id": 837,
+        "maxLevelSuggestion": 60,
+        "maxPlayers": 10,
+        "minLevel": 0,
+        "minLevelSuggestion": 59,
+        "name": "Upper Blackrock Spire"
+      },
+      {
+        "category": "Dungeons",
+        "id": 829,
+        "maxLevelSuggestion": 41,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 33,
+        "name": "Scarlet Monastery - Library"
+      },
+      {
+        "category": "Dungeons",
+        "id": 828,
+        "maxLevelSuggestion": 46,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 38,
+        "name": "Scarlet Monastery - Cathedral"
+      },
+      {
+        "category": "Dungeons",
+        "id": 827,
+        "maxLevelSuggestion": 44,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 36,
+        "name": "Scarlet Monastery - Armory"
+      },
+      {
+        "category": "Dungeons",
+        "id": 816,
+        "maxLevelSuggestion": 60,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 58,
+        "name": "Stratholme (Main Gate)"
+      },
+      {
+        "category": "Dungeons",
+        "id": 815,
+        "maxLevelSuggestion": 60,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 56,
+        "name": "Dire Maul (North)"
+      },
+      {
+        "category": "Dungeons",
+        "id": 1985,
+        "maxLevelSuggestion": 42,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 35,
+        "name": "The Drowned City"
+      },
+      {
+        "category": "Dungeons",
+        "id": 814,
+        "maxLevelSuggestion": 60,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 56,
+        "name": "Dire Maul (West)"
+      },
+      {
+        "category": "Dungeons",
+        "id": 796,
+        "maxLevelSuggestion": 24,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 15,
+        "name": "Wailing Caverns"
+      },
+      {
+        "category": "Dungeons",
+        "id": 811,
+        "maxLevelSuggestion": 60,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 52,
+        "name": "Blackrock Depths"
+      },
+      {
+        "category": "Dungeons",
+        "id": 810,
+        "maxLevelSuggestion": 60,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 50,
+        "name": "Sunken Temple"
+      },
+      {
+        "category": "Dungeons",
+        "id": 809,
+        "maxLevelSuggestion": 55,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 46,
+        "name": "Maraudon"
+      },
+      {
+        "category": "Dungeons",
+        "id": 808,
+        "maxLevelSuggestion": 54,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 44,
+        "name": "Zul'Farrak"
+      },
+      {
+        "category": "Dungeons",
+        "id": 807,
+        "maxLevelSuggestion": 51,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 41,
+        "name": "Uldaman"
+      },
+      {
+        "category": "Dungeons",
+        "id": 806,
+        "maxLevelSuggestion": 46,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 37,
+        "name": "Razorfen Downs"
+      },
+      {
+        "category": "Dungeons",
+        "id": 805,
+        "maxLevelSuggestion": 38,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 30,
+        "name": "Scarlet Monastery - Graveyard"
+      },
+      {
+        "category": "Dungeons",
+        "id": 804,
+        "maxLevelSuggestion": 38,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 29,
+        "name": "Razorfen Kraul"
+      },
+      {
+        "category": "Dungeons",
+        "id": 803,
+        "maxLevelSuggestion": 38,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 29,
+        "name": "Gnomeregan"
+      },
+      {
+        "category": "Dungeons",
+        "id": 802,
+        "maxLevelSuggestion": 32,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 24,
+        "name": "Stormwind Stockades"
+      },
+      {
+        "category": "Dungeons",
+        "id": 801,
+        "maxLevelSuggestion": 32,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 24,
+        "name": "Blackfathom Deeps"
+      },
+      {
+        "category": "Dungeons",
+        "id": 800,
+        "maxLevelSuggestion": 30,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 20,
+        "name": "Shadowfang Keep"
+      },
+      {
+        "category": "Dungeons",
+        "id": 799,
+        "maxLevelSuggestion": 26,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 17,
+        "name": "Deadmines"
+      },
+      {
+        "category": "Dungeons",
+        "id": 797,
+        "maxLevelSuggestion": 60,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 58,
+        "name": "Scholomance"
+      },
+      {
+        "category": "Dungeons",
+        "id": 812,
+        "maxLevelSuggestion": 60,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 55,
+        "name": "Lower Blackrock Spire"
+      },
+      {
+        "category": "Dungeons",
+        "id": 813,
+        "maxLevelSuggestion": 60,
+        "maxPlayers": 5,
+        "minLevel": 0,
+        "minLevelSuggestion": 54,
+        "name": "Dire Maul (East)"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 1989,
+        "maxLevelSuggestion": 54,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 33,
+        "name": "Riverglades"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 872,
+        "maxLevelSuggestion": 24,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 8,
+        "name": "Silverpine Forest"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 871,
+        "maxLevelSuggestion": 14,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 1,
+        "name": "Tirisfal Glades"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 870,
+        "maxLevelSuggestion": 63,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 53,
+        "name": "Eastern Plaguelands"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 869,
+        "maxLevelSuggestion": 60,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 48,
+        "name": "Western Plaguelands"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 868,
+        "maxLevelSuggestion": 54,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 38,
+        "name": "Hinterlands"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 867,
+        "maxLevelSuggestion": 34,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 18,
+        "name": "Hillsbrad Foothills"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 866,
+        "maxLevelSuggestion": 44,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 28,
+        "name": "Arathi Highlands"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 865,
+        "maxLevelSuggestion": 50,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 33,
+        "name": "Badlands"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 864,
+        "maxLevelSuggestion": 60,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 43,
+        "name": "Searing Gorge"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 863,
+        "maxLevelSuggestion": 60,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 48,
+        "name": "Burning Steppes"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 862,
+        "maxLevelSuggestion": 30,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 13,
+        "name": "Redridge Mountains"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 861,
+        "maxLevelSuggestion": 50,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 33,
+        "name": "Swamp of Sorrows"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 860,
+        "maxLevelSuggestion": 60,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 43,
+        "name": "Blasted Lands"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 859,
+        "maxLevelSuggestion": 50,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 28,
+        "name": "Stranglethorn Vale"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 858,
+        "maxLevelSuggestion": 34,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 18,
+        "name": "Wetlands"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 857,
+        "maxLevelSuggestion": 24,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 8,
+        "name": "Loch Modan"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 856,
+        "maxLevelSuggestion": 14,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 1,
+        "name": "Dun Morogh"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 873,
+        "maxLevelSuggestion": 44,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 28,
+        "name": "Alterac Mountains"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 855,
+        "maxLevelSuggestion": 34,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 18,
+        "name": "Duskwood"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 874,
+        "maxLevelSuggestion": 14,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 1,
+        "name": "Durotar"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 1991,
+        "maxLevelSuggestion": 60,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 55,
+        "name": "Mount Hyjal"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 890,
+        "maxLevelSuggestion": 63,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 53,
+        "name": "Winterspring"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 889,
+        "maxLevelSuggestion": 60,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 43,
+        "name": "Azshara"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 888,
+        "maxLevelSuggestion": 60,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 46,
+        "name": "Felwood"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 887,
+        "maxLevelSuggestion": 34,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 18,
+        "name": "Ashenvale"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 886,
+        "maxLevelSuggestion": 24,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 8,
+        "name": "Darkshore"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 885,
+        "maxLevelSuggestion": 14,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 1,
+        "name": "Teldrassil"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 884,
+        "maxLevelSuggestion": 60,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 53,
+        "name": "Silithus"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 883,
+        "maxLevelSuggestion": 60,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 45,
+        "name": "Un'Goro Crater"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 882,
+        "maxLevelSuggestion": 54,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 38,
+        "name": "Tanaris"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 881,
+        "maxLevelSuggestion": 50,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 33,
+        "name": "Dustwallow Marsh"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 880,
+        "maxLevelSuggestion": 54,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 38,
+        "name": "Feralas"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 879,
+        "maxLevelSuggestion": 44,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 28,
+        "name": "Desolace"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 878,
+        "maxLevelSuggestion": 40,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 23,
+        "name": "Thousand Needles"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 877,
+        "maxLevelSuggestion": 32,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 13,
+        "name": "Stonetalon Mountains"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 876,
+        "maxLevelSuggestion": 30,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 8,
+        "name": "The Barrens"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 875,
+        "maxLevelSuggestion": 14,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 1,
+        "name": "Mulgore"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 853,
+        "maxLevelSuggestion": 14,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 1,
+        "name": "Elwynn Forest"
+      },
+      {
+        "category": "Quests \u0026 Zones",
+        "id": 854,
+        "maxLevelSuggestion": 24,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 8,
+        "name": "Westfall"
+      },
+      {
+        "category": "Battlegrounds",
+        "id": 920,
+        "maxLevelSuggestion": 29,
+        "maxPlayers": 10,
+        "minLevel": 0,
+        "minLevelSuggestion": 20,
+        "name": "Warsong Gulch"
+      },
+      {
+        "category": "Battlegrounds",
+        "id": 926,
+        "maxLevelSuggestion": 29,
+        "maxPlayers": 15,
+        "minLevel": 0,
+        "minLevelSuggestion": 20,
+        "name": "Arathi Basin"
+      },
+      {
+        "category": "Custom",
+        "id": 1064,
+        "maxLevelSuggestion": 0,
+        "maxPlayers": 0,
+        "minLevel": 0,
+        "minLevelSuggestion": 0,
+        "name": "Custom"
+      }
+    ]
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  }
+}

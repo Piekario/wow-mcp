@@ -1,0 +1,35 @@
+# tool wow_account variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "characters": [
+    {
+      "ageMinutes": 30,
+      "class": "Hunter",
+      "dumpedAt": "2026-11-15 23:43:01",
+      "freeBagSlots": 14,
+      "level": 22,
+      "money": "3g 68s 97c",
+      "moneyCopper": 36897,
+      "name": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+      "played": "29 h 54 min",
+      "professions": [
+        "Mining 62/150",
+        "Skinning 75/75",
+        "First Aid 37/75",
+        "Fishing 21/75",
+        "Cooking 13/75"
+      ],
+      "race": "Night Elf",
+      "restedXp": 2,
+      "xpPercent": 68.4,
+      "zone": "Westfall"
+    }
+  ],
+  "count": 1,
+  "lastCharacter": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+  "note": "Each character's data comes from its latest dump (ageMinutes). A character appears here after logging in with it with the addon enabled and running /mcp reload (or after logging out, because the addon dumps then by itself).",
+  "totalMoney": "3g 68s 97c",
+  "totalMoneyCopper": 36897
+}

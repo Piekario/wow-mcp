@@ -1,0 +1,118 @@
+# tool wow_quest_rewards variant=quest_id
+# args: {"quest":"65"}
+# isError: false
+--- content[0] ---
+{
+  "count": 2,
+  "quests": [
+    {
+      "best": {
+        "name": "Curvewood Dagger",
+        "reason": "biggest gain in slot offHand: score +8 (item level + DPS)"
+      },
+      "capturedAgeMinutes": 30,
+      "capturedAt": "2026-11-15 16:26",
+      "choices": [
+        {
+          "count": 1,
+          "delta": {
+            "Agility": 3,
+            "Item Level": 8,
+            "Stamina": 2
+          },
+          "equippable": true,
+          "id": 5586,
+          "levelOk": true,
+          "name": "Curvewood Dagger",
+          "requiredLevel": 13,
+          "score": 8,
+          "slot": "offHand",
+          "usable": true,
+          "vendorValue": "8s 12c"
+        },
+        {
+          "count": 1,
+          "equippable": false,
+          "id": 5540,
+          "levelOk": true,
+          "name": "Webwood Slicer",
+          "note": "the addon marked this reward as unusable by the character (usable = false): vendor value",
+          "requiredLevel": 1,
+          "usable": false,
+          "vendorValue": "13c"
+        }
+      ],
+      "fixed": {
+        "items": [
+          "Linen Cloth x5"
+        ],
+        "money": "15s 0c",
+        "xp": 1150
+      },
+      "id": 65,
+      "npc": "Gryan Stoutmantle",
+      "source": "turnIn",
+      "title": "Red Leather Bandanas",
+      "where": "quest turn-in at the NPC (questTurnIn)"
+    },
+    {
+      "best": {
+        "name": "Curvewood Dagger",
+        "reason": "biggest gain in slot offHand: score +8 (item level + DPS)"
+      },
+      "capturedAgeMinutes": 30,
+      "capturedAt": "2026-11-15 16:26",
+      "choices": [
+        {
+          "count": 1,
+          "delta": {
+            "Agility": 3,
+            "Item Level": 8,
+            "Stamina": 2
+          },
+          "equippable": true,
+          "id": 5586,
+          "levelOk": true,
+          "name": "Curvewood Dagger",
+          "requiredLevel": 13,
+          "score": 8,
+          "slot": "offHand",
+          "usable": true,
+          "vendorValue": "8s 12c"
+        },
+        {
+          "count": 1,
+          "equippable": false,
+          "id": 5540,
+          "levelOk": true,
+          "name": "Webwood Slicer",
+          "note": "the addon marked this reward as unusable by the character (usable = false): vendor value",
+          "requiredLevel": 1,
+          "usable": false,
+          "vendorValue": "13c"
+        }
+      ],
+      "fixed": {
+        "items": [
+          "Linen Cloth x5"
+        ],
+        "money": "15s 0c",
+        "xp": 1150
+      },
+      "id": 65,
+      "npc": "Gryan Stoutmantle",
+      "source": "offer",
+      "title": "The Defias Brotherhood",
+      "where": "quest offered by the NPC (questOffer)"
+    }
+  ],
+  "scoring": {
+    "how": "without weights the server only counts the change in item level and DPS relative to the equipped item; this is a rough approximation, pass weights (e.g. {\"agility\":1}) or a weights.json file to take stats into account",
+    "method": "item level and DPS"
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

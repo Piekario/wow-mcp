@@ -1,0 +1,20 @@
+# tool wow_legacy variant=named
+# args: {"character":"Piekasz"}
+# isError: false
+--- content[0] ---
+{
+  "discovery": {
+    "enums": [],
+    "frames": [],
+    "globals": [],
+    "namespaces": [],
+    "readings": []
+  },
+  "howToUse": "Legacy Points are earned once per account from Legacy challenges and each character spends its own on perks. Base advice on the perk descriptions in this dump (there is no built-in perk list). status: available = a point can go there now (the game's own flag), locked = an arrow prerequisite (requires) or a points-spent gate (requiresSpent) is not met, maxed = full rank. The tool and the addon never learn perks: the player clicks the perk and Apply Changes in the Legacy window (default key Y).",
+  "note": "The client gave the addon no Legacy perk tree. Open the Legacy window (default key Y) so the game loads it, type /mcp reload and ask again. If it is still missing, the discovery field lists the Legacy API names this client has: pass it on to the wow-mcp developer.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

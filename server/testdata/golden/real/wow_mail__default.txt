@@ -1,0 +1,16 @@
+# tool wow_mail variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "capturedAgeMinutes": 187,
+  "capturedAt": "2026-11-15 20:05",
+  "capturedNote": "This is the state from a visit 3 h 7 min ago; it may have changed. For fresh data: open the window in game and type /mcp reload.",
+  "count": 0,
+  "messages": [],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  }
+}

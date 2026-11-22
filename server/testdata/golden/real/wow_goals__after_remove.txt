@@ -1,0 +1,80 @@
+# tool wow_goals variant=after_remove
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "count": 6,
+  "done": 2,
+  "goals": [
+    {
+      "current": "level 22 (68.4% XP)",
+      "done": false,
+      "eta": {
+        "assumption": "the server does not know the XP table of later levels, so I assume each needs as much XP as the current one; in reality it is often more, so this is a lower bound",
+        "basis": "XP rate: 13800 per hour of play (current session, play time from /played)",
+        "duration": "4 h 34 min",
+        "playHours": 4.6,
+        "sessionLength": "on average 2 h of play per session from history",
+        "sessions": 2.3
+      },
+      "goal": "Level 25",
+      "id": "g1",
+      "missing": "3 levels",
+      "note": "for Deadmines",
+      "percent": 90.4,
+      "percentBasis": "computed from level 1 to the target level, with the fraction of XP of the current level",
+      "type": "level",
+      "xpNeededAtLeast": 63224
+    },
+    {
+      "current": "Honored (11972)",
+      "done": false,
+      "goal": "Revered with Darnassus",
+      "id": "g3",
+      "missing": 9028,
+      "percent": 57,
+      "standingThreshold": 21000,
+      "thresholdSource": "classic table (approximation; Forever may have different thresholds)",
+      "type": "reputation"
+    },
+    {
+      "current": "Friendly (5445)",
+      "done": false,
+      "goal": "9000 reputation with Stormwind",
+      "id": "g4",
+      "missing": 3555,
+      "percent": 60.5,
+      "type": "reputation"
+    },
+    {
+      "current": "62/150",
+      "done": false,
+      "goal": "Mining 100",
+      "id": "g5",
+      "missing": 38,
+      "percent": 62,
+      "type": "profession"
+    },
+    {
+      "current": "known",
+      "done": true,
+      "goal": "Learn: Aimed Shot",
+      "id": "g6",
+      "percent": 100,
+      "type": "spell"
+    },
+    {
+      "current": "2124 (bags 2124, bank 0, equipped 0)",
+      "done": true,
+      "goal": "1500 x Sharp Arrow",
+      "id": "g7",
+      "percent": 100,
+      "type": "item"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  }
+}

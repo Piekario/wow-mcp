@@ -1,0 +1,5 @@
+# tool wow_section variant=section_vendor_stale
+# args: {"section":"vendor"}
+# isError: true
+--- content[0] ---
+cannot open file "<FILE>": stat <FILE>: no such file or directory

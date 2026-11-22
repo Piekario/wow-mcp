@@ -1,0 +1,369 @@
+# tool wow_search variant=many_sections
+# args: {"query":"a"}
+# isError: false
+--- content[0] ---
+{
+  "groups": [
+    {
+      "count": 6,
+      "hits": [
+        {
+          "label": "Cave Mushrooms",
+          "matchedIn": "title",
+          "path": [
+            "quests",
+            "Cave Mushrooms"
+          ],
+          "summary": "level 17, Darkshore"
+        },
+        {
+          "label": "Scaber Stalk: 5/5",
+          "matchedIn": "text",
+          "path": [
+            "quests",
+            "Cave Mushrooms",
+            "Scaber Stalk: 5/5"
+          ]
+        },
+        {
+          "label": "Death Cap: 0/1",
+          "matchedIn": "text",
+          "path": [
+            "quests",
+            "Cave Mushrooms",
+            "Death Cap: 0/1"
+          ]
+        },
+        {
+          "label": "Curvewood Dagger",
+          "matchedIn": "name",
+          "path": [
+            "quests",
+            "Cave Mushrooms",
+            "Curvewood Dagger"
+          ]
+        },
+        {
+          "label": "WANTED: Murkdeep!",
+          "matchedIn": "title",
+          "path": [
+            "quests",
+            "WANTED: Murkdeep!"
+          ],
+          "summary": "level 18, Darkshore"
+        },
+        {
+          "label": "Murkdeep slain: 0/1",
+          "matchedIn": "text",
+          "path": [
+            "quests",
+            "WANTED: Murkdeep!",
+            "Murkdeep slain: 0/1"
+          ]
+        }
+      ],
+      "section": "quests",
+      "shown": 6,
+      "truncated": false
+    },
+    {
+      "count": 5,
+      "hits": [
+        {
+          "label": "Backpack",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Backpack"
+          ]
+        },
+        {
+          "label": "Light Leather",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Backpack",
+            "Light Leather"
+          ],
+          "summary": "count 7"
+        },
+        {
+          "label": "Small Brown Pouch",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Small Brown Pouch"
+          ]
+        },
+        {
+          "label": "Tough Hunk of Bread",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Small Brown Pouch",
+            "Tough Hunk of Bread"
+          ],
+          "summary": "count 5"
+        },
+        {
+          "label": "Sharp Arrow",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Medium Quiver",
+            "Sharp Arrow"
+          ],
+          "summary": "count 200"
+        }
+      ],
+      "section": "bags",
+      "shown": 5,
+      "truncated": false
+    },
+    {
+      "count": 3,
+      "hits": [
+        {
+          "label": "Curvewood Dagger",
+          "matchedIn": "name",
+          "path": [
+            "equipment",
+            "Curvewood Dagger"
+          ],
+          "summary": "mainHand"
+        },
+        {
+          "label": "Webwood Slicer",
+          "matchedIn": "slot",
+          "matchedText": "offHand",
+          "path": [
+            "equipment",
+            "Webwood Slicer"
+          ],
+          "summary": "offHand"
+        },
+        {
+          "label": "Light Hunting Bow",
+          "matchedIn": "slot",
+          "matchedText": "ranged",
+          "path": [
+            "equipment",
+            "Light Hunting Bow"
+          ],
+          "summary": "ranged"
+        }
+      ],
+      "section": "equipment",
+      "shown": 3,
+      "truncated": false
+    },
+    {
+      "count": 5,
+      "hits": [
+        {
+          "label": "Auto Attack",
+          "matchedIn": "name",
+          "path": [
+            "spells",
+            "Auto Attack"
+          ],
+          "summary": "General"
+        },
+        {
+          "label": "Mend Pet",
+          "matchedIn": "rank",
+          "matchedText": "Rank 2",
+          "path": [
+            "spells",
+            "Mend Pet"
+          ],
+          "summary": "Rank 2, Beast Mastery"
+        },
+        {
+          "label": "Aspect of the Hawk",
+          "matchedIn": "name",
+          "path": [
+            "spells",
+            "Aspect of the Hawk"
+          ],
+          "summary": "Rank 2, Beast Mastery"
+        },
+        {
+          "label": "Aimed Shot",
+          "matchedIn": "name",
+          "path": [
+            "spells",
+            "Aimed Shot"
+          ],
+          "summary": "Rank 1, Marksmanship"
+        },
+        {
+          "label": "Hunter's Mark",
+          "matchedIn": "name",
+          "path": [
+            "spells",
+            "Hunter's Mark"
+          ],
+          "summary": "Rank 1, Marksmanship"
+        }
+      ],
+      "section": "spells",
+      "shown": 5,
+      "truncated": false
+    },
+    {
+      "count": 3,
+      "hits": [
+        {
+          "label": "Disengage",
+          "matchedIn": "name",
+          "path": [
+            "trainer",
+            "Einris Brightspear",
+            "Disengage"
+          ],
+          "summary": "Rank 1, available, costCopper 21s 0c, levelRequired 20"
+        },
+        {
+          "label": "Track Undead",
+          "matchedIn": "name",
+          "path": [
+            "trainer",
+            "Einris Brightspear",
+            "Track Undead"
+          ],
+          "summary": "available, costCopper 16s 0c, levelRequired 18"
+        },
+        {
+          "label": "Volley",
+          "matchedIn": "rank",
+          "matchedText": "Rank 1",
+          "path": [
+            "trainer",
+            "Einris Brightspear",
+            "Volley"
+          ],
+          "summary": "Rank 1, unavailable, costCopper 18g 0s 0c, levelRequired 40"
+        }
+      ],
+      "section": "trainer",
+      "shown": 3,
+      "truncated": false
+    },
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Light Leather",
+          "matchedIn": "name",
+          "path": [
+            "loot",
+            "Light Leather"
+          ],
+          "summary": "count 1"
+        }
+      ],
+      "section": "loot",
+      "shown": 1,
+      "truncated": false
+    },
+    {
+      "count": 2,
+      "hits": [
+        {
+          "label": "Cat",
+          "matchedIn": "name",
+          "path": [
+            "stable",
+            "Cat"
+          ],
+          "summary": "Cat, level 19, slot 0"
+        },
+        {
+          "label": "Bear",
+          "matchedIn": "name",
+          "path": [
+            "stable",
+            "Bear"
+          ],
+          "summary": "Bear, level 15, slot 1"
+        }
+      ],
+      "section": "stable",
+      "shown": 2,
+      "truncated": false
+    },
+    {
+      "count": 3,
+      "hits": [
+        {
+          "label": "Light Leather",
+          "matchedIn": "name",
+          "path": [
+            "auctions",
+            "Einris Brightspear",
+            "Light Leather"
+          ],
+          "summary": "minBuyout 15c, minBid 8c, quantity 15"
+        },
+        {
+          "label": "Ranger's Shortbow",
+          "matchedIn": "name",
+          "path": [
+            "auctions",
+            "Einris Brightspear",
+            "Ranger's Shortbow"
+          ],
+          "summary": "minBuyout 31s 0c, minBid 20s 0c, quantity 1"
+        },
+        {
+          "label": "Silk Thread",
+          "matchedIn": "name",
+          "path": [
+            "auctions",
+            "Einris Brightspear",
+            "Silk Thread"
+          ],
+          "summary": "minBuyout 40c, minBid 30c, quantity 20"
+        }
+      ],
+      "section": "auctions",
+      "shown": 3,
+      "truncated": false
+    }
+  ],
+  "notInSnapshot": [
+    "questOffer",
+    "questTurnIn",
+    "bank",
+    "vendor",
+    "vendors",
+    "recipes",
+    "mail",
+    "currencies",
+    "macros",
+    "flightPaths"
+  ],
+  "note": "Bank, vendors, trainers, stable, quest windows, recipes, mail and auctions are the state from the last visits to those windows (check their age in the relevant tools); loot is the loot since the previous save.",
+  "query": "a",
+  "searched": [
+    "quests",
+    "bags",
+    "equipment",
+    "spells",
+    "trainer",
+    "trainers",
+    "loot",
+    "stable",
+    "reputation",
+    "auctions",
+    "professions"
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "totalHits": 28,
+  "truncated": false
+}

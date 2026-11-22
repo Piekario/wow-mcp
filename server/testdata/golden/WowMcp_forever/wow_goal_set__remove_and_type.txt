@@ -1,0 +1,5 @@
+# tool wow_goal_set variant=remove_and_type
+# args: {"remove":"g1","type":"level"}
+# isError: true
+--- content[0] ---
+give either remove (delete) or type (new goal), not both

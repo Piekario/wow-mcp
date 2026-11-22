@@ -1,0 +1,22 @@
+# tool wow_goal_set variant=spell
+# args: {"name":"Aimed Shot","type":"spell"}
+# isError: false
+--- content[0] ---
+{
+  "added": {
+    "id": "g6",
+    "type": "spell",
+    "character": "Piekasz",
+    "name": "Aimed Shot"
+  },
+  "file": "<GOALS>",
+  "goal": "Learn: Aimed Shot",
+  "progress": {
+    "current": "known",
+    "done": true,
+    "goal": "Learn: Aimed Shot",
+    "id": "g6",
+    "percent": 100,
+    "type": "spell"
+  }
+}

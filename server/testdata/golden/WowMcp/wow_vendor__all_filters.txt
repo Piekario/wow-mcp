@@ -1,0 +1,12 @@
+# tool wow_vendor variant=all_filters
+# args: {"affordable":true,"character":"Piekasz","equippable":true,"minQuality":0,"query":"Bow","type":"Weapon","usable":true}
+# isError: false
+--- content[0] ---
+{
+  "note": "No saved vendor offer. Open a vendor window in game, then type /mcp reload.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

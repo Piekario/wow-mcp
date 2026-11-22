@@ -1,0 +1,15 @@
+# tool wow_export variant=format_text
+# args: {"format":"text"}
+# isError: false
+--- content[0] ---
+{
+  "format": "text",
+  "howToUse": "Show the player the text field in a code block so they can copy it whole.",
+  "length": 484,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "text": "Piekasz, 20 Night Elf Hunter\n============================\nFaction: Alliance\nTalents: 7/4/0 (Beast Mastery)\nAverage item level: 12.7\nProfessions: Skinning 96/150, Mining 71/75, Cooking 52/75\nPet: Cat (Cat), level 19\nPlayed: 4 d 4 h\n\nGear:\n  - Main Hand: Curvewood Dagger (ilvl 18)\n  - Off Hand: Webwood Slicer (ilvl 10)\n  - Ranged: Light Hunting Bow (ilvl 10)\n\nTalents:\n  - Endurance Training 5/5 (Beast Mastery)\n  - Focused Fire 2/2 (Beast Mastery)\n  - Lethal Shots 4/5 (Marksmanship)"
+}

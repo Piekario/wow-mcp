@@ -1,0 +1,41 @@
+# tool wow_section variant=section_friends
+# args: {"section":"friends"}
+# isError: false
+--- content[0] ---
+{
+  "capturedAgeMinutes": 30,
+  "capturedAt": "2026-11-15 16:26",
+  "friends": {
+    "capturedAt": 1794760000,
+    "friends": [
+      {
+        "area": "Stormwind City",
+        "class": "Paladin",
+        "connected": true,
+        "level": 22,
+        "name": "Tankadin",
+        "notes": "dungeon buddy"
+      },
+      {
+        "area": "Darkshore",
+        "class": "Priest",
+        "connected": true,
+        "level": 19,
+        "name": "Healbot"
+      },
+      {
+        "class": "Mage",
+        "connected": false,
+        "level": 60,
+        "name": "Oldfriend"
+      }
+    ],
+    "online": 2,
+    "total": 3
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

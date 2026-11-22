@@ -1,0 +1,20 @@
+# tool wow_section variant=limit_list
+# args: {"limit":2,"section":"completedQuests"}
+# isError: false
+--- content[0] ---
+{
+  "completedQuests": [
+    456,
+    457
+  ],
+  "limited": {
+    "kind": "list",
+    "shown": 2,
+    "total": 3
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

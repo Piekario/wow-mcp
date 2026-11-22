@@ -1,0 +1,5 @@
+# tool wow_timeline variant=days_negative
+# args: {"days":-1}
+# isError: true
+--- content[0] ---
+days cannot be negative, got -1

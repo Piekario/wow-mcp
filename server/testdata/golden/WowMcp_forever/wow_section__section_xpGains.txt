@@ -1,0 +1,31 @@
+# tool wow_section variant=section_xpGains
+# args: {"section":"xpGains"}
+# isError: false
+--- content[0] ---
+{
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "xpGains": {
+    "barXp": 0,
+    "kills": {
+      "count": 0,
+      "xp": 0
+    },
+    "messagesParsed": 0,
+    "messagesSecret": 0,
+    "messagesSeen": 0,
+    "other": {
+      "count": 0,
+      "xp": 0
+    },
+    "quests": {
+      "count": 0,
+      "xp": 0
+    },
+    "since": 1794760000,
+    "total": 0
+  }
+}

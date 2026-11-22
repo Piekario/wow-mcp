@@ -1,0 +1,47 @@
+# tool wow_dungeons variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "fitNow": [
+    {
+      "levels": "17-24",
+      "name": "Wailing Caverns",
+      "zone": "The Barrens"
+    },
+    {
+      "levels": "17-26",
+      "name": "The Deadmines",
+      "zone": "Westfall"
+    }
+  ],
+  "level": 20,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "soon": [
+    {
+      "levels": "22-30",
+      "levelsToGo": 1,
+      "name": "Shadowfang Keep",
+      "zone": "Silverpine Forest"
+    },
+    {
+      "levels": "24-32",
+      "levelsToGo": 3,
+      "name": "Blackfathom Deeps",
+      "zone": "Ashenvale"
+    },
+    {
+      "levels": "24-32",
+      "levelsToGo": 3,
+      "name": "The Stockade",
+      "note": "entrance in the Alliance capital",
+      "zone": "Stormwind City"
+    }
+  ],
+  "source": "classic",
+  "sourceNote": "The client did not report a dungeon list, so the ranges come from the classic game table and are approximate; Forever may change them. If the game has a group finder tool, open it once and type /mcp reload."
+}

@@ -1,0 +1,5 @@
+# tool wow_compare_item variant=unknown_character
+# args: {"character":"Unknown","item":"Bow"}
+# isError: true
+--- content[0] ---
+no character "Unknown" in the snapshot. Available: [Piekasz]

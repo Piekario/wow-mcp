@@ -1,0 +1,31 @@
+# tool wow_goal_set variant=gold
+# args: {"target":10,"type":"gold"}
+# isError: false
+--- content[0] ---
+{
+  "added": {
+    "id": "g2",
+    "type": "gold",
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "target": 100000
+  },
+  "file": "<GOALS>",
+  "goal": "Gold: 10g 0s 0c",
+  "progress": {
+    "current": "3g 68s 97c",
+    "done": false,
+    "eta": {
+      "assumption": "this is the change in balance (it includes spending), not income; it will change when you start spending or earning differently",
+      "basis": "gold balance: 12s 50c per hour of play (current session, play time from /played)",
+      "duration": "2 d 2 h",
+      "playHours": 50.5,
+      "sessionLength": "on average 2 h of play per session from history",
+      "sessions": 25.2
+    },
+    "goal": "Gold: 10g 0s 0c",
+    "id": "g2",
+    "missing": "6g 31s 3c",
+    "percent": 36.9,
+    "type": "gold"
+  }
+}

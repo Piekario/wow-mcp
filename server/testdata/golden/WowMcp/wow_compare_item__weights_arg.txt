@@ -1,0 +1,5 @@
+# tool wow_compare_item variant=weights_arg
+# args: {"item":"Skinning","weights":{"agility":1,"dps":2,"stamina":0.5}}
+# isError: true
+--- content[0] ---
+Skinning Knife cannot be equipped (no equipLoc in the dump), so there is nothing to compare with

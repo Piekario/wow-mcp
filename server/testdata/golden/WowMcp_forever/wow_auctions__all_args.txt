@@ -1,0 +1,52 @@
+# tool wow_auctions variant=all_args
+# args: {"character":"Piekasz","mine":true,"query":"a"}
+# isError: false
+--- content[0] ---
+{
+  "assumptions": "Profit is computed from the lowest buyout price per unit minus the 5% auction house cut. The listing deposit is lost if the item does not sell and is not counted here. Bound (Soulbound) and quest items cannot be listed.",
+  "count": 1,
+  "lastVisit": "30 min ago",
+  "myAuctions": {
+    "auctions": [
+      {
+        "buyout": "6s 0c",
+        "count": 10,
+        "name": "Copper Ore",
+        "timeLeft": "2 h"
+      }
+    ],
+    "checkedAgo": "30 min",
+    "count": 1,
+    "totalBuyout": "6s 0c"
+  },
+  "prices": [
+    {
+      "have": 7,
+      "id": 2318,
+      "minBuyoutPerUnit": "25c",
+      "name": "Light Leather",
+      "quantity": 150,
+      "seenAgo": "30 min",
+      "source": "browse",
+      "vendorPerUnit": "13c",
+      "where": "bags"
+    }
+  ],
+  "sellOnAH": [
+    {
+      "advice": "auction",
+      "afterCutTotal": "1s 61c",
+      "auctionPerUnit": "25c",
+      "have": 7,
+      "name": "Light Leather",
+      "vendorTotal": "91c",
+      "where": "bags"
+    }
+  ],
+  "sellOnAHSummary": "Listing the items with advice=auction: about 1s 61c after the cut instead of 91c from a vendor.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

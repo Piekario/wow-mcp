@@ -1,0 +1,43 @@
+# tool wow_changes variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "bags": {
+    "lost": [
+      {
+        "after": 0,
+        "before": 1,
+        "change": -1,
+        "id": 99999,
+        "name": "Old Scroll"
+      }
+    ]
+  },
+  "elapsed": "1 h",
+  "experience": {
+    "levelAfter": 22,
+    "levelBefore": 22,
+    "xpAfter": 18676,
+    "xpBefore": 18576,
+    "xpGained": 100
+  },
+  "from": "2026-11-15 21:43",
+  "history": [
+    "2026-11-15 20:43",
+    "2026-11-15 21:43",
+    "2026-11-15 22:43"
+  ],
+  "money": {
+    "after": "3g 68s 97c",
+    "before": "3g 58s 97c",
+    "change": "+10s 0c"
+  },
+  "playedBetween": "1 h",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "to": "2026-11-15 22:43"
+}

@@ -1,0 +1,33 @@
+# tool wow_section variant=limit_object
+# args: {"limit":3,"section":"stats"}
+# isError: false
+--- content[0] ---
+{
+  "limited": {
+    "kind": "map",
+    "nextKeys": [
+      "critChance",
+      "dodgeChance",
+      "healthMax",
+      "intellect",
+      "manaMax",
+      "meleeDamageMax",
+      "meleeDamageMin",
+      "meleeSpeed",
+      "parryChance",
+      "rangedAttackPower"
+    ],
+    "shown": 3,
+    "total": 20
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "stats": {
+    "agility": 32,
+    "armor": 412,
+    "attackPower": 134
+  }
+}

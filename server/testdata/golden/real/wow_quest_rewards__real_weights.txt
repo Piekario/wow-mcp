@@ -1,0 +1,467 @@
+# tool wow_quest_rewards variant=real_weights
+# args: {"weights":{"agility":1}}
+# isError: false
+--- content[0] ---
+{
+  "count": 4,
+  "quests": [
+    {
+      "best": {
+        "name": "Bravo's Armbands",
+        "reason": "biggest gain in slot wrist: score +3 (stat weights)"
+      },
+      "choices": [
+        {
+          "count": 1,
+          "delta": {
+            "Armor": 58,
+            "Attack Power": -12,
+            "Item Level": -1,
+            "Spirit": 2,
+            "Strength": 4
+          },
+          "equippable": true,
+          "id": 7606,
+          "ignoredStats": [
+            "Armor",
+            "Attack Power",
+            "Item Level",
+            "Spirit",
+            "Strength"
+          ],
+          "levelOk": true,
+          "name": "Polar Gauntlets",
+          "note": "the addon marked this reward as unusable by the character (usable = false): vendor value",
+          "score": 0,
+          "slot": "hands",
+          "usable": false,
+          "vendorValue": "5s 64c"
+        },
+        {
+          "count": 1,
+          "delta": {
+            "Agility": -2,
+            "DPS": 9,
+            "Item Level": 1,
+            "Spirit": 2
+          },
+          "equippable": true,
+          "id": 7607,
+          "ignoredStats": [
+            "DPS",
+            "Item Level",
+            "Spirit"
+          ],
+          "levelOk": true,
+          "name": "Sable Wand",
+          "note": "the addon marked this reward as unusable by the character (usable = false): vendor value",
+          "score": -2,
+          "slot": "ranged",
+          "usable": false,
+          "vendorValue": "14s 11c"
+        },
+        {
+          "count": 1,
+          "delta": {
+            "Agility": 3,
+            "Armor": 20,
+            "Intellect": -2,
+            "Item Level": 2,
+            "Spirit": -2,
+            "Strength": 3
+          },
+          "equippable": true,
+          "id": 270015,
+          "ignoredStats": [
+            "Armor",
+            "Intellect",
+            "Item Level",
+            "Spirit",
+            "Strength"
+          ],
+          "levelOk": true,
+          "name": "Bravo's Armbands",
+          "score": 3,
+          "slot": "wrist",
+          "usable": true,
+          "vendorValue": "4s 62c"
+        },
+        {
+          "count": 1,
+          "delta": {
+            "Agility": -6,
+            "Armor": -2,
+            "Intellect": 2,
+            "Item Level": -2,
+            "Spell Power": 2
+          },
+          "equippable": true,
+          "id": 270016,
+          "ignoredStats": [
+            "Armor",
+            "Intellect",
+            "Item Level",
+            "Spell Power"
+          ],
+          "levelOk": true,
+          "name": "Dreamer's Leggings",
+          "score": -6,
+          "slot": "legs",
+          "usable": true,
+          "vendorValue": "9s 21c"
+        }
+      ],
+      "complete": true,
+      "fixed": {
+        "xp": 3700
+      },
+      "id": 2040,
+      "source": "log",
+      "title": "Underground Assault",
+      "where": "quest log"
+    },
+    {
+      "best": {
+        "name": "Tarnished Locket",
+        "reason": "no reward is an upgrade over the equipped gear (or they cannot be used); highest vendor value: 9s 32c"
+      },
+      "choices": [
+        {
+          "count": 1,
+          "delta": {
+            "Item Level": 24,
+            "Stamina": 6,
+            "Strength": -3
+          },
+          "equippable": true,
+          "id": 279870,
+          "ignoredStats": [
+            "Item Level",
+            "Stamina",
+            "Strength"
+          ],
+          "levelOk": true,
+          "name": "Tarnished Locket",
+          "requiredLevel": 1,
+          "score": 0,
+          "slot": "neck",
+          "slotEmpty": true,
+          "usable": true,
+          "vendorValue": "9s 32c"
+        }
+      ],
+      "complete": true,
+      "fixed": {
+        "xp": 180
+      },
+      "id": 95161,
+      "source": "log",
+      "title": "Remember That I Love You",
+      "where": "quest log"
+    },
+    {
+      "best": {
+        "name": "Dusty Mining Gloves",
+        "reason": "biggest gain in slot hands: score +2 (stat weights)"
+      },
+      "choices": [
+        {
+          "count": 1,
+          "delta": {
+            "Agility": -5,
+            "Armor": 58,
+            "Item Level": -2,
+            "Spirit": 2,
+            "Stamina": 3
+          },
+          "equippable": true,
+          "id": 2037,
+          "ignoredStats": [
+            "Armor",
+            "Item Level",
+            "Spirit",
+            "Stamina"
+          ],
+          "levelOk": true,
+          "name": "Tunneler's Boots",
+          "note": "the addon marked this reward as unusable by the character (usable = false): vendor value",
+          "score": -5,
+          "slot": "feet",
+          "usable": false,
+          "vendorValue": "4s 69c"
+        },
+        {
+          "count": 1,
+          "delta": {
+            "Agility": 2,
+            "Armor": -5,
+            "Attack Power": -12,
+            "Item Level": -5,
+            "Strength": 3
+          },
+          "equippable": true,
+          "id": 2036,
+          "ignoredStats": [
+            "Armor",
+            "Attack Power",
+            "Item Level",
+            "Strength"
+          ],
+          "levelOk": true,
+          "name": "Dusty Mining Gloves",
+          "score": 2,
+          "slot": "hands",
+          "usable": true,
+          "vendorValue": "2s 58c"
+        },
+        {
+          "count": 1,
+          "delta": {
+            "Armor": -1,
+            "Intellect": -1,
+            "Item Level": -2,
+            "Spirit": -2,
+            "Stamina": 2,
+            "Strength": -2
+          },
+          "equippable": true,
+          "id": 270007,
+          "ignoredStats": [
+            "Armor",
+            "Intellect",
+            "Item Level",
+            "Spirit",
+            "Stamina",
+            "Strength"
+          ],
+          "levelOk": true,
+          "name": "Worn Miner's Waistcord",
+          "score": 0,
+          "slot": "waist",
+          "usable": true,
+          "vendorValue": "2s 81c"
+        }
+      ],
+      "complete": false,
+      "fixed": {
+        "xp": 1350
+      },
+      "id": 168,
+      "source": "log",
+      "title": "Collecting Memories",
+      "where": "quest log"
+    },
+    {
+      "best": {
+        "name": "Crustacean Boots",
+        "reason": "no reward is an upgrade over the equipped gear (or they cannot be used); highest vendor value: 4s 2c"
+      },
+      "choices": [
+        {
+          "count": 1,
+          "delta": {
+            "Armor": -6,
+            "Attack Power": -12,
+            "Intellect": 2,
+            "Item Level": -6,
+            "Stamina": 2
+          },
+          "equippable": true,
+          "id": 15405,
+          "ignoredStats": [
+            "Armor",
+            "Attack Power",
+            "Intellect",
+            "Item Level",
+            "Stamina"
+          ],
+          "levelOk": true,
+          "name": "Shucking Gloves",
+          "score": 0,
+          "slot": "hands",
+          "usable": true,
+          "vendorValue": "2s 45c"
+        },
+        {
+          "count": 1,
+          "delta": {
+            "Agility": -5,
+            "Armor": 56,
+            "Item Level": -3,
+            "Stamina": 3
+          },
+          "equippable": true,
+          "id": 15406,
+          "ignoredStats": [
+            "Armor",
+            "Item Level",
+            "Stamina"
+          ],
+          "levelOk": true,
+          "name": "Crustacean Boots",
+          "note": "the addon marked this reward as unusable by the character (usable = false): vendor value",
+          "score": -5,
+          "slot": "feet",
+          "usable": false,
+          "vendorValue": "4s 2c"
+        }
+      ],
+      "complete": false,
+      "fixed": {
+        "xp": 1250
+      },
+      "id": 1138,
+      "source": "log",
+      "title": "Fruit of the Sea",
+      "where": "quest log"
+    }
+  ],
+  "scoring": {
+    "how": "score = sum of stat differences (reward minus equipped in that slot) times weight; best slot for each reward",
+    "method": "stat weights",
+    "source": "argument weights",
+    "values": {
+      "agility": 1
+    }
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "withoutChoices": [
+    {
+      "complete": true,
+      "id": 129,
+      "title": "A Free Lunch",
+      "xp": 320
+    },
+    {
+      "complete": true,
+      "id": 94,
+      "title": "A Watchful Eye",
+      "xp": 1250
+    },
+    {
+      "complete": true,
+      "id": 373,
+      "money": "7s 0c",
+      "title": "The Unsent Letter",
+      "xp": 2050
+    },
+    {
+      "complete": true,
+      "id": 968,
+      "title": "The Powers Below",
+      "xp": 1700
+    },
+    {
+      "complete": true,
+      "id": 98461,
+      "money": "1s 25c",
+      "title": "Unrequited Love",
+      "xp": 170
+    },
+    {
+      "complete": false,
+      "id": 116,
+      "items": [
+        "Finely Woven Cloak x1",
+        "A Bulging Coin Purse x1"
+      ],
+      "title": "Dry Times",
+      "xp": 625
+    },
+    {
+      "complete": false,
+      "id": 246,
+      "money": "7s 0c",
+      "title": "Assessing the Threat",
+      "xp": 950
+    },
+    {
+      "complete": false,
+      "id": 98407,
+      "title": "Show of Force",
+      "xp": 950
+    },
+    {
+      "complete": false,
+      "id": 150,
+      "items": [
+        "Dwarven Fishing Pole x1"
+      ],
+      "title": "Murloc Poachers",
+      "xp": 1550
+    },
+    {
+      "complete": false,
+      "id": 127,
+      "items": [
+        "Murloc Fin Soup x1",
+        "Recipe: Murloc Fin Soup x1",
+        "Fishliver Oil x5"
+      ],
+      "money": "10s 0c",
+      "title": "Selling Fish",
+      "xp": 1250
+    },
+    {
+      "complete": false,
+      "id": 91,
+      "money": "15s 0c",
+      "title": "Solomon's Law",
+      "xp": 1850
+    },
+    {
+      "complete": false,
+      "id": 180,
+      "money": "40s 0c",
+      "title": "WANTED: Lieutenant Fangore",
+      "xp": 2650
+    },
+    {
+      "complete": false,
+      "id": 399,
+      "money": "7s 0c",
+      "title": "Humble Beginnings",
+      "xp": 625
+    },
+    {
+      "complete": false,
+      "id": 12,
+      "money": "5s 0c",
+      "title": "The People's Militia",
+      "xp": 460
+    },
+    {
+      "complete": false,
+      "id": 966,
+      "money": "10s 0c",
+      "title": "The Tower of Althalaxx",
+      "xp": 1350
+    },
+    {
+      "complete": false,
+      "id": 986,
+      "title": "A Lost Master",
+      "xp": 1550
+    },
+    {
+      "complete": false,
+      "id": 95212,
+      "title": "Never Saddle on Quality",
+      "xp": 320
+    },
+    {
+      "complete": false,
+      "id": 2038,
+      "items": [
+        "Bingles' Flying Gloves x1"
+      ],
+      "money": "7s 0c",
+      "title": "Bingles' Missing Supplies",
+      "xp": 625
+    }
+  ]
+}

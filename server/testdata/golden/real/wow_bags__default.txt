@@ -1,0 +1,710 @@
+# tool wow_bags variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "bags": [
+    {
+      "free": 0,
+      "index": 0,
+      "items": [
+        {
+          "count": 1,
+          "id": 6948,
+          "itemLevel": 1,
+          "name": "Hearthstone",
+          "quality": 1,
+          "requiredLevel": 0,
+          "sellPrice": 0,
+          "slot": 1,
+          "subType": "Junk",
+          "type": "Miscellaneous"
+        },
+        {
+          "count": 3,
+          "id": 3012,
+          "itemLevel": 20,
+          "name": "Scroll of Agility",
+          "quality": 1,
+          "requiredLevel": 10,
+          "sellPrice": 50,
+          "slot": 2,
+          "subType": "Scrolls",
+          "type": "Consumable"
+        },
+        {
+          "count": 1,
+          "id": 1180,
+          "itemLevel": 15,
+          "name": "Scroll of Stamina",
+          "quality": 1,
+          "requiredLevel": 5,
+          "sellPrice": 37,
+          "slot": 3,
+          "subType": "Scrolls",
+          "type": "Consumable"
+        },
+        {
+          "count": 4,
+          "id": 3220,
+          "itemLevel": 15,
+          "name": "Blood Sausage",
+          "quality": 1,
+          "requiredLevel": 5,
+          "sellPrice": 40,
+          "slot": 4,
+          "subType": "Food \u0026 Drink",
+          "type": "Consumable"
+        },
+        {
+          "count": 8,
+          "id": 414,
+          "itemLevel": 15,
+          "name": "Dalaran Sharp",
+          "quality": 1,
+          "requiredLevel": 5,
+          "sellPrice": 6,
+          "slot": 5,
+          "subType": "Food \u0026 Drink",
+          "type": "Consumable"
+        },
+        {
+          "count": 1,
+          "id": 2287,
+          "itemLevel": 15,
+          "name": "Haunch of Meat",
+          "quality": 1,
+          "requiredLevel": 5,
+          "sellPrice": 6,
+          "slot": 6,
+          "subType": "Food \u0026 Drink",
+          "type": "Consumable"
+        },
+        {
+          "count": 2,
+          "id": 1179,
+          "itemLevel": 15,
+          "name": "Ice Cold Milk",
+          "quality": 1,
+          "requiredLevel": 5,
+          "sellPrice": 6,
+          "slot": 7,
+          "subType": "Food \u0026 Drink",
+          "type": "Consumable"
+        },
+        {
+          "count": 10,
+          "id": 159,
+          "itemLevel": 5,
+          "name": "Refreshing Spring Water",
+          "quality": 1,
+          "requiredLevel": 1,
+          "sellPrice": 1,
+          "slot": 8,
+          "subType": "Food \u0026 Drink",
+          "type": "Consumable"
+        },
+        {
+          "count": 5,
+          "id": 117,
+          "itemLevel": 5,
+          "name": "Tough Jerky",
+          "quality": 1,
+          "requiredLevel": 1,
+          "sellPrice": 1,
+          "slot": 9,
+          "subType": "Food \u0026 Drink",
+          "type": "Consumable"
+        },
+        {
+          "count": 7,
+          "id": 279960,
+          "itemLevel": 4,
+          "name": "Lodestone",
+          "quality": 1,
+          "requiredLevel": 0,
+          "sellPrice": 0,
+          "slot": 10,
+          "subType": "Other",
+          "type": "Consumable"
+        },
+        {
+          "count": 1,
+          "id": 279276,
+          "itemLevel": 1,
+          "name": "Mathystral Amulet Fragment",
+          "quality": 1,
+          "requiredLevel": 0,
+          "sellPrice": 0,
+          "slot": 11,
+          "subType": "Other",
+          "type": "Consumable"
+        },
+        {
+          "count": 1,
+          "id": 4405,
+          "itemLevel": 12,
+          "name": "Crude Scope",
+          "quality": 1,
+          "requiredLevel": 5,
+          "sellPrice": 125,
+          "slot": 12,
+          "subType": "Devices",
+          "type": "Consumable"
+        },
+        {
+          "count": 1,
+          "id": 208860,
+          "itemLevel": 10,
+          "name": "Rumi of Gnomeregan: The Collected Works",
+          "quality": 1,
+          "requiredLevel": 0,
+          "sellPrice": 0,
+          "slot": 13,
+          "subType": "Reagent",
+          "type": "Reagent"
+        },
+        {
+          "count": 124,
+          "equipLoc": "INVTYPE_AMMO",
+          "id": 2515,
+          "itemLevel": 15,
+          "name": "Sharp Arrow",
+          "quality": 1,
+          "requiredLevel": 10,
+          "sellPrice": 0,
+          "slot": 14,
+          "stats": {
+            "damage per second": 1.2
+          },
+          "subType": "Arrow",
+          "type": "Projectile"
+        },
+        {
+          "count": 1,
+          "equipLoc": "INVTYPE_2HWEAPON",
+          "id": 12225,
+          "itemLevel": 10,
+          "name": "Blump Family Fishing Pole",
+          "quality": 1,
+          "requiredLevel": 0,
+          "sellPrice": 187,
+          "slot": 15,
+          "stats": {
+            "Fishing Skill": 3,
+            "damage per second": 5.7
+          },
+          "subType": "Fishing Pole",
+          "tooltip": [
+            "Blump Family Fishing Pole",
+            "Soulbound",
+            "Two-Hand | Fishing Pole",
+            "13 - 21 Damage | Speed 3.00",
+            "(5.7 damage per second)",
+            "Equip: Increased Fishing +3.",
+            "Durability 25 / 25",
+            "Requires Fishing (1)"
+          ],
+          "type": "Weapon"
+        },
+        {
+          "count": 1,
+          "equipLoc": "INVTYPE_WEAPON",
+          "id": 7005,
+          "itemLevel": 4,
+          "name": "Skinning Knife",
+          "quality": 1,
+          "requiredLevel": 1,
+          "sellPrice": 2,
+          "slot": 16,
+          "stats": {
+            "damage per second": 1.3
+          },
+          "subType": "Miscellaneous",
+          "tooltip": [
+            "Skinning Knife",
+            "One-Hand",
+            "1 - 3 Damage | Speed 1.60",
+            "(1.2 damage per second)",
+            "Durability 20 / 20"
+          ],
+          "type": "Weapon"
+        },
+        {
+          "count": 1,
+          "equipLoc": "INVTYPE_WEAPONMAINHAND",
+          "id": 2901,
+          "itemLevel": 4,
+          "name": "Mining Pick",
+          "quality": 1,
+          "requiredLevel": 1,
+          "sellPrice": 2,
+          "slot": 17,
+          "stats": {
+            "damage per second": 1.5
+          },
+          "subType": "Miscellaneous",
+          "tooltip": [
+            "Mining Pick",
+            "Main Hand",
+            "2 - 4 Damage | Speed 2.00",
+            "(1.5 damage per second)",
+            "Durability 20 / 20",
+            "\"Miners need a mining pick for digging.\""
+          ],
+          "type": "Weapon"
+        },
+        {
+          "count": 3,
+          "id": 6289,
+          "itemLevel": 15,
+          "name": "Raw Longjaw Mud Snapper",
+          "quality": 1,
+          "requiredLevel": 5,
+          "sellPrice": 1,
+          "slot": 18,
+          "subType": "Cooking",
+          "type": "Trade Goods"
+        },
+        {
+          "count": 10,
+          "id": 5503,
+          "itemLevel": 14,
+          "name": "Clam Meat",
+          "quality": 1,
+          "requiredLevel": 0,
+          "sellPrice": 16,
+          "slot": 19,
+          "subType": "Cooking",
+          "type": "Trade Goods"
+        },
+        {
+          "count": 1,
+          "id": 730,
+          "itemLevel": 11,
+          "name": "Murloc Eye",
+          "quality": 1,
+          "requiredLevel": 0,
+          "sellPrice": 16,
+          "slot": 20,
+          "subType": "Cooking",
+          "type": "Trade Goods"
+        }
+      ],
+      "name": "Backpack",
+      "size": 20
+    },
+    {
+      "free": 0,
+      "index": 1,
+      "items": [
+        {
+          "count": 200,
+          "equipLoc": "INVTYPE_AMMO",
+          "id": 2515,
+          "itemLevel": 15,
+          "name": "Sharp Arrow",
+          "quality": 1,
+          "requiredLevel": 10,
+          "sellPrice": 0,
+          "slot": 1,
+          "stats": {
+            "damage per second": 1.2
+          },
+          "subType": "Arrow",
+          "type": "Projectile"
+        },
+        {
+          "count": 200,
+          "equipLoc": "INVTYPE_AMMO",
+          "id": 2515,
+          "itemLevel": 15,
+          "name": "Sharp Arrow",
+          "quality": 1,
+          "requiredLevel": 10,
+          "sellPrice": 0,
+          "slot": 2,
+          "stats": {
+            "damage per second": 1.2
+          },
+          "subType": "Arrow",
+          "type": "Projectile"
+        },
+        {
+          "count": 200,
+          "equipLoc": "INVTYPE_AMMO",
+          "id": 2515,
+          "itemLevel": 15,
+          "name": "Sharp Arrow",
+          "quality": 1,
+          "requiredLevel": 10,
+          "sellPrice": 0,
+          "slot": 3,
+          "stats": {
+            "damage per second": 1.2
+          },
+          "subType": "Arrow",
+          "type": "Projectile"
+        },
+        {
+          "count": 200,
+          "equipLoc": "INVTYPE_AMMO",
+          "id": 2515,
+          "itemLevel": 15,
+          "name": "Sharp Arrow",
+          "quality": 1,
+          "requiredLevel": 10,
+          "sellPrice": 0,
+          "slot": 4,
+          "stats": {
+            "damage per second": 1.2
+          },
+          "subType": "Arrow",
+          "type": "Projectile"
+        },
+        {
+          "count": 200,
+          "equipLoc": "INVTYPE_AMMO",
+          "id": 2515,
+          "itemLevel": 15,
+          "name": "Sharp Arrow",
+          "quality": 1,
+          "requiredLevel": 10,
+          "sellPrice": 0,
+          "slot": 5,
+          "stats": {
+            "damage per second": 1.2
+          },
+          "subType": "Arrow",
+          "type": "Projectile"
+        },
+        {
+          "count": 200,
+          "equipLoc": "INVTYPE_AMMO",
+          "id": 2515,
+          "itemLevel": 15,
+          "name": "Sharp Arrow",
+          "quality": 1,
+          "requiredLevel": 10,
+          "sellPrice": 0,
+          "slot": 6,
+          "stats": {
+            "damage per second": 1.2
+          },
+          "subType": "Arrow",
+          "type": "Projectile"
+        },
+        {
+          "count": 200,
+          "equipLoc": "INVTYPE_AMMO",
+          "id": 2515,
+          "itemLevel": 15,
+          "name": "Sharp Arrow",
+          "quality": 1,
+          "requiredLevel": 10,
+          "sellPrice": 0,
+          "slot": 7,
+          "stats": {
+            "damage per second": 1.2
+          },
+          "subType": "Arrow",
+          "type": "Projectile"
+        },
+        {
+          "count": 200,
+          "equipLoc": "INVTYPE_AMMO",
+          "id": 2515,
+          "itemLevel": 15,
+          "name": "Sharp Arrow",
+          "quality": 1,
+          "requiredLevel": 10,
+          "sellPrice": 0,
+          "slot": 8,
+          "stats": {
+            "damage per second": 1.2
+          },
+          "subType": "Arrow",
+          "type": "Projectile"
+        },
+        {
+          "count": 200,
+          "equipLoc": "INVTYPE_AMMO",
+          "id": 2515,
+          "itemLevel": 15,
+          "name": "Sharp Arrow",
+          "quality": 1,
+          "requiredLevel": 10,
+          "sellPrice": 0,
+          "slot": 9,
+          "stats": {
+            "damage per second": 1.2
+          },
+          "subType": "Arrow",
+          "type": "Projectile"
+        },
+        {
+          "count": 200,
+          "equipLoc": "INVTYPE_AMMO",
+          "id": 2515,
+          "itemLevel": 15,
+          "name": "Sharp Arrow",
+          "quality": 1,
+          "requiredLevel": 10,
+          "sellPrice": 0,
+          "slot": 10,
+          "stats": {
+            "damage per second": 1.2
+          },
+          "subType": "Arrow",
+          "type": "Projectile"
+        }
+      ],
+      "name": "Medium Quiver",
+      "size": 10
+    },
+    {
+      "free": 0,
+      "index": 2,
+      "items": [
+        {
+          "count": 1,
+          "id": 252774,
+          "itemLevel": 20,
+          "name": "Pattern: Totemic Leather Armor",
+          "quality": 3,
+          "requiredLevel": 0,
+          "sellPrice": 350,
+          "slot": 1,
+          "subType": "Leatherworking",
+          "type": "Recipe"
+        },
+        {
+          "count": 1,
+          "id": 7288,
+          "itemLevel": 11,
+          "name": "Pattern: Rugged Leather Pants",
+          "quality": 2,
+          "requiredLevel": 0,
+          "sellPrice": 125,
+          "slot": 2,
+          "subType": "Leatherworking",
+          "type": "Recipe"
+        },
+        {
+          "count": 1,
+          "id": 5352,
+          "itemLevel": 20,
+          "name": "Book: The Powers Below",
+          "quality": 1,
+          "requiredLevel": 10,
+          "sellPrice": 0,
+          "slot": 3,
+          "subType": "Quest",
+          "type": "Quest"
+        },
+        {
+          "count": 1,
+          "id": 2874,
+          "itemLevel": 16,
+          "name": "An Unsent Letter",
+          "quality": 1,
+          "requiredLevel": 16,
+          "sellPrice": 0,
+          "slot": 4,
+          "subType": "Quest",
+          "type": "Quest"
+        },
+        {
+          "count": 1,
+          "id": 251522,
+          "itemLevel": 1,
+          "name": "Blood-Stained Letter",
+          "quality": 1,
+          "requiredLevel": 0,
+          "sellPrice": 0,
+          "slot": 5,
+          "subType": "Quest",
+          "type": "Quest"
+        },
+        {
+          "count": 1,
+          "id": 1083,
+          "itemLevel": 1,
+          "name": "Glyph of Azora",
+          "quality": 1,
+          "requiredLevel": 0,
+          "sellPrice": 0,
+          "slot": 6,
+          "subType": "Quest",
+          "type": "Quest"
+        },
+        {
+          "count": 1,
+          "id": 7365,
+          "itemLevel": 1,
+          "name": "Gnoam Sprecklesprocket",
+          "quality": 1,
+          "requiredLevel": 0,
+          "sellPrice": 0,
+          "slot": 7,
+          "subType": "Quest",
+          "type": "Quest"
+        },
+        {
+          "count": 1,
+          "equipLoc": "INVTYPE_2HWEAPON",
+          "id": 6094,
+          "itemLevel": 19,
+          "name": "Piercing Axe",
+          "quality": 2,
+          "requiredLevel": 0,
+          "sellPrice": 1546,
+          "slot": 8,
+          "stats": {
+            "Agility": 6,
+            "damage per second": 12.6
+          },
+          "subType": "Two-Handed Axes",
+          "tooltip": [
+            "Piercing Axe",
+            "Soulbound",
+            "Two-Hand | Axe",
+            "33 - 50 Damage | Speed 3.30",
+            "(12.6 damage per second)",
+            "+6 Agility",
+            "Durability 65 / 65"
+          ],
+          "type": "Weapon"
+        }
+      ],
+      "name": "Brown Leather Satchel",
+      "size": 8
+    },
+    {
+      "free": 6,
+      "index": 3,
+      "items": [
+        {
+          "count": 1,
+          "id": 281243,
+          "itemLevel": 1,
+          "name": "Hollee's Note",
+          "quality": 1,
+          "requiredLevel": 1,
+          "sellPrice": 0,
+          "slot": 1,
+          "subType": "Quest",
+          "type": "Quest"
+        },
+        {
+          "count": 1,
+          "id": 5534,
+          "itemLevel": 1,
+          "name": "Parker's Lunch",
+          "quality": 1,
+          "requiredLevel": 0,
+          "sellPrice": 0,
+          "slot": 2,
+          "subType": "Quest",
+          "type": "Quest"
+        }
+      ],
+      "name": "Brown Leather Satchel",
+      "size": 8
+    },
+    {
+      "free": 8,
+      "index": 4,
+      "items": [],
+      "name": "Brown Leather Satchel",
+      "size": 8
+    },
+    {
+      "free": 0,
+      "index": 5,
+      "items": [
+        {
+          "count": 1,
+          "id": 4364,
+          "itemLevel": 15,
+          "name": "Coarse Blasting Powder",
+          "quality": 1,
+          "requiredLevel": 0,
+          "sellPrice": 12,
+          "slot": 1,
+          "subType": "Parts",
+          "type": "Trade Goods"
+        },
+        {
+          "count": 3,
+          "id": 2836,
+          "itemLevel": 15,
+          "name": "Coarse Stone",
+          "quality": 1,
+          "requiredLevel": 0,
+          "sellPrice": 15,
+          "slot": 2,
+          "subType": "Metal \u0026 Stone",
+          "type": "Trade Goods"
+        },
+        {
+          "count": 19,
+          "id": 2835,
+          "itemLevel": 5,
+          "name": "Rough Stone",
+          "quality": 1,
+          "requiredLevel": 0,
+          "sellPrice": 2,
+          "slot": 3,
+          "subType": "Metal \u0026 Stone",
+          "type": "Trade Goods"
+        },
+        {
+          "count": 3,
+          "id": 2318,
+          "itemLevel": 10,
+          "name": "Light Leather",
+          "quality": 1,
+          "requiredLevel": 0,
+          "sellPrice": 15,
+          "slot": 4,
+          "subType": "Leather",
+          "type": "Trade Goods"
+        },
+        {
+          "count": 12,
+          "id": 2592,
+          "itemLevel": 15,
+          "name": "Wool Cloth",
+          "quality": 1,
+          "requiredLevel": 0,
+          "sellPrice": 33,
+          "slot": 5,
+          "subType": "Cloth",
+          "type": "Trade Goods"
+        },
+        {
+          "count": 20,
+          "id": 2589,
+          "itemLevel": 5,
+          "name": "Linen Cloth",
+          "quality": 1,
+          "requiredLevel": 0,
+          "sellPrice": 13,
+          "slot": 6,
+          "subType": "Cloth",
+          "type": "Trade Goods"
+        }
+      ],
+      "name": "Shipwright's Satchel",
+      "size": 6
+    }
+  ],
+  "freeSlots": 14,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  },
+  "totalSlots": 60
+}

@@ -1,0 +1,5 @@
+# tool wow_shopping_list variant=hours_negative
+# args: {"hours":-1}
+# isError: true
+--- content[0] ---
+hours must be positive (default 2), got -1

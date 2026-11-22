@@ -1,0 +1,134 @@
+# tool wow_legacy variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game.
+--- content[1] ---
+{
+  "canLearnNow": [
+    {
+      "description": "Your rested experience accumulates 4% faster and your rested experience cap is increased by 4%.",
+      "perk": "Well Rested 2/5",
+      "tree": "Adventure"
+    },
+    {
+      "description": "You gain 1% of your maximum Health and Mana over 10 sec each time you deliver the killing blow to a non-trivial enemy.",
+      "perk": "Thrill of Adventure 0/5",
+      "tree": "Adventure"
+    },
+    {
+      "perk": "Working Overtime 0/5",
+      "tree": "Professions"
+    },
+    {
+      "perk": "Gourmand 0/3",
+      "tree": "Resourcefulness"
+    }
+  ],
+  "challenges": {
+    "completed": 1,
+    "completedNames": [
+      "Hunter: Level 25"
+    ],
+    "open": [
+      {
+        "category": "Classes",
+        "description": "Reach level 25 with a Warlock.",
+        "name": "Warlock: Level 25",
+        "points": 1
+      }
+    ],
+    "total": 2
+  },
+  "configID": 7001,
+  "howToUse": "Legacy Points are earned once per account from Legacy challenges and each character spends its own on perks. Base advice on the perk descriptions in this dump (there is no built-in perk list). status: available = a point can go there now (the game's own flag), locked = an arrow prerequisite (requires) or a points-spent gate (requiresSpent) is not met, maxed = full rank. The tool and the addon never learn perks: the player clicks the perk and Apply Changes in the Legacy window (default key Y).",
+  "missingDescriptions": 4,
+  "name": "Legacy",
+  "note": "4 perks have no description yet (the client loads them lazily). Hover them or open the Legacy window, type /mcp reload and ask again. Do not judge a perk by its name alone.",
+  "points": {
+    "accountMax": 65,
+    "accountQuantity": 3,
+    "accountTotalEarned": 5,
+    "characterCap": 16,
+    "currency": "Legacy Points",
+    "maxAvailable": 16,
+    "spent": 2,
+    "unspent": 3
+  },
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  },
+  "trees": [
+    {
+      "perks": [
+        {
+          "column": 1,
+          "name": "Working Overtime",
+          "rank": "0/5",
+          "row": 1,
+          "status": "available"
+        }
+      ],
+      "pointsSpent": 0,
+      "tree": "Professions"
+    },
+    {
+      "perks": [
+        {
+          "column": 1,
+          "description": "Your rested experience accumulates 4% faster and your rested experience cap is increased by 4%.",
+          "learned": true,
+          "name": "Well Rested",
+          "rank": "2/5",
+          "row": 1,
+          "status": "available"
+        },
+        {
+          "column": 2,
+          "name": "Talented",
+          "rank": "0/5",
+          "requires": [
+            "Well Rested"
+          ],
+          "row": 1,
+          "status": "locked"
+        },
+        {
+          "column": 3,
+          "name": "Frequent Flier",
+          "rank": "0/1",
+          "requiresSpent": 5,
+          "row": 1,
+          "status": "locked"
+        },
+        {
+          "column": 1,
+          "description": "You gain 1% of your maximum Health and Mana over 10 sec each time you deliver the killing blow to a non-trivial enemy.",
+          "name": "Thrill of Adventure",
+          "rank": "0/5",
+          "row": 2,
+          "status": "available"
+        }
+      ],
+      "pointsSpent": 2,
+      "tree": "Adventure"
+    },
+    {
+      "perks": [
+        {
+          "column": 1,
+          "name": "Gourmand",
+          "rank": "0/3",
+          "row": 1,
+          "status": "available"
+        }
+      ],
+      "pointsSpent": 0,
+      "tree": "Resourcefulness"
+    }
+  ]
+}

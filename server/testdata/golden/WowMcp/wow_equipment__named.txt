@@ -1,0 +1,71 @@
+# tool wow_equipment variant=named
+# args: {"character":"Piekasz"}
+# isError: false
+--- content[0] ---
+{
+  "durability": {
+    "lowest": "Curvewood Dagger 85.7%",
+    "overallPercent": 85.7
+  },
+  "equipment": [
+    {
+      "durability": 30,
+      "durabilityMax": 35,
+      "id": 5586,
+      "name": "Curvewood Dagger",
+      "quality": 2,
+      "slot": "mainHand"
+    },
+    {
+      "durability": 30,
+      "durabilityMax": 35,
+      "id": 5540,
+      "name": "Webwood Slicer",
+      "quality": 2,
+      "slot": "offHand"
+    },
+    {
+      "durability": 30,
+      "durabilityMax": 35,
+      "id": 2780,
+      "name": "Light Hunting Bow",
+      "quality": 2,
+      "slot": "ranged"
+    }
+  ],
+  "equipmentSets": [
+    {
+      "id": 0,
+      "isEquipped": true,
+      "items": [
+        {
+          "id": 5586,
+          "slot": "mainHand"
+        },
+        {
+          "id": 5540,
+          "slot": "offHand"
+        }
+      ],
+      "missing": 0,
+      "name": "Leveling"
+    },
+    {
+      "id": 1,
+      "isEquipped": false,
+      "items": [
+        {
+          "id": 7005,
+          "slot": "mainHand"
+        }
+      ],
+      "missing": 1,
+      "name": "Tanking"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

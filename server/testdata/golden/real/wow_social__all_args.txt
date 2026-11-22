@@ -1,0 +1,14 @@
+# tool wow_social variant=all_args
+# args: {"character":"Piekasz","includeOffline":true}
+# isError: false
+--- content[0] ---
+{
+  "friendsHint": "The friends list has not been read yet (this does not mean it is empty): open the social window (friends list) in game and run /mcp reload. The addon never asks the server for this list.",
+  "guildHint": "The dump does not say whether the character is in a guild (an addon older than 0.7.1 saved only the list from the guild window). After /mcp reload, addon 0.7.1 will save it itself.",
+  "privacy": "The addon reads only what the client has in memory after the social or guild window is opened; it never asks the game server for these lists itself. The list is the state at the time of saving (capturedAge), so who is online may have changed.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  }
+}

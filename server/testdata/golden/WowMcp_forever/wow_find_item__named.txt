@@ -1,0 +1,28 @@
+# tool wow_find_item variant=named
+# args: {"character":"Piekasz","item":"Leather"}
+# isError: false
+--- content[0] ---
+{
+  "count": 1,
+  "matches": [
+    {
+      "character": "Piekasz",
+      "container": "Backpack",
+      "count": 7,
+      "id": 2318,
+      "name": "Light Leather",
+      "where": "bags"
+    }
+  ],
+  "query": "Leather",
+  "searched": {
+    "characters": [
+      "Piekasz"
+    ],
+    "where": "bags, equipment, bank (state from the last visit) and mail (state from the last time the mailbox was opened)"
+  },
+  "total": 7,
+  "totals": {
+    "Light Leather": 7
+  }
+}

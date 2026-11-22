@@ -1,0 +1,31 @@
+# tool wow_bags variant=named
+# args: {"character":"Piekasz"}
+# isError: false
+--- content[0] ---
+{
+  "bags": [
+    {
+      "free": 15,
+      "index": 0,
+      "items": [
+        {
+          "count": 14,
+          "id": 2589,
+          "isBound": false,
+          "name": "Linen Cloth",
+          "quality": 1,
+          "slot": 1
+        }
+      ],
+      "name": "Backpack",
+      "size": 16
+    }
+  ],
+  "freeSlots": 15,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "totalSlots": 16
+}

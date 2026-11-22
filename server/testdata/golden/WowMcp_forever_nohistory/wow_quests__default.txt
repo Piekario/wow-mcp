@@ -1,0 +1,127 @@
+# tool wow_quests variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "count": 2,
+  "quests": [
+    {
+      "complete": false,
+      "id": 947,
+      "level": 17,
+      "objectives": [
+        {
+          "done": true,
+          "have": 5,
+          "need": 5,
+          "text": "Scaber Stalk: 5/5"
+        },
+        {
+          "done": false,
+          "have": 0,
+          "need": 1,
+          "text": "Death Cap: 0/1"
+        }
+      ],
+      "rewards": {
+        "choices": [
+          {
+            "bindType": 2,
+            "classID": 2,
+            "count": 1,
+            "equipLoc": "INVTYPE_WEAPON",
+            "id": 5586,
+            "itemLevel": 18,
+            "name": "Curvewood Dagger",
+            "quality": 2,
+            "requiredLevel": 13,
+            "sellPrice": 812,
+            "statTokens": {
+              "ITEM_MOD_AGILITY_SHORT": 3,
+              "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 8.4,
+              "ITEM_MOD_STAMINA_SHORT": 2
+            },
+            "stats": {
+              "Agility": 3,
+              "Damage Per Second": 8.4,
+              "ITEM_MOD_STAMINA_SHORT": 2
+            },
+            "subType": "Dagger",
+            "subclassID": 15,
+            "tooltip": [
+              "Curvewood Dagger",
+              "One-Hand | Dagger"
+            ],
+            "type": "Weapon"
+          },
+          {
+            "bindType": 0,
+            "classID": 7,
+            "count": 1,
+            "id": 5540,
+            "itemLevel": 10,
+            "name": "Webwood Slicer",
+            "quality": 2,
+            "requiredLevel": 1,
+            "sellPrice": 13,
+            "statTokens": {
+              "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 8.4
+            },
+            "stats": {
+              "Damage Per Second": 8.4
+            },
+            "subType": "Cloth",
+            "subclassID": 5,
+            "type": "Trade Goods",
+            "usable": false
+          }
+        ],
+        "items": [
+          {
+            "bindType": 0,
+            "classID": 7,
+            "count": 5,
+            "id": 2589,
+            "itemLevel": 10,
+            "name": "Linen Cloth",
+            "quality": 1,
+            "requiredLevel": 1,
+            "sellPrice": 13,
+            "subType": "Cloth",
+            "subclassID": 5,
+            "type": "Trade Goods"
+          }
+        ],
+        "money": 350
+      },
+      "title": "Cave Mushrooms",
+      "zone": "Darkshore",
+      "zoneMapID": 1439
+    },
+    {
+      "complete": false,
+      "id": 4740,
+      "level": 18,
+      "objectives": [
+        {
+          "done": false,
+          "have": 0,
+          "need": 1,
+          "text": "Murkdeep slain: 0/1"
+        }
+      ],
+      "rewards": {
+        "xp": 1450
+      },
+      "title": "WANTED: Murkdeep!",
+      "zone": "Darkshore",
+      "zoneMapID": 1439
+    }
+  ],
+  "readyToTurnIn": 0,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

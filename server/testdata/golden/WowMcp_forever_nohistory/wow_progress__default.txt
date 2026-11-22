@@ -1,0 +1,5 @@
+# tool wow_progress variant=default
+# args: {}
+# isError: true
+--- content[0] ---
+dump history is disabled (the server was started with --history-dir ""), and the progress statistics are computed from it

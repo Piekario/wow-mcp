@@ -1,0 +1,41 @@
+# tool wow_section variant=section_bank
+# args: {"section":"bank"}
+# isError: false
+--- content[0] ---
+{
+  "bank": {
+    "capturedAt": 1794760000,
+    "containers": [
+      {
+        "free": 23,
+        "index": -1,
+        "items": [
+          {
+            "bindType": 0,
+            "classID": 7,
+            "count": 20,
+            "id": 2589,
+            "itemLevel": 10,
+            "name": "Linen Cloth",
+            "quality": 1,
+            "requiredLevel": 1,
+            "sellPrice": 13,
+            "slot": 1,
+            "subType": "Cloth",
+            "subclassID": 5,
+            "type": "Trade Goods"
+          }
+        ],
+        "name": "Bank",
+        "size": 24
+      }
+    ]
+  },
+  "capturedAgeMinutes": 30,
+  "capturedAt": "2026-11-15 16:26",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

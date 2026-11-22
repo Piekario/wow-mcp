@@ -1,0 +1,16 @@
+# tool wow_goals variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "count": 0,
+  "done": 0,
+  "etaNote": "ETA unavailable: dump history is disabled (the server was started with --history-dir \"\")",
+  "goals": [],
+  "note": "This character has no saved goals. Add them with the wow_goal_set tool (e.g. type=level, target=25).",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

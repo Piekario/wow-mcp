@@ -1,0 +1,15 @@
+# tool wow_export variant=format_forum
+# args: {"format":"forum"}
+# isError: false
+--- content[0] ---
+{
+  "format": "forum",
+  "howToUse": "Show the player the text field in a code block so they can copy it whole.",
+  "length": 351,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "text": "[size=5][b]Piekasz, 20 Night Elf Hunter[/b][/size]\n[b]Faction:[/b] Alliance\n[b]Professions:[/b] Skinning 96/150\n[b]Pet:[/b] Cat (Cat), level 19\n[b]Played:[/b] 4 d 4 h\n\n[b]Gear[/b]\n[list]\n[*]Main Hand: [color=#1eff00]Curvewood Dagger[/color]\n[*]Off Hand: [color=#1eff00]Webwood Slicer[/color]\n[*]Ranged: [color=#1eff00]Light Hunting Bow[/color]\n[/list]"
+}

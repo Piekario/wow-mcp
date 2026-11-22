@@ -1,0 +1,5 @@
+# tool wow_section variant=meta_section
+# args: {"section":"dumpedAt"}
+# isError: true
+--- content[0] ---
+no section "dumpedAt" in the snapshot of character Piekasz. Available: actionBars, auctions, auras, bags, bank, buyback, character, completedQuests, cooldowns, currencies, deaths, dungeons, equipment, equipmentSets, flightPaths, friends, group, guide, guild, inspect, legacy, loot, macros, mail, note, pet, played, probe, professions, pvp, questDb, questLookups, questOffer, questTurnIn, quests, recipes, reputation, spells, stable, stats, talents, trainer, trainers, vendor, vendors, xpGains. The trainer, vendor, bank and flightPaths sections appear after opening the matching window in game and running /mcp reload

@@ -1,0 +1,24 @@
+# tool wow_dungeons variant=name_match
+# args: {"name":"Deadmines"}
+# isError: false
+--- content[0] ---
+{
+  "fitNow": [
+    {
+      "id": 18,
+      "levels": "17-26",
+      "mapID": 36,
+      "name": "The Deadmines",
+      "players": 5,
+      "zone": "Westfall"
+    }
+  ],
+  "level": 20,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "source": "game",
+  "sourceNote": "The level ranges come from the game client (the group finder tool)."
+}

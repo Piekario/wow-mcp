@@ -1,0 +1,57 @@
+# tool wow_search variant=vendors_and_stable
+# args: {"query":"owl"}
+# isError: false
+--- content[0] ---
+{
+  "groups": [
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Owl",
+          "matchedIn": "name",
+          "path": [
+            "stable",
+            "Owl"
+          ],
+          "summary": "Owl, level 18, slot 6"
+        }
+      ],
+      "section": "stable",
+      "shown": 1,
+      "truncated": false
+    }
+  ],
+  "note": "Bank, vendors, trainers, stable, quest windows, recipes, mail and auctions are the state from the last visits to those windows (check their age in the relevant tools); loot is the loot since the previous save.",
+  "query": "owl",
+  "searched": [
+    "quests",
+    "questOffer",
+    "questTurnIn",
+    "bags",
+    "bank",
+    "equipment",
+    "spells",
+    "trainer",
+    "vendor",
+    "vendors",
+    "trainers",
+    "loot",
+    "stable",
+    "recipes",
+    "mail",
+    "reputation",
+    "auctions",
+    "professions",
+    "currencies",
+    "macros",
+    "flightPaths"
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "totalHits": 1,
+  "truncated": false
+}

@@ -1,0 +1,52 @@
+# tool wow_quest_plan variant=zone_match
+# args: {"zone":"Darkshore"}
+# isError: false
+--- content[0] ---
+{
+  "byDifficulty": {
+    "green": 1,
+    "yellow": 1
+  },
+  "count": 2,
+  "grayBelow": "quests of level 8 and below are gray (green range: 11, from the classic table)",
+  "playerLevel": 20,
+  "readyToTurnIn": null,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "zones": [
+    {
+      "inProgress": 2,
+      "quests": [
+        {
+          "difficulty": "green",
+          "difficultyInfo": "easy: less XP",
+          "id": 947,
+          "level": 17,
+          "progressPercent": 83,
+          "status": "in progress",
+          "title": "Cave Mushrooms",
+          "todo": [
+            "Death Cap: 0/1"
+          ]
+        },
+        {
+          "difficulty": "yellow",
+          "difficultyInfo": "just right",
+          "id": 4740,
+          "level": 18,
+          "progressPercent": 0,
+          "status": "in progress",
+          "title": "WANTED: Murkdeep!",
+          "todo": [
+            "Murkdeep slain: 0/1"
+          ]
+        }
+      ],
+      "readyToTurnIn": 0,
+      "zone": "Darkshore"
+    }
+  ]
+}

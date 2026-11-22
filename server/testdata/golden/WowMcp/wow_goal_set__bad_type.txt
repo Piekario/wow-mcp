@@ -1,0 +1,5 @@
+# tool wow_goal_set variant=bad_type
+# args: {"type":"dream"}
+# isError: true
+--- content[0] ---
+unknown goal type "dream"; available: level, gold, reputation, profession, spell, item

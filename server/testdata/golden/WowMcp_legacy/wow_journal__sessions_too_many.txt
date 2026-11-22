@@ -1,0 +1,5 @@
+# tool wow_journal variant=sessions_too_many
+# args: {"sessions":99}
+# isError: true
+--- content[0] ---
+sessions must be from 1 to 50 (default 5), got 99

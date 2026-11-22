@@ -1,0 +1,89 @@
+# Release: on a version tag (v*), run the tests, build the archives with `make dist` and attach them to a GitHub release.
+# Also publishes the npm packages (npx -y wow-mcp) when the NPM_TOKEN repository secret is set; without it that job only builds them.
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Test and build archives
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: server/go.mod
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Test dependencies
+        run: |
+          pip install lupa
+          sudo apt-get update
+          sudo apt-get install -y lua-check
+      - name: Tag matches the server version
+        run: |
+          version="v$(scripts/version.sh server)"
+          if [ "$GITHUB_REF_NAME" != "$version" ]; then
+            echo "::error::tag $GITHUB_REF_NAME does not match serverVersion in server/main.go ($version)"
+            exit 1
+          fi
+      - name: Tests
+        run: make test
+      - name: Archives
+        run: make dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/*
+          if-no-files-found: error
+
+  publish:
+    name: Create the GitHub release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - name: Upload release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes
+
+  npm:
+    name: Publish to npm
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: server/go.mod
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Build the npm packages
+        run: scripts/npm-pack.sh
+      - name: Publish (skipped without the NPM_TOKEN secret)
+        if: env.NODE_AUTH_TOKEN != ''
+        run: scripts/npm-publish.sh --provenance

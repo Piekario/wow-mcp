@@ -1,0 +1,54 @@
+# prompt talent_planning variant=default
+# args: {}
+# description: Where to spend the next talent points and which build to aim for, based on the full in-game tree, class, level, spells and equipment.
+--- message[0] role=user ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game. Start your answer with this information.
+
+Advise how to develop this character's talents. First assess the current layout (split, learned) in a sentence or two. Then give the order of the next 5-10 points, starting with those with canBuyNow, with a short justification from the talent description. Finally propose a target layout for the maximum level. Forever trees differ from classic ones: rely on the descriptions (description) in the data, and when you do not know a talent from classic, do not make up what it does. Take the play style into account (solo/questing vs. dungeons), and if it is unknown, ask about it at the end.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "class": "Hunter",
+  "equipment": {
+    "mainHand": "Curvewood Dagger",
+    "offHand": "Webwood Slicer",
+    "ranged": "Light Hunting Bow"
+  },
+  "level": 20,
+  "pet": {
+    "family": "Cat",
+    "level": 19
+  },
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  },
+  "spells": [
+    {
+      "name": "Aimed Shot",
+      "rank": "Rank 1",
+      "tab": "Marksmanship"
+    }
+  ],
+  "talents": {
+    "class": "Hunter",
+    "expectedPointsClassic": 11,
+    "learned": [],
+    "level": 20,
+    "note": "The dump has no full tree (addon older than 0.4.0). Update the addon and type /mcp reload, then all talents with descriptions and what can be bought now will appear.",
+    "source": null,
+    "spent": null,
+    "split": "",
+    "trees": null,
+    "unspent": 0
+  }
+}
+```
+

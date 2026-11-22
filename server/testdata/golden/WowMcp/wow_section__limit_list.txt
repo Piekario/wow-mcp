@@ -1,0 +1,5 @@
+# tool wow_section variant=limit_list
+# args: {"limit":2,"section":"completedQuests"}
+# isError: true
+--- content[0] ---
+no section "completedQuests" in the snapshot of character Piekasz. Available: actionBars, auctions, auras, bags, character, dungeons, equipment, equipmentSets, friends, group, guild, legacy, loot, pet, played, professions, pvp, quests, reputation, spells, stable, stats, talents, trainer, trainers, xpGains. The trainer, vendor, bank and flightPaths sections appear after opening the matching window in game and running /mcp reload

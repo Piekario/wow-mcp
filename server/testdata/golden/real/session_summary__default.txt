@@ -1,0 +1,151 @@
+# prompt session_summary variant=default
+# args: {}
+# description: A summary of the last game session: XP and gold gained, pace per hour, quests turned in, new items and spells, time to level. Combines wow_progress and wow_changes since the start of the session.
+--- message[0] role=user ---
+Summarize the last game session in a few sentences: what was achieved (XP, level-ups, gold, quests turned in, new items and spells), what the pace per hour was and how much is left to the next level. End with one piece of advice for the next session.
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz-CAMWOW EU4 Realm 7 PvE from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "changes": {
+    "bags": {
+      "gained": [
+        {
+          "after": 1,
+          "before": 0,
+          "change": 1,
+          "id": 6948,
+          "name": "Hearthstone"
+        }
+      ],
+      "lost": [
+        {
+          "after": 0,
+          "before": 1,
+          "change": -1,
+          "id": 99999,
+          "name": "Old Scroll"
+        }
+      ]
+    },
+    "elapsed": "2 h",
+    "experience": {
+      "levelAfter": 22,
+      "levelBefore": 21,
+      "levelUp": true,
+      "xpAfter": 18676,
+      "xpBefore": 18376,
+      "xpGained": 27600
+    },
+    "from": "2026-11-15 20:43",
+    "history": [
+      "2026-11-15 20:43",
+      "2026-11-15 21:43",
+      "2026-11-15 22:43"
+    ],
+    "money": {
+      "after": "3g 68s 97c",
+      "before": "3g 43s 97c",
+      "change": "+25s 0c"
+    },
+    "playedBetween": "2 h",
+    "quests": {
+      "completedCountChange": 1,
+      "new": [
+        {
+          "id": 129,
+          "title": "A Free Lunch",
+          "zone": "Redridge Mountains"
+        }
+      ]
+    },
+    "to": "2026-11-15 22:43"
+  },
+  "character": {
+    "addonVersion": "0.7.0",
+    "bindLocation": "Auberdine",
+    "class": "Hunter",
+    "classToken": "HUNTER",
+    "clientBuild": "70938",
+    "clientInterface": 16001,
+    "clientVersion": "1.60.1",
+    "faction": "Alliance",
+    "level": 22,
+    "mapID": 1436,
+    "maxQuests": 40,
+    "moneyCopper": 36897,
+    "name": "Piekasz",
+    "questGreenRange": 5,
+    "race": "Night Elf",
+    "raceToken": "NightElf",
+    "restedXp": 2,
+    "resting": false,
+    "subZone": "Stendel's Pond",
+    "x": 47.6,
+    "xp": 18676,
+    "xpMax": 27300,
+    "y": 57.1,
+    "zone": "Westfall"
+  },
+  "progress": {
+    "levelUps": [
+      {
+        "level": 22,
+        "playedAt": "28 h 54 min",
+        "seenAt": "2026-11-15 21:43"
+      }
+    ],
+    "nextLevel": {
+      "etaAtOverallRate": "37 min",
+      "etaAtSessionRate": "37 min",
+      "level": 23,
+      "percent": 68.4,
+      "restedNote": "rested XP doubles the XP from monsters until it runs out, so the real time will be shorter",
+      "restedXp": 2,
+      "xpToGo": 8624
+    },
+    "overall": {
+      "basis": "play time from /played",
+      "duration": "2 h",
+      "from": "2026-11-15 20:43",
+      "levelsGained": 1,
+      "moneyChange": "+25s 0c",
+      "moneyPerHour": "+12s 50c",
+      "questsTurnedIn": 1,
+      "snapshots": 3,
+      "to": "2026-11-15 22:43",
+      "window": "whole history",
+      "xpGained": 27600,
+      "xpPerHour": 13800
+    },
+    "played": {
+      "thisLevel": "1 h 53 min",
+      "total": "29 h 54 min",
+      "totalSeconds": 107687
+    },
+    "session": {
+      "basis": "play time from /played",
+      "duration": "2 h",
+      "from": "2026-11-15 20:43",
+      "levelsGained": 1,
+      "moneyChange": "+25s 0c",
+      "moneyPerHour": "+12s 50c",
+      "questsTurnedIn": 1,
+      "snapshots": 3,
+      "to": "2026-11-15 22:43",
+      "xpGained": 27600,
+      "xpPerHour": 13800
+    },
+    "snapshotsInHistory": 3
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  }
+}
+```
+

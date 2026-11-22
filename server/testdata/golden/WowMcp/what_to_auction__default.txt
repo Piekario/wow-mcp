@@ -1,0 +1,157 @@
+# prompt what_to_auction variant=default
+# args: {}
+# description: What from the bags and bank is worth listing on the auction house and what to sell to a vendor, based on prices saved during recent auction house visits.
+--- message[0] role=user ---
+Based on auctionHouse, advise what to list on the auction house and at what price (slightly below the lowest buyout), and what to hand to a vendor. Skip things needed for the character's quests and professions. Warn when a price is old (stale) or the last search showed only part of the results. Summarize how much gold can be earned. If there are myAuctions, say what has sold and what is about to expire. Do not guess prices of items that are not in the data: list them as things to check on the auction house. Gear in auctionHouse.prices has vsEquipped: when a price is an upgrade for the character, say so (it is something to buy, not to sell).
+
+Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
+
+Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot):
+
+```json
+{
+  "auctionHouse": {
+    "assumptions": "Profit is computed from the lowest buyout price per unit minus the 5% auction house cut. The listing deposit is lost if the item does not sell and is not counted here. Bound (Soulbound) and quest items cannot be listed.",
+    "count": 5,
+    "lastSearchPartial": "The last search had 120 results, and a page of 6 was saved. The lowest price may be on another page; sort the results by price.",
+    "lastVisit": "30 min ago",
+    "myAuctions": {
+      "auctions": [
+        {
+          "bid": "2s 0c",
+          "buyout": "4s 0c",
+          "count": 10,
+          "name": "Copper Ore",
+          "sold": true
+        }
+      ],
+      "checkedAgo": "30 min",
+      "count": 1,
+      "sold": 1
+    },
+    "prices": [
+      {
+        "bindType": 2,
+        "canAfford": true,
+        "classID": 2,
+        "dps": 9.7,
+        "equipLoc": "INVTYPE_RANGEDRIGHT",
+        "id": 2506,
+        "itemLevel": 19,
+        "levelOk": true,
+        "listings": 1,
+        "minBidPerUnit": "30s 0c",
+        "minBuyoutPerUnit": "42s 0c",
+        "name": "Hornwood Recurve Bow",
+        "quality": 2,
+        "qualityName": "Uncommon",
+        "quantity": 1,
+        "requiredLevel": 14,
+        "seenAgo": "30 min",
+        "sellPrice": 1500,
+        "source": "list",
+        "statTokens": {
+          "ITEM_MOD_AGILITY_SHORT": 3,
+          "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 9.7
+        },
+        "subType": "Bows",
+        "subclassID": 2,
+        "type": "Weapon",
+        "vsEquipped": {
+          "delta": {
+            "Agility": 3,
+            "DPS": 9.7,
+            "Item Level": 19
+          },
+          "equipped": "Light Hunting Bow",
+          "equippedNumbers": {},
+          "slot": "ranged"
+        }
+      },
+      {
+        "have": 7,
+        "id": 2318,
+        "listings": 2,
+        "minBidPerUnit": "8c",
+        "minBuyoutPerUnit": "15c",
+        "name": "Light Leather",
+        "quantity": 15,
+        "seenAgo": "30 min",
+        "source": "list",
+        "where": "bags"
+      },
+      {
+        "have": 14,
+        "id": 2589,
+        "listings": 1,
+        "minBidPerUnit": "5c",
+        "name": "Linen Cloth",
+        "quantity": 20,
+        "seenAgo": "30 min",
+        "source": "list",
+        "where": "bags"
+      },
+      {
+        "canAfford": true,
+        "classID": 2,
+        "equipLoc": "INVTYPE_RANGEDRIGHT",
+        "id": 2507,
+        "listings": 1,
+        "minBidPerUnit": "20s 0c",
+        "minBuyoutPerUnit": "31s 0c",
+        "name": "Ranger's Shortbow",
+        "quantity": 1,
+        "seenAgo": "30 min",
+        "source": "list",
+        "subType": "Bows",
+        "subclassID": 2,
+        "type": "Weapon"
+      },
+      {
+        "id": 2508,
+        "listings": 1,
+        "minBidPerUnit": "30c",
+        "minBuyoutPerUnit": "40c",
+        "name": "Silk Thread",
+        "quantity": 20,
+        "seenAgo": "30 min",
+        "source": "list"
+      }
+    ],
+    "sellOnAH": [
+      {
+        "advice": "auction",
+        "afterCutTotal": "98c",
+        "auctionPerUnit": "15c",
+        "have": 7,
+        "name": "Light Leather",
+        "vendorTotal": "0c",
+        "where": "bags"
+      }
+    ],
+    "sellOnAHSummary": "Listing the items with advice=auction: about 98c after the cut instead of 0c from a vendor."
+  },
+  "money": "52s 12c",
+  "professions": [
+    "Skinning 96/150",
+    "Mining 71/75",
+    "Cooking 52/75"
+  ],
+  "quests": [
+    {
+      "objectives": "Scaber Stalk: 5/5; Death Cap: 0/1",
+      "title": "Cave Mushrooms"
+    },
+    {
+      "objectives": "Murkdeep slain: 0/1",
+      "title": "WANTED: Murkdeep!"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}
+```
+

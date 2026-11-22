@@ -1,0 +1,16 @@
+# tool wow_timeline variant=all_args
+# args: {"character":"Piekasz","days":30,"kind":"new_spell","limit":5}
+# isError: false
+--- content[0] ---
+{
+  "assumption": "an event gets the time of the first dump in which it is visible (the game saves data only on /reload and logout), so the real time may be earlier; the exception is deaths, which the addon saves with an exact time",
+  "events": [],
+  "order": "from the oldest to the newest event (with a limit the newest are kept)",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "snapshotsRead": 3,
+  "total": 0
+}

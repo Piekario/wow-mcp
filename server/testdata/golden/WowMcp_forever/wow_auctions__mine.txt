@@ -1,0 +1,73 @@
+# tool wow_auctions variant=mine
+# args: {"mine":true}
+# isError: false
+--- content[0] ---
+{
+  "assumptions": "Profit is computed from the lowest buyout price per unit minus the 5% auction house cut. The listing deposit is lost if the item does not sell and is not counted here. Bound (Soulbound) and quest items cannot be listed.",
+  "count": 2,
+  "lastVisit": "30 min ago",
+  "myAuctions": {
+    "auctions": [
+      {
+        "buyout": "6s 0c",
+        "count": 10,
+        "name": "Copper Ore",
+        "timeLeft": "2 h"
+      }
+    ],
+    "checkedAgo": "30 min",
+    "count": 1,
+    "totalBuyout": "6s 0c"
+  },
+  "prices": [
+    {
+      "have": 7,
+      "id": 2318,
+      "minBuyoutPerUnit": "25c",
+      "name": "Light Leather",
+      "quantity": 150,
+      "seenAgo": "30 min",
+      "source": "browse",
+      "vendorPerUnit": "13c",
+      "where": "bags"
+    },
+    {
+      "have": 34,
+      "id": 2589,
+      "listings": 2,
+      "minBuyoutPerUnit": "12c",
+      "name": "Linen Cloth",
+      "quantity": 140,
+      "seenAgo": "30 min",
+      "source": "commodity",
+      "vendorPerUnit": "13c",
+      "where": "bags+bank"
+    }
+  ],
+  "sellOnAH": [
+    {
+      "advice": "auction",
+      "afterCutTotal": "1s 61c",
+      "auctionPerUnit": "25c",
+      "have": 7,
+      "name": "Light Leather",
+      "vendorTotal": "91c",
+      "where": "bags"
+    },
+    {
+      "advice": "vendor: the auction adds almost nothing",
+      "afterCutTotal": "3s 74c",
+      "auctionPerUnit": "12c",
+      "have": 34,
+      "name": "Linen Cloth",
+      "vendorTotal": "4s 42c",
+      "where": "bags+bank"
+    }
+  ],
+  "sellOnAHSummary": "Listing the items with advice=auction: about 1s 61c after the cut instead of 91c from a vendor.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}
