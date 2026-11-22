@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="70%">
+      <stop offset="0" stop-color="#23314f"/>
+      <stop offset="1" stop-color="#0b1020"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe29a"/>
+      <stop offset="0.55" stop-color="#e0a73a"/>
+      <stop offset="1" stop-color="#9a6418"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8fe9ff"/>
+      <stop offset="1" stop-color="#2f9fd6"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <!-- shield -->
+  <path d="M256 70 L408 122 V250 C408 345 343 410 256 446 C169 410 104 345 104 250 V122 Z"
+        fill="#131b30" stroke="url(#gold)" stroke-width="16" stroke-linejoin="round"/>
+  <path d="M256 104 L378 146 V250 C378 327 326 380 256 411 C186 380 134 327 134 250 V146 Z"
+        fill="none" stroke="#e0a73a" stroke-opacity="0.35" stroke-width="4"/>
+  <!-- connected nodes: data flowing out of the game -->
+  <g stroke="#5cc8f0" stroke-width="12" stroke-linecap="round" fill="none">
+    <path d="M256 170 V250"/>
+    <path d="M256 250 L190 312"/>
+    <path d="M256 250 L322 312"/>
+  </g>
+  <circle cx="256" cy="160" r="30" fill="url(#gold)"/>
+  <circle cx="256" cy="250" r="22" fill="#8fe9ff"/>
+  <circle cx="182" cy="320" r="26" fill="url(#glow)"/>
+  <circle cx="330" cy="320" r="26" fill="url(#glow)"/>
+  <circle cx="256" cy="160" r="12" fill="#131b30"/>
+</svg>
