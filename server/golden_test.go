@@ -19,6 +19,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
+	"runtime"
 	"sort"
 	"strings"
 	"testing"
@@ -660,7 +662,7 @@ type listing struct {
 // goldenEnv is a connected client + server with one snapshot and (optionally) a history.
 type goldenEnv struct {
 	cs       *mcp.ClientSession
-	scrubber *strings.Replacer
+	scrubber pathScrubber
 }
 
 func newGoldenEnv(t *testing.T, sc goldenScenario) *goldenEnv {
@@ -733,20 +735,62 @@ func newGoldenEnv(t *testing.T, sc goldenScenario) *goldenEnv {
 		ss.Close()
 	})
 
-	// Absolute paths are replaced with markers (longer ones first). Inside JSON strings a Windows path
-	// appears with doubled backslashes, so that form is replaced first.
-	jsonEscaped := func(p string) string { return strings.ReplaceAll(p, `\`, `\\`) }
-	scrubber := strings.NewReplacer(
-		jsonEscaped(goalsPath), "<GOALS>",
-		jsonEscaped(file), "<FILE>",
-		jsonEscaped(histDir), "<HISTORY>",
-		jsonEscaped(tmp), "<TMP>",
-		goalsPath, "<GOALS>",
-		file, "<FILE>",
-		histDir, "<HISTORY>",
-		tmp, "<TMP>",
-	)
+	scrubber := newPathScrubber(map[string]string{goalsPath: "<GOALS>", file: "<FILE>", histDir: "<HISTORY>", tmp: "<TMP>"})
 	return &goldenEnv{cs: cs, scrubber: scrubber}
+}
+
+// pathScrubber makes responses independent of the machine: absolute paths become markers, and on Windows the
+// path separators after a marker and the OS error texts are written as on Unix, so one golden file fits every OS.
+type pathScrubber struct {
+	paths    *strings.Replacer
+	afterDir *regexp.Regexp
+	osErrors *strings.Replacer
+}
+
+func newPathScrubber(markers map[string]string) pathScrubber {
+	var pairs []string
+	// A path appears raw, JSON-escaped once (backslashes doubled) or twice (JSON text inside a JSON string).
+	for _, level := range []int{2, 1, 0} {
+		for path, marker := range markers {
+			escaped := path
+			for i := 0; i < level; i++ {
+				escaped = strings.ReplaceAll(escaped, `\`, `\\`)
+			}
+			pairs = append(pairs, escaped, marker)
+		}
+	}
+	// Longer paths first, so that <TMP> never takes a prefix of <FILE> or <HISTORY>.
+	type pair struct{ old, new string }
+	list := make([]pair, 0, len(pairs)/2)
+	for i := 0; i < len(pairs); i += 2 {
+		list = append(list, pair{pairs[i], pairs[i+1]})
+	}
+	sort.SliceStable(list, func(i, j int) bool { return len(list[i].old) > len(list[j].old) })
+	ordered := make([]string, 0, len(pairs))
+	for _, p := range list {
+		ordered = append(ordered, p.old, p.new)
+	}
+	return pathScrubber{
+		paths:    strings.NewReplacer(ordered...),
+		afterDir: regexp.MustCompile(`(<GOALS>|<FILE>|<HISTORY>|<TMP>)((?:\\+[^\\\s"]+)+)`),
+		osErrors: strings.NewReplacer(
+			"GetFileAttributesEx ", "stat ",
+			"CreateFile ", "open ",
+			"The system cannot find the path specified.", "no such file or directory",
+			"The system cannot find the file specified.", "no such file or directory",
+		),
+	}
+}
+
+func (s pathScrubber) Replace(text string) string {
+	text = s.paths.Replace(text)
+	if runtime.GOOS != "windows" {
+		return text
+	}
+	text = s.afterDir.ReplaceAllStringFunc(text, func(m string) string {
+		return regexp.MustCompile(`\\+`).ReplaceAllString(m, "/")
+	})
+	return s.osErrors.Replace(text)
 }
 
 // seedHistory saves, through the History API, two older snapshots of the current character:
