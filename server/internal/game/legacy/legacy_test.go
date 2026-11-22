@@ -58,7 +58,7 @@ func TestViewStatusesAndCanLearnNow(t *testing.T) {
 		}
 	}
 	points := out["points"].(map[string]any)
-	if points["unspent"] != int64(3) || points["characterCap"] != int64(16) || points["accountTotalEarned"] != int64(8) {
+	if points["unspent"] != int64(3) || points["max"] != int64(16) || points["accountTotalEarned"] != int64(8) {
 		t.Errorf("points = %v", points)
 	}
 	if _, ok := out["discovery"]; ok {
@@ -117,5 +117,67 @@ func TestChallenges(t *testing.T) {
 	}
 	if empty := challenges(map[string]any{"list": []any{}}); empty["note"] == nil {
 		t.Fatalf("empty = %v", empty)
+	}
+}
+
+// realShape is a config like the first real dump: no name, trees without groups ("tree <ID>"), one shared currency.
+func realShape() map[string]any {
+	cur := func(tree int64) any {
+		return map[string]any{"currencyID": int64(4225), "treeID": tree, "available": int64(0), "spent": int64(1), "max": int64(1)}
+	}
+	return map[string]any{
+		"configID": int64(8159448), "name": "", "typeName": "Generic",
+		"trees": []any{
+			map[string]any{"name": "tree 1118", "treeID": int64(1118), "points": int64(0)},
+			map[string]any{"name": "tree 1187", "treeID": int64(1187), "points": int64(0)},
+			map[string]any{"name": "tree 1188", "treeID": int64(1188), "points": int64(1)},
+		},
+		"currencies": []any{cur(1187), cur(1188), cur(1189)},
+		"nodes": []any{
+			node("Working Overtime", "tree 1187", 0, 5, true),
+			node("Thrill of Adventure", "tree 1188", 1, 5, true),
+			node("Unknown", "tree 1188", 0, 1, false),
+		},
+	}
+}
+
+func TestRealShapeNamesTreesAndSharesCurrency(t *testing.T) {
+	other := map[string]any{"configID": int64(9), "name": "", "trees": []any{map[string]any{"name": "tree 5", "treeID": int64(5)}}}
+	out := View(snap(other, realShape()), Query{Tree: "adventure"})
+	if out["configID"] != int64(8159448) {
+		t.Fatalf("picked %v", out["configID"])
+	}
+	trees := out["trees"].([]any)
+	if len(trees) != 1 || trees[0].(map[string]any)["tree"] != "Adventure" {
+		t.Fatalf("trees = %v", trees)
+	}
+	perks := trees[0].(map[string]any)["perks"].([]any)
+	var unknown map[string]any
+	for _, raw := range perks {
+		if p := raw.(map[string]any); p["name"] == "Unknown" {
+			unknown = p
+		}
+	}
+	if unknown == nil || unknown["unrevealed"] != true {
+		t.Fatalf("unknown perk = %v", unknown)
+	}
+	points := out["points"].(map[string]any)
+	if points["unspent"] != int64(0) || points["spent"] != int64(1) || points["max"] != int64(1) || points["otherCurrencies"] != nil {
+		t.Fatalf("points = %v", points)
+	}
+	if len(out["canLearnNow"].([]any)) != 0 {
+		t.Fatalf("no unspent points, canLearnNow = %v", out["canLearnNow"])
+	}
+}
+
+func TestTreeNameKeepsRealNames(t *testing.T) {
+	if got := treeName("Adventure", int64(42)); got != "Adventure" {
+		t.Fatal(got)
+	}
+	if got := treeName("tree 1189", int64(1189)); got != "Resourcefulness" {
+		t.Fatal(got)
+	}
+	if got := treeName("tree 77", int64(77)); got != "tree 77" {
+		t.Fatal(got)
 	}
 }

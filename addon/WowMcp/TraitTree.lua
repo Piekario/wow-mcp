@@ -33,13 +33,6 @@ local function apiDescription(spellID)
     return stripMarkup(text)
 end
 
--- Description from the spell tooltip: lines under the name (the first line is the name).
-local function tooltipDescription(spellID)
-    local lines = tooltipFor("GetSpellByID", spellID)
-    if not lines or #lines < 2 then return nil end
-    return table.concat(lines, "\n", 2)
-end
-
 -- Description of the entry itself (C_Traits.GetTraitDescription), for entries whose spell has no text.
 local function traitDescription(entryID, rank)
     if not (entryID and C_Traits.GetTraitDescription) then return nil end
@@ -48,16 +41,22 @@ local function traitDescription(entryID, rank)
     return stripMarkup(text)
 end
 
--- Description and where it came from ("api", "tooltip" or "trait"); nil when the client does not know it yet.
+-- Description and where it came from ("api", "trait" or "tooltip"); nil when the client does not know it yet.
+-- Talents (no entryID) keep the old order api -> tooltip. Trait entries (Legacy perks) try the entry text before the
+-- tooltip, and a tooltip with a single line under the name is not a description: before the spell data loads the
+-- real client shows only the spell type there (seen in the first real Legacy dump, 2026-11-22).
 local function describe(spellID, entryID, rank)
     if spellID then
         local text = apiDescription(spellID)
         if text then return text, "api" end
-        text = tooltipDescription(spellID)
-        if text then return text, "tooltip" end
     end
     local text = traitDescription(entryID, rank)
     if text then return text, "trait" end
+    if spellID then
+        local lines = tooltipFor("GetSpellByID", spellID)
+        local minimum = entryID and 3 or 2
+        if lines and #lines >= minimum then return table.concat(lines, "\n", 2), "tooltip" end
+    end
     return nil
 end
 

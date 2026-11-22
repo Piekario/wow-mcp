@@ -7,6 +7,39 @@ errors, dump 18 ms), addon 0.7.0 with server 0.9.0 (2026-11-15, no section error
 between are part of 0.11.0 / 0.12.2 and were run with them. Addon 0.14.0 was run on 2026-11-22 (client build 71037, no section errors, dump 25.7 ms: `questDb` for 22 log quests, `guide` reading TUGs, `/mcp quest The Glowing Shard`). **Server 0.15.0 and the 0.12.0 / 0.13.0 addon changes (carried periods, flight zones, auction gear details) have not yet been checked in a real client**: their fixes are
 based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` result and golden response tests.
 
+## Addon 0.17.0, server 0.18.0 (2026-11-22)
+
+Fixes from the first real Legacy dump (addon 0.16.0, Forever build 71037): the perk trees were read (27 perks, ranks,
+requirements, the shared point currency), but without tree names, with most descriptions missing, and the section took
+78 ms of a 112 ms dump.
+
+### Addon 0.17.0
+
+- **Fixed**
+  - A spell tooltip with only one line under the name (the spell type, e.g. "Passive", before the client loads the spell
+    data) is no longer saved as a Legacy perk description; `C_Traits.GetTraitDescription` is tried first, the spell data is
+    requested and `missingDescriptions` counts the gap, so the next dump has the text. Talent descriptions are unchanged.
+  - The Legacy discovery scan of `_G` runs once per session and again only after the client loads an addon with "Legacy" in
+    its name (the load-on-demand Legacy window), not on every dump.
+- **Added**
+  - `legacy.configs[].trees[]`: `nodes` (perk count) and `info` (plain fields of `C_Traits.GetTreeInfo`).
+  - `legacy.discovery`: `C_*` namespaces with "Challenge" in the name, `members` (functions named for Legacy or challenges
+    inside any `C_*` namespace, as `C_X.Name`), the argument-free readings of both, and `children` (names of table fields)
+    of Legacy frames, to find where the client keeps the Legacy challenges: the second real dump showed no achievement
+    category, no `C_*Legacy*` namespace, only the UI functions `ShowLegacyChallenge` / `ToggleLegacyChallenges` and the
+    frames `LegacySystemFrame` and `LegacyChallengeObjectives`.
+
+### Server 0.18.0
+
+- **Fixed**
+  - `wow_legacy` names the trees Professions, Adventure and Resourcefulness from their trait tree IDs (1187, 1188, 1189,
+    verified in the real dump) when the client gives no names, and picks the Legacy config by those IDs.
+  - Points come from the one currency the trees share (the real client repeats it per tree): `unspent`, `spent` and `max`
+    (renamed from `characterCap`: the points this character can have now; `meaning` explains the assumption).
+- **Added**
+  - `unrevealed: true` on the "?" perks the game calls "Unknown", and a note not to recommend them.
+  - Expects addon 0.17.0.
+
 ## Server 0.17.1 (2026-11-22)
 
 - **Fixed**

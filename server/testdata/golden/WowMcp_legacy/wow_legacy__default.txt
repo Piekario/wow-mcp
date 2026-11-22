@@ -7,10 +7,11 @@
     "enums": [],
     "frames": [],
     "globals": [],
+    "members": [],
     "namespaces": [],
     "readings": []
   },
-  "howToUse": "Legacy Points are earned once per account from Legacy challenges and each character spends its own on perks. Base advice on the perk descriptions in this dump (there is no built-in perk list). status: available = a point can go there now (the game's own flag), locked = an arrow prerequisite (requires) or a points-spent gate (requiresSpent) is not met, maxed = full rank. The tool and the addon never learn perks: the player clicks the perk and Apply Changes in the Legacy window (default key Y).",
+  "howToUse": "Legacy Points are earned once per account from Legacy challenges and each character spends its own on perks. Base advice on the perk descriptions in this dump (there is no built-in perk list). status: available = a point can go there now (the game's own flag), locked = an arrow prerequisite (requires) or a points-spent gate (requiresSpent) is not met, maxed = full rank. unrevealed = a \"?\" perk the game does not name yet: do not recommend it. The tool and the addon never learn perks: the player clicks the perk and Apply Changes in the Legacy window (default key Y).",
   "note": "The client gave the addon no Legacy perk tree. Open the Legacy window (default key Y) so the game loads it, type /mcp reload and ask again. If it is still missing, the discovery field lists the Legacy API names this client has: pass it on to the wow-mcp developer.",
   "snapshot": {
     "ageMinutes": 30,

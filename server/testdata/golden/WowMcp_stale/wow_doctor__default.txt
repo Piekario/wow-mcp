@@ -4,7 +4,7 @@
 --- content[0] ---
 {
   "status": "warn",
-  "summary": "12 checks: 9 ok, 3 warnings, 0 failures (server 0.17.1, expected addon 0.16.0)",
+  "summary": "12 checks: 9 ok, 3 warnings, 0 failures (server 0.18.0, expected addon 0.17.0)",
   "nextStep": "Type /mcp reload in game (or click Save on the WowMcp panel); the game writes the file only on /reload, logout and exit.",
   "checks": [
     {
@@ -28,7 +28,7 @@
     {
       "check": "addon version",
       "status": "ok",
-      "detail": "Addon 0.16.0, the server expects 0.16.0.",
+      "detail": "Addon 0.17.0, the server expects 0.17.0.",
       "fix": ""
     },
     {

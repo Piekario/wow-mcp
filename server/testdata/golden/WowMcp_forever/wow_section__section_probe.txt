@@ -8,6 +8,7 @@
   "probe": {
     "capturedAt": 1794760000,
     "events": {
+      "ADDON_LOADED": true,
       "AUCTION_HOUSE_BROWSE_RESULTS_ADDED": true,
       "AUCTION_HOUSE_BROWSE_RESULTS_UPDATED": true,
       "AUCTION_HOUSE_SHOW": true,
@@ -161,6 +162,10 @@
         "SendWho",
         "ShowFriends"
       ],
+      "C_GameRules": [
+        "GetLegacyChallengeList",
+        "SetLegacyChallengeTracked"
+      ],
       "C_GuildInfo": [
         "GuildRoster"
       ],
@@ -264,6 +269,7 @@
         "GetTraitCurrencyInfo",
         "GetTraitDescription",
         "GetTreeCurrencyInfo",
+        "GetTreeInfo",
         "GetTreeNodes",
         "PurchaseRank"
       ],

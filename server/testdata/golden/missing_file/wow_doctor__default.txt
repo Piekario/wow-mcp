@@ -4,7 +4,7 @@
 --- content[0] ---
 {
   "status": "fail",
-  "summary": "3 checks: 2 ok, 0 warnings, 1 failures (server 0.17.1, expected addon 0.16.0)",
+  "summary": "3 checks: 2 ok, 0 warnings, 1 failures (server 0.18.0, expected addon 0.17.0)",
   "nextStep": "Check --wow-dir (or WOW_DIR) and --client / --account if you use them, make sure the WowMcp addon is enabled, log in with a character and type /mcp reload in game; then call wow_doctor again.",
   "checks": [
     {

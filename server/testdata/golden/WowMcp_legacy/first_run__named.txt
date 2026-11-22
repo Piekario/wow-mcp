@@ -11,7 +11,7 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
 ```json
 {
   "addon": {
-    "addonVersion": "0.16.0"
+    "addonVersion": "0.17.0"
   },
   "character": {
     "class": "Hunter",
@@ -20,7 +20,7 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
     "race": "Night Elf",
     "zone": "Stormwind City"
   },
-  "expectedAddonVersion": "0.16.0",
+  "expectedAddonVersion": "0.17.0",
   "sectionsInSnapshot": [
     "actionBars",
     "auras",

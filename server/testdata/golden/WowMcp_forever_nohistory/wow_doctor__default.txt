@@ -4,7 +4,7 @@
 --- content[0] ---
 {
   "status": "warn",
-  "summary": "12 checks: 11 ok, 1 warnings, 0 failures (server 0.17.1, expected addon 0.16.0)",
+  "summary": "12 checks: 11 ok, 1 warnings, 0 failures (server 0.18.0, expected addon 0.17.0)",
   "nextStep": "Start the server with a --history-dir (the default is the history folder next to the executable).",
   "checks": [
     {
@@ -28,7 +28,7 @@
     {
       "check": "addon version",
       "status": "ok",
-      "detail": "Addon 0.16.0, the server expects 0.16.0.",
+      "detail": "Addon 0.17.0, the server expects 0.17.0.",
       "fix": ""
     },
     {

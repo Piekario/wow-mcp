@@ -28,7 +28,7 @@ WowMcpDB = {
 ["slot"] = 13,
 }, -- [3]
 },
-["addonVersion"] = "0.16.0",
+["addonVersion"] = "0.17.0",
 ["auctions"] = {
 ["capturedAt"] = 1794760000,
 ["lastVisitAt"] = 1794760000,
@@ -354,7 +354,7 @@ WowMcpDB = {
 ["npc"] = "Einris Brightspear",
 },
 ["character"] = {
-["addonVersion"] = "0.16.0",
+["addonVersion"] = "0.17.0",
 ["bindLocation"] = "Auberdine",
 ["class"] = "Hunter",
 ["classToken"] = "HUNTER",
@@ -928,19 +928,59 @@ WowMcpDB = {
 ["available"] = 3,
 ["currencyID"] = 4100,
 ["currencyTypesID"] = 3500,
-["max"] = 16,
+["max"] = 5,
 ["maxAvailable"] = 16,
 ["maxQuantity"] = 65,
 ["name"] = "Legacy Points",
 ["quantity"] = 3,
 ["spent"] = 2,
 ["totalEarned"] = 5,
-["treeID"] = 2001,
+["treeID"] = 1187,
 }, -- [1]
+{
+["available"] = 3,
+["currencyID"] = 4100,
+["currencyTypesID"] = 3500,
+["max"] = 5,
+["maxAvailable"] = 16,
+["maxQuantity"] = 65,
+["name"] = "Legacy Points",
+["quantity"] = 3,
+["spent"] = 2,
+["totalEarned"] = 5,
+["treeID"] = 1188,
+}, -- [2]
+{
+["available"] = 3,
+["currencyID"] = 4100,
+["currencyTypesID"] = 3500,
+["max"] = 5,
+["maxAvailable"] = 16,
+["maxQuantity"] = 65,
+["name"] = "Legacy Points",
+["quantity"] = 3,
+["spent"] = 2,
+["totalEarned"] = 5,
+["treeID"] = 1189,
+}, -- [3]
 },
-["missingDescriptions"] = 4,
-["name"] = "Legacy",
+["missingDescriptions"] = 3,
+["name"] = "",
 ["nodes"] = {
+{
+["available"] = true,
+["canPurchase"] = true,
+["column"] = 1,
+["maxRank"] = 5,
+["name"] = "Working Overtime",
+["nodeID"] = 205,
+["posX"] = 1000,
+["posY"] = 1000,
+["rank"] = 0,
+["row"] = 1,
+["spellID"] = 1225451,
+["tree"] = "tree 1187",
+}, -- [1]
 {
 ["available"] = true,
 ["canPurchase"] = true,
@@ -954,8 +994,8 @@ WowMcpDB = {
 ["posY"] = 1000,
 ["rank"] = 2,
 ["row"] = 1,
-["tree"] = "Adventure",
-}, -- [1]
+["tree"] = "tree 1188",
+}, -- [2]
 {
 ["available"] = false,
 ["canPurchase"] = false,
@@ -971,8 +1011,8 @@ WowMcpDB = {
 "Well Rested", -- [1]
 },
 ["row"] = 1,
-["tree"] = "Adventure",
-}, -- [2]
+["tree"] = "tree 1188",
+}, -- [3]
 {
 ["available"] = true,
 ["canPurchase"] = true,
@@ -986,8 +1026,8 @@ WowMcpDB = {
 ["posY"] = 1600,
 ["rank"] = 0,
 ["row"] = 2,
-["tree"] = "Adventure",
-}, -- [3]
+["tree"] = "tree 1188",
+}, -- [4]
 {
 ["available"] = false,
 ["canPurchase"] = false,
@@ -1001,25 +1041,14 @@ WowMcpDB = {
 ["rank"] = 0,
 ["requiresSpent"] = 5,
 ["row"] = 1,
-["tree"] = "Adventure",
-}, -- [4]
-{
-["available"] = true,
-["canPurchase"] = true,
-["column"] = 1,
-["maxRank"] = 5,
-["name"] = "Working Overtime",
-["nodeID"] = 205,
-["posX"] = 1000,
-["posY"] = 1000,
-["rank"] = 0,
-["row"] = 1,
-["tree"] = "Professions",
+["tree"] = "tree 1188",
 }, -- [5]
 {
 ["available"] = true,
 ["canPurchase"] = true,
 ["column"] = 1,
+["description"] = "Passive\nFood heals you more.",
+["descriptionSource"] = "tooltip",
 ["maxRank"] = 3,
 ["name"] = "Gourmand",
 ["nodeID"] = 206,
@@ -1027,25 +1056,51 @@ WowMcpDB = {
 ["posY"] = 1000,
 ["rank"] = 0,
 ["row"] = 1,
-["tree"] = "Resourcefulness",
+["spellID"] = 1225440,
+["tree"] = "tree 1189",
 }, -- [6]
 },
 ["trees"] = {
 {
-["name"] = "Professions",
+["info"] = {
+["ID"] = 1118,
+["hideSingleRankNumbers"] = false,
+},
+["name"] = "tree 1118",
+["nodes"] = 0,
 ["points"] = 0,
-["treeID"] = 2001,
+["treeID"] = 1118,
 }, -- [1]
 {
-["name"] = "Adventure",
-["points"] = 2,
-["treeID"] = 2001,
+["info"] = {
+["ID"] = 1187,
+["hideSingleRankNumbers"] = false,
+},
+["name"] = "tree 1187",
+["nodes"] = 1,
+["points"] = 0,
+["treeID"] = 1187,
 }, -- [2]
 {
-["name"] = "Resourcefulness",
-["points"] = 0,
-["treeID"] = 2001,
+["info"] = {
+["ID"] = 1188,
+["hideSingleRankNumbers"] = false,
+},
+["name"] = "tree 1188",
+["nodes"] = 4,
+["points"] = 2,
+["treeID"] = 1188,
 }, -- [3]
+{
+["info"] = {
+["ID"] = 1189,
+["hideSingleRankNumbers"] = false,
+},
+["name"] = "tree 1189",
+["nodes"] = 1,
+["points"] = 0,
+["treeID"] = 1189,
+}, -- [4]
 },
 ["type"] = 3,
 ["typeName"] = "Generic",
@@ -1060,6 +1115,9 @@ WowMcpDB = {
 },
 ["frames"] = {
 {
+["children"] = {
+"ChallengesTab", -- [1]
+},
 ["fields"] = {
 ["configID"] = 7001,
 ["title"] = "Legacy",
@@ -1071,6 +1129,10 @@ WowMcpDB = {
 ["globals"] = {
 "ToggleLegacyFrameMock", -- [1]
 },
+["members"] = {
+"C_GameRules.GetLegacyChallengeList", -- [1]
+"C_GameRules.SetLegacyChallengeTracked", -- [2]
+},
 ["namespaces"] = {
 ["C_LegacyMock"] = {
 "GetPerkInfo", -- [1]
@@ -1078,8 +1140,19 @@ WowMcpDB = {
 "IsEnabled", -- [3]
 "LearnPerk", -- [4]
 },
+["C_PlayerChallengesMock"] = {
+"GetActiveChallenges", -- [1]
+},
 },
 ["readings"] = {
+["C_GameRules.GetLegacyChallengeList"] = {
+{
+{
+["challengeID"] = 9,
+["completed"] = true,
+}, -- [1]
+}, -- [1]
+},
 ["C_LegacyMock.GetPointsInfo"] = {
 {
 ["earned"] = 5,
@@ -1089,6 +1162,14 @@ WowMcpDB = {
 },
 ["C_LegacyMock.IsEnabled"] = {
 true, -- [1]
+},
+["C_PlayerChallengesMock.GetActiveChallenges"] = {
+{
+{
+["id"] = 1,
+["name"] = "Reach level 25",
+}, -- [1]
+}, -- [1]
 },
 },
 },
@@ -1196,6 +1277,7 @@ true, -- [1]
 ["probe"] = {
 ["capturedAt"] = 1794760000,
 ["events"] = {
+["ADDON_LOADED"] = true,
 ["AUCTION_HOUSE_BROWSE_RESULTS_ADDED"] = true,
 ["AUCTION_HOUSE_BROWSE_RESULTS_UPDATED"] = true,
 ["AUCTION_HOUSE_SHOW"] = true,
@@ -1349,6 +1431,10 @@ true, -- [1]
 "SendWho", -- [3]
 "ShowFriends", -- [4]
 },
+["C_GameRules"] = {
+"GetLegacyChallengeList", -- [1]
+"SetLegacyChallengeTracked", -- [2]
+},
 ["C_GuildInfo"] = {
 "GuildRoster", -- [1]
 },
@@ -1452,8 +1538,9 @@ true, -- [1]
 "GetTraitCurrencyInfo", -- [10]
 "GetTraitDescription", -- [11]
 "GetTreeCurrencyInfo", -- [12]
-"GetTreeNodes", -- [13]
-"PurchaseRank", -- [14]
+"GetTreeInfo", -- [13]
+"GetTreeNodes", -- [14]
+"PurchaseRank", -- [15]
 },
 ["C_UnitAuras"] = {
 "GetAuraDataByIndex", -- [1]

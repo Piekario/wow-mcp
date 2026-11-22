@@ -574,6 +574,8 @@ C_TooltipInfo = {
     GetQuestItem = function(kind, i) if kind == "choice" and i == 1 then return { lines = { { leftText = "Curvewood Dagger" }, { leftText = "9 - 18 Damage", rightText = "Speed 1.60" } } } end end,
     -- Spell tooltip: the first line is the name, then the description (Focused Fire has no data yet).
     GetSpellByID = function(id)
+        if id == 1225451 then return { lines = { { leftText = "Working Overtime" }, { leftText = "Passive" } } } end
+        if id == 1225440 then return { lines = { { leftText = "Gourmand" }, { leftText = "Passive" }, { leftText = "Food heals you more." } } } end
         if id == 19426 then return { lines = { { leftText = "Lethal Shots" }, { leftText = "Increases your critical strike chance with ranged weapons by |cffffffff1%|r." } } } end
         if id == 19295 then return { lines = { { leftText = "Deflection" }, { leftText = "Increases your Parry chance by 1%." } } } end
     end,
@@ -865,9 +867,11 @@ function UnitQuestTrivialLevelRange() return 9 end
 """
 
 # Addon 0.15.0: a mock of the Forever Legacy system. The client documents no API for it, so the mock covers what the
-# section looks for: a non-combat C_Traits config (three tabs, arrows, a points condition, a trait currency linked to
-# an account currency), a "Legacy" achievement category, and names for discovery (a namespace with readers and an
-# action that must never be called, a global function and a frame carrying the configID). Values are invented.
+# section looks for: a non-combat C_Traits config, a "Legacy" achievement category, and names for discovery (a
+# namespace with readers and an action that must never be called, a global function and a frame carrying the configID).
+# Addon 0.17.0: shaped like the first real dump (2026-11-22): a Generic config with trees 1118 (empty), 1187, 1188 and
+# 1189 and no named groups, one trait currency shared by the trees, and spell tooltips that show only the spell type
+# before the spell data loads. Names and IDs of the real perks; texts and point values invented.
 LEGACY_TREE_STUBS = r"""
 Enum.TraitConfigType = { Invalid = 0, Combat = 1, Profession = 2, Generic = 3 }
 legacyActionCalls = {}
@@ -895,32 +899,35 @@ C_Traits.GetConfigsByType = function(configType)
     if configType == 3 then return { 7001 } end
     return {}
 end
+local legacyTrees = { [1118] = {}, [1187] = { 205 }, [1188] = { 201, 202, 203, 204 }, [1189] = { 206, 207 } }
 C_Traits.GetConfigInfo = function(configID)
-    if configID == 7001 then return { ID = 7001, type = 3, name = "Legacy", treeIDs = { 2001 } } end
+    if configID == 7001 then return { ID = 7001, type = 3, name = "", treeIDs = { 1118, 1187, 1188, 1189 } } end
     return configInfo(configID)
 end
 C_Traits.GetGroupDisplayInfoByTreeID = function(treeID)
-    if treeID ~= 2001 then return groups(treeID) end
-    return {
-        { groupID = 22, displayName = "Adventure", orderIndex = 2 },
-        { groupID = 21, displayName = "Professions", orderIndex = 1 },
-        { groupID = 23, displayName = "Resourcefulness", orderIndex = 3 },
-    }
+    if legacyTrees[treeID] then return {} end
+    return groups(treeID)
+end
+C_Traits.GetTreeInfo = function(configID, treeID)
+    if legacyTrees[treeID] then return { ID = treeID, gates = {}, hideSingleRankNumbers = false } end
 end
 C_Traits.GetTreeCurrencyInfo = function(configID, treeID, excludeStaged)
-    if treeID == 2001 then return { { traitCurrencyID = 4100, spent = 2, quantity = 3, maxQuantity = 16 } } end
+    if treeID == 1118 then return {} end
+    if legacyTrees[treeID] then return { { traitCurrencyID = 4100, spent = 2, quantity = 3, maxQuantity = 5 } } end
     return currencies(configID, treeID, excludeStaged)
 end
 C_Traits.GetTreeNodes = function(treeID)
-    if treeID == 2001 then return { 201, 202, 203, 204, 205, 206, 207 } end
+    if legacyTrees[treeID] then return legacyTrees[treeID] end
     return treeNodes(treeID)
 end
 C_Traits.GetNodeInfo = function(configID, nodeID)
     if configID == 7001 then return legacyNodes[nodeID] end
     return nodeInfo(configID, nodeID)
 end
+-- Working Overtime: a tooltip with only the spell type (no description yet); Gourmand: a full tooltip.
+local legacySpells = { [305] = 1225451, [306] = 1225440 }
 C_Traits.GetDefinitionInfo = function(definitionID)
-    if legacyNames[definitionID] then return { overrideName = legacyNames[definitionID] } end
+    if legacyNames[definitionID] then return { overrideName = legacyNames[definitionID], spellID = legacySpells[definitionID] } end
     return definition(definitionID)
 end
 C_Traits.GetTraitDescription = function(entryID, rank) return legacyTexts[entryID] or "" end
@@ -950,7 +957,8 @@ function GetAchievementInfo(categoryID, index)
     return 70002, "Warlock: Level 25", 1, false, nil, nil, nil, "Reach level 25 with a Warlock.", 0, 1, "", false, false
 end
 
--- Discovery: a namespace (two readers, one reader that needs an argument, one action), a global function and a frame.
+-- Discovery: a namespace (two readers, one reader that needs an argument, one action), a namespace named for challenges,
+-- a global function and a frame (a child table is listed by name only).
 C_LegacyMock = {
     GetPointsInfo = function() return { earned = 5, spent = 2, perCharacterCap = 16 } end,
     IsEnabled = function() return true end,
@@ -958,7 +966,13 @@ C_LegacyMock = {
     LearnPerk = function() legacyActionCalls[#legacyActionCalls + 1] = "LearnPerk" end,
 }
 function ToggleLegacyFrameMock() legacyActionCalls[#legacyActionCalls + 1] = "ToggleLegacyFrameMock" end
-LegacyFrameMock = { configID = 7001, title = "Legacy", GetObjectType = function() return "Frame" end, IsShown = function() return false end }
+LegacyFrameMock = { configID = 7001, title = "Legacy", GetObjectType = function() return "Frame" end, IsShown = function() return false end,
+    ChallengesTab = { label = "Challenges" } }
+C_PlayerChallengesMock = { GetActiveChallenges = function() return { { id = 1, name = "Reach level 25" } } end }
+-- A function named for challenges inside an unrelated namespace (the real client has no C_*Legacy* namespace).
+C_GameRules = C_GameRules or {}
+C_GameRules.GetLegacyChallengeList = function() return { { challengeID = 9, completed = true } } end
+C_GameRules.SetLegacyChallengeTracked = function() legacyActionCalls[#legacyActionCalls + 1] = "SetLegacyChallengeTracked" end
 """
 
 # Clock for timing sections: a deterministic, increasing counter (steps of 0.5, 2.5 and 1.0 ms
@@ -1285,6 +1299,19 @@ def check_robustness(runtime, g, on_event, mode: str) -> None:
         assert not list(dumped["errors"].values()), list(dumped["errors"].values())
         assert dumped["pvp"] is None and dumped["equipmentSets"] is None
         assert g.forbiddenCalls is not None and len(g.forbiddenCalls) == 0
+    if mode in FOREVER_MODES:
+        # Addon 0.17.0: Legacy names are scanned once per session; a frame that appears later is found only after the
+        # client loads an addon named for Legacy (the load-on-demand Legacy window), not on every dump.
+        runtime.execute('LegacySystemFrameMock = { GetObjectType = function() return "Frame" end, IsShown = function() return true end }')
+        g.SlashCmdList["WOWMCP"]("")
+        frames = lambda: [f["name"] for f in g.WowMcpDB["characters"]["Piekasz"]["legacy"]["discovery"]["frames"].values()]
+        assert frames() == ["LegacyFrameMock"], frames()
+        on_event(None, "ADDON_LOADED", "Blizzard_GuildUI")
+        g.SlashCmdList["WOWMCP"]("")
+        assert frames() == ["LegacyFrameMock"], frames()
+        on_event(None, "ADDON_LOADED", "Blizzard_LegacySystem")
+        g.SlashCmdList["WOWMCP"]("")
+        assert frames() == ["LegacyFrameMock", "LegacySystemFrameMock"], frames()
 
 
 UNLOADED_CLIENT = r"""
@@ -1844,25 +1871,34 @@ def values(table) -> list:
 
 def check_legacy_tree(legacy, g) -> None:
     """Addon 0.15.0: the Legacy perks come from the non-combat trait config, challenges from the Legacy category,
-    and discovery lists the Legacy names; nothing that learns, applies or toggles is ever called."""
+    and discovery lists the Legacy names; nothing that learns, applies or toggles is ever called.
+    Addon 0.17.0: trees without named groups (real client), a spell-type-only tooltip is no description."""
     assert not list(g.legacyActionCalls.values()), list(g.legacyActionCalls.values())
     assert legacy["source"] == "traits"
     configs = list(legacy["configs"].values())
     assert [c["configID"] for c in configs] == [7001], [c["configID"] for c in configs]
     config = configs[0]
-    assert config["typeName"] == "Generic" and config["name"] == "Legacy", dict(config)
-    assert [t["name"] for t in config["trees"].values()] == ["Professions", "Adventure", "Resourcefulness"]
-    assert [t["points"] for t in config["trees"].values()] == [0, 2, 0]
+    assert config["typeName"] == "Generic", dict(config)
+    trees = list(config["trees"].values())
+    assert [(t["name"], t["treeID"], t["points"], t["nodes"]) for t in trees] == [
+        ("tree 1118", 1118, 0, 0), ("tree 1187", 1187, 0, 1), ("tree 1188", 1188, 2, 4), ("tree 1189", 1189, 0, 1)], \
+        [(t["name"], t["treeID"], t["points"], t["nodes"]) for t in trees]
+    assert trees[1]["info"]["hideSingleRankNumbers"] is False
     nodes = {n["name"]: n for n in config["nodes"].values()}
     assert "Hidden Perk" not in nodes and len(nodes) == 6, list(nodes)
     well = nodes["Well Rested"]
-    assert well["rank"] == 2 and well["maxRank"] == 5 and well["tree"] == "Adventure" and well["descriptionSource"] == "trait"
+    assert well["rank"] == 2 and well["maxRank"] == 5 and well["tree"] == "tree 1188" and well["descriptionSource"] == "trait"
     assert well["row"] == 1 and well["column"] == 1, (well["row"], well["column"])
     assert list(nodes["Talented"]["requires"].values()) == ["Well Rested"] and nodes["Talented"]["prereqMet"] is False
     assert nodes["Frequent Flier"]["locked"] is True and nodes["Frequent Flier"]["requiresSpent"] == 5
-    assert config["missingDescriptions"] == 4, config["missingDescriptions"]
-    currency = config["currencies"][1]
-    assert (currency["available"], currency["spent"], currency["max"], currency["maxAvailable"]) == (3, 2, 16, 16), dict(currency)
+    assert nodes["Working Overtime"]["description"] is None, dict(nodes["Working Overtime"])
+    gourmand = nodes["Gourmand"]
+    assert gourmand["description"] == "Passive\nFood heals you more." and gourmand["descriptionSource"] == "tooltip", dict(gourmand)
+    assert config["missingDescriptions"] == 3, config["missingDescriptions"]
+    currencies = list(config["currencies"].values())
+    assert len(currencies) == 3 and {c["treeID"] for c in currencies} == {1187, 1188, 1189}
+    currency = currencies[0]
+    assert (currency["available"], currency["spent"], currency["max"], currency["maxAvailable"]) == (3, 2, 5, 16), dict(currency)
     assert currency["name"] == "Legacy Points" and currency["totalEarned"] == 5, dict(currency)
     challenges = list(legacy["challenges"]["list"].values())
     assert [(c["name"], c["completed"], c["category"]) for c in challenges] == [
@@ -1870,12 +1906,19 @@ def check_legacy_tree(legacy, g) -> None:
     assert challenges[0]["reward"] == "Reward: 1 Legacy Point" and challenges[1]["reward"] is None
     discovery = legacy["discovery"]
     assert list(discovery["namespaces"]["C_LegacyMock"].values()) == ["GetPerkInfo", "GetPointsInfo", "IsEnabled", "LearnPerk"]
+    assert list(discovery["namespaces"]["C_PlayerChallengesMock"].values()) == ["GetActiveChallenges"]
     readings = discovery["readings"]
     assert readings["C_LegacyMock.GetPointsInfo"][1]["earned"] == 5 and readings["C_LegacyMock.IsEnabled"][1] is True
     assert readings["C_LegacyMock.GetPerkInfo"] is None and readings["C_LegacyMock.LearnPerk"] is None
+    assert readings["C_PlayerChallengesMock.GetActiveChallenges"][1][1]["name"] == "Reach level 25"
     assert "ToggleLegacyFrameMock" in list(discovery["globals"].values())
+    functions = list(discovery["members"].values())
+    assert "C_GameRules.GetLegacyChallengeList" in functions and "C_GameRules.SetLegacyChallengeTracked" in functions, functions
+    assert readings["C_GameRules.GetLegacyChallengeList"][1][1]["challengeID"] == 9
+    assert readings["C_GameRules.SetLegacyChallengeTracked"] is None
     frame = discovery["frames"][1]
     assert frame["name"] == "LegacyFrameMock" and frame["shown"] is False and frame["fields"]["configID"] == 7001
+    assert list(frame["children"].values()) == ["ChallengesTab"], frame["children"]
     assert "Enum.TraitConfigType.Generic=3" in list(discovery["enums"].values())
 
 

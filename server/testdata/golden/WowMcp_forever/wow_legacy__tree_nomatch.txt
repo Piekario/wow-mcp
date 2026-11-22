@@ -20,17 +20,18 @@
     "total": 2
   },
   "configID": 7001,
-  "howToUse": "Legacy Points are earned once per account from Legacy challenges and each character spends its own on perks. Base advice on the perk descriptions in this dump (there is no built-in perk list). status: available = a point can go there now (the game's own flag), locked = an arrow prerequisite (requires) or a points-spent gate (requiresSpent) is not met, maxed = full rank. The tool and the addon never learn perks: the player clicks the perk and Apply Changes in the Legacy window (default key Y).",
-  "missingDescriptions": 4,
-  "name": "Legacy",
-  "note": "No perk is marked available. Open the Legacy window in game, type /mcp reload and ask again if this looks wrong. 4 perks have no description yet (the client loads them lazily). Hover them or open the Legacy window, type /mcp reload and ask again. Do not judge a perk by its name alone.",
+  "howToUse": "Legacy Points are earned once per account from Legacy challenges and each character spends its own on perks. Base advice on the perk descriptions in this dump (there is no built-in perk list). status: available = a point can go there now (the game's own flag), locked = an arrow prerequisite (requires) or a points-spent gate (requiresSpent) is not met, maxed = full rank. unrevealed = a \"?\" perk the game does not name yet: do not recommend it. The tool and the addon never learn perks: the player clicks the perk and Apply Changes in the Legacy window (default key Y).",
+  "missingDescriptions": 3,
+  "name": "",
+  "note": "No perk is marked available. Open the Legacy window in game, type /mcp reload and ask again if this looks wrong. 3 perks have no description yet (the client loads them lazily). Hover them or open the Legacy window, type /mcp reload and ask again. Do not judge a perk by its name alone.",
   "points": {
     "accountMax": 65,
     "accountQuantity": 3,
     "accountTotalEarned": 5,
-    "characterCap": 16,
     "currency": "Legacy Points",
+    "max": 5,
     "maxAvailable": 16,
+    "meaning": "max is the most points this character can have now (assumption from the real client: the Legacy Points earned so far, up to the per-character cap); unspent + spent = max when everything earned is in use",
     "spent": 2,
     "unspent": 3
   },

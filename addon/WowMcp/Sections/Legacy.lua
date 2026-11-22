@@ -8,8 +8,12 @@
 --   * configs: every C_Traits config that is not the class talents (C_Traits.GetConfigsByType for each
 --     Enum.TraitConfigType, plus a configID found on a Legacy frame), read like the talents (TraitTree);
 --   * challenges: achievements in categories whose title contains "Legacy" (English client text);
---   * discovery: Enum entries, C_* namespaces, functions and frames whose name contains "Legacy", and the
---     results of their argument-free Get/Is/Has/Are functions, so the next version can use the real API.
+--   * discovery: Enum entries, C_* namespaces (named "Legacy" or "Challenge"), functions and frames whose name
+--     contains "Legacy", and the results of the namespaces' argument-free Get/Is/Has/Are functions, so the next
+--     version can use the real API. The scan of _G is costly (78 ms of a 112 ms real dump), so the names are found
+--     once per session and again only after the client loads an addon with "Legacy" in its name (the Legacy window
+--     is load-on-demand); the readings and frame fields are fresh on every dump.
+-- Real client (2026-11-22): the perks are a Generic config with trees 1187, 1188, 1189 and no named groups.
 -- Everything is a read. Nothing here stages, learns, refunds or applies a perk.
 
 local _, ns = ...
@@ -25,6 +29,10 @@ local READ_PREFIXES = { "^Get", "^Is", "^Has", "^Are" }
 
 local function mentionsLegacy(name)
     return type(name) == "string" and name:lower():find("legacy", 1, true) ~= nil
+end
+
+local function mentionsChallenge(name)
+    return type(name) == "string" and name:lower():find("challenge", 1, true) ~= nil
 end
 
 local function append(list, value, limit)
@@ -129,6 +137,18 @@ local function addRequirements(nodes, edges)
     end
 end
 
+-- Plain fields of C_Traits.GetTreeInfo (a tree without named groups may carry its title there).
+local function treeInfo(configID, treeID)
+    if not C_Traits.GetTreeInfo then return nil end
+    local ok, info = pcall(C_Traits.GetTreeInfo, configID, treeID)
+    if not (ok and type(info) == "table") then return nil end
+    local out = {}
+    for key, value in pairs(info) do
+        if type(key) == "string" and plain(value) ~= nil then out[key] = value end
+    end
+    return Compat.pick(next(out) ~= nil, out, nil)
+end
+
 local function readTree(config, configID, treeID, edges)
     local groupNames, groups = TraitTree.tabs(treeID)
     for _, currency in ipairs(TraitTree.currencies(configID, treeID)) do
@@ -137,7 +157,7 @@ local function readTree(config, configID, treeID, edges)
         config.currencies[#config.currencies + 1] = currency
     end
     local fallbackName = next(groupNames) == nil and ("tree " .. tostring(treeID)) or nil
-    local points = {}
+    local points, count = {}, 0
     for _, nodeID in ipairs(C_Traits.GetTreeNodes(treeID) or {}) do
         local node = C_Traits.GetNodeInfo(configID, nodeID)
         if node and node.isVisible ~= false and (node.maxRanks or 0) > 0 then
@@ -145,10 +165,13 @@ local function readTree(config, configID, treeID, edges)
             entry.tree = entry.tree or fallbackName
             if entry.tree then points[entry.tree] = (points[entry.tree] or 0) + entry.rank end
             config.nodes[#config.nodes + 1] = entry
+            count = count + 1
         end
     end
     if fallbackName then
-        config.trees[#config.trees + 1] = { name = fallbackName, treeID = plain(treeID), points = points[fallbackName] or 0 }
+        local tree = { name = fallbackName, treeID = plain(treeID), points = points[fallbackName] or 0, nodes = count }
+        tree.info = treeInfo(configID, treeID)
+        config.trees[#config.trees + 1] = tree
     end
     for _, group in ipairs(groups) do
         config.trees[#config.trees + 1] = {
@@ -278,6 +301,16 @@ local function isReader(name)
     return false
 end
 
+-- Up to 3 return values of an argument-free reader, copied into discovery.readings.
+local function readFunction(discovery, path, fn)
+    local result = { pcall(fn) }
+    if result[1] and #result > 1 then
+        local values = {}
+        for i = 2, math.min(#result, 4) do values[#values + 1] = boundedCopy(result[i], 0) end
+        discovery.readings[path] = values
+    end
+end
+
 -- Function names of a namespace, and the results of the argument-free readers (Get/Is/Has/Are only).
 local function readNamespace(discovery, namespaceName, namespace)
     local names = {}
@@ -287,14 +320,7 @@ local function readNamespace(discovery, namespaceName, namespace)
     table.sort(names)
     discovery.namespaces[namespaceName] = names
     for _, name in ipairs(names) do
-        if isReader(name) then
-            local result = { pcall(namespace[name]) }
-            if result[1] and #result > 1 then
-                local values = {}
-                for i = 2, math.min(#result, 4) do values[#values + 1] = boundedCopy(result[i], 0) end
-                discovery.readings[namespaceName .. "." .. name] = values
-            end
-        end
+        if isReader(name) then readFunction(discovery, namespaceName .. "." .. name, namespace[name]) end
     end
 end
 
@@ -303,14 +329,18 @@ local function frameInfo(name, frame, extraConfigIDs)
     local info = { name = name, fields = {} }
     local okShown, shown = pcall(frame.IsShown, frame)
     if okShown then info.shown = shown and true or false end
-    local count = 0
+    local count, children = 0, {}
     for key, value in pairs(frame) do
         if type(key) == "string" and plain(value) ~= nil and count < MAX_COPY_ENTRIES then
             info.fields[key] = value
             count = count + 1
             if key == "configID" and type(value) == "number" then extraConfigIDs[#extraConfigIDs + 1] = value end
+        elseif type(key) == "string" and type(value) == "table" then
+            append(children, key, MAX_COPY_ENTRIES)
         end
     end
+    table.sort(children)
+    if #children > 0 then info.children = children end
     return info
 end
 
@@ -333,25 +363,64 @@ local function addEnums(discovery)
     table.sort(discovery.enums)
 end
 
-local function discover(extraConfigIDs)
-    local discovery = { enums = {}, namespaces = {}, readings = {}, globals = {}, frames = {} }
-    addEnums(discovery)
-    local namespaces = {}
+-- Names worth reading, from one scan of Enum and _G.
+local function scanNames()
+    local names = { enums = {}, namespaces = {}, globals = {}, frames = {}, members = {} }
+    addEnums(names)
     for key, value in pairs(_G) do
-        if mentionsLegacy(key) then
-            if type(value) == "function" then
-                append(discovery.globals, key)
+        if type(key) == "string" then
+            if key:find("^C_") and type(value) == "table" and (mentionsLegacy(key) or mentionsChallenge(key)) then
+                names.namespaces[#names.namespaces + 1] = key
             elseif key:find("^C_") and type(value) == "table" then
-                namespaces[#namespaces + 1] = key
-            elseif isFrame(value) then
-                append(discovery.frames, frameInfo(key, value, extraConfigIDs))
+                -- The real client has no C_*Legacy* namespace (2026-11-22), so functions named for Legacy or
+                -- challenges inside any namespace are listed too ("C_X.Name").
+                for fnName, fn in pairs(value) do
+                    if type(fn) == "function" and (mentionsLegacy(fnName) or mentionsChallenge(fnName)) then
+                        append(names.members, key .. "." .. fnName)
+                    end
+                end
+            elseif mentionsLegacy(key) then
+                if type(value) == "function" then
+                    append(names.globals, key)
+                elseif isFrame(value) then
+                    append(names.frames, key)
+                end
             end
         end
     end
-    table.sort(namespaces)
-    for _, name in ipairs(namespaces) do readNamespace(discovery, name, _G[name]) end
-    table.sort(discovery.globals)
-    table.sort(discovery.frames, function(a, b) return a.name < b.name end)
+    table.sort(names.namespaces)
+    table.sort(names.members)
+    table.sort(names.globals)
+    table.sort(names.frames)
+    return names
+end
+
+local cachedNames -- scanNames() result for this session; nil = scan on the next dump
+
+-- The Legacy window is a load-on-demand addon: its frames and functions appear only after it loads.
+ns.Events.on("ADDON_LOADED", function(addonName)
+    if mentionsLegacy(addonName) then cachedNames = nil end
+end)
+
+local function discover(extraConfigIDs)
+    cachedNames = cachedNames or scanNames()
+    local discovery = { enums = cachedNames.enums, namespaces = {}, readings = {}, globals = cachedNames.globals, frames = {},
+        members = cachedNames.members }
+    for _, name in ipairs(cachedNames.namespaces) do
+        if type(_G[name]) == "table" then readNamespace(discovery, name, _G[name]) end
+    end
+    for _, path in ipairs(cachedNames.members) do
+        local namespaceName, fnName = path:match("^([^.]+)%.(.+)$")
+        local namespace = _G[namespaceName]
+        if isReader(fnName) and type(namespace) == "table" and type(namespace[fnName]) == "function" then
+            readFunction(discovery, path, namespace[fnName])
+        end
+    end
+    for _, name in ipairs(cachedNames.frames) do
+        if isFrame(_G[name]) then
+            discovery.frames[#discovery.frames + 1] = frameInfo(name, _G[name], extraConfigIDs)
+        end
+    end
     return discovery
 end
 

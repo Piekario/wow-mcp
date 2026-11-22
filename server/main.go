@@ -36,7 +36,7 @@ import (
 
 const (
 	serverName    = "wow-mcp"
-	serverVersion = "0.17.1"
+	serverVersion = "0.18.0"
 )
 
 func main() {

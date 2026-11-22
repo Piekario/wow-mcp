@@ -34,11 +34,41 @@ const (
 // knownTabs are the English tab names of the Legacy trees (patch 1.60.1); used only to recognise the config.
 var knownTabs = []string{"professions", "adventure", "resourcefulness"}
 
+// treeNames names the Legacy trees by trait tree ID. The real client gives these trees no group names, so the
+// addon writes "tree <ID>". IDs verified in the first real dump (Forever 1.60.1 build 71037, 2026-11-22) by their
+// perks: 1187 holds Working Overtime and Bountiful Harvest, 1188 Well Rested and Thrill of Adventure, 1189 Gourmand
+// and Reinforce. Tree 1118 in the same config has no perks.
+var treeNames = map[int64]string{1187: "Professions", 1188: "Adventure", 1189: "Resourcefulness"}
+
+// treeName is the display name of a tree: the one in the dump, or the known Legacy name for an unnamed tree.
+func treeName(name string, treeID any) string {
+	if id, ok := snapshot.AsInt(treeID); ok && (name == "" || name == fmt.Sprintf("tree %d", id)) {
+		if known, ok := treeNames[id]; ok {
+			return known
+		}
+	}
+	return name
+}
+
+// nodeTree is the tree name of a perk, mapped like treeName ("tree 1188" -> Adventure).
+func nodeTree(n map[string]any) string {
+	tree, _ := n["tree"].(string)
+	var id int64
+	if _, err := fmt.Sscanf(tree, "tree %d", &id); err == nil {
+		return treeName(tree, id)
+	}
+	return tree
+}
+
 const maxOpenChallenges = 40
+
+// unrevealedName is what the real client calls the "?" perks of each tree (spell 1317256, one rank): not yet revealed.
+const unrevealedName = "Unknown"
 
 const howToUse = "Legacy Points are earned once per account from Legacy challenges and each character spends its own on perks. " +
 	"Base advice on the perk descriptions in this dump (there is no built-in perk list). status: available = a point can go there now " +
 	"(the game's own flag), locked = an arrow prerequisite (requires) or a points-spent gate (requiresSpent) is not met, maxed = full rank. " +
+	"unrevealed = a \"?\" perk the game does not name yet: do not recommend it. " +
 	"The tool and the addon never learn perks: the player clicks the perk and Apply Changes in the Legacy window (default key Y)."
 
 // View describes the character's Legacy perks, points and challenges.
@@ -105,6 +135,11 @@ func legacyScore(c map[string]any) int {
 	if name, _ := c["name"].(string); strings.Contains(strings.ToLower(name), "legacy") {
 		score += 10
 	}
+	for _, raw := range snapshot.AsList(c["trees"]) {
+		if id, ok := snapshot.AsInt(snapshot.AsMap(raw)["treeID"]); ok && treeNames[id] != "" {
+			score++
+		}
+	}
 	for _, tab := range tabNames(c) {
 		for _, known := range knownTabs {
 			if strings.EqualFold(tab, known) {
@@ -118,8 +153,9 @@ func legacyScore(c map[string]any) int {
 func tabNames(c map[string]any) []string {
 	names := []string{}
 	for _, raw := range snapshot.AsList(c["trees"]) {
-		if name, ok := snapshot.AsMap(raw)["name"].(string); ok {
-			names = append(names, name)
+		t := snapshot.AsMap(raw)
+		if name, ok := t["name"].(string); ok {
+			names = append(names, treeName(name, t["treeID"]))
 		}
 	}
 	return names
@@ -148,7 +184,9 @@ func describeConfig(out map[string]any, c map[string]any, treeFilter string) {
 	}
 }
 
-// pointsOf reads the first currency: available, spent, the per-character cap and the account currency if linked.
+// pointsOf reads the Legacy point currency: unspent, spent, the most this character can hold now (max) and the account
+// currency if the client links one. The real client reports one trait currency shared by all three trees, repeated per
+// tree with the same numbers, so the first entry is the whole picture; a second currency ID is listed separately.
 // known says whether the dump states the available points at all.
 func pointsOf(c map[string]any) (map[string]any, int64, bool) {
 	currencies := snapshot.AsList(c["currencies"])
@@ -158,9 +196,23 @@ func pointsOf(c map[string]any) (map[string]any, int64, bool) {
 	cur := snapshot.AsMap(currencies[0])
 	points := map[string]any{}
 	copyKeys(points, cur, map[string]string{
-		"available": "unspent", "spent": "spent", "max": "characterCap", "maxAvailable": "maxAvailable",
+		"available": "unspent", "spent": "spent", "max": "max", "maxAvailable": "maxAvailable",
 		"name": "currency", "totalEarned": "accountTotalEarned", "quantity": "accountQuantity", "maxQuantity": "accountMax",
 	})
+	points["meaning"] = "max is the most points this character can have now (assumption from the real client: the Legacy Points earned so far, up to the per-character cap); unspent + spent = max when everything earned is in use"
+	first := cur["currencyID"]
+	others := []any{}
+	seen := map[any]bool{first: true}
+	for _, raw := range currencies[1:] {
+		c := snapshot.AsMap(raw)
+		if id := c["currencyID"]; !seen[id] {
+			seen[id] = true
+			others = append(others, c)
+		}
+	}
+	if len(others) > 0 {
+		points["otherCurrencies"] = others
+	}
 	available, known := snapshot.AsInt(cur["available"])
 	return points, available, known
 }
@@ -192,6 +244,9 @@ func perk(n map[string]any, noPoints bool) (map[string]any, bool) {
 		status = StatusAvailable
 	}
 	p["status"] = status
+	if p["name"] == unrevealedName {
+		p["unrevealed"] = true
+	}
 	if rank > 0 {
 		p["learned"] = true
 	}
@@ -205,7 +260,7 @@ func perks(c map[string]any, treeFilter string, noPoints bool) (map[string][]map
 	tq := strings.ToLower(treeFilter)
 	for _, raw := range snapshot.AsList(c["nodes"]) {
 		n := snapshot.AsMap(raw)
-		tree, _ := n["tree"].(string)
+		tree := nodeTree(n)
 		if tq != "" && !strings.Contains(strings.ToLower(tree), tq) {
 			continue
 		}
@@ -255,7 +310,7 @@ func trees(c map[string]any, byTree map[string][]map[string]any) []any {
 	for _, raw := range snapshot.AsList(c["trees"]) {
 		t := snapshot.AsMap(raw)
 		name, _ := t["name"].(string)
-		add(name, t["points"])
+		add(treeName(name, t["treeID"]), t["points"])
 	}
 	rest := []string{}
 	for name := range byTree {
