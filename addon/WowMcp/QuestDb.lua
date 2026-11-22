@@ -7,7 +7,8 @@
 -- matches what the player sees on the map. WowMcp ships no quest data of its own: without QuestieDB every
 -- function here returns nil.
 --
--- Only reads (entity Get / IdsByName and C_Map.GetAreaInfo); never registers corrections or changes that addon.
+-- Only reads (entity Get / IdsByName, its zone support data and C_Map.GetAreaInfo); never registers corrections or
+-- changes that addon.
 -- Every read is wrapped in pcall: a change in the other addon costs a field, not the dump.
 
 local _, ns = ...
@@ -82,6 +83,41 @@ function QuestDb.areaName(areaID)
     local ok, name = pcall(C_Map.GetAreaInfo, areaID)
     if ok then return text(plain(name)) end
     return nil
+end
+
+-- The database's zone support data (area ID -> UI map ID) arrives as Lua source text; it is decoded once, in an empty
+-- environment, the same way Questie decodes it. The override table wins, as in Questie, so a map ID here is the map
+-- Questie draws the point on.
+local uiMapIDs
+
+local function decodeMapTable(source)
+    if type(source) == "table" then return source end
+    if type(source) ~= "string" or type(loadstring) ~= "function" then return {} end
+    local chunk = loadstring(source)
+    if not chunk then return {} end
+    if type(setfenv) == "function" then setfenv(chunk, {}) end
+    local ok, decoded = pcall(chunk)
+    return (ok and type(decoded) == "table") and decoded or {}
+end
+
+local function loadUiMapIDs()
+    local db = lib()
+    local support = db and db.Support
+    if type(support) ~= "table" or type(support.Get) ~= "function" then return {} end
+    local ok, zones = pcall(support.Get, "ZoneDB")
+    local private = ok and type(zones) == "table" and zones.private
+    if type(private) ~= "table" then return {} end
+    local merged = {}
+    for areaID, mapID in pairs(decodeMapTable(private.areaIdToUiMapId)) do merged[areaID] = mapID end
+    for areaID, mapID in pairs(decodeMapTable(private.areaIdToUiMapIdOverride)) do merged[areaID] = mapID end
+    return merged
+end
+
+-- UI map ID (what map pins and waypoints use) of a database area ID, or nil (unknown area, or no database).
+function QuestDb.uiMapID(areaID)
+    if type(areaID) ~= "number" or not QuestDb.available() then return nil end
+    if not (uiMapIDs and next(uiMapIDs)) then uiMapIDs = loadUiMapIDs() end
+    return positive(uiMapIDs[areaID])
 end
 
 local function sortedKeys(map)

@@ -7,7 +7,7 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
 {
   "characters": [
     {
-      "addonVersion": "0.17.0",
+      "addonVersion": "0.18.0",
       "ageMinutes": 200,
       "alerts": [
         {
@@ -82,7 +82,7 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
       "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
     }
   ],
-  "expectedAddonVersion": "0.17.0",
+  "expectedAddonVersion": "0.18.0",
   "file": "<FILE>",
   "fileModified": "2026-11-15 16:26:45",
   "goalsFile": "<GOALS>",

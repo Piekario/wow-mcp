@@ -186,6 +186,7 @@ Logs go to stderr (and to `--log` if given), never to stdout.
 | `/mcp panel` | shows or hides the WowMcp panel |
 | `/mcp played on` / `off` | whether to ask the game for play time (`/played`) after login, from which the XP rate is computed |
 | `/mcp note <text>` | a note for the assistant in the dump, e.g. what you plan to do today; `/mcp note` alone removes it |
+| `/mcp quest <name or ID>` | where a quest starts, what it needs and where it ends, from the installed Questie database; with [TomTom](https://www.curseforge.com/wow/addons/tomtom) installed, click a coordinate to set a waypoint (TomTom is optional) |
 | `/mcp off <section>` / `/mcp on <section>` | stop collecting a section (it disappears from the dump) or collect it again; `/mcp off` alone shows the disabled ones and all names |
 | `/mcp minimap on` / `off` | the minimap button (on by default): a left click shows or hides the panel, saves nothing; it can be dragged |
 | `/mcp options` | opens the WowMcp page in the game's options (Interface / AddOns) with the same switches as these commands: sections, minimap button, compact panel, AH tooltip, played time; changes settings only |

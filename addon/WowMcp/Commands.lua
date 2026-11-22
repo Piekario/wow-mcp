@@ -14,7 +14,8 @@ local HELP = {
     "/mcp panel - show or hide the panel with the Save button",
     "/mcp played on|off - whether to request played time after login (for progress statistics)",
     "/mcp note <text> - note for the assistant in the dump (e.g. what you plan today); bare /mcp note removes it",
-    "/mcp quest <id or name> - where a quest starts and ends, from the Questie database you have installed; the answer also goes into the dump",
+    "/mcp quest <id or name> - where a quest starts and ends, from the Questie database you have installed; the answer also goes into the dump."
+        .. " With TomTom installed, click a coordinate to set a waypoint",
     "/mcp off <section> - stop collecting this section; bare /mcp off lists disabled sections and all section names",
     "/mcp on <section> - collect the section again",
     "/mcp minimap on|off - minimap button (left click: panel; on by default)",
@@ -109,7 +110,9 @@ local function lookUpQuest(rest)
         chat("No quest database found. Install Questie (with QuestieDB) to use /mcp quest.")
         return
     end
-    for _, line in ipairs(ns.QuestLookup.lines(entry)) do chat(line) end
+    local lines, coordinates = ns.QuestLookup.lines(entry, ns.Waypoints.chatText)
+    for _, line in ipairs(lines) do chat(line) end
+    if coordinates then ns.Waypoints.suggestTomTom() end
     Panel.refresh()
 end
 

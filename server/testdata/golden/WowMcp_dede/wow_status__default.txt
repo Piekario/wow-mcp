@@ -5,7 +5,7 @@
 {
   "characters": [
     {
-      "addonVersion": "0.17.0",
+      "addonVersion": "0.18.0",
       "ageMinutes": 30,
       "alerts": [
         {
@@ -78,7 +78,7 @@
       ]
     }
   ],
-  "expectedAddonVersion": "0.17.0",
+  "expectedAddonVersion": "0.18.0",
   "file": "<FILE>",
   "fileModified": "2026-11-15 16:26:45",
   "goalsFile": "<GOALS>",
