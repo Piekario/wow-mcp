@@ -1,0 +1,5 @@
+# Keep LF line endings on every OS: golden test files are compared byte for byte, and Lua/Go/shell sources stay LF.
+* text=auto eol=lf
+*.exe binary
+*.gz binary
+*.png binary

@@ -25,7 +25,8 @@ func TestRunCheck(t *testing.T) {
 }
 
 func TestResolveGoalsFile(t *testing.T) {
-	if got := resolveGoalsFile("/abs/goals.json", "/x/history"); got != "/abs/goals.json" {
+	abs := filepath.Join(t.TempDir(), "goals.json") // absolute on every OS ("/abs" is not absolute on Windows)
+	if got := resolveGoalsFile(abs, "/x/history"); got != abs {
 		t.Errorf("absolute path: %q", got)
 	}
 	if got := resolveGoalsFile("", filepath.Join("/srv", "wow", "history")); got != filepath.Join("/srv", "wow", "goals.json") {

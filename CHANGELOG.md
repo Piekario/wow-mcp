@@ -40,6 +40,8 @@ installed with `npx`.
 
 ### Repository
 
+- CI runs on GitHub for the first time: the workflow syntax is fixed, `.gitattributes` keeps LF line endings on every OS
+  (golden files are compared byte for byte), and tests that assumed Unix paths now pass on Windows.
 - README and docs describe any MCP client instead of specific products, with an `npx` quick start.
 - Local-only files (personal notes, internal review notes) are no longer tracked.
 

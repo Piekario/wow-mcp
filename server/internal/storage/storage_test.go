@@ -264,7 +264,7 @@ func dumpIn(t *testing.T, wowDir, client string, mod time.Time) string {
 func TestMissingFileMessageNamesFileAndDirectory(t *testing.T) {
 	empty := t.TempDir()
 	_, err := (&Store{WowDir: empty}).Load()
-	want := "SavedVariables/" + SavedVariablesFile + " file in \"" + empty + "\""
+	want := "SavedVariables/" + SavedVariablesFile + " file in " + strconv.Quote(empty)
 	if err == nil || !strings.Contains(err.Error(), want) {
 		t.Errorf("message %v, want it to contain %s", err, want)
 	}

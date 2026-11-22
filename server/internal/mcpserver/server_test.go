@@ -268,7 +268,7 @@ func TestCorruptGoalsFileIsReportedNotOverwritten(t *testing.T) {
 		if err != nil || !res.IsError {
 			t.Fatalf("%s: expected a tool error: %v %v", name, res, err)
 		}
-		if text := res.Content[0].(*mcp.TextContent).Text; !strings.Contains(text, goalsPath) || !strings.Contains(text, "corrupt") {
+		if text := res.Content[0].(*mcp.TextContent).Text; !(strings.Contains(text, goalsPath) || strings.Contains(text, strconv.Quote(goalsPath))) || !strings.Contains(text, "corrupt") {
 			t.Errorf("%s: error without the path and a diagnosis: %s", name, text)
 		}
 	}

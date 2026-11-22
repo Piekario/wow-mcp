@@ -84,7 +84,7 @@ func TestRequireOutside(t *testing.T) {
 
 func TestResolveBeside(t *testing.T) {
 	base := filepath.Join(string(filepath.Separator), "opt", "wow")
-	abs := filepath.Join(string(filepath.Separator), "var", "x.log")
+	abs := filepath.Join(t.TempDir(), "x.log") // absolute on every OS
 	if got := ResolveBeside("logs/x.log", base); got != filepath.Join(base, "logs", "x.log") {
 		t.Errorf("relative: %q", got)
 	}
