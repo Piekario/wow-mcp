@@ -3,6 +3,8 @@
 [![CI](https://github.com/Piekario/wow-mcp/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Piekario/wow-mcp/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/Piekario/wow-mcp?sort=semver)](https://github.com/Piekario/wow-mcp/releases/latest)
 [![npm](https://img.shields.io/npm/v/@piekasz/wow-mcp?logo=npm)](https://www.npmjs.com/package/@piekasz/wow-mcp)
+[![CurseForge downloads](https://img.shields.io/curseforge/dt/1824883?logo=curseforge&label=CurseForge)](https://www.curseforge.com/projects/1824883)
+[![CurseForge version](https://img.shields.io/curseforge/v/1824883?logo=curseforge&label=addon)](https://www.curseforge.com/projects/1824883)
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
 
 [![Go](https://img.shields.io/github/go-mod/go-version/Piekario/wow-mcp?filename=server%2Fgo.mod&logo=go&logoColor=white)](server/go.mod)
