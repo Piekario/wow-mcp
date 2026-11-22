@@ -400,7 +400,7 @@ python3 addon/tests/run_addon.py forever server/testdata/WowMcp_forever.lua
 
 ## Community and contributing
 
-- **Questions and ideas:** [Discussions](https://github.com/Piekario/wow-mcp/discussions).
+- **Questions and ideas:** [Discussions](https://github.com/Piekario/wow-mcp/discussions). Where to get help: [SUPPORT.md](SUPPORT.md).
 - **Bugs and feature requests:** [Issues](https://github.com/Piekario/wow-mcp/issues/new/choose) (please include `wow_doctor` output and `/mcp status`).
 - **Contributing code, docs or tests:** see [CONTRIBUTING.md](CONTRIBUTING.md). Fork, branch, `make test`, pull request; CI must pass on Linux,
   macOS and Windows. Reports from game clients other than WoW: Forever (`/mcp probe` output) are especially welcome.
