@@ -1,5 +1,5 @@
 # Release: on a version tag (v*), run the tests, build the archives with `make dist` and attach them to a GitHub release.
-# Also publishes the npm packages (npx -y wow-mcp) when the NPM_TOKEN repository secret is set; without it that job only builds them.
+# Also publishes the npm packages (npx -y wow-mcp) with the NPM_TOKEN secret or npm trusted publishing; without either it only builds them.
 name: Release
 
 on:
@@ -72,7 +72,10 @@ jobs:
       contents: read
       id-token: write
     env:
+      # Either a token in the NPM_TOKEN secret, or npm "trusted publishing" for this workflow (no secret; set the
+      # repository variable NPM_TRUSTED_PUBLISHING to true once every wow-mcp package trusts this workflow on npmjs.com).
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      TRUSTED: ${{ vars.NPM_TRUSTED_PUBLISHING }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -80,10 +83,12 @@ jobs:
           go-version-file: server/go.mod
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           registry-url: 'https://registry.npmjs.org'
+      - name: npm with trusted publishing support (11.5.1 or newer)
+        run: npm install -g npm@11
       - name: Build the npm packages
         run: scripts/npm-pack.sh
-      - name: Publish (skipped without the NPM_TOKEN secret)
-        if: env.NODE_AUTH_TOKEN != ''
+      - name: Publish (skipped without NPM_TOKEN or NPM_TRUSTED_PUBLISHING)
+        if: env.NODE_AUTH_TOKEN != '' || env.TRUSTED == 'true'
         run: scripts/npm-publish.sh --provenance

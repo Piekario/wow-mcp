@@ -1,0 +1,23 @@
+name: Feature request
+description: An idea for a new tool, prompt or addon data
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What would you like to ask your assistant, or what is missing?
+      description: Describe the question or situation in game, not only the solution.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Proposed solution
+      description: Which data the addon would need to read, which tool or prompt could answer it.
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: Read-only
+      options:
+        - label: The idea only reads game state and does not automate gameplay (see docs/TOS_COMPLIANCE.md).
+          required: true

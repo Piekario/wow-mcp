@@ -398,19 +398,14 @@ python3 addon/tests/run_addon.py legacy  server/testdata/WowMcp_legacy.lua
 python3 addon/tests/run_addon.py forever server/testdata/WowMcp_forever.lua
 ```
 
-## Contributing
+## Community and contributing
 
-- Everything in the repository is English: code, comments, tool descriptions and outputs, prompts, addon messages, documentation, commit messages.
-- Run `make test` before sending a change. A change to addon behavior means regenerating the three fixtures above and committing them
-  together with the code; CI fails when they are out of date.
-- Golden tests (`server/golden_test.go`) compare every tool and prompt response with files in `server/testdata/golden/`. A new tool or prompt
-  needs a golden case (the test fails without one); refresh with `go test -run Golden -update .` and review the diff of the golden files.
-- Code style: domain-driven layout (`game/<context>` packages know only `snapshot` and other `game/*`; no MCP SDK, no file system there), Clean Code,
-  unit tests next to every domain function. In Lua use `Compat` helpers (`plain`, `callFirst`, `pick`) for client differences and never write
-  `cond and a or b` when `a` may be `nil`.
-- The rules that keep the project within Blizzard's Terms of Service (read-only addon, no automation, server never writes in the game directory)
-  are not negotiable; see [docs/TOS_COMPLIANCE.md](docs/TOS_COMPLIANCE.md) and [Structure](#structure) for the layout.
-- Every change gets an entry in `CHANGELOG.md`.
+- **Questions and ideas:** [Discussions](https://github.com/Piekario/wow-mcp/discussions).
+- **Bugs and feature requests:** [Issues](https://github.com/Piekario/wow-mcp/issues/new/choose) (please include `wow_doctor` output and `/mcp status`).
+- **Contributing code, docs or tests:** see [CONTRIBUTING.md](CONTRIBUTING.md). Fork, branch, `make test`, pull request; CI must pass on Linux,
+  macOS and Windows. Reports from game clients other than WoW: Forever (`/mcp probe` output) are especially welcome.
+- **Security problems:** report privately, see [SECURITY.md](SECURITY.md).
+- Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ### Structure
 

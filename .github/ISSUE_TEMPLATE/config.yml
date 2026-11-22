@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and ideas
+    url: https://github.com/Piekario/wow-mcp/discussions
+    about: Ask how to use wow-mcp or discuss an idea before opening a request.
+  - name: Security problem
+    url: https://github.com/Piekario/wow-mcp/security/advisories/new
+    about: Report vulnerabilities privately, not as a public issue.
