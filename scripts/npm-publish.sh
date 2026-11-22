@@ -14,8 +14,9 @@ out=${NPM_DIR:-$root/dist/npm}
 publish() {
 	dir=$1
 	shift
-	name=$(node -p "require('$dir/package.json').name")
-	version=$(node -p "require('$dir/package.json').version")
+	# read package.json from inside the directory: on Windows (Git Bash) node does not understand /d/... paths
+	name=$(cd "$dir" && node -p "require('./package.json').name")
+	version=$(cd "$dir" && node -p "require('./package.json').version")
 	if npm view "$name@$version" version >/dev/null 2>&1; then
 		echo "==> $name@$version is already published, skipping"
 		return
