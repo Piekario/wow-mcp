@@ -13,7 +13,8 @@ Original author: Piekasz (GitHub: Piekario). License: GPL-3.0-or-later with an a
 npx -y wow-mcp install-addon
 ```
 
-It finds the game the way Battle.net recorded it (Windows registry), or in the default install folder, and picks the
+It finds the game the way Battle.net recorded it (Windows registry), or in the usual install folders (on Windows on
+every drive, also one folder deep such as `D:\Games\World of Warcraft`), and picks the
 client folder when there is only one (`_retail_`, `_classic_era_`, `_forever_`, ...). Otherwise tell it:
 `npx -y wow-mcp install-addon --wow-dir "D:\Games\World of Warcraft" --client _classic_era_`. It copies the bundled
 addon into `<game>/<client>/Interface/AddOns`, moves an older copy aside as a backup and writes nothing else in the game

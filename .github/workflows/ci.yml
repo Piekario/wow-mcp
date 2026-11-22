@@ -27,7 +27,7 @@ jobs:
           go-version-file: server/go.mod
       - name: go vet
         run: go vet ./...
-      - name: go test (with the race detector: tool calls may run concurrently)
+      - name: 'go test (with the race detector: tool calls may run concurrently)'
         run: go test -race ./...
 
   addon:

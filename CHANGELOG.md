@@ -30,8 +30,8 @@ installed with `npx`.
 - **Added**
   - npm packages: `npx -y wow-mcp` runs the prebuilt server for the platform (package `wow-mcp` plus one
     `wow-mcp-<os>-<arch>` package per platform, chosen by npm), and `npx -y wow-mcp install-addon` copies the bundled addon
-    into the game (game folder from `--wow-dir`, `WOW_DIR`, the Windows registry entry of Battle.net or the default install
-    folder; client folder from `--client`, `WOW_CLIENT` or the only one present). Under npm the dump history lives in the user
+    into the game (game folder from `--wow-dir`, `WOW_DIR`, the Windows registry entry of Battle.net or the usual install
+    folders on every drive, e.g. `D:\Games\World of Warcraft`; client folder from `--client`, `WOW_CLIENT` or the only one present). Under npm the dump history lives in the user
     data directory so it survives updates. `scripts/npm-pack.sh`, `scripts/npm-publish.sh`, and a release workflow job
     that publishes them when the `NPM_TOKEN` secret is set.
 - **Removed**

@@ -143,10 +143,35 @@ function registryWowDirs() {
   return dirs;
 }
 
-function defaultWowDirs() {
-  if (process.platform === "win32") {
-    return ["C:\\Program Files (x86)\\World of Warcraft", "C:\\Program Files\\World of Warcraft"];
+// Windows: the usual install folders on every drive, plus "World of Warcraft" one level below a drive root
+// (e.g. D:\\Games\\World of Warcraft or D:\\Battlenet\\World of Warcraft). Only directory listings, nothing is opened.
+function windowsDriveWowDirs() {
+  const dirs = [];
+  for (const letter of "CDEFGHIJKLMNOPQRSTUVWXYZ") {
+    const root = `${letter}:\\`;
+    if (!fs.existsSync(root)) continue;
+    dirs.push(
+      path.join(root, "Program Files (x86)", "World of Warcraft"),
+      path.join(root, "Program Files", "World of Warcraft"),
+      path.join(root, "World of Warcraft")
+    );
+    let entries = [];
+    try {
+      entries = fs.readdirSync(root, { withFileTypes: true });
+    } catch (_) {
+      continue;
+    }
+    for (const e of entries) {
+      if (e.isDirectory() && !/^(windows|\$|system volume information)/i.test(e.name)) {
+        dirs.push(path.join(root, e.name, "World of Warcraft"));
+      }
+    }
   }
+  return dirs;
+}
+
+function defaultWowDirs() {
+  if (process.platform === "win32") return windowsDriveWowDirs();
   if (process.platform === "darwin") return ["/Applications/World of Warcraft"];
   return [];
 }
@@ -154,9 +179,12 @@ function defaultWowDirs() {
 function resolveWowDir(opts) {
   if (opts.wowDir) return gameDirOf(opts.wowDir);
   const candidates = [...new Set([...registryWowDirs(), ...defaultWowDirs()])];
-  const found = candidates.find((d) => clientFolders(d).length > 0);
-  if (!found) throw new Error("cannot find the game directory; pass --wow-dir <path> (or set WOW_DIR)");
-  return found;
+  const found = candidates.filter((d) => clientFolders(d).length > 0);
+  if (found.length === 0) throw new Error("cannot find the game directory; pass --wow-dir <path> (or set WOW_DIR)");
+  if (found.length > 1) {
+    throw new Error(`found several game directories (${found.join(", ")}); pick one with --wow-dir`);
+  }
+  return found[0];
 }
 
 function resolveClient(wowDir, opts) {
@@ -178,8 +206,9 @@ function installAddon(args) {
     process.stdout.write(
       "usage: wow-mcp install-addon [--wow-dir <game directory>] [--client <client folder, e.g. _retail_>]\n" +
         "Copies the bundled addon into <game>/<client>/Interface/AddOns, keeping a backup of an older copy.\n" +
-        "Without --wow-dir it uses WOW_DIR, then the path Battle.net stored in the Windows registry, then the\n" +
-        "default install folder. Without --client it uses WOW_CLIENT, or the only client folder in the game directory.\n" +
+        "Without --wow-dir it uses WOW_DIR, then the path Battle.net stored in the Windows registry, then the usual\n" +
+        "install folders (on Windows on every drive, also <drive>:\\<folder>\\World of Warcraft).\n" +
+        "Without --client it uses WOW_CLIENT, or the only client folder in the game directory.\n" +
         "It writes nothing else in the game directory (never WTF).\n"
     );
     return;
