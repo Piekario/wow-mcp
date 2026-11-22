@@ -41,7 +41,7 @@ installed with `npx`.
 ### Repository
 
 - Community files: `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1), `SECURITY.md` (private vulnerability
-  reports), `SUPPORT.md`, `CODEOWNERS`, issue forms for bugs and feature requests, a pull request template; `main` is protected and changes go through pull requests.
+  reports), `SUPPORT.md`, `CODEOWNERS`, `FUNDING.yml` (GitHub Sponsors), issue forms for bugs and feature requests, a pull request template; `main` is protected and changes go through pull requests.
 - The npm release job can publish with npm trusted publishing (no stored token) or with the `NPM_TOKEN` secret.
 - CI runs on GitHub for the first time: the workflow syntax is fixed, `.gitattributes` keeps LF line endings on every OS
   (golden files are compared byte for byte), and tests that assumed Unix paths now pass on Windows.
