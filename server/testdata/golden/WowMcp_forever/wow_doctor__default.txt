@@ -4,7 +4,7 @@
 --- content[0] ---
 {
   "status": "ok",
-  "summary": "12 checks: 12 ok, 0 warnings, 0 failures (server 0.19.0, expected addon 0.19.0)",
+  "summary": "12 checks: 12 ok, 0 warnings, 0 failures (server 0.19.1, expected addon 0.19.1)",
   "nextStep": "Nothing to fix. If an answer still looks wrong, ask for wow_status (alerts) and the section in question (wow_section).",
   "checks": [
     {
@@ -28,7 +28,7 @@
     {
       "check": "addon version",
       "status": "ok",
-      "detail": "Addon 0.19.0, the server expects 0.19.0.",
+      "detail": "Addon 0.19.1, the server expects 0.19.1.",
       "fix": ""
     },
     {
