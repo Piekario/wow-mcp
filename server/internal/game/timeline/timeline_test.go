@@ -145,8 +145,11 @@ func TestProfessionMilestoneAndRealSnapshot(t *testing.T) {
 	b := snap(2, 10, 0, func(s snapshot.Snapshot) {
 		s["professions"] = []any{map[string]any{"name": "Mining", "rank": int64(76), "maxRank": int64(150)}, map[string]any{"name": "Herbalism", "rank": int64(1)}}
 	})
-	text := fixtures.JSON(t, Build([]snapshot.Snapshot{a, b}))
-	fixtures.WantAll(t, "professions", text, "milestone 75", "New profession")
+	ev := Build([]snapshot.Snapshot{a, b})
+	want := []ProfessionStep{{Name: "Mining", Before: 70, After: 76, Milestone: 75}, {Name: "Herbalism", After: 1, New: true}}
+	if len(ev) != 2 || ev[0].What != want[0] || ev[1].What != want[1] || ev[0].Kind != KindProfession {
+		t.Errorf("profession events: %+v", ev)
+	}
 	// the real dump does not break Build or View
 	real := fixtures.Real(t)
 	if ev := Build([]snapshot.Snapshot{real, real}); len(ev) != 0 {

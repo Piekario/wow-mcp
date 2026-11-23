@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"strings"
 	"unicode/utf8"
-
-	"wowmcp/internal/snapshot"
 )
 
 // format is the summary output strategy: Discord (Markdown), forum (BBCode) or text.
@@ -17,7 +15,7 @@ type format interface {
 	title(b *strings.Builder, text string)
 	field(b *strings.Builder, label, value string)
 	list(b *strings.Builder, label string, items []string)
-	itemName(item map[string]any) string
+	itemName(item Item) string
 	finish(text string) string
 }
 
@@ -52,7 +50,7 @@ func (discord) list(b *strings.Builder, label string, items []string) {
 	}
 }
 
-func (discord) itemName(item map[string]any) string { return fmt.Sprint(item["name"]) }
+func (discord) itemName(item Item) string { return fmt.Sprint(item.Name) }
 
 func (discord) finish(text string) string { return text }
 
@@ -79,10 +77,10 @@ func (forum) list(b *strings.Builder, label string, items []string) {
 	b.WriteString("[/list]\n")
 }
 
-func (forum) itemName(item map[string]any) string {
-	name := fmt.Sprint(item["name"])
-	if q, ok := snapshot.AsInt(item["quality"]); ok && qualityColors[q] != "" {
-		return fmt.Sprintf("[color=%s]%s[/color]", qualityColors[q], name)
+func (forum) itemName(item Item) string {
+	name := fmt.Sprint(item.Name)
+	if item.HasQuality && qualityColors[item.Quality] != "" {
+		return fmt.Sprintf("[color=%s]%s[/color]", qualityColors[item.Quality], name)
 	}
 	return name
 }
@@ -109,6 +107,6 @@ func (plainText) list(b *strings.Builder, label string, items []string) {
 	}
 }
 
-func (plainText) itemName(item map[string]any) string { return fmt.Sprint(item["name"]) }
+func (plainText) itemName(item Item) string { return fmt.Sprint(item.Name) }
 
 func (plainText) finish(text string) string { return text }

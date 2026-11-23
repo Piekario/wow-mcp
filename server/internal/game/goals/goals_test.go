@@ -289,3 +289,25 @@ func TestViewFiltersByCharacter(t *testing.T) {
 		t.Errorf("empty list without a hint: %v", empty)
 	}
 }
+
+func TestEvaluateTypedProgress(t *testing.T) {
+	s := fixtures.Real(t) // level 22, 18676/27300 XP
+	ev := Evaluate([]Goal{{ID: "g1", Type: Level, Character: "P", Target: 24}, {ID: "g2", Type: Level, Character: "Q", Target: 5}}, Env{Character: "P", Snap: s})
+	if len(ev.Goals) != 1 || ev.Others["Q"] != 1 || ev.RatesErr == nil {
+		t.Fatalf("evaluation: %+v", ev)
+	}
+	p := ev.Goals[0]
+	if p.Done || p.Level.Level != 22 || !p.Level.HasXPNeeded || p.Level.XPNeeded != 8624+27300 || p.ETA != nil {
+		t.Errorf("progress: %+v level=%+v", p, p.Level)
+	}
+}
+
+func TestAbilityBlockedByLevelAndGold(t *testing.T) {
+	s := fixtures.Forever(t)
+	svc := snapshot.AsMap(snapshot.AsList(s.Map("trainer")["services"])[0])
+	svc["costCopper"], svc["levelRequired"] = int64(999999), int64(40)
+	p := Evaluate([]Goal{{ID: "g1", Type: Spell, Character: "P", Name: svc["name"].(string)}}, Env{Character: "P", Snap: s}).Goals[0]
+	if p.Ability.Known || !p.Ability.Offered || !p.Ability.BlockedByLevel || !p.Ability.BlockedByGold {
+		t.Errorf("ability: %+v", p.Ability)
+	}
+}

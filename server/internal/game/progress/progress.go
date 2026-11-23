@@ -55,14 +55,6 @@ func (t Tracker) historyHas(name string, at int64) bool {
 	return err == nil
 }
 
-// NoteSkipped adds the number of skipped empty-client dumps to the response (when there are any).
-func (t Tracker) NoteSkipped(out map[string]any, name string, current snapshot.Snapshot) {
-	if n := t.SkippedUnloaded(name, current); n > 0 {
-		out["skippedUnloadedSnapshots"] = n
-		out["skippedUnloadedNote"] = snapshot.UnloadedNote
-	}
-}
-
 // unloadedCurrentNote is the response when the current dump comes from an empty client.
 const unloadedCurrentNote = "The current dump comes from exiting the game, when the client no longer had character data (0 gold, empty bags), " +
 	"so there is nothing to compare. Log in and type /mcp reload; addon 0.7.1 no longer saves such dumps."
@@ -74,43 +66,43 @@ type ChangesQuery struct {
 	SinceHours float64 `json:"sinceHours,omitempty" jsonschema:"instead of steps: compare with the oldest dump from the last N hours, e.g. 3 = the whole session today"`
 }
 
-// Changes compares the current dump with an earlier one from history.
-func (t Tracker) Changes(character string, current snapshot.Snapshot, q ChangesQuery) (map[string]any, error) {
+// changesReport is the comparison asked for in wow_changes. Unloaded: the current dump comes from an empty client;
+// a nil Comparison: there is no earlier dump to compare with.
+type changesReport struct {
+	Unloaded   bool
+	History    []int64
+	Comparison *Comparison
+}
+
+func (t Tracker) changes(character string, current snapshot.Snapshot, q ChangesQuery) (changesReport, error) {
 	if t.History == nil {
-		return nil, fmt.Errorf("dump history is disabled (the server was started with --history-dir \"\")")
+		return changesReport{}, fmt.Errorf("dump history is disabled (the server was started with --history-dir \"\")")
 	}
 	times, err := t.History.List(character)
 	if err != nil {
-		return nil, err
+		return changesReport{}, err
 	}
 	if current.IsUnloadedDump() {
-		out := map[string]any{"note": unloadedCurrentNote}
-		t.NoteSkipped(out, character, current)
-		return out, nil
+		return changesReport{Unloaded: true}, nil
 	}
 	now, _ := current.DumpedAt()
 	var earlier []int64
-	available := []string{}
 	for _, at := range times {
 		if at < now {
 			earlier = append(earlier, at)
 		}
-		available = append(available, snapshot.FormatTime(at))
 	}
+	r := changesReport{History: times}
 	if len(earlier) == 0 {
-		return map[string]any{
-			"history": available,
-			"note":    "This is the first remembered dump of this character, so there is nothing to compare with. Changes will be visible after the next /mcp reload in game.",
-		}, nil
+		return r, nil
 	}
 	before, err := t.History.Load(character, baseline(earlier, now, q))
 	if err != nil {
-		return nil, err
+		return changesReport{}, err
 	}
-	out := Diff(before, current)
-	out["history"] = available
-	t.NoteSkipped(out, character, current)
-	return out, nil
+	c := Compare(before, current)
+	r.Comparison = &c
+	return r, nil
 }
 
 // baseline picks the dump to compare with: the previous one, steps back or the oldest from the last sinceHours.
@@ -128,19 +120,6 @@ func baseline(earlier []int64, now int64, q ChangesQuery) int64 {
 		return earlier[max(len(earlier)-q.Steps, 0)]
 	}
 	return base
-}
-
-// SessionChanges are the changes since the start of the current session (at minimum since the previous dump).
-func (t Tracker) SessionChanges(character string, current snapshot.Snapshot) (map[string]any, error) {
-	q := ChangesQuery{}
-	if points, err := t.points(character, current); err == nil && len(points) > 1 {
-		start := sessionStart(points, 0)
-		hours := float64(points[len(points)-1].at-points[start].at)/3600 + 0.01
-		if start < len(points)-1 {
-			q.SinceHours = hours
-		}
-	}
-	return t.Changes(character, current, q)
 }
 
 // noPoints is the error when there is not a single dump with a time: an old addon or just an empty-client dump.

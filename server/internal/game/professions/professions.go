@@ -6,10 +6,8 @@
 package professions
 
 import (
-	"fmt"
-	"maps"
-	"slices"
 	"strings"
+	"time"
 
 	"wowmcp/internal/snapshot"
 )
@@ -39,49 +37,63 @@ var EnglishNames = map[int64]string{
 	SkillFishing: "Fishing", SkillSkinning: "Skinning",
 }
 
-// SkillOf returns the skill line ID of a professions entry: skillID from the dump, or for an old dump the ID
-// of the profession with that English name. false when neither is known.
-func SkillOf(p map[string]any) (int64, bool) {
-	if id, ok := snapshot.AsInt(p["skillID"]); ok {
-		return id, true
+// Profession is an entry of the professions section: a profession, or a weapon, language or armor skill.
+type Profession struct {
+	Name          string
+	SkillID       int64
+	HasSkillID    bool
+	Group         string
+	Rank, MaxRank int64
+}
+
+// SkillLine is the skill line ID of the entry: skillID from the dump, or for an old dump the ID of the profession
+// with that English name. false when neither is known.
+func (p Profession) SkillLine() (int64, bool) {
+	if p.HasSkillID {
+		return p.SkillID, true
 	}
-	name, _ := p["name"].(string)
 	for id, english := range EnglishNames {
-		if strings.EqualFold(english, name) {
+		if strings.EqualFold(english, p.Name) {
 			return id, true
 		}
 	}
 	return 0, false
 }
 
-// isProfession tells professions apart from weapon, language and armor skills in the professions list:
+// IsProfession tells professions apart from weapon, language and armor skills in the professions list:
 // first by the skill line ID, then by the group header (English on old dumps).
-func isProfession(p map[string]any) bool {
-	if id, ok := snapshot.AsInt(p["skillID"]); ok {
-		_, known := EnglishNames[id]
+func (p Profession) IsProfession() bool {
+	if p.HasSkillID {
+		_, known := EnglishNames[p.SkillID]
 		return known
 	}
-	group, _ := p["group"].(string)
-	if group == "" {
+	if p.Group == "" {
 		return true
 	}
-	g := strings.ToLower(group)
+	g := strings.ToLower(p.Group)
 	return strings.Contains(g, "profession") || strings.Contains(g, "secondary")
 }
 
-// Summary writes professions briefly: "Skinning 96/150".
-func Summary(s snapshot.Snapshot) []string {
-	var out []string
-	for _, raw := range s.List("professions") {
-		p := snapshot.AsMap(raw)
-		if !isProfession(p) {
-			continue
+// Known returns the character's professions in dump order, without weapon, language and armor skills.
+func Known(s snapshot.Snapshot) []Profession {
+	var out []Profession
+	for _, p := range readProfessions(s) {
+		if p.IsProfession() {
+			out = append(out, p)
 		}
-		rank, _ := snapshot.AsInt(p["rank"])
-		maxRank, _ := snapshot.AsInt(p["maxRank"])
-		out = append(out, fmt.Sprintf("%v %d/%d", p["name"], rank, maxRank))
 	}
 	return out
+}
+
+// HasSkill says whether the character has a profession with this skill line ID (by skillID, or for an old dump
+// by the profession's English name).
+func HasSkill(s snapshot.Snapshot, skill int64) bool {
+	for _, p := range readProfessions(s) {
+		if id, ok := p.SkillLine(); ok && id == skill {
+			return true
+		}
+	}
+	return false
 }
 
 // RecipeQuery holds the recipe filters (wow_recipes).
@@ -93,158 +105,166 @@ type RecipeQuery struct {
 	Craftable  bool   `json:"craftable,omitempty" jsonschema:"true = only what can be crafted right now from materials in bags"`
 }
 
-var difficultyInfo = map[string]string{
-	"optimal": "orange: always gives a skill point",
-	"medium":  "yellow: usually gives a skill point",
-	"easy":    "green: sometimes gives a skill point",
-	"trivial": "gray: gives no skill points",
+// Difficulty is the color class of a recipe for the character's skill.
+type Difficulty string
+
+const (
+	Optimal Difficulty = "optimal"
+	Medium  Difficulty = "medium"
+	Easy    Difficulty = "easy"
+	Trivial Difficulty = "trivial"
+)
+
+// GivesSkillUp: a recipe of this color can still raise the skill.
+func (d Difficulty) GivesSkillUp() bool { return d == Optimal || d == Medium || d == Easy }
+
+// LikelySkillUp: orange and yellow recipes give a skill point always or usually.
+func (d Difficulty) LikelySkillUp() bool { return d == Optimal || d == Medium }
+
+type Reagent struct {
+	Name       string
+	Need, Have int64
+	Raw        any
 }
 
-// givesSkillUp: a recipe of this color can still raise the skill.
-func givesSkillUp(difficulty string) bool {
-	return difficulty == "optimal" || difficulty == "medium" || difficulty == "easy"
+// Recipe keeps Raw, the recipe's dump node, because the answer passes through fields (trainingPoints, levelRequired...)
+// that no rule uses.
+type Recipe struct {
+	Name       string
+	Difficulty Difficulty
+	CanCraft   int64
+	ReadyAt    int64
+	HasReadyAt bool
+	Reagents   []Reagent
+	Raw        any
 }
 
-// bankCounts sums bank items by name to show the materials stored in the bank.
-func bankCounts(s snapshot.Snapshot) map[string]int64 {
-	out := map[string]int64{}
-	for _, rawC := range s.BankContainers() {
-		for _, raw := range snapshot.AsList(snapshot.AsMap(rawC)["items"]) {
-			item := snapshot.AsMap(raw)
-			if name, _ := item["name"].(string); name != "" {
-				out[name] += snapshot.ItemCount(item)
-			}
-		}
+// RecipeBook is the recipes saved from one profession window. Rank and MaxRank stay as the dump has them.
+type RecipeBook struct {
+	Name          string
+	Rank, MaxRank any
+	Recipes       []Recipe
+	Captured      snapshot.Captured
+}
+
+type ReagentStatus struct {
+	Reagent
+	InBank int64
+}
+
+type Shortfall struct {
+	Name    string
+	Missing int64
+}
+
+// Cooldown is the state of a recipe's cooldown; Known is false for a recipe without one.
+type Cooldown struct {
+	Known bool
+	Ready bool
+	Left  time.Duration
+}
+
+type RecipeStatus struct {
+	Recipe
+	Stock    []ReagentStatus
+	Missing  []Shortfall
+	Cooldown Cooldown
+}
+
+// Craftable is a recipe that raises the skill and can be crafted now.
+type Craftable struct {
+	Name  string
+	Times int64
+}
+
+// BookReport is one profession's recipes after the filters; ByDifficulty counts all of the book's recipes.
+type BookReport struct {
+	Name          string
+	Rank, MaxRank any
+	Recipes       []RecipeStatus
+	ByDifficulty  map[Difficulty]int
+	SkillUpNow    []Craftable
+	Captured      snapshot.Captured
+}
+
+// RecipeReport is the saved recipe books judged against the query, the bank and the clock.
+// Saved is false when no profession window was ever saved.
+type RecipeReport struct {
+	Saved        bool
+	Books        []BookReport
+	PetPoints    any
+	HasPetPoints bool
+}
+
+// AnalyseRecipes judges the recipes of every saved profession: difficulty, missing materials, materials in the
+// bank, cooldowns and what can be crafted right now for skill points.
+func AnalyseRecipes(s snapshot.Snapshot, q RecipeQuery, fresh snapshot.Freshness) RecipeReport {
+	books := readRecipeBooks(s)
+	if len(books) == 0 {
+		return RecipeReport{}
 	}
-	return out
-}
-
-// Recipes describes the recipes of every saved profession: difficulty color, missing
-// materials, materials in the bank, cooldowns and what can be crafted right now for skill points.
-func Recipes(s snapshot.Snapshot, q RecipeQuery, fresh snapshot.Freshness) map[string]any {
-	all := s.Map("recipes")
-	if len(all) == 0 {
-		return map[string]any{"note": "No saved recipes. Open the profession window in game (e.g. Leatherworking or a Hunter's Beast Training), then type /mcp reload. Each profession is saved separately."}
-	}
-	inBank := bankCounts(s)
-	professions := []any{}
-	for _, name := range slices.Sorted(maps.Keys(all)) {
-		if q.Profession != "" && !strings.Contains(strings.ToLower(name), strings.ToLower(q.Profession)) {
+	inBank := readBankStock(s)
+	report := RecipeReport{Saved: true}
+	for _, book := range books {
+		if q.Profession != "" && !strings.Contains(strings.ToLower(book.Name), strings.ToLower(q.Profession)) {
 			continue
 		}
-		professions = append(professions, professionRecipes(name, snapshot.AsMap(all[name]), q, inBank, fresh))
+		report.Books = append(report.Books, judgeBook(book, q, inBank, fresh))
 	}
-	out := map[string]any{"professions": professions}
-	if pet := s.Map("pet"); pet != nil {
-		if tp, ok := pet["trainingPointsFree"]; ok {
-			out["petTrainingPointsFree"] = tp
-		}
-	}
-	out["note"] = "Recipes under collapsed headers in the profession window are not included in the dump. canCraft = how many can be crafted from the materials in bags; inBank = how much of a given material is in the bank (state from the last visit)."
-	return out
+	report.PetPoints, report.HasPetPoints = readPetTrainingPointsFree(s)
+	return report
 }
 
-// professionRecipes describes the recipes of one profession.
-func professionRecipes(name string, p map[string]any, q RecipeQuery, inBank map[string]int64, fresh snapshot.Freshness) map[string]any {
+func judgeBook(book RecipeBook, q RecipeQuery, inBank map[string]int64, fresh snapshot.Freshness) BookReport {
 	query := strings.ToLower(q.Query)
-	counts := map[string]int{}
-	recipes := []any{}
-	var skillUpNow []string
-	for _, raw := range snapshot.AsList(p["recipes"]) {
-		r := snapshot.AsMap(raw)
-		diff, _ := r["difficulty"].(string)
-		counts[diff]++
-		skillUp := givesSkillUp(diff)
-		craft, _ := snapshot.AsInt(r["canCraft"])
-		rn, _ := r["name"].(string)
-		if query != "" && !strings.Contains(strings.ToLower(rn), query) {
+	report := BookReport{Name: book.Name, Rank: book.Rank, MaxRank: book.MaxRank, ByDifficulty: map[Difficulty]int{}, Captured: book.Captured}
+	for _, r := range book.Recipes {
+		report.ByDifficulty[r.Difficulty]++
+		if query != "" && !strings.Contains(strings.ToLower(r.Name), query) {
 			continue
 		}
-		if q.SkillUp && !skillUp {
+		if q.SkillUp && !r.Difficulty.GivesSkillUp() {
 			continue
 		}
-		if q.Craftable && craft <= 0 {
+		if q.Craftable && r.CanCraft <= 0 {
 			continue
 		}
-		recipes = append(recipes, recipeEntry(r, diff, inBank, fresh))
-		if skillUp && craft > 0 && (diff == "optimal" || diff == "medium") {
-			skillUpNow = append(skillUpNow, fmt.Sprintf("%s (x%d)", rn, craft))
+		report.Recipes = append(report.Recipes, judgeRecipe(r, inBank, fresh))
+		if r.Difficulty.LikelySkillUp() && r.CanCraft > 0 {
+			report.SkillUpNow = append(report.SkillUpNow, Craftable{r.Name, r.CanCraft})
 		}
 	}
-	entry := map[string]any{
-		"name": name, "rank": p["rank"], "maxRank": p["maxRank"],
-		"recipes": recipes, "shown": len(recipes), "byDifficulty": counts,
-	}
-	if len(skillUpNow) > 0 {
-		entry["skillUpCraftableNow"] = skillUpNow
-	}
-	snapshot.Merge(entry, fresh.CapturedMeta(p))
-	return entry
+	return report
 }
 
-// recipeEntry is a recipe with a difficulty description, missing materials and cooldown.
-// Note: it adds inBank to the materials in the dump itself (shared maps).
-func recipeEntry(r map[string]any, diff string, inBank map[string]int64, fresh snapshot.Freshness) map[string]any {
-	e := map[string]any{}
-	for k, v := range r {
-		e[k] = v
-	}
-	if info, ok := difficultyInfo[diff]; ok {
-		e["difficultyInfo"] = info
-	}
-	var missing []string
-	for _, rr := range snapshot.AsList(r["reagents"]) {
-		re := snapshot.AsMap(rr)
-		need, _ := snapshot.AsInt(re["need"])
-		have, _ := snapshot.AsInt(re["have"])
-		rname := snapshot.ReagentName(re)
-		if b := inBank[rname]; b > 0 {
-			re["inBank"] = b
-		}
-		if have < need {
-			missing = append(missing, fmt.Sprintf("%s %d", rname, need-have))
+func judgeRecipe(r Recipe, inBank map[string]int64, fresh snapshot.Freshness) RecipeStatus {
+	status := RecipeStatus{Recipe: r}
+	for _, re := range r.Reagents {
+		status.Stock = append(status.Stock, ReagentStatus{Reagent: re, InBank: inBank[re.Name]})
+		if re.Have < re.Need {
+			status.Missing = append(status.Missing, Shortfall{re.Name, re.Need - re.Have})
 		}
 	}
-	if len(missing) > 0 {
-		e["missingForOne"] = missing
+	if r.HasReadyAt {
+		left, ready := fresh.Until(r.ReadyAt)
+		status.Cooldown = Cooldown{Known: true, Ready: ready, Left: left}
 	}
-	if at, ok := snapshot.AsInt(r["readyAt"]); ok {
-		if left, ready := fresh.Until(at); ready {
-			e["cooldown"] = "ready"
-		} else {
-			e["cooldown"] = snapshot.FormatAge(left)
-		}
-	}
-	return e
+	return status
 }
 
 // KnownReagents returns the materials used by known recipes from the saved profession windows:
 // material name (lowercase) -> "Recipe (Profession)", the first one encountered.
 func KnownReagents(s snapshot.Snapshot) map[string]string {
 	out := map[string]string{}
-	all := s.Map("recipes")
-	for _, prof := range slices.Sorted(maps.Keys(all)) {
-		for _, raw := range snapshot.AsList(snapshot.AsMap(all[prof])["recipes"]) {
-			r := snapshot.AsMap(raw)
-			for _, rr := range snapshot.AsList(r["reagents"]) {
-				name := snapshot.ReagentName(snapshot.AsMap(rr))
-				key := strings.ToLower(name)
-				if _, seen := out[key]; name != "" && !seen {
-					out[key] = fmt.Sprintf("%v (%s)", r["name"], prof)
+	for _, book := range readRecipeBooks(s) {
+		for _, r := range book.Recipes {
+			for _, re := range r.Reagents {
+				key := strings.ToLower(re.Name)
+				if _, seen := out[key]; re.Name != "" && !seen {
+					out[key] = r.Name + " (" + book.Name + ")"
 				}
 			}
 		}
 	}
 	return out
-}
-
-// HasSkill says whether the character has a profession with this skill line ID (by skillID, or for an old dump
-// by the profession's English name).
-func HasSkill(s snapshot.Snapshot, skill int64) bool {
-	for _, raw := range s.List("professions") {
-		if id, ok := SkillOf(snapshot.AsMap(raw)); ok && id == skill {
-			return true
-		}
-	}
-	return false
 }

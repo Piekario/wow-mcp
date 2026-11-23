@@ -16,21 +16,29 @@ import (
 // ExpectedVersion is the addon version that collects every section this server uses.
 const ExpectedVersion = "0.19.0"
 
-// Version returns the version of the addon that made the dump ("" for a very old addon).
-func Version(s snapshot.Snapshot) string {
-	if v, _ := s["addonVersion"].(string); v != "" {
-		return v
-	}
-	v, _ := s.Character()["addonVersion"].(string)
-	return v
+// SectionTiming is how long the addon took over one section. Name is kept as the dump has it.
+type SectionTiming struct {
+	Name any
+	Ms   float64
 }
 
-// VersionNote returns an update request when the dump comes from an older addon.
-func VersionNote(s snapshot.Snapshot) string {
-	if v := Version(s); v != "" && versionLess(v, ExpectedVersion) {
-		return fmt.Sprintf("Dump from addon %s; the server supports %s (currencies, cooldowns, recipes, mail, played time, panel, note, deaths, dump timings, quest rewards, loot, stable, multiple vendors and trainers, XP by source, buyback list, equipment sets, PvP, friends and guild, zone and dungeon IDs, weapon speed, quest locations and guide steps). Copy the new addon into AddOns and run /reload.", v, ExpectedVersion)
-	}
-	return ""
+// Info is what the dump says about the addon that made it.
+type Info struct {
+	Version  string
+	TotalMs  float64
+	HasTotal bool
+	Slowest  []SectionTiming
+	Disabled []string
+}
+
+// OutOfDate says whether the dump comes from an older addon than the server supports.
+func (i Info) OutOfDate() bool { return i.Version != "" && versionLess(i.Version, ExpectedVersion) }
+
+// WindowStatus is a visit-based section: whether the dump has it and when it was saved.
+type WindowStatus struct {
+	window
+	Present  bool
+	Captured snapshot.Captured
 }
 
 // versionLess compares versions such as 0.2.0 < 0.3.0 numerically.
@@ -49,34 +57,6 @@ func versionLess(a, b string) bool {
 		}
 	}
 	return false
-}
-
-// DumpTimeMs is the time to collect the whole dump in milliseconds (field timings.totalMs); false for older addons.
-func DumpTimeMs(s snapshot.Snapshot) (float64, bool) {
-	return snapshot.AsFloat(s.Map("timings")["totalMs"])
-}
-
-// SlowestSections lists the slowest dump sections as "name 2.5 ms".
-func SlowestSections(s snapshot.Snapshot) []string {
-	var out []string
-	for _, raw := range snapshot.AsList(s.Map("timings")["slowest"]) {
-		e := snapshot.AsMap(raw)
-		if ms, ok := snapshot.AsFloat(e["ms"]); ok {
-			out = append(out, fmt.Sprintf("%v %g ms", e["name"], ms))
-		}
-	}
-	return out
-}
-
-// DisabledSections lists the sections disabled in the addon with the /mcp off command.
-func DisabledSections(s snapshot.Snapshot) []string {
-	var out []string
-	for _, raw := range snapshot.AsList(s["disabledSections"]) {
-		if name, ok := raw.(string); ok && name != "" {
-			out = append(out, name)
-		}
-	}
-	return out
 }
 
 // sectionTools says which tool reads a given section; sections outside the table are read by wow_section.
@@ -98,37 +78,4 @@ func ToolFor(section string) string {
 		return tool
 	}
 	return "wow_section"
-}
-
-// DisabledNote describes the effect of disabled sections: which tools lack data because of them. "" when nothing is disabled.
-func DisabledNote(s snapshot.Snapshot) string {
-	disabled := DisabledSections(s)
-	if len(disabled) == 0 {
-		return ""
-	}
-	parts := make([]string, len(disabled))
-	for i, name := range disabled {
-		parts[i] = fmt.Sprintf("%s (%s)", name, ToolFor(name))
-	}
-	return "Sections disabled in the addon: " + strings.Join(parts, ", ") +
-		". Tools that use them have no fresh data; enable a section in game with the command \"/mcp on section_name\" and run /mcp reload."
-}
-
-// Describe collects the addon description for wow_status: version, update request, dump time and disabled sections.
-func Describe(s snapshot.Snapshot) map[string]any {
-	out := map[string]any{}
-	if v := Version(s); v != "" {
-		out["addonVersion"] = v
-	}
-	if note := VersionNote(s); note != "" {
-		out["addonUpdate"] = note
-	}
-	if ms, ok := DumpTimeMs(s); ok {
-		out["dumpTimeMs"] = ms
-	}
-	if disabled := DisabledSections(s); len(disabled) > 0 {
-		out["disabledSections"] = disabled
-		out["disabledNote"] = DisabledNote(s)
-	}
-	return out
 }

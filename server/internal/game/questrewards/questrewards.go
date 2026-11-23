@@ -7,8 +7,6 @@
 package questrewards
 
 import (
-	"fmt"
-	"sort"
 	"strconv"
 	"strings"
 
@@ -30,151 +28,146 @@ const (
 	fromLog    = "log"    // quest log
 )
 
-// suspectNote explains why the rewards from the log may be false.
-const suspectNote = "Several quests in the log have exactly the same set of choosable rewards in the same order. " +
-	"The client may have returned the rewards of the selected quest for all of them (the addon reads them by quest ID), so this may be false data. " +
-	"I do not recommend a choice; check the rewards in game (the NPC quest window is more reliable: open it and run /mcp reload)."
-
-// entry is a quest with rewards to rate.
-type entry struct {
-	source  string
-	id      int64
-	title   string
-	npc     string
-	section map[string]any // window or log entry (for meta and age)
-	rewards map[string]any
-	done    bool // for the log: quest completed
+// Choice is a choosable reward. Name and ID are the dump's values (ID is nil when the dump has none); Raw is the
+// dump item the rating reads.
+type Choice struct {
+	Name, ID  any
+	ItemID    int64
+	HasItemID bool
+	Count     int64
+	Raw       any
 }
 
-// View rates the rewards of quests from the log and NPC windows against the character's equipment.
-func View(s snapshot.Snapshot, q Query, sc items.Scoring, fresh snapshot.Freshness) (map[string]any, error) {
-	weights, source, weightsNote, err := items.ChooseWeights(q.Weights, sc, s)
-	if err != nil {
-		return nil, err
-	}
-	ev := evaluator{snap: s, weights: weights}
-	out := map[string]any{"scoring": ev.describe(source, weightsNote)}
+type FixedItem struct {
+	Name  any
+	Count int64
+}
 
-	entries := windowEntries(s)
-	shownInWindow := map[int64]bool{}
-	for _, e := range entries {
-		shownInWindow[e.id] = true
+// Rewards are what a quest gives: fixed items, gold, XP and currencies, and the choosable items.
+type Rewards struct {
+	Fixed      []FixedItem
+	Money, XP  int64
+	Currencies []any
+	Choices    []Choice
+}
+
+func (r Rewards) HasFixed() bool {
+	return len(r.Fixed) > 0 || r.Money > 0 || r.XP > 0 || len(r.Currencies) > 0
+}
+
+// Quest is a quest with rewards to rate: from an NPC window or the quest log.
+type Quest struct {
+	Source   string
+	ID       int64
+	Title    string
+	NPC      string
+	Captured snapshot.Captured
+	Done     bool
+	Rewards  Rewards
+}
+
+type RatedChoice struct {
+	Choice
+	Eval items.Evaluation
+}
+
+// Verdict says what the rating of one quest's choices came to.
+type Verdict int
+
+const (
+	NoChoices Verdict = iota // only fixed rewards
+	Suspect                  // the same choices repeat on several log quests: false data is likely
+	Stale                    // the NPC window was captured long ago
+	Rated
+)
+
+// Pick is the recommended reward: the best upgrade, or when there is none, the highest vendor value.
+type Pick struct {
+	RatedChoice
+	Upgrade bool
+}
+
+// Alternative is what to take now when the best reward needs a higher level.
+type Alternative struct{ RatedChoice }
+
+type Judgement struct {
+	Quest        Quest
+	AlsoInWindow bool
+	Verdict      Verdict
+	Choices      []RatedChoice
+	Best         *Pick
+	ForNow       *Alternative
+}
+
+// Method is how the rating was computed: with stat weights, or by item level and DPS.
+type Method struct {
+	Weights items.Weights
+	Source  string
+	Note    string
+}
+
+// Report is the quests with their ratings. Filter is the quest argument, kept for the empty answer.
+type Report struct {
+	Method         Method
+	Judged         []Judgement
+	WithoutChoices []Quest
+	AnySuspect     bool
+	HasAnyRewards  bool
+	Filter         string
+}
+
+func analyse(s snapshot.Snapshot, q Query, sc items.Scoring, fresh snapshot.Freshness) (Report, error) {
+	weights, source, note, err := items.ChooseWeights(q.Weights, sc, s)
+	if err != nil {
+		return Report{}, err
 	}
-	logged := logEntries(s)
-	suspect := suspectQuests(logged)
-	for _, e := range logged {
-		if !shownInWindow[e.id] || e.id == 0 {
-			entries = append(entries, e)
+	src := readQuests(s)
+	inWindow := map[int64]bool{}
+	for _, e := range src.window {
+		inWindow[e.ID] = true
+	}
+	suspect := suspectQuests(src.logged)
+	quests := append([]Quest(nil), src.window...)
+	for _, e := range src.logged {
+		if !inWindow[e.ID] || e.ID == 0 {
+			quests = append(quests, e)
 		}
 	}
 
-	views := []any{}
-	var fixedOnly []any
-	for _, e := range entries {
+	rep := Report{Method: Method{weights, source, note}, AnySuspect: len(suspect) > 0, HasAnyRewards: src.anyRewards, Filter: q.Quest}
+	for _, e := range quests {
 		if !q.matches(e) {
 			continue
 		}
-		if len(snapshot.AsList(e.rewards["choices"])) == 0 {
-			if e.source == fromLog {
-				fixedOnly = append(fixedOnly, e.fixedOnlyView())
-				continue
-			}
+		if len(e.Rewards.Choices) == 0 && e.Source == fromLog {
+			rep.WithoutChoices = append(rep.WithoutChoices, e)
+			continue
 		}
-		views = append(views, ev.view(e, suspect[e.id] && e.source == fromLog, shownInWindow, fresh))
+		rep.Judged = append(rep.Judged, judge(s, weights, e, suspect[e.ID] && e.Source == fromLog, inWindow, fresh))
 	}
-	out["quests"] = views
-	out["count"] = len(views)
-	if len(fixedOnly) > 0 {
-		out["withoutChoices"] = fixedOnly
-	}
-	if len(suspect) > 0 {
-		out["suspectNote"] = suspectNote
-	}
-	switch {
-	case len(views) == 0 && len(fixedOnly) == 0 && !hasAnyRewards(s):
-		out["note"] = "The dump has no quest rewards: addon 0.6.0 saves quests[].rewards and the questOffer and questTurnIn sections " +
-			"(a quest offered or accepted by an NPC). Update the addon and run /mcp reload; you can also just open the NPC quest window."
-	case len(views) == 0:
-		out["note"] = "No quests with choosable rewards" + queryText(q) + "."
-	}
-	return out, nil
-}
-
-func queryText(q Query) string {
-	if q.Quest == "" {
-		return ""
-	}
-	return " matching " + strconv.Quote(q.Quest)
-}
-
-// hasAnyRewards says whether the dump has any reward data (log or NPC windows).
-func hasAnyRewards(s snapshot.Snapshot) bool {
-	if s.Map("questOffer")["rewards"] != nil || s.Map("questTurnIn")["rewards"] != nil {
-		return true
-	}
-	for _, raw := range s.List("quests") {
-		if snapshot.AsMap(raw)["rewards"] != nil {
-			return true
-		}
-	}
-	return false
+	return rep, nil
 }
 
 // matches applies the quest filter: ID or a case-insensitive title fragment.
-func (q Query) matches(e entry) bool {
+func (q Query) matches(e Quest) bool {
 	needle := strings.TrimSpace(q.Quest)
 	if needle == "" {
 		return true
 	}
 	if id, err := strconv.ParseInt(needle, 10, 64); err == nil {
-		return e.id == id
+		return e.ID == id
 	}
-	return strings.Contains(strings.ToLower(e.title), strings.ToLower(needle))
+	return strings.Contains(strings.ToLower(e.Title), strings.ToLower(needle))
 }
 
-// windowEntries returns quests from the NPC windows: turn-ins first, then offers.
-func windowEntries(s snapshot.Snapshot) []entry {
-	var out []entry
-	for _, w := range []struct{ section, source string }{{"questTurnIn", fromTurnIn}, {"questOffer", fromOffer}} {
-		sec := s.Map(w.section)
-		if sec == nil {
-			continue
-		}
-		id, _ := snapshot.AsInt(sec["id"])
-		title, _ := sec["title"].(string)
-		npc, _ := sec["npc"].(string)
-		out = append(out, entry{source: w.source, id: id, title: title, npc: npc, section: sec, rewards: snapshot.AsMap(sec["rewards"])})
-	}
-	return out
-}
-
-// logEntries returns quests from the log that have rewards saved; completed ones first.
-func logEntries(s snapshot.Snapshot) []entry {
-	var out []entry
-	for _, raw := range s.List("quests") {
-		q := snapshot.AsMap(raw)
-		rewards := snapshot.AsMap(q["rewards"])
-		if len(rewards) == 0 {
-			continue
-		}
-		id, _ := snapshot.AsInt(q["id"])
-		title, _ := q["title"].(string)
-		done, _ := q["complete"].(bool)
-		out = append(out, entry{source: fromLog, id: id, title: title, rewards: rewards, done: done})
-	}
-	sort.SliceStable(out, func(i, j int) bool { return out[i].done && !out[j].done })
-	return out
-}
-
-// choiceSignature is the IDs of the choosable rewards in order; "" when the quest has no rewards with IDs.
-func choiceSignature(rewards map[string]any) string {
-	var ids []string
-	for _, raw := range snapshot.AsList(rewards["choices"]) {
-		id, ok := snapshot.AsInt(snapshot.AsMap(raw)["id"])
-		if !ok {
+// choiceSignature is the IDs of the choosable rewards in order; "" when a reward has no ID.
+func choiceSignature(choices []Choice) string {
+	ids := make([]string, 0, len(choices))
+	for _, c := range choices {
+		if !c.HasItemID {
 			return ""
 		}
-		ids = append(ids, strconv.FormatInt(id, 10))
+		ids = append(ids, strconv.FormatInt(c.ItemID, 10))
 	}
 	return strings.Join(ids, ",")
 }
@@ -182,11 +175,11 @@ func choiceSignature(rewards map[string]any) string {
 // suspectQuests returns the IDs of log quests whose non-empty choosable reward list (the same items in the same
 // order) repeats on at least two quests. This is the pattern a client would give if it ignored the quest ID and returned
 // the selected entry's rewards for all of them.
-func suspectQuests(logged []entry) map[int64]bool {
+func suspectQuests(logged []Quest) map[int64]bool {
 	groups := map[string][]int64{}
 	for _, e := range logged {
-		if sig := choiceSignature(e.rewards); sig != "" {
-			groups[sig] = append(groups[sig], e.id)
+		if sig := choiceSignature(e.Rewards.Choices); sig != "" {
+			groups[sig] = append(groups[sig], e.ID)
 		}
 	}
 	out := map[int64]bool{}
@@ -197,34 +190,5 @@ func suspectQuests(logged []entry) map[int64]bool {
 			}
 		}
 	}
-	return out
-}
-
-// fixedRewards describes the fixed rewards: items, gold, XP and currencies.
-func fixedRewards(rewards map[string]any) map[string]any {
-	out := map[string]any{}
-	var fixed []string
-	for _, raw := range snapshot.AsList(rewards["items"]) {
-		it := snapshot.AsMap(raw)
-		fixed = append(fixed, fmt.Sprintf("%v x%d", it["name"], snapshot.ItemCount(it)))
-	}
-	if len(fixed) > 0 {
-		out["items"] = fixed
-	}
-	if money, ok := snapshot.AsInt(rewards["money"]); ok && money > 0 {
-		out["money"] = snapshot.Money(money).String()
-	}
-	if xp, ok := snapshot.AsInt(rewards["xp"]); ok && xp > 0 {
-		out["xp"] = xp
-	}
-	if cur := snapshot.AsList(rewards["currencies"]); len(cur) > 0 {
-		out["currencies"] = cur
-	}
-	return out
-}
-
-func (e entry) fixedOnlyView() map[string]any {
-	out := map[string]any{"title": e.title, "id": e.id, "complete": e.done}
-	snapshot.Merge(out, fixedRewards(e.rewards))
 	return out
 }

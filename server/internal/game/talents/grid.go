@@ -6,8 +6,6 @@ package talents
 import (
 	"slices"
 	"sort"
-
-	"wowmcp/internal/snapshot"
 )
 
 // Node positions in dumps from addon 0.5.0 are raw pixels of the talent window
@@ -28,36 +26,25 @@ const (
 // normalizePositions returns a copy of the nodes in which row and column (if they are pixels)
 // are turned into numbers from 1 within the tree, and the raw values are saved in posY and posX.
 // Nodes without pixels (an addon with numbers or the classic API) stay unchanged.
-func normalizePositions(nodes []any) []any {
-	byTree := map[string][]map[string]any{}
-	out := make([]any, len(nodes))
-	for i, raw := range nodes {
-		n := snapshot.AsMap(raw)
-		if n == nil {
-			out[i] = raw
-			continue
-		}
-		cp := make(map[string]any, len(n)+2)
-		for k, v := range n {
-			cp[k] = v
-		}
-		out[i] = cp
-		tree, _ := n["tree"].(string)
-		byTree[tree] = append(byTree[tree], cp)
+func normalizePositions(nodes []Node) []Node {
+	out := slices.Clone(nodes)
+	byTree := map[string][]*Node{}
+	for i := range out {
+		byTree[out[i].Tree] = append(byTree[out[i].Tree], &out[i])
 	}
 	for _, group := range byTree {
-		reindex(group, "row", "posY")
-		reindex(group, "column", "posX")
+		reindex(group, func(n *Node) *Coord { return &n.Row }, func(n *Node) *any { return &n.PosY })
+		reindex(group, func(n *Node) *Coord { return &n.Column }, func(n *Node) *any { return &n.PosX })
 	}
 	return out
 }
 
-// reindex turns the axis field of one tree's nodes into numbers from 1; the raw value goes to rawKey.
-func reindex(group []map[string]any, axis, rawKey string) {
+// reindex turns the axis of one tree's nodes into numbers from 1; the raw value goes to the raw field.
+func reindex(group []*Node, axis func(*Node) *Coord, raw func(*Node) *any) {
 	var values []float64
 	for _, n := range group {
-		if v, ok := snapshot.AsFloat(n[axis]); ok {
-			values = append(values, v)
+		if c := axis(n); c.Numeric {
+			values = append(values, c.Number)
 		}
 	}
 	index := gridIndexes(values)
@@ -65,9 +52,9 @@ func reindex(group []map[string]any, axis, rawKey string) {
 		return
 	}
 	for _, n := range group {
-		if v, ok := snapshot.AsFloat(n[axis]); ok {
-			n[rawKey] = n[axis]
-			n[axis] = index[v]
+		if c := axis(n); c.Numeric {
+			*raw(n) = c.Raw
+			*c = Coord{Raw: index[c.Number], Number: float64(index[c.Number]), Numeric: true}
 		}
 	}
 }

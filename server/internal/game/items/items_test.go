@@ -156,7 +156,7 @@ func TestItemNumbersFoldsDamagePerSecondStat(t *testing.T) {
 		"stats":   map[string]any{"damage per second": 13.6, "Stamina": int64(5)},
 		"tooltip": []any{"(13.6 damage per second)"},
 	}
-	nums := itemNumbers(item)
+	nums := readItem(item).Numbers()
 	if nums["DPS"] != 13.6 || nums["Stamina"] != 5 {
 		t.Errorf("numbers: %v", nums)
 	}
@@ -186,7 +186,7 @@ func TestStatTokensGiveEnglishNamesOnAnyClient(t *testing.T) {
 		"stats":   map[string]any{"Agility": int64(3), "damage per second": 8.4, "Armor": int64(40), "Hit Rating": int64(1)},
 		"tooltip": []any{"Sword", "9 - 18 Damage | Speed 1.60"},
 	}
-	de, en := itemNumbers(german), itemNumbers(english)
+	de, en := readItem(german).Numbers(), readItem(english).Numbers()
 	for _, k := range []string{"Agility", "DPS", "Armor", "Hit Rating"} {
 		if de[k] != en[k] || de[k] == 0 {
 			t.Errorf("%s: German %v, English %v", k, de[k], en[k])
@@ -203,7 +203,7 @@ func TestWeaponNumbersWithoutEnglishTooltip(t *testing.T) {
 		"tooltip": []any{"Dolch", "9 - 18 Schaden | Tempo 1,60"}, "speed": 1.6, "dps": 8.4, "damageMin": int64(9), "damageMax": int64(18),
 		"statTokens": map[string]any{"ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 8.4},
 	}
-	nums := itemNumbers(german)
+	nums := readItem(german).Numbers()
 	if nums["Speed"] != 1.6 || nums["DPS"] != 8.4 {
 		t.Errorf("numbers from the numeric fields: %v", nums)
 	}
@@ -212,11 +212,11 @@ func TestWeaponNumbersWithoutEnglishTooltip(t *testing.T) {
 	}
 	// A numeric DPS wins over a (different) number in the tooltip text; without numeric fields the English text is the fallback.
 	both := map[string]any{"dps": 10.0, "tooltip": []any{"(9.5 damage per second)"}}
-	if got := itemNumbers(both)["DPS"]; got != 10 {
+	if got := readItem(both).Numbers()["DPS"]; got != 10 {
 		t.Errorf("numeric DPS = %v", got)
 	}
 	old := map[string]any{"classID": int64(2), "tooltip": []any{"9 - 18 Damage | Speed 1.60"}}
-	if n := itemNumbers(old); n["Speed"] != 1.6 || n["DPS"] != 8.4 {
+	if n := readItem(old).Numbers(); n["Speed"] != 1.6 || n["DPS"] != 8.4 {
 		t.Errorf("fallback for an old dump: %v", n)
 	}
 	if !readsEnglishTooltip(old) {
@@ -224,10 +224,12 @@ func TestWeaponNumbersWithoutEnglishTooltip(t *testing.T) {
 	}
 	// The German test dump: the dagger has numeric fields, so the comparison does not depend on text.
 	dagger := snapshot.EquippedBySlot(fixtures.Dede(t).Equipment())["mainHand"]
-	if n := itemNumbers(dagger); n["Speed"] != 1.6 || n["DPS"] != 8.4 {
+	if n := readItem(dagger).Numbers(); n["Speed"] != 1.6 || n["DPS"] != 8.4 {
 		t.Errorf("the dede dump's dagger: %v (%v)", n, dagger)
 	}
 	if _, ok := dagger["speed"]; !ok || readsEnglishTooltip(dagger) {
 		t.Errorf("dede dagger: numeric speed expected, English tooltip not needed: %v", dagger)
 	}
 }
+
+func readsEnglishTooltip(item map[string]any) bool { return readItem(item).ReadsEnglishTooltip() }

@@ -59,3 +59,28 @@ func TestPvP(t *testing.T) {
 		t.Errorf("pvp forever: %v", p)
 	}
 }
+
+func TestRosterOrder(t *testing.T) {
+	g := GuildState{Members: []Member{
+		{Name: "bob", RankIndex: int64(1), Online: true},
+		{Name: "Zed", RankIndex: int64(0), Online: true},
+		{Name: "Amy", RankIndex: int64(1), Online: true},
+		{Name: "Off", RankIndex: int64(0)},
+	}}
+	r := g.Roster(false)
+	if r.OfflineHidden != 1 || len(r.Shown) != 3 || r.Shown[0].Name != "Zed" || r.Shown[1].Name != "Amy" {
+		t.Errorf("roster: %+v", r)
+	}
+	if got := g.Roster(true); got.OfflineHidden != 0 || len(got.Shown) != 4 {
+		t.Errorf("roster with offline: %+v", got)
+	}
+}
+
+func TestInGuildWithoutField(t *testing.T) {
+	if in, known := InGuild(snapshot.Snapshot{"guild": map[string]any{"members": []any{}}}); !in || !known {
+		t.Error("a member list without inGuild means a guild")
+	}
+	if _, known := InGuild(snapshot.Snapshot{}); known {
+		t.Error("no section, not known")
+	}
+}

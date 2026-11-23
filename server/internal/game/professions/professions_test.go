@@ -82,3 +82,31 @@ func TestProfessionsByIDOnAGermanClient(t *testing.T) {
 		t.Error("an old English dump without skillID: by name")
 	}
 }
+
+func TestAnalyseRecipesJudgesTheTypedBook(t *testing.T) {
+	s := snapshot.Snapshot{
+		"bank": map[string]any{"containers": []any{map[string]any{"items": []any{map[string]any{"name": "Thread", "count": int64(4)}}}}},
+		"recipes": map[string]any{"Tailoring": map[string]any{"rank": int64(50), "maxRank": int64(75), "recipes": []any{
+			map[string]any{"name": "Bolt", "difficulty": "optimal", "canCraft": int64(2), "reagents": []any{map[string]any{"name": "Thread", "need": int64(3), "have": int64(1)}}},
+			map[string]any{"name": "Rag", "difficulty": "trivial", "readyAt": int64(1000)},
+		}}},
+	}
+	got := AnalyseRecipes(s, RecipeQuery{SkillUp: true}, fixtures.At(0))
+	if !got.Saved || len(got.Books) != 1 {
+		t.Fatalf("report: %+v", got)
+	}
+	book := got.Books[0]
+	if book.ByDifficulty[Optimal] != 1 || book.ByDifficulty[Trivial] != 1 || len(book.Recipes) != 1 {
+		t.Fatalf("book: %+v", book)
+	}
+	bolt := book.Recipes[0]
+	if bolt.Stock[0].InBank != 4 || len(bolt.Missing) != 1 || bolt.Missing[0].Missing != 2 || bolt.Cooldown.Known {
+		t.Errorf("bolt: %+v", bolt)
+	}
+	if len(book.SkillUpNow) != 1 || book.SkillUpNow[0] != (Craftable{"Bolt", 2}) {
+		t.Errorf("skill-up now: %+v", book.SkillUpNow)
+	}
+	if AnalyseRecipes(snapshot.Snapshot{}, RecipeQuery{}, fixtures.At(0)).Saved {
+		t.Error("no recipes saved")
+	}
+}

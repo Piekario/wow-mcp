@@ -4,6 +4,7 @@
 package questroute
 
 import (
+	"strings"
 	"testing"
 
 	"wowmcp/internal/fixtures"
@@ -185,5 +186,27 @@ func TestRouteByMapID(t *testing.T) {
 	}
 	if route[1].(map[string]any)["flightPoints"] != nil {
 		t.Errorf("Teldrassil has no point: %v", route[1])
+	}
+}
+
+func TestAnalyseOrdersCurrentZoneThenWorkThenTooHard(t *testing.T) {
+	s := snapshot.Snapshot{
+		"character": map[string]any{"level": int64(20), "zone": "B"},
+		"quests": []any{
+			map[string]any{"title": "hard", "level": int64(30), "zone": "A"},
+			map[string]any{"title": "easy", "level": int64(20), "zone": "C"},
+			map[string]any{"title": "done", "level": int64(20), "zone": "B", "complete": true},
+		},
+	}
+	r := Analyse(s)
+	var names []string
+	for _, z := range r.Zones {
+		names = append(names, z.Name)
+	}
+	if got := strings.Join(names, ","); got != "B,C,A" {
+		t.Fatalf("order = %s", got)
+	}
+	if r.Zones[0].Phase() != CurrentZone || r.Zones[2].Phase() != Last || r.Zones[0].Quests[0].Status != ReadyToTurnIn || r.Total != 3 {
+		t.Errorf("route: %+v", r)
 	}
 }

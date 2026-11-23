@@ -65,3 +65,18 @@ func TestLengthNoteIsNotAWarning(t *testing.T) {
 		t.Error("short text without lengthNote")
 	}
 }
+
+func TestSummariseReportsTheLengthRule(t *testing.T) {
+	s := fixtures.Forever(t)
+	r, err := Summarise(s, Query{Short: true})
+	if err != nil || r.Format != "discord" || r.TooLong || r.Length != len([]rune(r.Text)) {
+		t.Fatalf("short summary: %+v %v", r, err)
+	}
+	s["pet"].(map[string]any)["name"] = strings.Repeat("x", discordLimit)
+	if r, _ := Summarise(s, Query{}); !r.TooLong {
+		t.Error("a Discord text over the limit is too long")
+	}
+	if r, _ := Summarise(s, Query{Format: "text"}); r.TooLong {
+		t.Error("the limit is only Discord's")
+	}
+}

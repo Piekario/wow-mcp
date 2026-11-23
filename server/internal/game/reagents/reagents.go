@@ -35,14 +35,14 @@ var (
 
 // classify assigns an item to a group by its item class and subclass (for old dumps: the English type and
 // subtype); false when it is not consumable.
-func classify(item map[string]any) (category, bool) {
+func classify(item itemkind.Item) (category, bool) {
 	switch {
-	case itemkind.IsAmmo(item):
+	case item.IsAmmo():
 		return ammo, true
-	case itemkind.Is(item, itemkind.ClassReagent):
+	case item.Is(itemkind.ClassReagent):
 		return reagent, true
 	}
-	switch itemkind.ConsumableKind(item) {
+	switch item.ConsumableKind() {
 	case itemkind.Food:
 		return food, true
 	case itemkind.Bandage:
@@ -55,11 +55,6 @@ func classify(item map[string]any) (category, bool) {
 	return category{}, false
 }
 
-func snapshotName(item map[string]any) string {
-	n, _ := item["name"].(string)
-	return n
-}
-
 // stock is one consumable item of the character.
 type stock struct {
 	name string
@@ -69,20 +64,9 @@ type stock struct {
 // collect gathers consumable items from bags and equipped ammo, in a stable name order.
 func collect(s snapshot.Snapshot) []stock {
 	seen := map[string]category{}
-	add := func(raw any) {
-		item := snapshot.AsMap(raw)
-		if cat, ok := classify(item); ok && snapshotName(item) != "" {
-			seen[snapshotName(item)] = cat
-		}
-	}
-	for _, bag := range s.Bags() {
-		for _, raw := range snapshot.AsList(snapshot.AsMap(bag)["items"]) {
-			add(raw)
-		}
-	}
-	for _, raw := range s.Equipment() {
-		if snapshot.AsMap(raw)["slot"] == "ammo" {
-			add(raw)
+	for _, item := range readCarried(s) {
+		if cat, ok := classify(item); ok && item.Name != "" {
+			seen[item.Name] = cat
 		}
 	}
 	list := make([]stock, 0, len(seen))
@@ -93,33 +77,62 @@ func collect(s snapshot.Snapshot) []stock {
 	return list
 }
 
-// howConsumed explains what the measured consumption means.
-const howConsumed = "sum of decreases in the number of pieces in bags and on the character between consecutive dumps (purchases and increases do not count); this is an approximation, because a loss may also be a sale, mailing, banking or destruction"
-
 // lowStockHours: with this many hours of play of stock the item goes into lowStock.
 const lowStockHours = 1.0
 
-// View describes the stocks of consumable items and their consumption from history.
-func View(name string, s snapshot.Snapshot, tr progress.Tracker) map[string]any {
+// Line is one consumable: what the character holds and, when history allows, how fast it goes.
+type Line struct {
+	Name         string
+	Holdings     items.Holdings
+	Measured     bool
+	Use          consumption.Usage
+	HoursLeft    float64
+	HasHoursLeft bool
+}
+
+// Total is the stock that counts for consumption: bags plus what the character wears. The bank is not included.
+func (l Line) Total() int64 { return l.Holdings.Bags + l.Holdings.Equipped }
+
+// Low: the stock lasts less than an hour of play at the measured rate.
+func (l Line) Low() bool { return l.HasHoursLeft && l.HoursLeft < lowStockHours }
+
+type Group struct {
+	category
+	Lines []Line
+}
+
+func (g Group) IsAmmo() bool { return g.category == ammo }
+
+// PetFood is the food in bags next to the pet's diet.
+type PetFood struct {
+	FoodTypes any
+	InBags    []pet.FoodStack
+}
+
+// Report is the stocks of consumable items by category and their consumption from history. WindowErr says why
+// there is no consumption window (history disabled or too short).
+type Report struct {
+	Groups    []Group
+	Window    consumption.Usage
+	HasWindow bool
+	WindowErr string
+	PetFood   *PetFood
+}
+
+func (r Report) Empty() bool { return len(r.Groups) == 0 }
+
+// Inspect measures the stocks of consumable items and their consumption from history.
+func Inspect(name string, s snapshot.Snapshot, tr progress.Tracker) Report {
 	stocks := collect(s)
 	if len(stocks) == 0 {
-		return map[string]any{"note": "There is no ammo, food, bandages, potions or reagents in the bags (types Projectile, Consumable and Reagent). Open the bags in game and run /mcp reload."}
+		return Report{}
 	}
 	windows, werr := consumption.Load(tr, name, s)
-
-	byCat := map[string][]any{}
-	var lowStock []string
-	var window map[string]any
+	var r Report
 	var measureErr string
+	byCat := map[category][]Line{}
 	for _, st := range stocks {
-		h := items.Count(s, st.name)
-		e := map[string]any{"name": st.name, "inBags": h.Bags, "total": h.Bags + h.Equipped}
-		if h.Equipped > 0 {
-			e["equipped"] = h.Equipped
-		}
-		if h.Bank > 0 {
-			e["inBank"] = h.Bank
-		}
+		line := Line{Name: st.name, Holdings: items.Count(s, st.name)}
 		if werr == nil {
 			use, err := windows.Measure(func(snap snapshot.Snapshot) int64 {
 				c := items.Count(snap, st.name)
@@ -128,53 +141,43 @@ func View(name string, s snapshot.Snapshot, tr progress.Tracker) map[string]any 
 			if err != nil {
 				measureErr = err.Error()
 			} else {
-				if window == nil {
-					window = use.Describe(howConsumed, "")
-					delete(window, "used")
-					delete(window, "perHour")
-					delete(window, "note")
-				}
-				e["usedInWindow"] = use.Used
-				e["perHour"] = snapshot.Round1(use.PerHour)
-				if left, ok := use.HoursLeft(h.Bags + h.Equipped); ok {
-					e["hoursLeft"] = snapshot.Round1(left)
-					e["timeLeft"] = snapshot.FormatSeconds(int64(left * 3600))
-					if left < lowStockHours {
-						lowStock = append(lowStock, st.name)
-					}
+				line.Measured, line.Use = true, use
+				line.HoursLeft, line.HasHoursLeft = use.HoursLeft(line.Total())
+				if !r.HasWindow {
+					r.Window, r.HasWindow = use, true
 				}
 			}
 		}
-		byCat[st.cat.key] = append(byCat[st.cat.key], e)
+		byCat[st.cat] = append(byCat[st.cat], line)
 	}
-
-	categories := []any{}
 	for _, cat := range orderedBy {
-		if list := byCat[cat.key]; len(list) > 0 {
-			categories = append(categories, map[string]any{"category": cat.key, "label": cat.label, "items": list})
+		if lines := byCat[cat]; len(lines) > 0 {
+			r.Groups = append(r.Groups, Group{category: cat, Lines: lines})
 		}
 	}
-	out := map[string]any{"categories": categories}
 	switch {
 	case werr != nil:
-		out["consumption"] = map[string]any{"note": werr.Error()}
-	case window == nil:
-		out["consumption"] = map[string]any{"note": measureErr}
-	default:
-		out["consumption"] = window
+		r.WindowErr = werr.Error()
+	case !r.HasWindow:
+		r.WindowErr = measureErr
 	}
-	if len(lowStock) > 0 {
-		out["lowStock"] = lowStock
-		out["lowStockNote"] = "lasts less than an hour of play at the measured rate"
+	if p := pet.Inspect(s); p.Summoned {
+		r.PetFood = &PetFood{FoodTypes: p.Shown.FoodTypes, InBags: pet.BagFood(s)}
 	}
-	if pet.Exists(s) {
-		out["petFood"] = map[string]any{
-			"foodTypes":  s.Map("pet")["foodTypes"],
-			"foodInBags": pet.FoodInBags(s),
-			"note":       pet.FoodNote,
+	return r
+}
+
+// LowStock lists, by name, the items that run out within an hour of play, ammo included.
+func (r Report) LowStock() []string {
+	var out []string
+	for _, g := range r.Groups {
+		for _, l := range g.Lines {
+			if l.Low() {
+				out = append(out, l.Name)
+			}
 		}
 	}
-	out["note"] = "Stock (total) is the bags plus what you wear (ammo); inBank is the state from the last bank visit and is not included in hoursLeft."
+	sort.Strings(out)
 	return out
 }
 
@@ -186,26 +189,20 @@ type Shortage struct {
 	HoursLeft      float64
 }
 
-// LowStock picks from the View response the items with too little stock (hoursLeft under an hour) except ammo,
-// which has its own tool (wow_ammo). It reads the response structure of the same package.
-func LowStock(view map[string]any) []Shortage {
+// Shortages are the items with too little stock except ammo, which has its own tool (wow_ammo). The rate and
+// hours are rounded as the answer shows them, and the shopping list is computed from those figures.
+func (r Report) Shortages() []Shortage {
 	var out []Shortage
-	for _, raw := range snapshot.AsList(view["categories"]) {
-		cat := snapshot.AsMap(raw)
-		key, _ := cat["category"].(string)
-		if key == ammo.key {
+	for _, g := range r.Groups {
+		if g.IsAmmo() {
 			continue
 		}
-		for _, rawItem := range snapshot.AsList(cat["items"]) {
-			e := snapshot.AsMap(rawItem)
-			left, ok := snapshot.AsFloat(e["hoursLeft"])
-			if !ok || left >= lowStockHours {
+		for _, l := range g.Lines {
+			if !l.HasHoursLeft || snapshot.Round1(l.HoursLeft) >= lowStockHours {
 				continue
 			}
-			total, _ := snapshot.AsInt(e["total"])
-			perHour, _ := snapshot.AsFloat(e["perHour"])
-			name, _ := e["name"].(string)
-			out = append(out, Shortage{Name: name, Category: key, Total: total, PerHour: perHour, HoursLeft: left})
+			out = append(out, Shortage{Name: l.Name, Category: g.key, Total: l.Total(),
+				PerHour: snapshot.Round1(l.Use.PerHour), HoursLeft: snapshot.Round1(l.HoursLeft)})
 		}
 	}
 	return out

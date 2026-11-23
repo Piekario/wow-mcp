@@ -7,149 +7,139 @@ import (
 	"sort"
 	"strings"
 
-	"wowmcp/internal/game/trainer"
 	"wowmcp/internal/snapshot"
 )
 
-type skill struct {
-	name, rank    string
-	cost          int64
-	costKnown     bool
-	levelRequired int64
-	npcs          []string // who it can be bought from (cheapest first)
+// OfferedService is one thing a trainer teaches. Name and Rank are kept as the dump has them (they are shown unchanged).
+type OfferedService struct {
+	Category      string
+	Name, Rank    any
+	Cost          int64
+	HasCost       bool
+	LevelRequired int64
+	HasLevel      bool
 }
 
-func (sk skill) label() string {
-	if sk.rank != "" {
-		return sk.name + " " + sk.rank
+func (sv OfferedService) name() string { n, _ := sv.Name.(string); return n }
+func (sv OfferedService) rank() string { r, _ := sv.Rank.(string); return r }
+
+// Label is the skill's name with its rank: "Disengage Rank 1".
+func (sv OfferedService) Label() string {
+	if rank := sv.rank(); rank != "" {
+		return sv.name() + " " + rank
 	}
-	return sk.name
+	return sv.name()
 }
 
-// trainerPlan is the purchases from trainers: the offers of each remembered NPC and the total after removing duplicates.
-type trainerPlan struct {
-	offers    []any
-	skills    []skill
-	total     int64
-	money     int64
-	remembers int
+func (sv OfferedService) CanAfford(money int64) bool { return sv.Cost <= money }
+
+// TrainerOffer is what one remembered trainer window showed.
+type TrainerOffer struct {
+	Npc           string
+	Captured      snapshot.Captured
+	CapturedAt    int64
+	HasCapturedAt bool
+	Services      []OfferedService
 }
 
-// planTrainer gathers the available services (category = available) from all remembered trainers.
-// The same skill at several trainers counts once, at the lowest price.
-func planTrainer(s snapshot.Snapshot, level, money int64, fresh snapshot.Freshness) trainerPlan {
-	plan := trainerPlan{money: money}
-	byKey := map[string]*skill{}
-	for _, v := range trainer.GoldOffers(s) {
-		plan.remembers++
-		plan.offers = append(plan.offers, offerView(v, level, money, fresh))
-		for _, raw := range trainer.ServicesOf(v.Section, "available") {
-			svc := snapshot.AsMap(raw)
-			name, _ := svc["name"].(string)
-			rank, _ := svc["rank"].(string)
-			key := strings.ToLower(name + "|" + rank)
-			cost, known := snapshot.AsInt(svc["costCopper"])
+func (o TrainerOffer) in(category string) []OfferedService {
+	var out []OfferedService
+	for _, sv := range o.Services {
+		if sv.Category == category {
+			out = append(out, sv)
+		}
+	}
+	return out
+}
+
+// OfferSummary is one trainer's available services with their total price and flags about the offer's age.
+type OfferSummary struct {
+	Npc       string
+	Captured  snapshot.Captured
+	Stale     bool
+	Available []OfferedService
+	Total     int64
+	// MaybeOutdated are services saved as unavailable whose required level the character already has: the offer
+	// may have been saved at a lower level.
+	MaybeOutdated []OfferedService
+}
+
+// Skill is a service to buy; the same skill at several trainers counts once, at the lowest price.
+type Skill struct {
+	Name, Rank    string
+	Cost          int64
+	CostKnown     bool
+	LevelRequired int64
+	NPCs          []string // who it can be bought from, in the order the offers came
+}
+
+func (sk Skill) Label() string {
+	if sk.Rank != "" {
+		return sk.Name + " " + sk.Rank
+	}
+	return sk.Name
+}
+
+// TrainerPlan is the purchases from trainers: the offers of each remembered NPC and the total after removing duplicates.
+type TrainerPlan struct {
+	Offers []OfferSummary
+	Skills []Skill
+	Total  int64
+	Money  int64
+}
+
+// planTrainer gathers the available services from all remembered trainers.
+func planTrainer(offers []TrainerOffer, level, money int64, fresh snapshot.Freshness) TrainerPlan {
+	plan := TrainerPlan{Money: money}
+	byKey := map[string]*Skill{}
+	for _, o := range offers {
+		plan.Offers = append(plan.Offers, summarize(o, level, fresh))
+		for _, sv := range o.in("available") {
+			key := strings.ToLower(sv.name() + "|" + sv.rank())
 			sk := byKey[key]
 			if sk == nil {
-				req, _ := snapshot.AsInt(svc["levelRequired"])
-				sk = &skill{name: name, rank: rank, cost: cost, costKnown: known, levelRequired: req}
+				sk = &Skill{Name: sv.name(), Rank: sv.rank(), Cost: sv.Cost, CostKnown: sv.HasCost, LevelRequired: sv.LevelRequired}
 				byKey[key] = sk
-			} else if known && (!sk.costKnown || cost < sk.cost) {
-				sk.cost, sk.costKnown = cost, true
+			} else if sv.HasCost && (!sk.CostKnown || sv.Cost < sk.Cost) {
+				sk.Cost, sk.CostKnown = sv.Cost, true
 			}
-			sk.npcs = append(sk.npcs, v.Npc)
+			sk.NPCs = append(sk.NPCs, o.Npc)
 		}
 	}
 	for _, sk := range byKey {
-		plan.skills = append(plan.skills, *sk)
+		plan.Skills = append(plan.Skills, *sk)
 	}
-	sort.Slice(plan.skills, func(i, j int) bool {
-		a, b := plan.skills[i], plan.skills[j]
-		if a.levelRequired != b.levelRequired {
-			return a.levelRequired < b.levelRequired
+	sort.Slice(plan.Skills, func(i, j int) bool {
+		a, b := plan.Skills[i], plan.Skills[j]
+		if a.LevelRequired != b.LevelRequired {
+			return a.LevelRequired < b.LevelRequired
 		}
-		return a.label() < b.label()
+		return a.Label() < b.Label()
 	})
-	for _, sk := range plan.skills {
-		if sk.costKnown {
-			plan.total += sk.cost
+	for _, sk := range plan.Skills {
+		if sk.CostKnown {
+			plan.Total += sk.Cost
 		}
 	}
 	return plan
 }
 
-// offerView describes one trainer's offer: available services with price and offer age flags.
-func offerView(v snapshot.Visit, level, money int64, fresh snapshot.Freshness) map[string]any {
-	out := map[string]any{"npc": v.Npc}
-	snapshot.Merge(out, fresh.CapturedMeta(v.Section))
-	if at, ok := v.CapturedAt(); ok && fresh.IsStale(at) {
-		out["stale"] = true
-	}
-	var total int64
-	services := []any{}
-	for _, raw := range trainer.ServicesOf(v.Section, "available") {
-		svc := snapshot.AsMap(raw)
-		e := map[string]any{"name": svc["name"]}
-		if svc["rank"] != nil {
-			e["rank"] = svc["rank"]
-		}
-		if req, ok := snapshot.AsInt(svc["levelRequired"]); ok {
-			e["levelRequired"] = req
-		}
-		if cost, ok := snapshot.AsInt(svc["costCopper"]); ok {
-			e["cost"] = snapshot.Money(cost).String()
-			e["canAfford"] = cost <= money
-			total += cost
-		}
-		services = append(services, e)
-	}
-	out["services"] = services
-	out["totalCost"] = snapshot.Money(total).String()
-	if names := becameAvailable(v.Section, level); len(names) > 0 {
-		out["maybeOutdated"] = map[string]any{
-			"services": names,
-			"note": "These services were unavailable when the offer was saved, and their required level is lower than the character's current level, " +
-				"so the offer may have been saved at a lower level (assumption: the reason was the level; it could have been another, e.g. a prerequisite earlier rank). Open the trainer window again.",
+func summarize(o TrainerOffer, level int64, fresh snapshot.Freshness) OfferSummary {
+	sum := OfferSummary{Npc: o.Npc, Captured: o.Captured, Available: o.in("available")}
+	sum.Stale = o.HasCapturedAt && fresh.IsStale(o.CapturedAt)
+	for _, sv := range sum.Available {
+		if sv.HasCost {
+			sum.Total += sv.Cost
 		}
 	}
-	return out
+	for _, sv := range o.in("unavailable") {
+		if sv.HasLevel && sv.LevelRequired > 0 && sv.LevelRequired <= level {
+			sum.MaybeOutdated = append(sum.MaybeOutdated, sv)
+		}
+	}
+	return sum
 }
 
-// becameAvailable returns services saved as unavailable whose required level the character already has.
-func becameAvailable(offer map[string]any, level int64) []string {
-	var out []string
-	for _, raw := range trainer.ServicesOf(offer, "unavailable") {
-		svc := snapshot.AsMap(raw)
-		if req, ok := snapshot.AsInt(svc["levelRequired"]); ok && req > 0 && req <= level {
-			name, _ := svc["name"].(string)
-			if rank, _ := svc["rank"].(string); rank != "" {
-				name += " " + rank
-			}
-			out = append(out, name)
-		}
-	}
-	return out
-}
+func (p TrainerPlan) Remembered() bool { return len(p.Offers) > 0 }
 
-func (p trainerPlan) view() map[string]any {
-	if p.remembers == 0 {
-		return map[string]any{"note": "No saved trainer offers. Open the class (and profession) trainer window in game, then type /mcp reload."}
-	}
-	skills := make([]any, len(p.skills))
-	for i, sk := range p.skills {
-		e := map[string]any{"skill": sk.label(), "levelRequired": sk.levelRequired, "npcs": sk.npcs}
-		if sk.costKnown {
-			e["cost"] = snapshot.Money(sk.cost).String()
-			e["canAfford"] = sk.cost <= p.money
-		}
-		skills[i] = e
-	}
-	out := map[string]any{"offers": p.offers, "toLearn": skills, "totalCost": snapshot.Money(p.total).String(), "canAffordAll": p.total <= p.money}
-	if len(p.skills) == 0 {
-		out["note"] = "The remembered offers have no services to buy right now (available)."
-	}
-	if p.total > p.money {
-		out["shortBy"] = snapshot.Money(p.total - p.money).String()
-	}
-	return out
-}
+func (p TrainerPlan) CanAffordAll() bool { return p.Total <= p.Money }

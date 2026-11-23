@@ -8,11 +8,7 @@
 package makeorbuy
 
 import (
-	"fmt"
-	"maps"
-	"slices"
 	"sort"
-	"strings"
 	"time"
 
 	"wowmcp/internal/game/auctions"
@@ -39,256 +35,174 @@ type Query struct {
 	Limit      int    `json:"limit,omitempty" jsonschema:"max recipes in the response; default 50"`
 }
 
-// price is a known price per unit.
-type price struct {
-	copper  int64
-	source  string // "auction" or "vendor:<npc>"
-	seenAt  int64  // time the auction price was saved (0 = unknown)
-	hasSeen bool
+type Reagent struct {
+	Name string
+	Need int64
 }
 
-// priceBook holds auction prices (by name and ID) and vendor prices (by name, lowercase).
-type priceBook struct {
-	auctionByName map[string]price
-	auctionByID   map[int64]price
-	vendor        map[string]price
+// Craft is a recipe to price. The finished item is assumed to be one unit with the recipe's name.
+type Craft struct {
+	Profession string
+	Name       string
+	ItemID     int64 // 0 when the recipe does not say
+	Reagents   []Reagent
 }
 
-func buildBook(s snapshot.Snapshot) priceBook {
-	b := priceBook{auctionByName: map[string]price{}, auctionByID: map[int64]price{}, vendor: map[string]price{}}
-	prices := snapshot.AsMap(s.Map("auctions")["prices"])
-	for _, name := range slices.Sorted(maps.Keys(prices)) {
-		p := snapshot.AsMap(prices[name])
-		buyout, ok := snapshot.AsInt(p["minBuyout"])
-		if !ok || buyout <= 0 {
-			continue
-		}
-		pr := price{copper: buyout, source: "auction"}
-		pr.seenAt, pr.hasSeen = snapshot.AsInt(p["seenAt"])
-		b.auctionByName[strings.ToLower(name)] = pr
-		if id, ok := snapshot.AsInt(p["id"]); ok {
-			b.auctionByID[id] = pr
+// Quote is a known price per unit and how old it is.
+type Quote struct {
+	Copper int64
+	Source string // "auction" or "vendor:<npc>"
+	Age    time.Duration
+	HasAge bool
+}
+
+func (q Quote) Stale() bool { return q.HasAge && q.Age >= priceStaleAfter }
+
+// ReagentLine is one reagent of a craft; Price is nil when no price is known.
+type ReagentLine struct {
+	Reagent
+	Price *Quote
+}
+
+func (l ReagentLine) Total() int64 { return l.Price.Copper * l.Need }
+
+// MissingPrice names something with no price; Finished is the crafted item itself.
+type MissingPrice struct {
+	Name     string
+	Finished bool
+}
+
+type StalePrice struct {
+	Name     string
+	Age      time.Duration
+	Finished bool
+}
+
+// Evaluation is the price of one craft against the price of the finished item.
+type Evaluation struct {
+	Craft
+	Lines   []ReagentLine
+	Product *Quote
+	Missing []MissingPrice
+	Stale   []StalePrice
+	Cost    int64 // of every reagent, when Complete; otherwise the part that has a price
+	Margin  int64 // the finished item's price minus Cost, when Known
+}
+
+// Complete: every reagent has a price.
+func (e Evaluation) Complete() bool {
+	for _, l := range e.Lines {
+		if l.Price == nil {
+			return false
 		}
 	}
-	for _, v := range s.Visits("vendor", "vendors") {
-		for _, raw := range snapshot.AsList(v.Section["items"]) {
-			item := snapshot.AsMap(raw)
-			name, _ := item["name"].(string)
-			total, ok := snapshot.AsInt(item["priceCopper"])
-			if name == "" || !ok || total <= 0 {
-				continue
-			}
-			stack, _ := snapshot.AsInt(item["stack"])
-			if stack <= 0 {
-				stack = 1
-			}
-			key := strings.ToLower(name)
-			unit := (total + stack - 1) / stack
-			if old, seen := b.vendor[key]; !seen || unit < old.copper {
-				b.vendor[key] = price{copper: unit, source: "vendor:" + v.Npc}
-			}
-		}
-	}
-	return b
+	return true
 }
 
-// reagentPrice picks the cheaper of the known reagent prices.
-func (b priceBook) reagentPrice(name string) (price, bool) {
-	key := strings.ToLower(name)
-	a, hasA := b.auctionByName[key]
-	v, hasV := b.vendor[key]
+// Known: the margin can be told, because every reagent and the finished item have a price.
+func (e Evaluation) Known() bool { return e.Complete() && e.Product != nil }
+
+func (e Evaluation) Verdict() string {
 	switch {
-	case hasA && hasV:
-		if v.copper <= a.copper {
-			return v, true
-		}
-		return a, true
-	case hasA:
-		return a, true
-	case hasV:
-		return v, true
+	case !e.Known():
+		return VerdictUnknown
+	case e.Margin > 0:
+		return VerdictMake
 	}
-	return price{}, false
+	return VerdictBuy
 }
 
-// productPrice is the auction price of the finished item (by recipe name or item ID).
-func (b priceBook) productPrice(name string, itemID int64) (price, bool) {
-	if p, ok := b.auctionByName[strings.ToLower(name)]; ok {
-		return p, true
-	}
-	if itemID > 0 {
-		p, ok := b.auctionByID[itemID]
-		return p, ok
-	}
-	return price{}, false
+// MarginAfterCut is the margin once the auction house takes its cut of the sale.
+func (e Evaluation) MarginAfterCut() int64 {
+	return int64(float64(e.Product.Copper)*(1-auctions.AuctionCut)) - e.Cost
 }
 
-type result struct {
-	view   map[string]any
-	margin int64
-	known  bool
+// Report is the evaluated crafts, limited to what was asked for.
+type Report struct {
+	Saved           bool
+	Evaluations     []Evaluation
+	Total           int // evaluated, before the limit
+	ByVerdict       map[string]int
+	NoAuctionPrices bool
+	LastVisitAge    time.Duration
+	HasVisit        bool
 }
 
-// evaluate prices one recipe.
-func evaluate(prof string, r map[string]any, b priceBook, fresh snapshot.Freshness) (result, bool) {
-	reagents := snapshot.AsList(r["reagents"])
-	name, _ := r["name"].(string)
-	if len(reagents) == 0 || name == "" {
-		return result{}, false
+func (r Report) Truncated() bool { return len(r.Evaluations) < r.Total }
+
+// Analyse compares the crafting cost with the finished item's price for the character's recipes.
+func Analyse(s snapshot.Snapshot, q Query, fresh snapshot.Freshness) Report {
+	crafts, saved := readCrafts(s, q, fresh)
+	if !saved {
+		return Report{}
 	}
-	var cost, partial int64
-	var lines []any
-	var missing, stale []string
-	complete := true
-	for _, rr := range reagents {
-		re := snapshot.AsMap(rr)
-		rn := snapshot.ReagentName(re)
-		need, _ := snapshot.AsInt(re["need"])
-		if need <= 0 {
-			need = 1
-		}
-		line := map[string]any{"name": rn, "need": need}
-		p, ok := b.reagentPrice(rn)
-		if !ok {
-			line["unitPrice"] = nil
-			missing = append(missing, rn)
-			complete = false
-			lines = append(lines, line)
-			continue
-		}
-		line["unitPrice"], line["unitPriceCopper"], line["source"] = snapshot.Money(p.copper).String(), p.copper, p.source
-		line["lineTotal"] = snapshot.Money(p.copper * need).String()
-		partial += p.copper * need
-		cost += p.copper * need
-		if note := ageNote(p, fresh); note != "" {
-			line["seenAgo"] = note
-			if staleAge(p, fresh) {
-				stale = append(stale, fmt.Sprintf("%s (%s)", rn, note))
-			}
-		}
-		lines = append(lines, line)
+	m := readMarket(s)
+	book := newBook(m)
+	r := Report{Saved: true, NoAuctionPrices: len(m.Auction) == 0, ByVerdict: map[string]int{}}
+	var all []Evaluation
+	for _, c := range crafts {
+		e := evaluate(c, book, fresh)
+		r.ByVerdict[e.Verdict()]++
+		all = append(all, e)
 	}
-	itemID, _ := snapshot.AsInt(r["itemId"])
-	prod, hasProd := b.productPrice(name, itemID)
-	v := map[string]any{"name": name, "profession": prof, "reagents": lines}
-	if itemID > 0 {
-		v["itemId"] = itemID
+	sortEvaluations(all, q.Sort == "name")
+	r.Total = len(all)
+	r.Evaluations = all[:min(len(all), limitOf(q))]
+	if m.HasVisit {
+		r.LastVisitAge, r.HasVisit = fresh.Age(m.LastVisitAt), true
 	}
-	if complete {
-		v["reagentCost"], v["reagentCostCopper"] = snapshot.Money(cost).String(), cost
-	} else if partial > 0 {
-		v["knownPartOfCost"] = snapshot.Money(partial).String() + " (incomplete: prices of some reagents are missing)"
-	}
-	if hasProd {
-		v["productPrice"], v["productPriceCopper"] = snapshot.Money(prod.copper).String(), prod.copper
-		if note := ageNote(prod, fresh); note != "" {
-			v["productSeenAgo"] = note
-			if staleAge(prod, fresh) {
-				stale = append(stale, fmt.Sprintf("%s (finished item, %s)", name, note))
-			}
-		}
-	} else {
-		missing = append(missing, name+" (finished item)")
-	}
-	res := result{view: v}
-	if complete && hasProd {
-		res.known, res.margin = true, prod.copper-cost
-		v["margin"], v["marginCopper"] = snapshot.Money(res.margin).Signed(), res.margin
-		afterCut := int64(float64(prod.copper)*(1-auctions.AuctionCut)) - cost
-		v["marginAfterCut"] = snapshot.Money(afterCut).Signed()
-		v["verdict"] = VerdictBuy
-		if res.margin > 0 {
-			v["verdict"] = VerdictMake
-		}
-	} else {
-		v["verdict"] = VerdictUnknown
-	}
-	if len(missing) > 0 {
-		v["missingPrices"] = missing
-	}
-	if len(stale) > 0 {
-		v["stalePrices"] = stale
-	}
-	return res, true
+	return r
 }
 
-func staleAge(p price, fresh snapshot.Freshness) bool {
-	return p.hasSeen && fresh.Age(p.seenAt) >= priceStaleAfter
+func limitOf(q Query) int {
+	if q.Limit <= 0 {
+		return defaultLimit
+	}
+	return q.Limit
 }
 
-func ageNote(p price, fresh snapshot.Freshness) string {
-	if !p.hasSeen {
-		return ""
-	}
-	return snapshot.FormatAge(fresh.Age(p.seenAt))
-}
-
-// View compares the crafting cost with the finished item's price for the character's recipes.
-func View(s snapshot.Snapshot, q Query, fresh snapshot.Freshness) map[string]any {
-	all := s.Map("recipes")
-	if len(all) == 0 {
-		return map[string]any{"note": "No saved recipes. Open the profession window in game (e.g. Leatherworking), then type /mcp reload. Each profession is saved separately."}
-	}
-	book := buildBook(s)
-	var hints []string
-	if len(book.auctionByName) == 0 {
-		hints = append(hints, "No auction house prices. Open the auction house, search for reagents and finished items, then /mcp reload.")
-	}
-	query, profQuery := strings.ToLower(q.Query), strings.ToLower(q.Profession)
-	var results []result
-	for _, prof := range slices.Sorted(maps.Keys(all)) {
-		if profQuery != "" && !strings.Contains(strings.ToLower(prof), profQuery) {
-			continue
-		}
-		for _, raw := range snapshot.AsList(snapshot.AsMap(all[prof])["recipes"]) {
-			r := snapshot.AsMap(raw)
-			if n, _ := r["name"].(string); query != "" && !strings.Contains(strings.ToLower(n), query) {
-				continue
-			}
-			if res, ok := evaluate(prof, r, book, fresh); ok {
-				results = append(results, res)
-			}
-		}
-	}
-	byName := q.Sort == "name"
-	sort.SliceStable(results, func(i, j int) bool {
-		a, b := results[i], results[j]
+// sortEvaluations puts the crafts with a known margin first, the biggest saving on top; byName sorts by name instead.
+func sortEvaluations(list []Evaluation, byName bool) {
+	sort.SliceStable(list, func(i, j int) bool {
+		a, b := list[i], list[j]
 		if byName {
-			return fmt.Sprint(a.view["name"]) < fmt.Sprint(b.view["name"])
+			return a.Name < b.Name
 		}
-		if a.known != b.known {
-			return a.known
+		if a.Known() != b.Known() {
+			return a.Known()
 		}
-		return a.margin > b.margin
+		return a.Margin > b.Margin
 	})
-	limit := q.Limit
-	if limit <= 0 {
-		limit = defaultLimit
+}
+
+// evaluate prices one craft.
+func evaluate(c Craft, book priceBook, fresh snapshot.Freshness) Evaluation {
+	e := Evaluation{Craft: c}
+	for _, re := range c.Reagents {
+		line := ReagentLine{Reagent: re}
+		if p, ok := book.reagentPrice(re.Name); ok {
+			q := p.quote(fresh)
+			line.Price = &q
+			e.Cost += line.Total()
+			if q.Stale() {
+				e.Stale = append(e.Stale, StalePrice{Name: re.Name, Age: q.Age})
+			}
+		} else {
+			e.Missing = append(e.Missing, MissingPrice{Name: re.Name})
+		}
+		e.Lines = append(e.Lines, line)
 	}
-	counts := map[string]int{}
-	for _, r := range results {
-		counts[r.view["verdict"].(string)]++
+	if p, ok := book.productPrice(c.Name, c.ItemID); ok {
+		q := p.quote(fresh)
+		e.Product = &q
+		if q.Stale() {
+			e.Stale = append(e.Stale, StalePrice{Name: c.Name, Age: q.Age, Finished: true})
+		}
+	} else {
+		e.Missing = append(e.Missing, MissingPrice{Name: c.Name, Finished: true})
 	}
-	shown := results
-	if len(shown) > limit {
-		shown = shown[:limit]
+	if e.Known() {
+		e.Margin = e.Product.Copper - e.Cost
 	}
-	views := make([]any, len(shown))
-	for i, r := range shown {
-		views[i] = r.view
-	}
-	out := map[string]any{
-		"recipes": views, "shown": len(views), "total": len(results), "byVerdict": counts,
-		"assumptions": "A recipe yields 1 unit of the item with the same name (the server does not know the number of units per craft). A reagent is priced at the lowest buyout price per unit from the auction house, or at the remembered vendor's price if lower; it does not account for what the character already has in bags. margin = finished item price minus reagent cost; marginAfterCut subtracts " + fmt.Sprintf("%.0f%%", auctions.AuctionCut*100) + " auction cut when you want to sell it. A missing price is never counted as zero: then verdict=unknown and missingPrices. Prices older than 48 h are in stalePrices.",
-	}
-	if len(shown) < len(results) {
-		out["truncated"] = true
-	}
-	if len(hints) > 0 {
-		out["hint"] = hints
-	}
-	if at, ok := snapshot.AsInt(s.Map("auctions")["lastVisitAt"]); ok {
-		out["auctionLastVisit"] = snapshot.FormatAge(fresh.Age(at)) + " ago"
-	}
-	return out
+	return e
 }

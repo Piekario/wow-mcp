@@ -3,11 +3,7 @@
 
 package items
 
-import (
-	"strings"
-
-	"wowmcp/internal/snapshot"
-)
+import "wowmcp/internal/snapshot"
 
 // VendorQuery holds the vendor offer filters (wow_vendor).
 type VendorQuery struct {
@@ -21,61 +17,61 @@ type VendorQuery struct {
 	Equippable bool   `json:"equippable,omitempty" jsonschema:"true = only equippable things (weapons, armor, jewelry)"`
 }
 
-// Vendor describes the offer of the most recently opened vendor: price, whether the character can afford it,
-// whether the required level is met, and compares equippable items with the equipped ones.
-func Vendor(s snapshot.Snapshot, q VendorQuery, fresh snapshot.Freshness) map[string]any {
+// VendorSection is one vendor window. Npc and CanRepair are passed through as the client gave them.
+type VendorSection struct {
+	Npc, CanRepair any
+	Items          []Item
+	Captured       snapshot.Captured
+}
+
+type VendorOffer struct {
+	Item
+	Offer Offer
+}
+
+// VendorReport is the offer of one vendor judged for the character. UnknownNpc is set when the query asked for a
+// vendor the dump does not remember; Saved is false when no vendor window was ever saved.
+type VendorReport struct {
+	UnknownNpc string
+	Saved      bool
+	Known      []string
+	Vendor     VendorSection
+	Money      int64
+	Offers     []VendorOffer
+	Buyback    *BuybackReport
+}
+
+// InspectVendor describes the offer of the most recently opened vendor (or the one named in the query): price,
+// whether the character can afford it, whether the required level is met, and how equippable items compare.
+func InspectVendor(s snapshot.Snapshot, q VendorQuery) VendorReport {
 	visits := s.Visits("vendor", "vendors")
-	vendor := s.Map("vendor")
-	if q.Npc != "" {
-		v, ok := snapshot.FindVisit(visits, q.Npc)
-		if !ok {
-			return map[string]any{"note": "I do not remember a vendor " + q.Npc + ". The remembered ones are in the known field; open that vendor's window in game and type /mcp reload.",
-				"known": snapshot.VisitNames(visits)}
-		}
-		vendor = v.Section
+	var r VendorReport
+	if len(visits) > 0 {
+		r.Known = snapshot.VisitNames(visits)
 	}
-	if vendor == nil {
-		return map[string]any{"note": "No saved vendor offer. Open a vendor window in game, then type /mcp reload."}
+	vendor, ok := readLastVendor(s)
+	if q.Npc != "" {
+		v, found := snapshot.FindVisit(visits, q.Npc)
+		if !found {
+			r.UnknownNpc, r.Known = q.Npc, snapshot.VisitNames(visits)
+			return r
+		}
+		vendor, ok = readVendorSection(v.Section)
+	}
+	if !ok {
+		return r
 	}
 	buyer := NewBuyer(s)
 	only := OfferFilter{Affordable: q.Affordable, Usable: q.Usable, Equippable: q.Equippable}
 	f := filter{query: q.Query, kind: q.Type, minQuality: q.MinQuality}
-	items := []any{}
-	for _, raw := range snapshot.AsList(vendor["items"]) {
-		item := snapshot.AsMap(raw)
-		if !f.match(item) {
-			continue
+	r.Saved, r.Vendor, r.Money = true, vendor, buyer.Money
+	for _, it := range vendor.Items {
+		if f.matches(it) && buyer.Allows(it, it.Price, it.HasPrice, only) {
+			r.Offers = append(r.Offers, VendorOffer{Item: it, Offer: buyer.Assess(it, it.Price, it.HasPrice)})
 		}
-		price, hasPrice := snapshot.AsInt(item["priceCopper"])
-		if !buyer.Admits(item, price, hasPrice, only) {
-			continue
-		}
-		entry := copyItem(item)
-		if hasPrice {
-			entry["price"] = snapshot.Money(price).String()
-		}
-		buyer.Judge(entry, item, price, hasPrice)
-		items = append(items, entry)
 	}
-	out := map[string]any{
-		"npc":       vendor["npc"],
-		"canRepair": vendor["canRepair"],
-		"money":     snapshot.Money(buyer.Money).String(),
-		"items":     items,
-		"count":     len(items),
+	if b, ok := InspectBuyback(s, q.Query); ok && (q.Npc == "" || b.soldBy(q.Npc)) {
+		r.Buyback = &b
 	}
-	if len(visits) > 0 {
-		out["known"] = snapshot.VisitNames(visits)
-	}
-	snapshot.Merge(out, fresh.CapturedMeta(vendor))
-	if b := Buyback(s, q.Query, fresh); b != nil && (q.Npc == "" || npcMatches(b["npc"], q.Npc)) {
-		out["buyback"] = b
-	}
-	return out
-}
-
-// npcMatches says whether the NPC name contains the given fragment (case-insensitive).
-func npcMatches(npc any, fragment string) bool {
-	name, _ := npc.(string)
-	return strings.Contains(strings.ToLower(name), strings.ToLower(fragment))
+	return r
 }

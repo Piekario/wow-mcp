@@ -6,59 +6,43 @@
 package character
 
 import (
+	"sort"
+	"strings"
+
 	"wowmcp/internal/snapshot"
 )
 
-// SummarizeSheet adds gold, play time, the player's note and deaths to the wow_character response.
-func SummarizeSheet(s snapshot.Snapshot, out map[string]any, fresh snapshot.Freshness) {
-	if c, ok := s["character"].(map[string]any); ok {
-		if copper, ok := c["moneyCopper"].(int64); ok {
-			out["money"] = snapshot.Money(copper).String()
-		}
-	}
-	if played := Played(s); played != nil {
-		out["playedTime"] = played
-	}
-	if note := Note(s, fresh); note != nil {
-		out["note"] = note
-	}
-	if deaths := Deaths(s, fresh); deaths != nil {
-		out["deaths"] = deaths
-	}
+// NearlyBrokenPercent: below this durability an item goes on the repair list.
+const NearlyBrokenPercent = 25
+
+type PlayTime struct {
+	TotalSeconds int64
+	LevelSeconds int64
+	HasLevel     bool
 }
 
-// SummarizeEquipment adds a durability summary to the wow_equipment response.
-func SummarizeEquipment(s snapshot.Snapshot, out map[string]any, fresh snapshot.Freshness) {
-	if d := Durability(s, fresh); d != nil {
-		out["durability"] = d
-	}
+// Gear is one equipped item as far as the character's rules need it.
+type Gear struct {
+	Slot              string
+	Name              any
+	ItemLevel         float64
+	HasItemLevel      bool
+	WholeItemLevel    int64
+	HasWholeItemLevel bool
+	Durability        int64
+	MaxDurability     int64
+	HasDurability     bool
 }
 
-// Played formats the played section (from /played) into a readable form.
-func Played(s snapshot.Snapshot) map[string]any {
-	p := s.Map("played")
-	total, ok := snapshot.AsInt(p["totalSeconds"])
-	if !ok {
-		return nil
-	}
-	out := map[string]any{"total": snapshot.FormatSeconds(total), "totalSeconds": total}
-	if lvl, ok := snapshot.AsInt(p["levelSeconds"]); ok {
-		out["thisLevel"] = snapshot.FormatSeconds(lvl)
-	}
-	return out
+func (g Gear) countsForAverage() bool {
+	return g.Slot != "shirt" && g.Slot != "tabard" && g.Slot != "ammo" && g.HasItemLevel
 }
 
-// AverageItemLevel computes the character's average item level (excluding shirt, tabard and ammo).
-func AverageItemLevel(s snapshot.Snapshot) (float64, bool) {
+func averageItemLevel(gear []Gear) (float64, bool) {
 	var sum, n float64
-	for _, raw := range s.Equipment() {
-		item := snapshot.AsMap(raw)
-		slot, _ := item["slot"].(string)
-		if slot == "shirt" || slot == "tabard" || slot == "ammo" {
-			continue
-		}
-		if lvl, ok := snapshot.AsFloat(item["itemLevel"]); ok {
-			sum += lvl
+	for _, g := range gear {
+		if g.countsForAverage() {
+			sum += g.ItemLevel
 			n++
 		}
 	}
@@ -68,20 +52,162 @@ func AverageItemLevel(s snapshot.Snapshot) (float64, bool) {
 	return snapshot.Round1(sum / n), true
 }
 
-// EquipmentNames is a short list of equipped items: slot -> name (item level).
-func EquipmentNames(s snapshot.Snapshot) map[string]any {
-	out := map[string]any{}
-	for _, raw := range s.Equipment() {
-		item := snapshot.AsMap(raw)
-		slot, _ := item["slot"].(string)
-		if slot == "" {
+// AverageItemLevel is the average item level of the equipped gear (without shirt, tabard and ammo).
+func AverageItemLevel(s snapshot.Snapshot) (float64, bool) { return averageItemLevel(readGear(s)) }
+
+// PlayTimeOf is the played time from /played; false when the dump has none.
+func PlayTimeOf(s snapshot.Snapshot) (PlayTime, bool) { return readPlayTime(s) }
+
+type WornItem struct {
+	Name    any
+	Percent float64
+}
+
+type RepairQuote struct {
+	CostCopper int64
+	NPC        any
+	Captured   snapshot.Captured
+}
+
+// DurabilityReport is the state of the gear's durability: the average, the weakest item and the repair cost quoted
+// by the last vendor.
+type DurabilityReport struct {
+	Percent      float64
+	Lowest       WornItem
+	NearlyBroken []WornItem
+	Repair       RepairQuote
+	HasRepair    bool
+}
+
+// InspectDurability is false when no equipped item has durability.
+func InspectDurability(s snapshot.Snapshot) (DurabilityReport, bool) {
+	repair, hasRepair := readRepairQuote(s)
+	return judgeDurability(readGear(s), repair, hasRepair)
+}
+
+func judgeDurability(gear []Gear, repair RepairQuote, hasRepair bool) (DurabilityReport, bool) {
+	var cur, max int64
+	lowest := WornItem{Percent: 101}
+	var report DurabilityReport
+	for _, g := range gear {
+		if !g.HasDurability {
 			continue
 		}
-		if lvl, ok := snapshot.AsInt(item["itemLevel"]); ok {
-			out[slot] = map[string]any{"name": item["name"], "itemLevel": lvl}
-		} else {
-			out[slot] = item["name"]
+		cur += g.Durability
+		max += g.MaxDurability
+		item := WornItem{g.Name, float64(g.Durability*1000/g.MaxDurability) / 10}
+		if item.Percent < lowest.Percent {
+			lowest = item
+		}
+		if item.Percent < NearlyBrokenPercent {
+			report.NearlyBroken = append(report.NearlyBroken, item)
 		}
 	}
-	return out
+	if max == 0 {
+		return DurabilityReport{}, false
+	}
+	report.Percent = float64(cur*1000/max) / 10
+	report.Lowest = lowest
+	report.Repair, report.HasRepair = repair, hasRepair
+	return report, true
+}
+
+type PlayerNote struct {
+	Text     string
+	SetAt    int64
+	HasSetAt bool
+}
+
+// InspectNote is false when the player left no note or it is blank.
+func InspectNote(s snapshot.Snapshot) (PlayerNote, bool) {
+	n := readNote(s)
+	return n, strings.TrimSpace(n.Text) != ""
+}
+
+// NoteText is just the note text ("" when there is none); to be included in prompts as the session goal.
+func NoteText(s snapshot.Snapshot) string { return strings.TrimSpace(readNote(s).Text) }
+
+type Death struct {
+	Zone, SubZone, Level any
+	At                   int64
+	HasAt                bool
+}
+
+// DeathRecord is the deaths section: the counter and the last death.
+type DeathRecord struct {
+	Count   int64
+	Last    Death
+	HasLast bool
+}
+
+// InspectDeaths is false without a deaths section (old addon or disabled).
+func InspectDeaths(s snapshot.Snapshot) (DeathRecord, bool) { return readDeaths(s) }
+
+// DeathCount is the character's death counter; false when the dump has no deaths section (old addon or disabled).
+func DeathCount(s snapshot.Snapshot) (int64, bool) {
+	d, ok := readDeaths(s)
+	return d.Count, ok
+}
+
+// Sheet is what wow_character adds to the section summary.
+type Sheet struct {
+	Money     int64
+	HasMoney  bool
+	PlayTime  PlayTime
+	HasPlayed bool
+	Note      PlayerNote
+	HasNote   bool
+	Deaths    DeathRecord
+	HasDeaths bool
+}
+
+func InspectSheet(s snapshot.Snapshot) Sheet {
+	var sheet Sheet
+	sheet.Money, sheet.HasMoney = readSheetMoney(s)
+	sheet.PlayTime, sheet.HasPlayed = readPlayTime(s)
+	sheet.Note, sheet.HasNote = InspectNote(s)
+	sheet.Deaths, sheet.HasDeaths = readDeaths(s)
+	return sheet
+}
+
+type Overview struct {
+	Name           string
+	Level, Money   int64
+	Class          any
+	Race           any
+	Zone           any
+	Professions    []string
+	XPPercent      float64
+	HasXPPercent   bool
+	RestedXP       int64
+	FreeBagSlots   int64
+	HasBagSpace    bool
+	PlayedSeconds  int64
+	HasPlayed      bool
+	MailMessages   int
+	MailExpiring   []string
+	CooldownsReady []string
+}
+
+// AccountReport lists the characters of the account, highest level first.
+type AccountReport struct {
+	Characters []Overview
+	TotalMoney int64
+	Last       string
+}
+
+func InspectAccount(db *snapshot.Database, fresh snapshot.Freshness) AccountReport {
+	names := db.CharacterNames()
+	sort.SliceStable(names, func(i, j int) bool {
+		li, _ := db.Characters[names[i]].LevelAndMoney()
+		lj, _ := db.Characters[names[j]].LevelAndMoney()
+		return li > lj
+	})
+	report := AccountReport{Last: db.Last}
+	for _, name := range names {
+		o := readOverview(name, db.Characters[name], fresh)
+		report.TotalMoney += o.Money
+		report.Characters = append(report.Characters, o)
+	}
+	return report
 }

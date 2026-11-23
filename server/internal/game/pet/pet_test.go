@@ -61,7 +61,7 @@ func TestMissingOrDismissedPet(t *testing.T) {
 
 // The real dump has stances and commands with huge IDs in the abilities list too; they are not abilities.
 func TestAbilitiesSkipStancesAndCommands(t *testing.T) {
-	names := abilityNames(fixtures.Real(t).Map("pet"))
+	names := abilityLabels(Inspect(fixtures.Real(t)).Learned())
 	want := []string{"Arcane Resistance Rank 1", "Cower Rank 1", "Faster Attack V", "Fire Resistance Rank 1", "Frost Resistance Rank 1",
 		"Great Stamina Rank 3", "Growl Rank 3", "Natural Armor Rank 3", "Nature Resistance Rank 1", "Shadow Resistance Rank 1"}
 	if len(names) != len(want) {
@@ -75,12 +75,12 @@ func TestAbilitiesSkipStancesAndCommands(t *testing.T) {
 }
 
 func TestControlsByPetActionFlag(t *testing.T) {
-	p := map[string]any{"abilities": []any{
+	s := snapshot.Snapshot{"pet": map[string]any{"exists": true, "abilities": []any{
 		map[string]any{"name": "Knurren", "rank": "Rang 3"},
 		map[string]any{"name": "Defensiv", "rank": "Begleiterhaltung", "petAction": true},
 		map[string]any{"name": "Defensive", "rank": "Pet Stance"},
-	}}
-	if got := abilityNames(p); len(got) != 1 || got[0] != "Knurren Rang 3" {
+	}}}
+	if got := abilityLabels(Inspect(s).Learned()); len(got) != 1 || got[0] != "Knurren Rang 3" {
 		t.Errorf("abilities: %v", got)
 	}
 }

@@ -214,3 +214,20 @@ func TestGermanClientGivesTheSamePlan(t *testing.T) {
 		t.Errorf("cloth for the tailor by subclass ID: %v", names)
 	}
 }
+
+func TestProposalRulesOnTypedResult(t *testing.T) {
+	p, err := analyse(testDB(), Query{To: "Lw"}, fixtures.At(0))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !p.Comparable || !p.AnyRecipes || len(p.Transfers) != 1 {
+		t.Fatalf("proposal: %+v", p)
+	}
+	leather := p.Transfers[0].Materials[1]
+	if leather.Name != "Light Leather" || leather.Count != 14 || !leather.RecipientHolds || leather.RecipientHas != 1 || leather.Weak() {
+		t.Errorf("Light Leather: %+v", leather)
+	}
+	if got := strings.Join(leather.Where, ","); got != "bags,bank" {
+		t.Errorf("where: %s", got)
+	}
+}

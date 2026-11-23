@@ -204,3 +204,19 @@ func TestFixedOnlyQuestsListedSeparately(t *testing.T) {
 		t.Errorf("fixed rewards: %v", out)
 	}
 }
+
+func TestAnalyseVerdicts(t *testing.T) {
+	s := bare(t, quest(1, "Q", rewardsOf(item(10, "Fancy Tabard", "INVTYPE_TABARD", 50, 5), item(11, "Trash", "", 1, 900))),
+		map[string]any{"id": int64(5), "title": "Only XP", "rewards": map[string]any{"xp": int64(900)}})
+	rep, err := analyse(s, Query{}, items.Scoring{}, fixtures.At(10*time.Minute))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(rep.Judged) != 1 || len(rep.WithoutChoices) != 1 || rep.WithoutChoices[0].Rewards.XP != 900 {
+		t.Fatalf("report: %+v", rep)
+	}
+	j := rep.Judged[0]
+	if j.Verdict != Rated || j.Best == nil || !j.Best.Upgrade || j.Best.label() != "Fancy Tabard" {
+		t.Errorf("judgement: %+v", j)
+	}
+}

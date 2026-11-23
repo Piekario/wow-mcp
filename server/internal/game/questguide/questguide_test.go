@@ -201,3 +201,28 @@ func TestGuideCountsPassedSteps(t *testing.T) {
 		t.Fatalf("passedEarlierSteps = %v, want 20", got)
 	}
 }
+
+func TestFindDecidesNextActionOnTheTypedResult(t *testing.T) {
+	r := Find(dump(), Query{})
+	if !r.Available || len(r.Quests) == 0 {
+		t.Fatalf("result: %+v", r)
+	}
+	for _, a := range r.Quests {
+		switch a.Status {
+		case statusReady:
+			if a.Next != TurnIn && a.Next != TurnInUnknownPlace {
+				t.Errorf("ready quest %v has action %v", a.Entry.ID, a.Next)
+			}
+		case statusActive:
+			if a.Next == TurnIn || a.Next == PickUp {
+				t.Errorf("active quest %v has action %v", a.Entry.ID, a.Next)
+			}
+		}
+	}
+	if Find(snapshot.Snapshot{}, Query{}).Available {
+		t.Error("no database and no saved lookups means unavailable")
+	}
+	if got := Next(snapshot.Snapshot{}).Availability; got != NoGuide {
+		t.Errorf("availability = %v", got)
+	}
+}

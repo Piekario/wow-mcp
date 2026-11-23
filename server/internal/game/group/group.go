@@ -7,10 +7,10 @@ package group
 
 import (
 	"fmt"
-	"maps"
 	"slices"
 	"sort"
 	"strings"
+	"time"
 
 	"wowmcp/internal/game/character"
 	"wowmcp/internal/snapshot"
@@ -22,152 +22,204 @@ type Query struct {
 	Player    string `json:"player,omitempty" jsonschema:"player name: full gear from their latest Inspect"`
 }
 
-var roleNames = map[string]string{"TANK": "tank", "HEALER": "healer", "DAMAGER": "dps"}
-
 // bigLevelGap: from this level difference on the group gets a warning.
 const bigLevelGap = 6
 
-// inspectSummary is a digest of the Inspect window data: average item level and age.
-func inspectSummary(i map[string]any, fresh snapshot.Freshness) map[string]any {
-	out := map[string]any{}
-	if v, ok := i["averageItemLevel"]; ok {
-		out["averageItemLevel"] = v
-	}
-	if at, ok := snapshot.AsInt(i["capturedAt"]); ok {
-		out["inspectedAgo"] = snapshot.FormatAge(fresh.Age(at))
-	}
-	if g, ok := i["guild"]; ok {
-		out["guild"] = g
-	}
-	return out
+// Role is the role a member chose in the group.
+type Role string
+
+const (
+	Tank   Role = "tank"
+	Healer Role = "healer"
+	Damage Role = "dps"
+)
+
+type Member struct {
+	Name                      string
+	Role                      Role // empty when the member has none
+	Class                     string
+	HasClass                  bool
+	Level, Subgroup           int64
+	Offline, Dead, OutOfRange bool
+	Raw                       any
 }
 
-// View describes the group composition with warnings or, with the player parameter, the full Inspect of one player.
-func View(s snapshot.Snapshot, q Query, fresh snapshot.Freshness) (map[string]any, error) {
-	inspected := s.Map("inspect")
-	if q.Player != "" {
-		return inspectedPlayer(inspected, q.Player, fresh)
-	}
-
-	out := map[string]any{}
-	if party := s.Map("group"); party == nil {
-		out["note"] = "The character was not in a group at dump time. Join a party or raid and type /mcp reload."
-	} else {
-		composition(party, inspected, out, fresh)
-	}
-	if ilvl, ok := character.AverageItemLevel(s); ok {
-		out["myAverageItemLevel"] = ilvl
-	}
-	if len(inspected) > 0 {
-		list := []any{}
-		for _, name := range slices.Sorted(maps.Keys(inspected)) {
-			i := snapshot.AsMap(inspected[name])
-			e := map[string]any{"name": name, "level": i["level"], "class": i["class"]}
-			snapshot.Merge(e, inspectSummary(i, fresh))
-			list = append(list, e)
-		}
-		out["inspected"] = list
-		out["inspectedNote"] = "A player's full gear: wow_group with the player parameter."
-	}
-	return out, nil
+// Party is the group section. Type and the loot settings stay as the dump has them.
+type Party struct {
+	Type                            any
+	Members                         []Member
+	LootMethod, LootThreshold       any
+	HasLootMethod, HasLootThreshold bool
 }
 
-// inspectedPlayer returns a player's whole Inspect record (a name without the realm matches too).
-func inspectedPlayer(inspected map[string]any, player string, fresh snapshot.Freshness) (map[string]any, error) {
-	names := slices.Sorted(maps.Keys(inspected))
-	for _, name := range names {
-		if strings.EqualFold(name, player) || strings.EqualFold(strings.SplitN(name, "-", 2)[0], player) {
-			out := map[string]any{"player": inspected[name]}
-			snapshot.Merge(out, inspectSummary(snapshot.AsMap(inspected[name]), fresh))
-			return out, nil
-		}
-	}
-	return nil, fmt.Errorf("no Inspect data for %q. Inspected players: %s. In game right-click a player, choose Inspect, then /mcp reload",
-		player, snapshot.OrEmpty(strings.Join(names, ", ")))
+func (p Party) IsParty() bool { return p.Type == "party" }
+
+// Inspected is a player's Inspect record. Raw is the whole record for the full-gear answer.
+type Inspected struct {
+	Name             string
+	Level, Class     any
+	AverageItemLevel any
+	HasAverage       bool
+	CapturedAt       int64
+	HasCapturedAt    bool
+	Guild            any
+	HasGuild         bool
+	Record           bool // the dump has a table for the player, not a stray value
+	Raw              any
 }
 
-// composition describes group members, classes, roles and levels and collects warnings.
-func composition(party, inspected map[string]any, out map[string]any, fresh snapshot.Freshness) {
-	roles := map[string]int{}
-	classes := map[string]int{}
+// Inspection is an Inspect record with how long ago it was taken (Age is valid when HasCapturedAt).
+type Inspection struct {
+	Inspected
+	Age time.Duration
+}
+
+type ProblemKind int
+
+const (
+	MemberOffline ProblemKind = iota
+	MemberDead
+	MemberOutOfRange
+	LevelGap
+	NoTank
+	NoHealer
+)
+
+// Problem is a warning about the group; Member names the member for the member kinds, Min and Max the levels for LevelGap.
+type Problem struct {
+	Kind     ProblemKind
+	Member   string
+	Min, Max int64
+}
+
+type LevelSpread struct {
+	Min, Max int64
+	Average  float64
+}
+
+type MemberStatus struct {
+	Member
+	Inspection *Inspection
+}
+
+type Composition struct {
+	Party    Party
+	Members  []MemberStatus // ordered by subgroup
+	Classes  map[string]int
+	Roles    map[Role]int
+	Levels   *LevelSpread // nil for an empty group
+	Problems []Problem
+}
+
+// Report is the group at dump time with the players the character inspected.
+type Report struct {
+	InGroup      bool
+	Composition  Composition
+	ItemLevel    float64
+	HasItemLevel bool
+	Inspected    []Inspection // ordered by name
+}
+
+// Analyse judges the group: roles, classes, level spread and what is wrong with it.
+func Analyse(s snapshot.Snapshot, fresh snapshot.Freshness) Report {
+	inspected := readInspected(s)
+	r := Report{}
+	if party, ok := readParty(s); ok {
+		r.InGroup = true
+		r.Composition = compose(party, inspected, fresh)
+	}
+	r.ItemLevel, r.HasItemLevel = character.AverageItemLevel(s)
+	for _, i := range inspected {
+		r.Inspected = append(r.Inspected, inspect(i, fresh))
+	}
+	return r
+}
+
+func inspect(i Inspected, fresh snapshot.Freshness) Inspection {
+	in := Inspection{Inspected: i}
+	if i.HasCapturedAt {
+		in.Age = fresh.Age(i.CapturedAt)
+	}
+	return in
+}
+
+func compose(party Party, inspected []Inspected, fresh snapshot.Freshness) Composition {
+	c := Composition{Party: party, Classes: map[string]int{}, Roles: map[Role]int{}}
 	var minLevel, maxLevel, sumLevel int64
-	var problems []string
-	members := []any{}
-	for _, raw := range snapshot.AsList(party["members"]) {
-		m := snapshot.AsMap(raw)
-		e := map[string]any{}
-		for k, v := range m {
-			e[k] = v
+	for _, m := range party.Members {
+		status := MemberStatus{Member: m}
+		if i := findInspected(inspected, m.Name); i != nil && i.Record {
+			in := inspect(*i, fresh)
+			status.Inspection = &in
 		}
-		name, _ := m["name"].(string)
-		if role, ok := roleNames[fmt.Sprint(m["role"])]; ok {
-			e["role"] = role
-			roles[role]++
+		c.Members = append(c.Members, status)
+		if m.Role != "" {
+			c.Roles[m.Role]++
 		}
-		if class, ok := m["class"].(string); ok {
-			classes[class]++
+		if m.HasClass {
+			c.Classes[m.Class]++
 		}
-		level, _ := snapshot.AsInt(m["level"])
-		sumLevel += level
-		if minLevel == 0 || level < minLevel {
-			minLevel = level
+		sumLevel += m.Level
+		if minLevel == 0 || m.Level < minLevel {
+			minLevel = m.Level
 		}
-		if level > maxLevel {
-			maxLevel = level
-		}
-		problems = append(problems, memberProblems(name, m)...)
-		if i := snapshot.AsMap(inspected[name]); i != nil {
-			e["inspect"] = inspectSummary(i, fresh)
-		}
-		members = append(members, e)
+		maxLevel = max(maxLevel, m.Level)
+		c.Problems = append(c.Problems, memberProblems(m)...)
 	}
-	sort.SliceStable(members, func(i, j int) bool {
-		gi, _ := snapshot.AsInt(snapshot.AsMap(members[i])["subgroup"])
-		gj, _ := snapshot.AsInt(snapshot.AsMap(members[j])["subgroup"])
-		return gi < gj
-	})
-	out["type"] = party["type"]
-	out["size"] = len(members)
-	out["members"] = members
-	out["classes"] = classes
-	if len(roles) > 0 {
-		out["roles"] = roles
-	}
-	if len(members) > 0 {
-		out["levels"] = map[string]any{"min": minLevel, "max": maxLevel, "average": float64(sumLevel*10/int64(len(members))) / 10}
+	sort.SliceStable(c.Members, func(i, j int) bool { return c.Members[i].Subgroup < c.Members[j].Subgroup })
+	if n := int64(len(party.Members)); n > 0 {
+		c.Levels = &LevelSpread{Min: minLevel, Max: maxLevel, Average: float64(sumLevel*10/n) / 10}
 		if maxLevel-minLevel >= bigLevelGap {
-			problems = append(problems, fmt.Sprintf("large level difference (%d-%d)", minLevel, maxLevel))
+			c.Problems = append(c.Problems, Problem{Kind: LevelGap, Min: minLevel, Max: maxLevel})
 		}
 	}
-	if party["type"] == "party" && len(roles) > 0 {
-		if roles["tank"] == 0 {
-			problems = append(problems, "nobody has the tank role")
+	if party.IsParty() && len(c.Roles) > 0 {
+		if c.Roles[Tank] == 0 {
+			c.Problems = append(c.Problems, Problem{Kind: NoTank})
 		}
-		if roles["healer"] == 0 {
-			problems = append(problems, "nobody has the healer role")
-		}
-	}
-	if len(problems) > 0 {
-		out["warnings"] = problems
-	}
-	for _, k := range []string{"lootMethod", "lootThreshold"} {
-		if v, ok := party[k]; ok {
-			out[k] = v
+		if c.Roles[Healer] == 0 {
+			c.Problems = append(c.Problems, Problem{Kind: NoHealer})
 		}
 	}
+	return c
 }
 
-// memberProblems are warnings about one member: offline, dead, out of range.
-func memberProblems(name string, m map[string]any) []string {
-	var problems []string
-	if m["online"] == false {
-		problems = append(problems, name+" is offline")
+func findInspected(all []Inspected, name string) *Inspected {
+	for i := range all {
+		if all[i].Name == name {
+			return &all[i]
+		}
 	}
-	if m["dead"] == true {
-		problems = append(problems, name+" is dead")
+	return nil
+}
+
+func memberProblems(m Member) []Problem {
+	var problems []Problem
+	if m.Offline {
+		problems = append(problems, Problem{Kind: MemberOffline, Member: m.Name})
 	}
-	if m["inRange"] == false {
-		problems = append(problems, name+" is out of range")
+	if m.Dead {
+		problems = append(problems, Problem{Kind: MemberDead, Member: m.Name})
+	}
+	if m.OutOfRange {
+		problems = append(problems, Problem{Kind: MemberOutOfRange, Member: m.Name})
 	}
 	return problems
+}
+
+// InspectionOf returns a player's Inspect record (a name without the realm matches too).
+func InspectionOf(s snapshot.Snapshot, player string, fresh snapshot.Freshness) (Inspection, error) {
+	all := readInspected(s)
+	for _, i := range all {
+		if strings.EqualFold(i.Name, player) || strings.EqualFold(strings.SplitN(i.Name, "-", 2)[0], player) {
+			return inspect(i, fresh), nil
+		}
+	}
+	names := make([]string, len(all))
+	for i, p := range all {
+		names[i] = p.Name
+	}
+	slices.Sort(names)
+	return Inspection{}, fmt.Errorf("no Inspect data for %q. Inspected players: %s. In game right-click a player, choose Inspect, then /mcp reload",
+		player, snapshot.OrEmpty(strings.Join(names, ", ")))
 }

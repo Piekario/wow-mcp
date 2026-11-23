@@ -4,7 +4,6 @@
 package items
 
 import (
-	"fmt"
 	"sort"
 	"strings"
 
@@ -25,30 +24,18 @@ type Seller struct {
 func SellersOf(s snapshot.Snapshot, name string) []Seller {
 	var out []Seller
 	for _, v := range s.Visits("vendor", "vendors") {
-		for _, raw := range snapshot.AsList(v.Section["items"]) {
-			item := snapshot.AsMap(raw)
-			if n, _ := item["name"].(string); !strings.EqualFold(n, name) {
+		vendor, _ := readVendorSection(v.Section)
+		for _, it := range vendor.Items {
+			if !strings.EqualFold(it.Name, name) || !it.HasPrice {
 				continue
 			}
-			price, ok := snapshot.AsInt(item["priceCopper"])
-			if !ok {
-				continue
-			}
-			stack, _ := snapshot.AsInt(item["stack"])
-			stack = max(stack, 1)
+			stack := max(it.Stack, 1)
 			at, _ := v.CapturedAt()
-			out = append(out, Seller{Npc: v.Npc, PriceCopper: price, Stack: stack, UnitCopper: float64(price) / float64(stack), CapturedAt: at})
+			out = append(out, Seller{Npc: v.Npc, PriceCopper: it.Price, Stack: stack, UnitCopper: float64(it.Price) / float64(stack), CapturedAt: at})
 			break
 		}
 	}
 	sort.SliceStable(out, func(i, j int) bool { return out[i].UnitCopper < out[j].UnitCopper })
-	return out
-}
-
-// Describe describes the vendor for the response: who, the price of a pack and of a unit.
-func (sl Seller) Describe() map[string]any {
-	out := map[string]any{"npc": sl.Npc, "pack": snapshot.Money(sl.PriceCopper).String(), "stack": sl.Stack,
-		"unitPrice": fmt.Sprintf("%.1f c", sl.UnitCopper)}
 	return out
 }
 

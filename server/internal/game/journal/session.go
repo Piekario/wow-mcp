@@ -8,7 +8,6 @@ import (
 	"sort"
 
 	"wowmcp/internal/game/character"
-	"wowmcp/internal/game/itemkind"
 	"wowmcp/internal/game/loot"
 	"wowmcp/internal/game/periods"
 	"wowmcp/internal/game/progress"
@@ -83,36 +82,23 @@ func Describe(st progress.Stretch) Session {
 func questTitles(snaps []snapshot.Snapshot) map[int64]string {
 	titles := map[int64]string{}
 	for _, s := range snaps {
-		for _, raw := range s.List("quests") {
-			q := snapshot.AsMap(raw)
-			if id, ok := snapshot.AsInt(q["id"]); ok {
-				if title, _ := q["title"].(string); title != "" {
-					titles[id] = title
-				}
+		for _, q := range readQuestLog(s) {
+			if title, _ := q.Title.(string); q.HasID && title != "" {
+				titles[q.ID] = title
 			}
 		}
 	}
 	return titles
 }
 
-func idSet(list []any) map[int64]bool {
-	out := map[int64]bool{}
-	for _, raw := range list {
-		if id, ok := snapshot.AsInt(raw); ok {
-			out[id] = true
-		}
-	}
-	return out
-}
-
 // questsCompleted lists the quests added to completedQuests between the first and the last dump.
 // The title comes from the quest log in one of the session's dumps; when there is none, only the ID is given.
 func questsCompleted(snaps []snapshot.Snapshot) []string {
-	first, last := snaps[0], snaps[len(snaps)-1]
-	if first.List("completedQuests") == nil || last.List("completedQuests") == nil {
+	before, listedBefore := readCompleted(snaps[0])
+	after, listedAfter := readCompleted(snaps[len(snaps)-1])
+	if !listedBefore || !listedAfter {
 		return nil
 	}
-	before, after := idSet(first.List("completedQuests")), idSet(last.List("completedQuests"))
 	titles := questTitles(snaps)
 	var ids []int64
 	for id := range after {
@@ -134,47 +120,20 @@ func questsCompleted(snaps []snapshot.Snapshot) []string {
 
 // questsAccepted lists quests visible in the log in later dumps of the session but absent from the first.
 func questsAccepted(snaps []snapshot.Snapshot) []string {
-	known := idSet(nil)
-	for _, raw := range snaps[0].List("quests") {
-		if id, ok := snapshot.AsInt(snapshot.AsMap(raw)["id"]); ok {
-			known[id] = true
+	known := map[int64]bool{}
+	for _, q := range readQuestLog(snaps[0]) {
+		if q.HasID {
+			known[q.ID] = true
 		}
 	}
 	var out []string
 	for _, s := range snaps[1:] {
-		for _, raw := range s.List("quests") {
-			q := snapshot.AsMap(raw)
-			id, ok := snapshot.AsInt(q["id"])
-			if !ok || known[id] {
+		for _, q := range readQuestLog(s) {
+			if !q.HasID || known[q.ID] {
 				continue
 			}
-			known[id] = true
-			out = append(out, fmt.Sprint(q["title"]))
-		}
-	}
-	return out
-}
-
-type bagEntry struct {
-	count, quality int64
-}
-
-func bagCounts(s snapshot.Snapshot) map[string]*bagEntry {
-	out := map[string]*bagEntry{}
-	for _, bag := range s.Bags() {
-		for _, raw := range snapshot.AsList(snapshot.AsMap(bag)["items"]) {
-			item := snapshot.AsMap(raw)
-			name, _ := item["name"].(string)
-			if name == "" {
-				continue
-			}
-			e := out[name]
-			if e == nil {
-				e = &bagEntry{}
-				e.quality, _ = snapshot.AsInt(item["quality"])
-				out[name] = e
-			}
-			e.count += snapshot.ItemCount(item)
+			known[q.ID] = true
+			out = append(out, fmt.Sprint(q.Title))
 		}
 	}
 	return out
@@ -184,9 +143,9 @@ func bagCounts(s snapshot.Snapshot) map[string]*bagEntry {
 // best quality first. An item gained and lost between dumps is invisible.
 func notableItems(snaps []snapshot.Snapshot) []ItemGain {
 	gains := map[string]*ItemGain{}
-	prev := bagCounts(snaps[0])
+	prev := readBagCounts(snaps[0])
 	for _, s := range snaps[1:] {
-		cur := bagCounts(s)
+		cur := readBagCounts(s)
 		for name, e := range cur {
 			if e.quality < notableQuality {
 				continue
@@ -227,12 +186,9 @@ func deaths(first, last snapshot.Snapshot, start, end int64) (int64, []string) {
 		return 0, nil
 	}
 	var zones []string
-	for _, raw := range snapshot.AsList(last.Map("deaths")["recent"]) {
-		d := snapshot.AsMap(raw)
-		if at, ok := snapshot.AsInt(d["at"]); ok && at > start && at <= end {
-			if zone, _ := d["zone"].(string); zone != "" {
-				zones = appendUnique(zones, zone)
-			}
+	for _, d := range readRecentDeaths(last) {
+		if d.HasAt && d.At > start && d.At <= end && d.Zone != "" {
+			zones = appendUnique(zones, d.Zone)
 		}
 	}
 	return n1 - n0, zones
@@ -241,7 +197,7 @@ func deaths(first, last snapshot.Snapshot, start, end int64) (int64, []string) {
 func zones(snaps []snapshot.Snapshot) []string {
 	var out []string
 	for _, s := range snaps {
-		if zone, _ := s.Character()["zone"].(string); zone != "" {
+		if zone := readZone(s); zone != "" {
 			out = appendUnique(out, zone)
 		}
 	}
@@ -255,81 +211,4 @@ func appendUnique(list []string, v string) []string {
 		}
 	}
 	return append(list, v)
-}
-
-func qualityLabel(q int64) string {
-	if name, ok := itemkind.QualityName(q); ok {
-		return name
-	}
-	return fmt.Sprint(q)
-}
-
-func limited[T any](list []T) (shown []T, more int) {
-	if len(list) > maxListed {
-		return list[:maxListed], len(list) - maxListed
-	}
-	return list, 0
-}
-
-// View is the response about a session; empty categories are omitted.
-func (s Session) View() map[string]any {
-	out := map[string]any{
-		"start":     snapshot.FormatTime(s.Start),
-		"end":       snapshot.FormatTime(s.End),
-		"snapshots": s.Snapshots,
-	}
-	if s.Snapshots < 2 {
-		out["note"] = "The session has one dump, so there is nothing to compare with; changes will appear after the next /mcp reload."
-		out["level"] = s.LevelEnd
-		out["zones"] = s.Zones
-		return out
-	}
-	out["duration"] = snapshot.FormatSeconds(s.ElapsedSeconds)
-	out["durationBasis"] = s.Basis
-	out["level"] = fmt.Sprintf("%d -> %d", s.LevelStart, s.LevelEnd)
-	if s.LevelEnd > s.LevelStart {
-		out["levelsGained"] = s.LevelEnd - s.LevelStart
-	}
-	out["xpGained"] = s.XP
-	if !s.XPExact {
-		out["xpNote"] = "between some dumps there were 2+ level-ups; XP from those stretches is skipped"
-	}
-	out["goldChange"] = snapshot.Money(s.MoneyDelta).Signed()
-	if len(s.QuestsCompleted) > 0 {
-		list, more := limited(s.QuestsCompleted)
-		out["questsCompleted"] = map[string]any{"count": len(s.QuestsCompleted), "titles": list, "more": more}
-	}
-	if len(s.QuestsAccepted) > 0 {
-		list, more := limited(s.QuestsAccepted)
-		out["questsAccepted"] = map[string]any{"count": len(s.QuestsAccepted), "titles": list, "more": more}
-	}
-	if len(s.NotableItems) > 0 {
-		list, more := limited(s.NotableItems)
-		items := make([]string, len(list))
-		for i, g := range list {
-			items[i] = fmt.Sprintf("%s x%d (%s)", g.Name, g.Count, qualityLabel(g.Quality))
-		}
-		out["notableItems"] = map[string]any{"items": items, "more": more, "note": "gains in bags of Uncommon quality and above, visible between dumps"}
-	}
-	if l := loot.Describe(s.Loot, maxListed); l != nil {
-		l["note"] = "own loot from chat messages (loot section), summed from the session's dumps; unlike notableItems it also shows what was sold or used up"
-		s.LootPeriods.Describe(l)
-		out["loot"] = l
-	}
-	if x := xpgains.Describe(s.XPGains); x != nil {
-		x["note"] = "own XP from chat messages and turned-in quests (xpGains section), summed from the session's dumps; kills = kills, quests = turned-in quests, other = the rest (e.g. exploration)"
-		s.XPPeriods.Describe(x)
-		out["xpSources"] = x
-	}
-	if s.Deaths > 0 {
-		d := map[string]any{"count": s.Deaths}
-		if len(s.DeathZones) > 0 {
-			d["zones"] = s.DeathZones
-		}
-		out["deaths"] = d
-	}
-	if len(s.Zones) > 0 {
-		out["zones"] = s.Zones
-	}
-	return out
 }

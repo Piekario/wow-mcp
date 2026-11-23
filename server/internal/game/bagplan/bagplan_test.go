@@ -144,3 +144,21 @@ func TestEmptyBags(t *testing.T) {
 		t.Errorf("empty bags: %v", out)
 	}
 }
+
+func TestAnalyseTotalsFollowTheSuggestions(t *testing.T) {
+	s := fixtures.Forever(t)
+	addBagItem(s, map[string]any{"name": "Broken Fang", "id": int64(1), "count": int64(3), "quality": int64(0), "sellPrice": int64(10), "type": "Miscellaneous", "subType": "Junk"})
+	plan := Analyse(s, fixtures.At(0))
+	sell := plan.Totals[Sell]
+	if sell == nil || sell.Vendor != 30 || sell.Slots != 1 {
+		t.Fatalf("sell total = %+v", sell)
+	}
+	if plan.FreeAfter() != plan.Space.Free+plan.SlotsFreed() || plan.SlotsFreed() < sell.Slots {
+		t.Errorf("free after %d, freed %d", plan.FreeAfter(), plan.SlotsFreed())
+	}
+	for i := 1; i < len(plan.Suggestions); i++ {
+		if rank(plan.Suggestions[i-1].Action) > rank(plan.Suggestions[i].Action) {
+			t.Fatalf("suggestions out of order at %d: %+v", i, plan.Suggestions)
+		}
+	}
+}

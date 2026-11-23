@@ -262,8 +262,8 @@ func whatToSell(s *service, who string, snap snapshot.Snapshot) (string, map[str
 		"professions": snap["professions"],
 		"quests":      quests.ObjectiveTexts(snap),
 	}
-	if ah := auctions.View(snap, auctions.Query{Mine: true}, s.Freshness); ah["note"] == nil {
-		data["auctionHouse"] = ah
+	if ah := auctions.Analyse(snap, auctions.Query{Mine: true}, s.Freshness); ah.Saved {
+		data["auctionHouse"] = ah.Render()
 	}
 	return "Propose what to sell to a vendor and what to keep. Keep items needed for quests in the log, " +
 		"materials for the character's professions, and things that are an upgrade or a supply (ammo, pet food). " +

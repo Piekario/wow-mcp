@@ -22,7 +22,8 @@ Questions and ideas that are not yet a concrete request fit better in
 
 ## Sending a change
 
-1. Fork the repository and create a branch from `main`.
+1. Fork the repository and create a branch from `main`. Name it after the change (`fix/flight-zone-names`,
+   `refactor/domain-types`), not after a tool or a generated ID.
 2. Make the change. Keep it focused: one fix or feature per pull request.
 3. Run the checks (Go 1.25+, Python 3 with `pip install lupa`, `luacheck`, `shellcheck`):
 

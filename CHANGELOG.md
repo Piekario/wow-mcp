@@ -16,6 +16,11 @@ Internal quality work after a design review. No tool, prompt or dump field chang
     Artifact and Heirloom items instead of printing the quality number 6 or 7.
   - The dump history is recorded by an explicit step after the dump is loaded (`mcpserver`), no longer as a side effect of
     `storage.Store.Load`. Nothing changes for the player: every tool call and `--check` still record the dump.
+  - Every domain package (`server/internal/game/*`) now reads the dump into its own types in `read.go`, decides on
+    those types and builds the answer in `render.go`. Untyped maps outside those two files went from 642 to 0, and
+    no function is over 80 lines. Tool answers are byte-identical on all test dumps (golden tests unchanged).
+    Typed readers pass through only the fields they know: a field a newer addon adds to talents, Legacy perks or
+    similar typed sections shows up in `wow_section` at once, and in the dedicated tool after the server learns it.
   - The tool registry is split into groups (status, character, windows, shopping, questing, progress, goals, account).
   - Addon: the logout guard (`LogoutGuard.lua`), the carried loot and XP periods (`Periods.lua`) and the Legacy API
     discovery scan (`LegacyDiscovery.lua`) moved out of `Snapshot.lua` and `Sections/Legacy.lua` into their own files.

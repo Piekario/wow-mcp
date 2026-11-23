@@ -22,3 +22,17 @@ func TestCooldowns(t *testing.T) {
 		t.Errorf("order by ready time: %v", cds)
 	}
 }
+
+func TestJudge(t *testing.T) {
+	fresh := fixtures.At(0)
+	now := fresh.Now().Unix()
+	got := Judge([]Source{
+		{Name: "Later", ReadyAt: now + 600},
+		{Name: "Done", ReadyAt: now - 60},
+		{Name: "Later", ReadyAt: now + 10},
+		{Name: "", ReadyAt: now},
+	}, fresh)
+	if len(got) != 2 || got[0].Name != "Done" || !got[0].Ready || got[1].Ready || got[1].Left != 11*time.Minute-time.Nanosecond {
+		t.Errorf("judged: %+v", got)
+	}
+}

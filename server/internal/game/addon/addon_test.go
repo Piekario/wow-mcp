@@ -87,3 +87,13 @@ func TestToolForNewSections(t *testing.T) {
 		}
 	}
 }
+
+func TestInfoOutOfDate(t *testing.T) {
+	if (Info{}).OutOfDate() || (Info{Version: ExpectedVersion}).OutOfDate() || !(Info{Version: "0.2.0"}).OutOfDate() {
+		t.Error("only a known older version is out of date")
+	}
+	info := read(snapshot.Snapshot{"timings": map[string]any{"slowest": []any{map[string]any{"name": "bags", "ms": 2.5}, map[string]any{"name": "x"}}}})
+	if len(info.Slowest) != 1 || info.Slowest[0].Ms != 2.5 {
+		t.Errorf("slowest: %+v", info.Slowest)
+	}
+}

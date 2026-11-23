@@ -51,7 +51,7 @@ func TestViewStatusesAndCanLearnNow(t *testing.T) {
 		p := raw.(map[string]any)
 		statuses[p["name"]] = p["status"]
 	}
-	want := map[any]any{"Well Rested": StatusMaxed, "Thrill of Adventure": StatusAvailable, "Talented": StatusLocked}
+	want := map[any]any{"Well Rested": string(StatusMaxed), "Thrill of Adventure": string(StatusAvailable), "Talented": string(StatusLocked)}
 	for name, status := range want {
 		if statuses[name] != status {
 			t.Errorf("%v: status %v, want %v", name, statuses[name], status)
@@ -108,15 +108,33 @@ func TestViewWithoutSection(t *testing.T) {
 }
 
 func TestChallenges(t *testing.T) {
-	c := challenges(map[string]any{"list": []any{
-		map[string]any{"name": "A", "completed": true},
-		map[string]any{"name": "B", "completed": false, "description": "do B", "reward": "1 point"},
-	}})
-	if c["total"] != 2 || c["completed"] != 1 || len(c["open"].([]any)) != 1 {
-		t.Fatalf("challenges = %v", c)
+	c := summariseChallenges([]Challenge{
+		{Name: "A", Completed: true},
+		{Name: "B", Description: "do B", Reward: "1 point"},
+	})
+	if c.Total != 2 || len(c.CompletedNames) != 1 || len(c.Open) != 1 || c.NotListed != 0 {
+		t.Fatalf("challenges = %+v", c)
 	}
-	if empty := challenges(map[string]any{"list": []any{}}); empty["note"] == nil {
+	many := make([]Challenge, maxOpenChallenges+3)
+	if c := summariseChallenges(many); len(c.Open) != maxOpenChallenges || c.NotListed != 3 {
+		t.Fatalf("truncation = %+v", c)
+	}
+	if empty := summariseChallenges(nil).render(); empty["note"] == nil {
 		t.Fatalf("empty = %v", empty)
+	}
+}
+
+func TestAnalyseRules(t *testing.T) {
+	r := Analyse(snap(legacyConfig(0)), Query{})
+	if r.Advice != AdviceNoPoints || len(r.CanLearn) != 0 || !r.Points.Known || r.Points.Unspent != 0 {
+		t.Fatalf("no points: %+v", r)
+	}
+	r = Analyse(snap(legacyConfig(3)), Query{Tree: "adv"})
+	if len(r.CanLearn) != 1 || r.CanLearn[0].Perk.Name != "Thrill of Adventure" || len(r.Trees) != 1 {
+		t.Fatalf("filtered: %+v", r)
+	}
+	if got := (Perk{Rank: 5, MaxRank: 5}).Status(); got != StatusMaxed {
+		t.Fatalf("status = %v", got)
 	}
 }
 

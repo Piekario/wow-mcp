@@ -9,46 +9,43 @@ import (
 	"wowmcp/internal/snapshot"
 )
 
-// StockLine is the stock of one item summed by name across bags and bank (bank: state from the last visit).
-type StockLine struct {
-	Name, Type, SubType string
-	Item                map[string]any // the first instance found (class IDs, binding)
-	Bags, Bank          int64
+// ItemStock is the stock of one item summed by name across bags and bank (bank: state from the last visit).
+// Item is the first instance found (class IDs, binding).
+type ItemStock struct {
+	Item       Item
+	Bags, Bank int64
 }
 
-func (l StockLine) Total() int64 { return l.Bags + l.Bank }
+func (l ItemStock) Total() int64 { return l.Bags + l.Bank }
 
-// BagBankStock sums items from bags and bank by name (key: lowercase name).
-// keep allows skipping items (e.g. bound ones); nil = takes all. It does not count equipped gear.
-func BagBankStock(s snapshot.Snapshot, keep func(item map[string]any) bool) map[string]*StockLine {
-	out := map[string]*StockLine{}
-	add := func(bank bool, list []any) {
-		for _, raw := range list {
-			item := snapshot.AsMap(raw)
-			name, _ := item["name"].(string)
-			if name == "" || (keep != nil && !keep(item)) {
+// StockOf sums items from bags and bank by name (key: lowercase name). keep allows skipping items
+// (e.g. bound ones); nil takes all. It does not count equipped gear.
+func StockOf(s snapshot.Snapshot, keep func(Item) bool) map[string]*ItemStock {
+	out := map[string]*ItemStock{}
+	add := func(bank bool, list []Item) {
+		for _, it := range list {
+			if it.Name == "" || (keep != nil && !keep(it)) {
 				continue
 			}
-			key := strings.ToLower(name)
+			key := strings.ToLower(it.Name)
 			l := out[key]
 			if l == nil {
-				l = &StockLine{Name: name, Item: item}
-				l.Type, _ = item["type"].(string)
-				l.SubType, _ = item["subType"].(string)
+				l = &ItemStock{Item: it}
 				out[key] = l
 			}
 			if bank {
-				l.Bank += snapshot.ItemCount(item)
+				l.Bank += it.Count
 			} else {
-				l.Bags += snapshot.ItemCount(item)
+				l.Bags += it.Count
 			}
 		}
 	}
-	for _, bag := range s.Bags() {
-		add(false, snapshot.AsList(snapshot.AsMap(bag)["items"]))
+	for _, bag := range readBags(s) {
+		add(false, bag.Items)
 	}
-	for _, c := range s.BankContainers() {
-		add(true, snapshot.AsList(snapshot.AsMap(c)["items"]))
+	bank, _ := readBank(s)
+	for _, c := range bank.Containers {
+		add(true, c.Items)
 	}
 	return out
 }

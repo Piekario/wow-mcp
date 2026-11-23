@@ -13,37 +13,33 @@ import (
 // EndingSoonWithin: own auctions with less time left than this are considered ending.
 const EndingSoonWithin = 2 * time.Hour
 
-// EndingSoon returns descriptions of the player's own unsold auctions that end within the given duration.
+// Ending is one of the player's own unsold auctions that is about to end. A Left of zero or less means it may
+// have expired since the list was saved.
+type Ending struct {
+	Name  string
+	Count int64
+	Left  time.Duration
+}
+
+// EndingAuctions returns the player's own unsold auctions that end within the given duration.
 // Time left is counted from the moment the auction list was saved (ownedAt), because the client reports it relative to that moment.
-// Empty list when the data carries no time left.
-func EndingSoon(s snapshot.Snapshot, fresh snapshot.Freshness, within time.Duration) []string {
-	auctions := s.Map("auctions")
+// Empty when the data carries no time left.
+func EndingAuctions(s snapshot.Snapshot, fresh snapshot.Freshness, within time.Duration) []Ending {
+	sec := readSection(s)
 	var elapsed time.Duration
-	if at, ok := snapshot.AsInt(auctions["ownedAt"]); ok {
-		elapsed = fresh.Age(at)
+	if sec.HasOwnedAt {
+		elapsed = fresh.Age(sec.OwnedAt)
 	}
-	var out []string
-	for _, raw := range snapshot.AsList(auctions["owned"]) {
-		a := snapshot.AsMap(raw)
-		secs, ok := snapshot.AsInt(a["timeLeftSeconds"])
-		if !ok || a["sold"] == true {
+	var out []Ending
+	for _, a := range sec.Owned {
+		if !a.HasTimeLeft || a.Sold {
 			continue
 		}
-		left := time.Duration(secs)*time.Second - elapsed
+		left := time.Duration(a.TimeLeft)*time.Second - elapsed
 		if left > within {
 			continue
 		}
-		out = append(out, fmt.Sprintf("%s x%d (%s)", auctionName(a), snapshot.ItemCount(a), leftLabel(left)))
+		out = append(out, Ending{Name: fmt.Sprint(a.Name), Count: a.Units, Left: left})
 	}
 	return out
-}
-
-func auctionName(a map[string]any) string { return fmt.Sprint(a["name"]) }
-
-// leftLabel describes the time left on an auction; negative means the auction may have already expired since the list was saved.
-func leftLabel(left time.Duration) string {
-	if left <= 0 {
-		return "may have already expired"
-	}
-	return snapshot.FormatAge(left) + " left"
 }

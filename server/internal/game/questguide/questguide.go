@@ -11,11 +11,11 @@
 package questguide
 
 import (
-	"fmt"
 	"math"
 	"strconv"
 	"strings"
 
+	"wowmcp/internal/game/quests"
 	"wowmcp/internal/snapshot"
 )
 
@@ -25,15 +25,7 @@ type Query struct {
 	Quest     string `json:"quest,omitempty" jsonschema:"quest ID, or a fragment of a quest or NPC name; empty = every quest in the log"`
 }
 
-const (
-	noDatabaseHint = "The dump has no quest database section (questDb). It needs addon 0.14.0 or newer and the Questie addon (with QuestieDB) installed in the game; then run /mcp reload. " +
-		"Do NOT answer where a quest starts or ends from memory or from the quest text: World of Warcraft: Forever differs from Classic and the quest text is often out of date."
-	notInDumpHint = "Not in the dump: it holds only the quests in the log, the quests of the next guide steps and the answers to /mcp quest. " +
-		"Ask the player to type /mcp quest <exact quest name, NPC name or ID> in game and then /mcp reload. Do not guess the location from memory."
-	sourceNote = "Locations come from the quest database installed in the player's game (the same data Questie shows on the map), not from the quest text. " +
-		"Coordinates are map percentages (x from the left, y from the top) in the named zone."
-)
-
+// Where a quest stands for the character.
 const (
 	statusReady     = "in log, ready to turn in"
 	statusActive    = "in log, in progress"
@@ -42,21 +34,51 @@ const (
 	statusNotInLog  = "not in log"
 )
 
-// player is what the dump says about where the character stands.
-type player struct {
-	zone string
-	x, y float64
-	has  bool
+// Player is where the dump says the character stands. Known: zone and coordinates are present.
+type Player struct {
+	Zone  string
+	X, Y  float64
+	Known bool
 }
 
-func playerOf(s snapshot.Snapshot) player {
-	c := s.Character()
-	p := player{}
-	p.zone, _ = c["zone"].(string)
-	x, okX := snapshot.AsFloat(c["x"])
-	y, okY := snapshot.AsFloat(c["y"])
-	p.x, p.y, p.has = x, y, okX && okY && p.zone != ""
-	return p
+// Location is one spawn point from the quest database.
+type Location struct {
+	Zone       string
+	AreaID     int64
+	HasAreaID  bool
+	InInstance bool
+	X, Y       float64
+	HasXY      bool
+}
+
+// Target is an NPC, object or item of the quest database. The fields the answer only passes through stay as the
+// dump has them (nil = not in the dump).
+type Target struct {
+	Kind, ID, Name, Title, Text, FriendlyTo, SpawnCount, Zones, ZoneCount any
+	Locations                                                             []Location
+}
+
+// Entry is a quest of the quest database.
+type Entry struct {
+	ID, Name, Level, RequiredLevel, Zone, ObjectivesText, NextQuest, InGuide any
+	InLog                                                                    bool
+	StartedBy, FinishedBy, Objectives                                        []Target
+}
+
+// SavedLookup is the answer to one /mcp quest the player asked in game.
+type SavedLookup struct {
+	Query  string
+	Quests []Entry
+	NPCs   []Target
+}
+
+// Database is the questDb section and the saved /mcp quest answers.
+type Database struct {
+	Present bool
+	Source  any
+	Quests  []Entry
+	Unknown []any
+	Lookups []SavedLookup
 }
 
 // compass names the direction of a map offset (y grows to the south).
@@ -67,117 +89,79 @@ func compass(dx, dy float64) string {
 	return names[index]
 }
 
-// place turns one target from the dump (an NPC, object or item with sample locations) into an answer entry.
-func place(raw any, p player) map[string]any {
-	t := snapshot.AsMap(raw)
-	out := map[string]any{}
-	for _, key := range []string{"kind", "id", "name", "title", "text", "friendlyTo", "spawnCount", "zones", "zoneCount"} {
-		if v, ok := t[key]; ok {
-			out[key] = v
-		}
-	}
-	locations := snapshot.AsList(t["locations"])
-	if len(locations) == 0 {
-		if t["kind"] == "item" {
-			out["note"] = "an item: the dump does not say where it drops"
-		} else if _, named := t["name"]; !named {
-			out["note"] = "not in the quest database"
+// Spot is a location, with the distance from the character when both are in the same zone.
+type Spot struct {
+	Location
+	Distance    float64
+	HasDistance bool
+	Direction   string
+}
+
+// PlaceNote is what the answer must say about a target without (all) its locations.
+type PlaceNote int
+
+const (
+	NoNote PlaceNote = iota
+	ItemWithoutDrop
+	NotInDatabase
+	MoreSpawns
+)
+
+// Place is a target with its spots.
+type Place struct {
+	Target Target
+	Spots  []Spot
+	Note   PlaceNote
+	Spawns int64
+}
+
+func place(t Target, p Player) Place {
+	out := Place{Target: t}
+	if len(t.Locations) == 0 {
+		if t.Kind == "item" {
+			out.Note = ItemWithoutDrop
+		} else if t.Name == nil {
+			out.Note = NotInDatabase
 		}
 		return out
 	}
-	var where []any
-	for _, rawLoc := range locations {
-		loc := snapshot.AsMap(rawLoc)
-		entry := map[string]any{}
-		zone, _ := loc["zone"].(string)
-		if zone != "" {
-			entry["zone"] = zone
-		} else if id, ok := snapshot.AsInt(loc["areaID"]); ok {
-			entry["zone"] = fmt.Sprintf("area %d", id)
+	for _, loc := range t.Locations {
+		spot := Spot{Location: loc}
+		if loc.HasXY && p.Known && loc.Zone == p.Zone {
+			dx, dy := loc.X-p.X, loc.Y-p.Y
+			spot.Distance, spot.HasDistance, spot.Direction = snapshot.Round1(math.Hypot(dx, dy)), true, compass(dx, dy)
 		}
-		if loc["inInstance"] == true {
-			entry["inInstance"] = true
-		}
-		x, okX := snapshot.AsFloat(loc["x"])
-		y, okY := snapshot.AsFloat(loc["y"])
-		if okX && okY {
-			entry["x"], entry["y"] = x, y
-			if p.has && zone == p.zone {
-				dx, dy := x-p.x, y-p.y
-				distance := snapshot.Round1(math.Hypot(dx, dy))
-				if distance < 1 {
-					entry["fromPlayer"] = "right here"
-				} else {
-					entry["fromPlayer"] = fmt.Sprintf("%g map units %s of the character", distance, compass(dx, dy))
-				}
-			}
-		}
-		where = append(where, entry)
+		out.Spots = append(out.Spots, spot)
 	}
-	out["where"] = where
-	if count, _ := snapshot.AsInt(t["spawnCount"]); count > int64(len(where)) {
-		out["note"] = fmt.Sprintf("%d spawn points in total; %d shown", count, len(where))
+	if count, _ := snapshot.AsInt(t.SpawnCount); count > int64(len(out.Spots)) {
+		out.Note, out.Spawns = MoreSpawns, count
 	}
 	return out
 }
 
-func places(raw any, p player) []any {
-	var out []any
-	for _, t := range snapshot.AsList(raw) {
+func places(targets []Target, p Player) []Place {
+	var out []Place
+	for _, t := range targets {
 		out = append(out, place(t, p))
 	}
 	return out
 }
 
-// describe is "Falla Sagewind (The Barrens 48.2, 32.8)" for the first target of a list, or "".
-func describe(raw any) string {
-	targets := snapshot.AsList(raw)
-	if len(targets) == 0 {
-		return ""
-	}
-	t := snapshot.AsMap(targets[0])
-	name, _ := t["name"].(string)
-	if name == "" {
-		name = fmt.Sprintf("%v %v", t["kind"], t["id"])
-	}
-	locations := snapshot.AsList(t["locations"])
-	if len(locations) == 0 {
-		return name
-	}
-	loc := snapshot.AsMap(locations[0])
-	zone, _ := loc["zone"].(string)
-	if zone == "" {
-		zone = "unknown zone"
-	}
-	x, okX := snapshot.AsFloat(loc["x"])
-	y, okY := snapshot.AsFloat(loc["y"])
-	switch {
-	case loc["inInstance"] == true:
-		return fmt.Sprintf("%s (inside %s)", name, zone)
-	case okX && okY:
-		return fmt.Sprintf("%s (%s %g, %g)", name, zone, x, y)
-	}
-	return fmt.Sprintf("%s (%s)", name, zone)
-}
-
 // logStates maps quest ID -> state for the quests in the log and the completed ones.
 func logStates(s snapshot.Snapshot) map[int64]string {
 	states := map[int64]string{}
-	for _, raw := range snapshot.AsList(s["completedQuests"]) {
-		if id, ok := snapshot.AsInt(raw); ok {
-			states[id] = statusCompleted
-		}
+	for _, id := range readCompleted(s) {
+		states[id] = statusCompleted
 	}
-	for _, raw := range s.List("quests") {
-		q := snapshot.AsMap(raw)
-		id, ok := snapshot.AsInt(q["id"])
+	for _, q := range quests.ReadLog(s).Quests {
+		id, ok := snapshot.AsInt(q.ID)
 		if !ok {
 			continue
 		}
 		switch {
-		case q["failed"] == true:
+		case q.Failed:
 			states[id] = statusFailed
-		case q["complete"] == true:
+		case q.Complete:
 			states[id] = statusReady
 		default:
 			states[id] = statusActive
@@ -193,155 +177,155 @@ func statusOf(states map[int64]string, id int64) string {
 	return statusNotInLog
 }
 
-// nextStep is the one-line answer for a quest in the given state.
-func nextStep(q map[string]any, status string) string {
+// NextAction is the one thing the player should do about a quest.
+type NextAction int
+
+const (
+	NoAction NextAction = iota
+	TurnIn
+	TurnInUnknownPlace
+	FinishThenTurnIn
+	PickUp
+	AbandonAndRetake
+)
+
+// nextAction is the answer for a quest in the given state; At is the target the action points to.
+func nextAction(e Entry, status string) (action NextAction, at *Target) {
+	first := func(targets []Target) *Target {
+		if len(targets) == 0 {
+			return nil
+		}
+		return &targets[0]
+	}
 	switch status {
 	case statusReady:
-		if where := describe(q["finishedBy"]); where != "" {
-			return "Turn in at " + where
+		if at = first(e.FinishedBy); at != nil {
+			return TurnIn, at
 		}
-		return "Ready to turn in, but the quest database does not know where"
+		return TurnInUnknownPlace, nil
 	case statusActive:
-		if where := describe(q["finishedBy"]); where != "" {
-			return "Finish the objectives, then turn in at " + where
+		if at = first(e.FinishedBy); at != nil {
+			return FinishThenTurnIn, at
 		}
 	case statusNotInLog:
-		if where := describe(q["startedBy"]); where != "" {
-			return "Pick up from " + where
+		if at = first(e.StartedBy); at != nil {
+			return PickUp, at
 		}
 	case statusFailed:
-		return "Failed: abandon it and pick it up again"
+		return AbandonAndRetake, nil
 	}
-	return ""
+	return NoAction, nil
 }
 
-// questView is one quest of the answer.
-func questView(raw any, states map[int64]string, p player) map[string]any {
-	q := snapshot.AsMap(raw)
-	out := map[string]any{}
-	for _, key := range []string{"id", "name", "level", "requiredLevel", "zone", "objectivesText", "nextQuest", "inGuide"} {
-		if v, ok := q[key]; ok {
-			out[key] = v
-		}
-	}
-	id, _ := snapshot.AsInt(q["id"])
-	status := statusOf(states, id)
-	out["status"] = status
-	if step := nextStep(q, status); step != "" {
-		out["nextStep"] = step
-	}
-	if status != statusCompleted {
-		if list := places(q["finishedBy"], p); list != nil {
-			out["turnIn"] = list
-		}
-		if list := places(q["objectives"], p); list != nil && status != statusReady {
-			out["objectives"] = list
-		}
-	}
-	if status == statusNotInLog || status == statusFailed {
-		if list := places(q["startedBy"], p); list != nil {
-			out["pickUp"] = list
-		}
-	}
-	return out
+// QuestAnswer is one quest of the answer.
+type QuestAnswer struct {
+	Entry                      Entry
+	Status                     string
+	Next                       NextAction
+	At                         *Target
+	TurnIn, Objectives, PickUp []Place
 }
 
-// matches reports whether a quest or NPC entry fits the query (an ID, or a name fragment in any letter case).
-func matches(entry map[string]any, query string) bool {
+func answerFor(e Entry, states map[int64]string, p Player) QuestAnswer {
+	id, _ := snapshot.AsInt(e.ID)
+	a := QuestAnswer{Entry: e, Status: statusOf(states, id)}
+	a.Next, a.At = nextAction(e, a.Status)
+	if a.Status != statusCompleted {
+		a.TurnIn = places(e.FinishedBy, p)
+		if a.Status != statusReady {
+			a.Objectives = places(e.Objectives, p)
+		}
+	}
+	if a.Status == statusNotInLog || a.Status == statusFailed {
+		a.PickUp = places(e.StartedBy, p)
+	}
+	return a
+}
+
+// matches reports whether a quest or NPC fits the query (an ID, or a name fragment in any letter case).
+func matches(id, name any, query string) bool {
 	if query == "" {
 		return true
 	}
-	if id, err := strconv.ParseInt(query, 10, 64); err == nil {
-		got, ok := snapshot.AsInt(entry["id"])
-		return ok && got == id
+	if want, err := strconv.ParseInt(query, 10, 64); err == nil {
+		got, ok := snapshot.AsInt(id)
+		return ok && got == want
 	}
-	name, _ := entry["name"].(string)
-	return strings.Contains(strings.ToLower(name), strings.ToLower(query))
+	text, _ := name.(string)
+	return strings.Contains(strings.ToLower(text), strings.ToLower(query))
 }
 
-// Lookup is the wow_quest_lookup answer: where the matching quests start, what they need and where they end.
-func Lookup(s snapshot.Snapshot, q Query) map[string]any {
-	query := strings.TrimSpace(q.Quest)
-	out := map[string]any{}
-	section := s.Map("questDb")
-	lookups := s.List("questLookups")
-	if _, has := s["questDb"]; !has && len(lookups) == 0 {
-		out["available"] = false
-		out["hint"] = noDatabaseHint
-		return out
-	}
-	p := playerOf(s)
-	states := logStates(s)
-	if source := snapshot.AsMap(section["source"]); len(source) > 0 {
-		out["source"] = source
-	}
-	if p.has {
-		out["character"] = map[string]any{"zone": p.zone, "x": p.x, "y": p.y}
-	}
+// LookupResult is the quests and NPCs that fit the query. Available is false when the dump has no quest database.
+type LookupResult struct {
+	Available bool
+	Query     string
+	Player    Player
+	Source    any
+	Quests    []QuestAnswer
+	NPCs      []Place
+	Unknown   []any
+}
 
-	seen := map[int64]bool{}
-	var quests, npcs []any
-	addQuest := func(raw any, requireLog bool) {
-		entry := snapshot.AsMap(raw)
-		id, ok := snapshot.AsInt(entry["id"])
-		if !ok || seen[id] || !matches(entry, query) {
-			return
-		}
-		if requireLog && entry["inLog"] != true {
-			return
-		}
-		seen[id] = true
-		quests = append(quests, questView(raw, states, p))
+type finder struct {
+	query   string
+	states  map[int64]string
+	player  Player
+	seen    map[int64]bool
+	seenNPC map[int64]bool
+	result  *LookupResult
+}
+
+func (f *finder) addQuest(e Entry, requireLog bool) {
+	id, ok := snapshot.AsInt(e.ID)
+	if !ok || f.seen[id] || !matches(e.ID, e.Name, f.query) || (requireLog && !e.InLog) {
+		return
 	}
+	f.seen[id] = true
+	f.result.Quests = append(f.result.Quests, answerFor(e, f.states, f.player))
+}
+
+// addSaved takes one answer to /mcp quest. When the player asked this very question every quest of the answer counts.
+func (f *finder) addSaved(l SavedLookup) {
+	same := strings.EqualFold(strings.TrimSpace(l.Query), f.query)
+	for _, e := range l.Quests {
+		if !same {
+			f.addQuest(e, false)
+		} else if id, ok := snapshot.AsInt(e.ID); ok && !f.seen[id] {
+			f.seen[id] = true
+			f.result.Quests = append(f.result.Quests, answerFor(e, f.states, f.player))
+		}
+	}
+	for _, npc := range l.NPCs {
+		id, ok := snapshot.AsInt(npc.ID)
+		if !ok || f.seenNPC[id] || !(same || matches(npc.ID, npc.Name, f.query)) {
+			continue
+		}
+		f.seenNPC[id] = true
+		f.result.NPCs = append(f.result.NPCs, place(npc, f.player))
+	}
+}
+
+// Find looks for the matching quests: where they start, what they need and where they end.
+func Find(s snapshot.Snapshot, q Query) LookupResult {
+	query := strings.TrimSpace(q.Quest)
+	db := readDatabase(s)
+	r := LookupResult{Query: query}
+	if !db.Present && len(db.Lookups) == 0 {
+		return r
+	}
+	r.Available, r.Source, r.Player = true, db.Source, readPlayer(s)
+	f := &finder{query: query, states: logStates(s), player: r.Player, seen: map[int64]bool{}, seenNPC: map[int64]bool{}, result: &r}
 	// Without a query: the quest log. With one: also the guide quests and the answers to /mcp quest.
-	for _, raw := range snapshot.AsList(section["quests"]) {
-		addQuest(raw, query == "")
+	for _, e := range db.Quests {
+		f.addQuest(e, query == "")
 	}
 	if query != "" {
-		seenNpc := map[int64]bool{}
-		for _, rawLookup := range lookups {
-			lookup := snapshot.AsMap(rawLookup)
-			asked, _ := lookup["query"].(string)
-			sameQuestion := strings.EqualFold(strings.TrimSpace(asked), query)
-			for _, raw := range snapshot.AsList(lookup["quests"]) {
-				if sameQuestion {
-					entry := snapshot.AsMap(raw)
-					if id, ok := snapshot.AsInt(entry["id"]); ok && !seen[id] {
-						seen[id] = true
-						quests = append(quests, questView(raw, states, p))
-					}
-					continue
-				}
-				addQuest(raw, false)
-			}
-			for _, raw := range snapshot.AsList(lookup["npcs"]) {
-				entry := snapshot.AsMap(raw)
-				id, ok := snapshot.AsInt(entry["id"])
-				if !ok || seenNpc[id] || !(sameQuestion || matches(entry, query)) {
-					continue
-				}
-				seenNpc[id] = true
-				npcs = append(npcs, place(raw, p))
-			}
+		for _, l := range db.Lookups {
+			f.addSaved(l)
 		}
 	}
-
-	out["count"] = len(quests)
-	if quests != nil {
-		out["quests"] = quests
+	if query == "" {
+		r.Unknown = db.Unknown
 	}
-	if npcs != nil {
-		out["npcs"] = npcs
-	}
-	out["note"] = sourceNote
-	switch {
-	case len(quests) == 0 && len(npcs) == 0 && query != "":
-		out["hint"] = notInDumpHint
-	case len(quests) == 0 && query == "":
-		out["hint"] = "No quest of the log is in the quest database. For another quest pass quest=<name or ID>."
-	}
-	if unknown := snapshot.AsList(section["unknownQuestIDs"]); len(unknown) > 0 && query == "" {
-		out["unknownQuestIDs"] = unknown
-	}
-	return out
+	return r
 }

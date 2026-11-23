@@ -102,9 +102,10 @@ func (s *service) setGoal(db *snapshot.Database, a goalArgs) (map[string]any, er
 		return nil, err
 	}
 	out := map[string]any{"added": g, "goal": g.Label(), "file": s.GoalsFile}
-	for _, r := range goals.View(all, goals.Env{Character: name, Snap: snap, History: s.progress})["goals"].([]any) {
-		if m := r.(map[string]any); m["id"] == g.ID {
-			out["progress"] = m
+	judged := goals.Evaluate(all, goals.Env{Character: name, Snap: snap, History: s.progress})
+	for _, p := range judged.Goals {
+		if p.Goal.ID == g.ID {
+			out["progress"] = p.Render(judged.Rates)
 		}
 	}
 	return out, nil

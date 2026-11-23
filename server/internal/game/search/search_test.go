@@ -148,3 +148,20 @@ func TestSearchNewSections(t *testing.T) {
 		t.Errorf("hits vendor=%v vendors=%v", vendor["count"], vendors["count"])
 	}
 }
+
+func TestFindCapsAndSummarizes(t *testing.T) {
+	var list []any
+	for i := 0; i < 25; i++ {
+		list = append(list, map[string]any{"name": "Linen Cloth", "count": int64(i), "type": "Trade Goods"})
+	}
+	r, err := Find(snapshot.Snapshot{"bags": list}, " linen ")
+	if err != nil || r.Total != 25 || len(r.Groups) != 1 || len(r.Groups[0].Shown()) != maxHitsPerGroup || !r.Truncated() {
+		t.Fatalf("find: %+v %v", r, err)
+	}
+	if got := summarize(r.Groups[0].Hits[3].Facts); got != "count 3, Trade Goods" {
+		t.Errorf("summary: %q", got)
+	}
+	if _, err := Find(snapshot.Snapshot{}, "  "); err == nil {
+		t.Error("empty text is an error")
+	}
+}

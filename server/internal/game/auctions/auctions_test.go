@@ -163,3 +163,23 @@ func TestAuctionOldDumpWithoutDetails(t *testing.T) {
 		t.Errorf("equippable on an old dump: %s", fixtures.JSON(t, gear))
 	}
 }
+
+func TestAnalyseJudgesSalesAndMissingDetails(t *testing.T) {
+	r := Analyse(fixtures.Forever(t), Query{}, fixtures.At(time.Hour))
+	if !r.Saved || len(r.Sales) != 2 || r.Sales[0].Name != "Light Leather" || !r.Sales[0].WorthAuction() {
+		t.Fatalf("sales = %+v", r.Sales)
+	}
+	if r.Sales[1].Advice == AdviceAuction || r.Sales[0].Gain() < r.Sales[1].Gain() {
+		t.Errorf("second sale %+v", r.Sales[1])
+	}
+	if r.AuctionTotal != r.Sales[0].AuctionNet() || r.Gap != DetailsComplete {
+		t.Errorf("auction total %d, gap %v", r.AuctionTotal, r.Gap)
+	}
+	gear := Analyse(fixtures.Forever(t), Query{Equippable: true}, fixtures.At(time.Hour))
+	if gear.Gap != DetailsPartial || gear.NoDetails == 0 || gear.Rows[0].Name != "Hornwood Recurve Bow" {
+		t.Errorf("gear filter: gap %v, %d without details, rows %d", gear.Gap, gear.NoDetails, len(gear.Rows))
+	}
+	if Analyse(snapshot.Snapshot{}, Query{}, fixtures.At(0)).Saved {
+		t.Error("no auctions section is no data")
+	}
+}

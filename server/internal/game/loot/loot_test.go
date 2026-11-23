@@ -56,3 +56,14 @@ func TestDescribe(t *testing.T) {
 		t.Error("QualityLabel")
 	}
 }
+
+func TestSummarise(t *testing.T) {
+	items := []Item{{Name: "A", Quality: 3, Count: 1}, {Name: "B", Quality: 4, Count: 2}, {Name: "C", Quality: 1, Count: 5}, {Name: "D", Quality: UnknownQuality, Count: 1}}
+	sum := Summarise(items, 1)
+	if sum.Distinct != 4 || sum.Pieces != 9 || len(sum.Notable) != 1 || sum.More != 1 || sum.UnknownQuality != 1 {
+		t.Errorf("summary: %+v", sum)
+	}
+	if Summarise(nil, 5) != nil {
+		t.Error("no loot, no summary")
+	}
+}

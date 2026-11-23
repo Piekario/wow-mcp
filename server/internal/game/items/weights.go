@@ -54,14 +54,11 @@ func ResolveWeights(store WeightsStore, key string, s snapshot.Snapshot) (Weight
 	if err := json.Unmarshal(data, &file); err != nil {
 		return nil, "", fmt.Errorf("the weights file %q is corrupt (%v)", store.Where(), err)
 	}
-	c := s.Character()
-	name, _ := c["name"].(string)
-	class, _ := c["class"].(string)
-	token, _ := c["classToken"].(string)
-	if w, ok := lookupFold(file.Characters, key, name); ok {
+	who := readIdentity(s)
+	if w, ok := lookupFold(file.Characters, key, who.Name); ok {
 		return w, fmt.Sprintf("%s (character)", store.Where()), nil
 	}
-	if w, ok := lookupFold(file.Classes, token, class); ok {
+	if w, ok := lookupFold(file.Classes, who.ClassToken, who.Class); ok {
 		return w, fmt.Sprintf("%s (class)", store.Where()), nil
 	}
 	return nil, "", nil

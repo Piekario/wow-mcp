@@ -213,3 +213,22 @@ func TestAllOkOverallStatus(t *testing.T) {
 		t.Errorf("unexpected failure: %+v", r)
 	}
 }
+
+func TestChecksJudgeTheTypedDump(t *testing.T) {
+	if c := dumpAge(dump{HasDumpedAt: true, Age: time.Hour, Stale: true}); c.Status != Warn || c.Fix == "" {
+		t.Errorf("stale dump: %+v", c)
+	}
+	if c := dumpAge(dump{}); c.Status != Warn {
+		t.Errorf("no time stamp: %+v", c)
+	}
+	if c := sectionErrors(dump{Errors: []string{"a", "b", "c", "d"}}); c.Status != Warn || !strings.Contains(c.Detail, "a | b | c") || strings.Contains(c.Detail, "c | d") {
+		t.Errorf("errors: %+v", c)
+	}
+	if c := unloadedDump(dump{Unloaded: true}, Facts{}); c.Status != Fail {
+		t.Errorf("unloaded: %+v", c)
+	}
+	w := windowSections(dump{Windows: []window{{Section: "bank", Open: "the bank", Tool: "wow_bank"}, {Section: "guild"}, {Section: "mail", Captured: true}}})
+	if w.Status != Warn || !strings.Contains(w.Detail, "bank (open: the bank; read by wow_bank)") || strings.Contains(w.Detail, "guild") {
+		t.Errorf("windows: %+v", w)
+	}
+}

@@ -121,6 +121,26 @@ func TestArchitectureUntypedMaps(t *testing.T) {
 		"use the package's types; map[string]any belongs only in read.go (dump -> types) and render.go (result -> answer)")
 }
 
+// TestArchitectureOpaqueValues: a rule file may carry a dump value it only passes through as `any`
+// (a name the client may not have sent), but the number of such values per package may never grow.
+func TestArchitectureOpaqueValues(t *testing.T) {
+	counts := map[string]int{}
+	for _, f := range productionFiles(t, "internal/game") {
+		if boundaryFiles[filepath.Base(f.path)] {
+			continue
+		}
+		pkg := filepath.Base(filepath.Dir(f.path))
+		ast.Inspect(f.ast, func(n ast.Node) bool {
+			if id, ok := n.(*ast.Ident); ok && id.Name == "any" {
+				counts[pkg]++
+			}
+			return true
+		})
+	}
+	checkBaseline(t, "opaque_values.json", counts,
+		"give the value a type in read.go instead of passing `any` through the rules")
+}
+
 // TestArchitectureFunctionLength: no new function over maxFunctionLines; the listed ones may only shrink.
 func TestArchitectureFunctionLength(t *testing.T) {
 	long := map[string]int{}

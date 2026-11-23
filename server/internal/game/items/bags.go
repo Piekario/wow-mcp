@@ -3,54 +3,52 @@
 
 package items
 
-import (
-	"fmt"
+import "wowmcp/internal/snapshot"
 
-	"wowmcp/internal/snapshot"
-)
+// Container is one bag or bank bag. Name is passed through as the client gave it.
+type Container struct {
+	Name       any
+	Size, Free int64
+	Items      []Item
+}
 
-// BagSpace returns the total of bag slots.
-func BagSpace(s snapshot.Snapshot) map[string]any {
-	var total, free int64
-	for _, raw := range s.Bags() {
-		b := snapshot.AsMap(raw)
-		n, _ := snapshot.AsInt(b["size"])
-		f, _ := snapshot.AsInt(b["free"])
-		total += n
-		free += f
+type BagSlots struct{ Total, Free int64 }
+
+func slotsOf(containers []Container) BagSlots {
+	var b BagSlots
+	for _, c := range containers {
+		b.Total += c.Size
+		b.Free += c.Free
 	}
-	return map[string]any{"totalSlots": total, "freeSlots": free}
+	return b
 }
 
-// SummarizeBags adds the slot totals, junk and ammo to the wow_bags response.
-func SummarizeBags(s snapshot.Snapshot, out map[string]any) {
-	snapshot.Merge(out, BagSpace(s))
-	snapshot.Merge(out, bagExtras(s))
+// Space is the total of bag slots.
+func Space(s snapshot.Snapshot) BagSlots { return slotsOf(readBags(s)) }
+
+// BagContents is what wow_bags adds to the bags: slot totals, Poor quality junk and the equipped ammo.
+type BagContents struct {
+	BagSlots
+	Junk      []Item
+	JunkValue int64
+	Ammo      *Item
 }
 
-// bagExtras adds the junk value (Poor quality) and ammo to the bags.
-func bagExtras(s snapshot.Snapshot) map[string]any {
-	out := map[string]any{}
-	var junk int64
-	var junkItems []string
-	for _, rawBag := range s.Bags() {
-		for _, raw := range snapshot.AsList(snapshot.AsMap(rawBag)["items"]) {
-			item := snapshot.AsMap(raw)
-			if q, ok := snapshot.AsInt(item["quality"]); !ok || q != 0 {
-				continue
+func InspectBags(s snapshot.Snapshot) BagContents {
+	bags := readBags(s)
+	r := BagContents{BagSlots: slotsOf(bags)}
+	for _, bag := range bags {
+		for _, it := range bag.Items {
+			if it.IsJunk() {
+				r.Junk = append(r.Junk, it)
+				r.JunkValue += it.SellValue()
 			}
-			sell, _ := snapshot.AsInt(item["sellPrice"])
-			junk += sell * snapshot.ItemCount(item)
-			junkItems = append(junkItems, fmt.Sprint(item["name"]))
 		}
 	}
-	if len(junkItems) > 0 {
-		out["junk"] = map[string]any{"items": junkItems, "vendorValue": snapshot.Money(junk).String()}
-	}
-	for _, raw := range s.Equipment() {
-		if item := snapshot.AsMap(raw); item["slot"] == "ammo" {
-			out["ammo"] = map[string]any{"name": item["name"], "count": item["count"]}
+	for _, it := range readEquipment(s) {
+		if it.HasSlot && it.Slot == "ammo" {
+			r.Ammo = &it
 		}
 	}
-	return out
+	return r
 }

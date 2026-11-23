@@ -5,11 +5,8 @@
 package reputation
 
 import (
-	"fmt"
 	"math"
 	"strings"
-
-	"wowmcp/internal/snapshot"
 )
 
 // Query holds the wow_reputation filters.
@@ -19,40 +16,53 @@ type Query struct {
 	Standing  string `json:"standing,omitempty" jsonschema:"only factions with this standing, e.g. Friendly, Honored, Neutral"`
 }
 
-// View describes factions with progress in the current standing and how much is missing for the next one.
-func View(s snapshot.Snapshot, q Query) map[string]any {
-	factions := []any{}
-	for _, raw := range s.List("reputation") {
-		f := snapshot.AsMap(raw)
-		name, _ := f["name"].(string)
-		standing := fmt.Sprint(f["standing"])
-		if q.Query != "" && !strings.Contains(strings.ToLower(name), strings.ToLower(q.Query)) {
-			continue
-		}
-		if q.Standing != "" && !strings.EqualFold(standing, q.Standing) {
-			continue
-		}
-		factions = append(factions, faction(name, f))
-	}
-	out := map[string]any{"factions": factions, "count": len(factions)}
-	if _, ok := s["reputation"]; !ok {
-		out["note"] = "The dump has no reputation section. Run /mcp reload in game."
-	}
-	return out
+// Faction keeps Standing as the client gave it, so the answer shows exactly what the dump holds.
+type Faction struct {
+	Name                           string
+	Standing                       any
+	StandingText                   string
+	Value, Floor, Ceiling          int64
+	HasValue, HasFloor, HasCeiling bool
 }
 
-// faction is one faction with progress between the floor and ceiling thresholds of the current standing.
-func faction(name string, f map[string]any) map[string]any {
-	entry := map[string]any{"name": name, "standing": f["standing"]}
-	value, ok1 := snapshot.AsInt(f["value"])
-	floor, ok2 := snapshot.AsInt(f["floor"])
-	ceiling, ok3 := snapshot.AsInt(f["ceiling"])
-	if ok1 && ok2 && ok3 && ceiling > floor {
-		entry["progress"] = fmt.Sprintf("%d/%d", value-floor, ceiling-floor)
-		entry["percent"] = math.Round(float64(value-floor)*1000/float64(ceiling-floor)) / 10
-		entry["toNextStanding"] = ceiling - value
-	} else if ok1 {
-		entry["value"] = value
+// Progress is the way through the current standing, between its floor and ceiling thresholds.
+type Progress struct {
+	Into, Span, ToNext int64
+	Percent            float64
+}
+
+type Status struct {
+	Faction
+	Progress *Progress
+}
+
+// Report is the faction list after the filters. Saved is false when the dump has no reputation section.
+type Report struct {
+	Saved    bool
+	Factions []Status
+}
+
+func Inspect(factions []Faction, saved bool, q Query) Report {
+	r := Report{Saved: saved}
+	for _, f := range factions {
+		if q.Query != "" && !strings.Contains(strings.ToLower(f.Name), strings.ToLower(q.Query)) {
+			continue
+		}
+		if q.Standing != "" && !strings.EqualFold(f.StandingText, q.Standing) {
+			continue
+		}
+		r.Factions = append(r.Factions, Status{Faction: f, Progress: f.progress()})
 	}
-	return entry
+	return r
+}
+
+func (f Faction) progress() *Progress {
+	if !(f.HasValue && f.HasFloor && f.HasCeiling && f.Ceiling > f.Floor) {
+		return nil
+	}
+	span := f.Ceiling - f.Floor
+	return &Progress{
+		Into: f.Value - f.Floor, Span: span, ToNext: f.Ceiling - f.Value,
+		Percent: math.Round(float64(f.Value-f.Floor)*1000/float64(span)) / 10,
+	}
 }

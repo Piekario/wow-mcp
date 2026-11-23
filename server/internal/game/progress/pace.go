@@ -6,9 +6,7 @@ package progress
 import (
 	"fmt"
 	"math"
-	"time"
 
-	"wowmcp/internal/game/character"
 	"wowmcp/internal/game/xpgains"
 	"wowmcp/internal/snapshot"
 )
@@ -24,35 +22,13 @@ type PaceQuery struct {
 	BreakMinutes int     `json:"breakMinutes,omitempty" jsonschema:"gap after which a new session starts; default 30 min offline (from /played) or 120 min between dumps"`
 }
 
-// progressPoint holds the numbers of one dump needed for the rate.
 type progressPoint struct {
-	at, level, xp, xpMax, money, rested int64
-	played                              int64 // -1 = no data from /played
-	deaths                              int64 // -1 = no deaths section
-	completed                           int
-	source                              snapshot.Snapshot
-}
-
-// pointFrom extracts the numbers needed for the rate from a dump; false when the dump has no time.
-func pointFrom(s snapshot.Snapshot) (progressPoint, bool) {
-	at, ok := snapshot.AsInt(s["dumpedAt"])
-	if !ok {
-		return progressPoint{}, false
-	}
-	c := snapshot.AsMap(s["character"])
-	p := progressPoint{at: at, played: -1, deaths: -1, completed: len(snapshot.AsList(s["completedQuests"])), source: s}
-	p.level, _ = snapshot.AsInt(c["level"])
-	p.xp, _ = snapshot.AsInt(c["xp"])
-	p.xpMax, _ = snapshot.AsInt(c["xpMax"])
-	p.money, _ = snapshot.AsInt(c["moneyCopper"])
-	p.rested, _ = snapshot.AsInt(c["restedXp"])
-	if total, ok := snapshot.AsInt(snapshot.AsMap(s["played"])["totalSeconds"]); ok {
-		p.played = total
-	}
-	if n, ok := character.DeathCount(s); ok {
-		p.deaths = n
-	}
-	return p, true
+	at        int64
+	played    int64 // -1 = no data from /played
+	deaths    int64 // -1 = no deaths section
+	completed int
+	char      characterState
+	source    snapshot.Snapshot
 }
 
 // points loads the character's history and appends the current dump if it is not in it.
@@ -68,28 +44,16 @@ func (t Tracker) points(name string, current snapshot.Snapshot) ([]progressPoint
 			if err != nil {
 				continue // a corrupt history file does not spoil the statistics
 			}
-			if p, ok := pointFrom(s); ok {
+			if p, ok := readPoint(s); ok {
 				points = append(points, p)
 			}
 		}
 	}
 	// The current dump from an empty client (exit from the game) does not describe the character: we do not append it.
-	if cur, ok := pointFrom(current); ok && !current.IsUnloadedDump() && (len(points) == 0 || points[len(points)-1].at < cur.at) {
+	if cur, ok := readPoint(current); ok && !current.IsUnloadedDump() && (len(points) == 0 || points[len(points)-1].at < cur.at) {
 		points = append(points, cur)
 	}
 	return points, nil
-}
-
-// xpBetween computes the XP gained between two dumps; false when a jump of 2+ levels makes the computation impossible.
-func xpBetween(a, b progressPoint) (int64, bool) {
-	d := diffXP(snapshot.AsMap(a.source["character"]), snapshot.AsMap(b.source["character"]))
-	if d == nil {
-		return 0, true
-	}
-	if n, ok := d["xpGained"].(int64); ok {
-		return n, true
-	}
-	return 0, false
 }
 
 // Default gaps after which a new session starts.
@@ -145,79 +109,88 @@ func sessionSpans(points []progressPoint, breakMinutes int) []span {
 	return spans
 }
 
+const (
+	basisPlayed = "play time from /played"
+	basisClock  = "time between dumps (enable play time: /mcp played on)"
+)
+
 // elapsedBetween computes the play time between points: from /played when all dumps of the stretch have it,
 // otherwise the clock time between the extreme dumps. The second result describes the basis of the computation.
 func elapsedBetween(points []progressPoint, from, to int) (seconds int64, basis string) {
 	a, b := points[from], points[to]
 	for i := from; i <= to; i++ {
 		if points[i].played < 0 {
-			return b.at - a.at, "time between dumps (enable play time: /mcp played on)"
+			return b.at - a.at, basisClock
 		}
 	}
 	if b.played >= a.played {
-		return b.played - a.played, "play time from /played"
+		return b.played - a.played, basisPlayed
 	}
-	return b.at - a.at, "time between dumps (enable play time: /mcp played on)"
+	return b.at - a.at, basisClock
 }
 
 // xpOver sums the XP gained over the stretch; exact = false when some jump had 2+ level-ups and its XP was skipped.
 func xpOver(points []progressPoint, from, to int) (xp int64, exact bool) {
 	exact = true
 	for i := from + 1; i <= to; i++ {
-		n, ok := xpBetween(points[i-1], points[i])
+		n, ok := xpGained(points[i-1].char, points[i].char)
 		xp += n
 		exact = exact && ok
 	}
 	return xp, exact
 }
 
-// rangeStats computes the rate between points[from] and points[to]. The second result is XP per hour
-// for computing the time to level-up (0 when the stretch is too short for a rate); it does not go into the response.
-func rangeStats(points []progressPoint, from, to int) (map[string]any, float64) {
+// minPaceSeconds: a shorter stretch does not give a reliable rate.
+const minPaceSeconds = 5 * 60
+
+// stretchRate is the rate between two dumps of the history. Without RateKnown the stretch is too short for a rate.
+type stretchRate struct {
+	From, To       int64
+	Snapshots      int
+	Elapsed        int64
+	Basis          string
+	XP             int64
+	XPExact        bool
+	Levels         int64
+	XPSources      *XPGained
+	Money          int64
+	QuestsTurnedIn int
+	HasQuests      bool
+	Deaths         int64
+	RateKnown      bool
+	XPPerHour      float64
+	MoneyPerHour   int64
+	TooShort       bool
+	Window         string // only for the overall stretch
+}
+
+func rangeStats(points []progressPoint, from, to int) stretchRate {
 	a, b := points[from], points[to]
-	out := map[string]any{
-		"from":      snapshot.FormatTime(a.at),
-		"to":        snapshot.FormatTime(b.at),
-		"snapshots": to - from + 1,
-	}
-	xp, exact := xpOver(points, from, to)
-	elapsed, basis := elapsedBetween(points, from, to)
-	out["basis"] = basis
-	out["duration"] = snapshot.FormatSeconds(elapsed)
-	out["xpGained"] = xp
-	if !exact {
-		out["xpNote"] = "between some dumps there were 2+ level-ups; XP from those stretches is skipped"
-	}
-	if lv := b.level - a.level; lv != 0 {
-		out["levelsGained"] = lv
-	}
-	if x := xpSources(points[from : to+1]); x != nil {
-		out["xpSources"] = x
-	}
-	out["moneyChange"] = snapshot.Money(b.money - a.money).Signed()
+	r := stretchRate{From: a.at, To: b.at, Snapshots: to - from + 1, Levels: b.char.Level - a.char.Level, Money: b.char.Money - a.char.Money}
+	r.XP, r.XPExact = xpOver(points, from, to)
+	r.Elapsed, r.Basis = elapsedBetween(points, from, to)
+	r.XPSources = xpSources(points[from : to+1])
 	if a.completed > 0 && b.completed >= a.completed {
-		out["questsTurnedIn"] = b.completed - a.completed
+		r.QuestsTurnedIn, r.HasQuests = b.completed-a.completed, true
 	}
 	if a.deaths >= 0 && b.deaths > a.deaths {
-		out["deaths"] = b.deaths - a.deaths
+		r.Deaths = b.deaths - a.deaths
 	}
-	var xpPerHour float64
-	hours := float64(elapsed) / 3600
-	if elapsed >= minPaceSeconds {
-		xpPerHour = float64(xp) / hours
-		out["xpPerHour"] = int64(math.Round(xpPerHour))
-		perHour := int64(math.Round(float64(b.money-a.money) / hours))
-		out["moneyPerHour"] = snapshot.Money(perHour).Signed()
+	if r.Elapsed >= minPaceSeconds {
+		hours := float64(r.Elapsed) / 3600
+		r.RateKnown = true
+		r.XPPerHour = float64(r.XP) / hours
+		r.MoneyPerHour = int64(math.Round(float64(r.Money) / hours))
 	} else if to > from {
-		out["note"] = "stretch too short (under 5 min) to compute a rate"
+		r.TooShort = true
 	}
-	return out, xpPerHour
+	return r
 }
 
 // xpSources sums XP by source (the xpGains section) gained after points[0] from the later dumps (the first one's XP predates
 // the stretch, like loot in the journal), with the periods carried from saves the server never read; nil when no dump has
 // the section or nothing was gained.
-func xpSources(points []progressPoint) map[string]any {
+func xpSources(points []progressPoint) *XPGained {
 	if len(points) < 2 {
 		return nil
 	}
@@ -226,78 +199,65 @@ func xpSources(points []progressPoint) map[string]any {
 		snaps[i] = p.source
 	}
 	g, m := xpgains.Gained(points[0].source, snaps)
-	if !m.Found {
+	if !m.Found || g.Empty() {
 		return nil
 	}
-	out := xpgains.Describe(g)
-	m.Describe(out)
-	return out
+	return &XPGained{g, m}
 }
 
-// minPaceSeconds: a shorter stretch does not give a reliable rate.
-const minPaceSeconds = 5 * 60
-
-// eta turns the missing XP and the rate into time.
-func eta(xpToGo int64, perHour float64) string {
-	if perHour <= 0 {
-		return ""
-	}
-	d := time.Duration(float64(xpToGo) / perHour * float64(time.Hour))
-	if d < time.Minute {
-		return "under 1 min"
-	}
-	return snapshot.FormatAge(d)
+type levelUp struct {
+	Level, At, Played int64 // Played -1 = no data from /played
 }
 
-// Pace computes the rate in the current session and in the whole history (or the last sinceHours),
-// level-ups and the estimated time to the next level.
-func (t Tracker) Pace(name string, current snapshot.Snapshot, args PaceQuery) (map[string]any, error) {
+// nextLevel is what is missing for a level-up and the XP per hour of the session and of the history (0 = unknown).
+type nextLevel struct {
+	Level, XPToGo, Rested    int64
+	Percent                  float64
+	SessionRate, OverallRate float64
+}
+
+// paceReport is the rate in the current session and in the whole history (or the last sinceHours). Session is nil
+// when the current session has one dump, Overall when its stretch has one dump, Next when the character has no xpMax.
+type paceReport struct {
+	Snapshots int
+	Single    bool
+	Session   *stretchRate
+	Overall   *stretchRate
+	LevelUps  []levelUp
+	Next      *nextLevel
+}
+
+func (t Tracker) pace(name string, current snapshot.Snapshot, args PaceQuery) (paceReport, error) {
 	if t.History == nil {
-		return nil, fmt.Errorf("dump history is disabled (the server was started with --history-dir \"\"), and the progress statistics are computed from it")
+		return paceReport{}, fmt.Errorf("dump history is disabled (the server was started with --history-dir \"\"), and the progress statistics are computed from it")
 	}
 	points, err := t.points(name, current)
 	if err != nil {
-		return nil, err
+		return paceReport{}, err
 	}
 	if len(points) == 0 {
-		return nil, noPoints(name, current)
+		return paceReport{}, noPoints(name, current)
 	}
-	out := map[string]any{"snapshotsInHistory": len(points)}
-	t.NoteSkipped(out, name, current)
-	rates := map[string]float64{} // response section -> XP per hour
-
-	if played := character.Played(current); played != nil {
-		out["played"] = played
+	r := paceReport{Snapshots: len(points), Single: len(points) < 2}
+	if !r.Single {
+		r.Session = sessionStats(points, args.BreakMinutes)
+		r.Overall = overallStats(points, args.SinceHours)
+		r.LevelUps = levelUps(points)
 	}
-	if len(points) < 2 {
-		out["note"] = "There is only one dump in history so far. The rate will show after the next /mcp reload (ideally every hour of play or before logging out)."
-	} else {
-		session, rate := sessionStats(points, args.BreakMinutes)
-		out["session"], rates["session"] = session, rate
-		if overall, rate := overallStats(points, args.SinceHours); overall != nil {
-			out["overall"], rates["overall"] = overall, rate
-		}
-		if ups := levelUps(points); len(ups) > 0 {
-			out["levelUps"] = ups
-		}
-	}
-	if next := nextLevel(points[len(points)-1], rates); next != nil {
-		out["nextLevel"] = next
-	}
-	return out, nil
+	r.Next = r.nextLevel(points[len(points)-1])
+	return r, nil
 }
 
-// sessionStats is the current session's rate and its XP per hour.
-func sessionStats(points []progressPoint, breakMinutes int) (map[string]any, float64) {
+func sessionStats(points []progressPoint, breakMinutes int) *stretchRate {
 	start := sessionStart(points, breakMinutes)
 	if start < len(points)-1 {
-		return rangeStats(points, start, len(points)-1)
+		r := rangeStats(points, start, len(points)-1)
+		return &r
 	}
-	return map[string]any{"note": "The current session has one dump; run /mcp reload after a while to see the rate."}, 0
+	return nil
 }
 
-// overallStats is the rate from the whole history or the last sinceHours and its XP per hour; nil when the stretch has one dump.
-func overallStats(points []progressPoint, sinceHours float64) (map[string]any, float64) {
+func overallStats(points []progressPoint, sinceHours float64) *stretchRate {
 	last := points[len(points)-1]
 	from := 0
 	if sinceHours > 0 {
@@ -307,56 +267,37 @@ func overallStats(points []progressPoint, sinceHours float64) (map[string]any, f
 		}
 	}
 	if from >= len(points)-1 {
-		return nil, 0
+		return nil
 	}
-	overall, rate := rangeStats(points, from, len(points)-1)
+	r := rangeStats(points, from, len(points)-1)
+	r.Window = "whole history"
 	if sinceHours > 0 {
-		overall["window"] = fmt.Sprintf("last %g h", sinceHours)
-	} else {
-		overall["window"] = "whole history"
+		r.Window = fmt.Sprintf("last %g h", sinceHours)
 	}
-	return overall, rate
+	return &r
 }
 
-func levelUps(points []progressPoint) []any {
-	var ups []any
+func levelUps(points []progressPoint) []levelUp {
+	var ups []levelUp
 	for i := 1; i < len(points); i++ {
-		if points[i].level > points[i-1].level {
-			e := map[string]any{"level": points[i].level, "seenAt": snapshot.FormatTime(points[i].at)}
-			if points[i].played >= 0 {
-				e["playedAt"] = snapshot.FormatSeconds(points[i].played)
-			}
-			ups = append(ups, e)
+		if p := points[i]; p.char.Level > points[i-1].char.Level {
+			ups = append(ups, levelUp{Level: p.char.Level, At: p.at, Played: p.played})
 		}
 	}
 	return ups
 }
 
-// etaKeys: from which rate (the key in rates) to compute the time to level-up and under which key to give it.
-var etaKeys = []struct{ section, key string }{
-	{"session", "etaAtSessionRate"},
-	{"overall", "etaAtOverallRate"},
-}
-
-// nextLevel describes how much is missing for a level-up and how long it will take at the session and history rates
-// (rates: XP per hour by section). nil when the character has no xpMax.
-func nextLevel(last progressPoint, rates map[string]float64) map[string]any {
-	if last.xpMax <= 0 {
+func (r paceReport) nextLevel(last progressPoint) *nextLevel {
+	c := last.char
+	if c.XPMax <= 0 {
 		return nil
 	}
-	next := map[string]any{
-		"level":   last.level + 1,
-		"xpToGo":  last.xpMax - last.xp,
-		"percent": float64(last.xp*1000/last.xpMax) / 10,
+	next := &nextLevel{Level: c.Level + 1, XPToGo: c.XPMax - c.XP, Percent: float64(c.XP*1000/c.XPMax) / 10, Rested: c.Rested}
+	if r.Session != nil {
+		next.SessionRate = r.Session.XPPerHour
 	}
-	if last.rested > 0 {
-		next["restedXp"] = last.rested
-		next["restedNote"] = "rested XP doubles the XP from monsters until it runs out, so the real time will be shorter"
-	}
-	for _, k := range etaKeys {
-		if e := eta(last.xpMax-last.xp, rates[k.section]); e != "" {
-			next[k.key] = e
-		}
+	if r.Overall != nil {
+		next.OverallRate = r.Overall.XPPerHour
 	}
 	return next
 }

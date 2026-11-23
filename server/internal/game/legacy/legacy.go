@@ -24,11 +24,27 @@ type Query struct {
 	Discovery bool   `json:"discovery,omitempty" jsonschema:"true = also return what the addon found about the client's Legacy API (names of namespaces, functions, frames and their readings); shown anyway when no perk tree was found"`
 }
 
+type Status string
+
 const (
-	StatusMaxed     = "maxed"
-	StatusAvailable = "available"
-	StatusLocked    = "locked"
+	StatusMaxed     Status = "maxed"
+	StatusAvailable Status = "available"
+	StatusLocked    Status = "locked"
 )
+
+// Advice is what the points say about the perks a point can go to now.
+type Advice int
+
+const (
+	AdviceNone Advice = iota
+	AdviceNoPoints
+	AdviceNothingAvailable
+)
+
+const maxOpenChallenges = 40
+
+// unrevealedName is what the real client calls the "?" perks of each tree (spell 1317256, one rank): not yet revealed.
+const unrevealedName = "Unknown"
 
 // knownTabs are the English tab names of the Legacy trees (patch 1.60.1); used only to recognise the config.
 var knownTabs = []string{"professions", "adventure", "resourcefulness"}
@@ -38,6 +54,47 @@ var knownTabs = []string{"professions", "adventure", "resourcefulness"}
 // perks: 1187 holds Working Overtime and Bountiful Harvest, 1188 Well Rested and Thrill of Adventure, 1189 Gourmand
 // and Reinforce. Tree 1118 in the same config has no perks.
 var treeNames = map[int64]string{1187: "Professions", 1188: "Adventure", 1189: "Resourcefulness"}
+
+// Perk keeps Name, Description, Requires, RequiresSpent, Row and Column as the dump gave them.
+type Perk struct {
+	Name, Description, Requires, RequiresSpent, Row, Column any
+	Tree                                                    string
+	Rank, MaxRank                                           int64
+	CanPurchase                                             bool
+}
+
+type Tree struct {
+	Name    string
+	HasName bool
+	ID      any
+	Points  any
+}
+
+// Currency is one trait currency; the client repeats the same one for every tree.
+type Currency struct {
+	ID, TreeID, Available, Spent, Max, MaxAvailable, Name, TotalEarned, Quantity, MaxQuantity any
+}
+
+type Config struct {
+	ID, TypeName, Name  any
+	Trees               []Tree
+	Currencies          []Currency
+	Perks               []Perk
+	MissingDescriptions int64
+}
+
+type Challenge struct {
+	Name, Category, Description, Reward, Points any
+	Completed                                   bool
+}
+
+type Section struct {
+	Configs            []Config
+	Challenges         *[]Challenge
+	ChallengesError    string
+	HasChallengesError bool
+	Discovery          any
+}
 
 // treeName is the display name of a tree: the one in the dump, or the known Legacy name for an unnamed tree.
 func treeName(name string, treeID any) string {
@@ -49,97 +106,153 @@ func treeName(name string, treeID any) string {
 	return name
 }
 
-// nodeTree is the tree name of a perk, mapped like treeName ("tree 1188" -> Adventure).
-func nodeTree(n map[string]any) string {
-	tree, _ := n["tree"].(string)
+// Label is the perk's tree mapped like treeName ("tree 1188" -> Adventure).
+func (p Perk) Label() string {
 	var id int64
-	if _, err := fmt.Sscanf(tree, "tree %d", &id); err == nil {
-		return treeName(tree, id)
+	if _, err := fmt.Sscanf(p.Tree, "tree %d", &id); err == nil {
+		return treeName(p.Tree, id)
 	}
-	return tree
+	return p.Tree
 }
 
-const maxOpenChallenges = 40
-
-// unrevealedName is what the real client calls the "?" perks of each tree (spell 1317256, one rank): not yet revealed.
-const unrevealedName = "Unknown"
-
-const howToUse = "Legacy Points are earned once per account from Legacy challenges and each character spends its own on perks. " +
-	"Base advice on the perk descriptions in this dump (there is no built-in perk list). status: available = a point can go there now " +
-	"(the game's own flag), locked = an arrow prerequisite (requires) or a points-spent gate (requiresSpent) is not met, maxed = full rank. " +
-	"unrevealed = a \"?\" perk the game does not name yet: do not recommend it. " +
-	"The tool and the addon never learn perks: the player clicks the perk and Apply Changes in the Legacy window (default key Y)."
-
-// View describes the character's Legacy perks, points and challenges.
-func View(s snapshot.Snapshot, q Query) map[string]any {
-	section := s.Map("legacy")
-	if section == nil {
-		return map[string]any{"note": "No Legacy data in the dump. Update the addon to 0.15.0 or newer, open the Legacy window in game (default key Y), type /mcp reload and ask again."}
+func (p Perk) Status() Status {
+	switch {
+	case p.MaxRank > 0 && p.Rank >= p.MaxRank:
+		return StatusMaxed
+	case p.CanPurchase:
+		return StatusAvailable
 	}
-	out := map[string]any{}
-	configs := snapshot.AsList(section["configs"])
-	config, others := pickConfig(configs)
-	if config == nil {
-		out["note"] = "The client gave the addon no Legacy perk tree. Open the Legacy window (default key Y) so the game loads it, type /mcp reload and ask again. " +
-			"If it is still missing, the discovery field lists the Legacy API names this client has: pass it on to the wow-mcp developer."
-		q.Discovery = true
+	return StatusLocked
+}
+
+type PerkView struct {
+	Perk
+	Status     Status
+	Unrevealed bool
+	Learned    bool
+}
+
+type Learnable struct {
+	Tree string
+	Perk Perk
+}
+
+type TreeView struct {
+	Name        string
+	PointsSpent any
+	Perks       []PerkView
+}
+
+// ConfigSummary describes a trait config that was not picked as the Legacy one.
+type ConfigSummary struct {
+	ID, TypeName, Name any
+	Tabs               []string
+}
+
+// Points is the Legacy point currency. Main is the first entry (the whole picture); Others are further
+// currency IDs. Known says whether the dump states the unspent points at all.
+type Points struct {
+	Present bool
+	Main    Currency
+	Others  []Currency
+	Unspent int64
+	Known   bool
+}
+
+type ChallengeReport struct {
+	Total          int
+	CompletedNames []any
+	Open           []Challenge
+	NotListed      int
+}
+
+// Report is the character's Legacy state judged by the rules. Found is false when the dump has no legacy section.
+type Report struct {
+	Found               bool
+	Config              *Config
+	Others              []ConfigSummary
+	Points              Points
+	Trees               []TreeView
+	CanLearn            []Learnable
+	Advice              Advice
+	MissingDescriptions int64
+	Challenges          *ChallengeReport
+	ChallengesError     string
+	HasChallengesError  bool
+	Discovery           bool
+	DiscoveryData       any
+	LocaleNote          string
+}
+
+func Analyse(s snapshot.Snapshot, q Query) Report {
+	section, ok := read(s)
+	if !ok {
+		return Report{}
+	}
+	r := Report{Found: true, Discovery: q.Discovery, DiscoveryData: section.Discovery,
+		ChallengesError: section.ChallengesError, HasChallengesError: section.HasChallengesError}
+	var notes []string
+	r.Config, r.Others = pickConfig(section.Configs)
+	if r.Config == nil {
+		r.Discovery = true
 	} else {
-		describeConfig(out, config, q.Tree)
-		s.AddEnglishOnlyNote(out, "recognising the Legacy tree among several trait trees by its tab names")
+		r.analyseConfig(*r.Config, q.Tree)
+		notes = append(notes, s.EnglishOnlyNote("recognising the Legacy tree among several trait trees by its tab names"))
 	}
-	if len(others) > 0 {
-		out["otherTraitConfigs"] = others
+	if section.Challenges != nil {
+		r.Challenges = summariseChallenges(*section.Challenges)
+		notes = append(notes, s.EnglishOnlyNote("finding Legacy challenges by the achievement category title"))
 	}
-	if c := challenges(section["challenges"]); c != nil {
-		out["challenges"] = c
-		s.AddEnglishOnlyNote(out, "finding Legacy challenges by the achievement category title")
+	r.LocaleNote = joinNonEmpty(notes)
+	return r
+}
+
+func joinNonEmpty(notes []string) string {
+	var kept []string
+	for _, n := range notes {
+		if n != "" {
+			kept = append(kept, n)
+		}
 	}
-	if errText, ok := section["challengesError"].(string); ok {
-		out["challengesError"] = errText
-	}
-	if q.Discovery {
-		out["discovery"] = section["discovery"]
-	}
-	out["howToUse"] = howToUse
-	return out
+	return strings.Join(kept, " ")
 }
 
 // pickConfig chooses the Legacy config: named Legacy, else with the known tab names, else the only one.
 // The rest are summarised as other trait configs.
-func pickConfig(configs []any) (map[string]any, []any) {
+func pickConfig(configs []Config) (*Config, []ConfigSummary) {
 	best, bestScore := -1, 0
-	for i, raw := range configs {
-		if score := legacyScore(snapshot.AsMap(raw)); score > bestScore {
+	for i, c := range configs {
+		if score := c.legacyScore(); score > bestScore {
 			best, bestScore = i, score
 		}
 	}
 	if best < 0 && len(configs) == 1 {
 		best = 0
 	}
-	var picked map[string]any
-	others := []any{}
-	for i, raw := range configs {
-		c := snapshot.AsMap(raw)
+	var picked *Config
+	var others []ConfigSummary
+	for i := range configs {
+		c := &configs[i]
 		if i == best {
 			picked = c
 			continue
 		}
-		others = append(others, map[string]any{"configID": c["configID"], "typeName": c["typeName"], "name": c["name"], "tabs": tabNames(c)})
+		others = append(others, ConfigSummary{ID: c.ID, TypeName: c.TypeName, Name: c.Name, Tabs: c.tabNames()})
 	}
 	return picked, others
 }
 
-func legacyScore(c map[string]any) int {
+func (c Config) legacyScore() int {
 	score := 0
-	if name, _ := c["name"].(string); strings.Contains(strings.ToLower(name), "legacy") {
+	if name, _ := c.Name.(string); strings.Contains(strings.ToLower(name), "legacy") {
 		score += 10
 	}
-	for _, raw := range snapshot.AsList(c["trees"]) {
-		if id, ok := snapshot.AsInt(snapshot.AsMap(raw)["treeID"]); ok && treeNames[id] != "" {
+	for _, t := range c.Trees {
+		if id, ok := snapshot.AsInt(t.ID); ok && treeNames[id] != "" {
 			score++
 		}
 	}
-	for _, tab := range tabNames(c) {
+	for _, tab := range c.tabNames() {
 		for _, known := range knownTabs {
 			if strings.EqualFold(tab, known) {
 				score++
@@ -149,135 +262,89 @@ func legacyScore(c map[string]any) int {
 	return score
 }
 
-func tabNames(c map[string]any) []string {
+func (c Config) tabNames() []string {
 	names := []string{}
-	for _, raw := range snapshot.AsList(c["trees"]) {
-		t := snapshot.AsMap(raw)
-		if name, ok := t["name"].(string); ok {
-			names = append(names, treeName(name, t["treeID"]))
+	for _, t := range c.Trees {
+		if t.HasName {
+			names = append(names, treeName(t.Name, t.ID))
 		}
 	}
 	return names
 }
 
-// describeConfig adds points, trees with perks and the perks a point can go to now.
-func describeConfig(out map[string]any, c map[string]any, treeFilter string) {
-	out["configID"] = c["configID"]
-	if name, ok := c["name"].(string); ok {
-		out["name"] = name
-	}
-	points, available, known := pointsOf(c)
-	out["points"] = points
-	perksByTree, canLearn := perks(c, treeFilter, known && available == 0)
-	out["trees"] = trees(c, perksByTree)
-	out["canLearnNow"] = canLearn
+func (r *Report) analyseConfig(c Config, treeFilter string) {
+	r.Points = pointsOf(c)
+	noPoints := r.Points.Known && r.Points.Unspent == 0
+	byTree, canLearn := c.perksByTree(treeFilter, noPoints)
+	r.Trees = c.treeViews(byTree)
+	r.CanLearn = canLearn
 	switch {
-	case known && available == 0:
-		addNote(out, "No unspent Legacy Points on this character, so canLearnNow is empty. Points come from Legacy challenges (see challenges).")
+	case noPoints:
+		r.Advice = AdviceNoPoints
 	case len(canLearn) == 0:
-		addNote(out, "No perk is marked available. Open the Legacy window in game, type /mcp reload and ask again if this looks wrong.")
+		r.Advice = AdviceNothingAvailable
 	}
-	if missing, _ := snapshot.AsInt(c["missingDescriptions"]); missing > 0 {
-		out["missingDescriptions"] = missing
-		addNote(out, fmt.Sprintf("%d perks have no description yet (the client loads them lazily). Hover them or open the Legacy window, type /mcp reload and ask again. Do not judge a perk by its name alone.", missing))
-	}
+	r.MissingDescriptions = c.MissingDescriptions
 }
 
-// pointsOf reads the Legacy point currency: unspent, spent, the most this character can hold now (max) and the account
-// currency if the client links one. The real client reports one trait currency shared by all three trees, repeated per
-// tree with the same numbers, so the first entry is the whole picture; a second currency ID is listed separately.
-// known says whether the dump states the available points at all.
-func pointsOf(c map[string]any) (map[string]any, int64, bool) {
-	currencies := snapshot.AsList(c["currencies"])
-	if len(currencies) == 0 {
-		return map[string]any{"note": "the dump has no Legacy point counts"}, 0, false
+// pointsOf reads the Legacy point currency. The real client reports one trait currency shared by all three trees,
+// repeated per tree with the same numbers, so the first entry is the whole picture; a second currency ID is listed separately.
+func pointsOf(c Config) Points {
+	if len(c.Currencies) == 0 {
+		return Points{}
 	}
-	cur := snapshot.AsMap(currencies[0])
-	points := map[string]any{}
-	copyKeys(points, cur, map[string]string{
-		"available": "unspent", "spent": "spent", "max": "max", "maxAvailable": "maxAvailable",
-		"name": "currency", "totalEarned": "accountTotalEarned", "quantity": "accountQuantity", "maxQuantity": "accountMax",
-	})
-	points["meaning"] = "max is the most points this character can have now (assumption from the real client: the Legacy Points earned so far, up to the per-character cap); unspent + spent = max when everything earned is in use"
-	first := cur["currencyID"]
-	others := []any{}
-	seen := map[any]bool{first: true}
-	for _, raw := range currencies[1:] {
-		c := snapshot.AsMap(raw)
-		if id := c["currencyID"]; !seen[id] {
-			seen[id] = true
-			others = append(others, c)
+	main := c.Currencies[0]
+	p := Points{Present: true, Main: main}
+	seen := map[any]bool{main.ID: true}
+	for _, cur := range c.Currencies[1:] {
+		if !seen[cur.ID] {
+			seen[cur.ID] = true
+			p.Others = append(p.Others, cur)
 		}
 	}
-	if len(others) > 0 {
-		points["otherCurrencies"] = others
-	}
-	available, known := snapshot.AsInt(cur["available"])
-	return points, available, known
+	p.Unspent, p.Known = snapshot.AsInt(main.Available)
+	return p
 }
 
-func copyKeys(dst, src map[string]any, names map[string]string) {
-	for from, to := range names {
-		if v, ok := src[from]; ok {
-			dst[to] = v
-		}
-	}
+func (p Perk) view() PerkView {
+	return PerkView{Perk: p, Status: p.Status(), Unrevealed: p.Name == unrevealedName, Learned: p.Rank > 0}
 }
 
-func perk(n map[string]any, noPoints bool) (map[string]any, bool) {
-	rank, _ := snapshot.AsInt(n["rank"])
-	maxRank, _ := snapshot.AsInt(n["maxRank"])
-	p := map[string]any{"name": n["name"], "rank": fmt.Sprintf("%d/%d", rank, maxRank)}
-	for _, key := range []string{"description", "requires", "requiresSpent", "row", "column"} {
-		if v, ok := n[key]; ok {
-			p[key] = v
-		}
-	}
-	status := StatusLocked
-	canPurchase, _ := n["canPurchase"].(bool)
-	switch {
-	case maxRank > 0 && rank >= maxRank:
-		status = StatusMaxed
-	case canPurchase:
-		status = StatusAvailable
-	}
-	p["status"] = status
-	if p["name"] == unrevealedName {
-		p["unrevealed"] = true
-	}
-	if rank > 0 {
-		p["learned"] = true
-	}
-	return p, status == StatusAvailable && !noPoints
-}
-
-// perks groups perks by tab (with the filter) and collects the ones a point can go to now.
-func perks(c map[string]any, treeFilter string, noPoints bool) (map[string][]map[string]any, []any) {
-	byTree := map[string][]map[string]any{}
-	canLearn := []any{}
+// perksByTree groups perks by tab (with the filter) and collects the ones a point can go to now.
+func (c Config) perksByTree(treeFilter string, noPoints bool) (map[string][]PerkView, []Learnable) {
+	byTree := map[string][]PerkView{}
+	var canLearn []Learnable
 	tq := strings.ToLower(treeFilter)
-	for _, raw := range snapshot.AsList(c["nodes"]) {
-		n := snapshot.AsMap(raw)
-		tree := nodeTree(n)
+	for _, p := range c.Perks {
+		tree := p.Label()
 		if tq != "" && !strings.Contains(strings.ToLower(tree), tq) {
 			continue
 		}
-		p, learnable := perk(n, noPoints)
-		byTree[tree] = append(byTree[tree], p)
-		if learnable {
-			line := map[string]any{"tree": tree, "perk": fmt.Sprintf("%v %v", p["name"], p["rank"])}
-			if d, ok := p["description"]; ok {
-				line["description"] = d
-			}
-			canLearn = append(canLearn, line)
+		v := p.view()
+		byTree[tree] = append(byTree[tree], v)
+		if v.Status == StatusAvailable && !noPoints {
+			canLearn = append(canLearn, Learnable{Tree: tree, Perk: p})
 		}
 	}
 	return byTree, canLearn
 }
 
-// trees lists the tabs in the dump's order, perks by row and column.
-func trees(c map[string]any, byTree map[string][]map[string]any) []any {
-	out := []any{}
+func sortByPosition(list []PerkView) {
+	sort.SliceStable(list, func(i, j int) bool {
+		ri, _ := snapshot.AsFloat(list[i].Row)
+		rj, _ := snapshot.AsFloat(list[j].Row)
+		if ri != rj {
+			return ri < rj
+		}
+		ci, _ := snapshot.AsFloat(list[i].Column)
+		cj, _ := snapshot.AsFloat(list[j].Column)
+		return ci < cj
+	})
+}
+
+// treeViews lists the tabs in the dump's order, perks by row and column, then the tabs only the perks name.
+func (c Config) treeViews(byTree map[string][]PerkView) []TreeView {
+	var out []TreeView
 	seen := map[string]bool{}
 	add := func(name string, points any) {
 		list := byTree[name]
@@ -285,32 +352,13 @@ func trees(c map[string]any, byTree map[string][]map[string]any) []any {
 			return
 		}
 		seen[name] = true
-		sort.SliceStable(list, func(i, j int) bool {
-			ri, _ := snapshot.AsFloat(list[i]["row"])
-			rj, _ := snapshot.AsFloat(list[j]["row"])
-			if ri != rj {
-				return ri < rj
-			}
-			ci, _ := snapshot.AsFloat(list[i]["column"])
-			cj, _ := snapshot.AsFloat(list[j]["column"])
-			return ci < cj
-		})
-		items := make([]any, len(list))
-		for i, p := range list {
-			items[i] = p
-		}
-		label := name
-		if label == "" {
-			label = "(no tab)"
-		}
-		out = append(out, map[string]any{"tree": label, "pointsSpent": points, "perks": items})
+		sortByPosition(list)
+		out = append(out, TreeView{Name: name, PointsSpent: points, Perks: list})
 	}
-	for _, raw := range snapshot.AsList(c["trees"]) {
-		t := snapshot.AsMap(raw)
-		name, _ := t["name"].(string)
-		add(treeName(name, t["treeID"]), t["points"])
+	for _, t := range c.Trees {
+		add(treeName(t.Name, t.ID), t.Points)
 	}
-	rest := []string{}
+	var rest []string
 	for name := range byTree {
 		if !seen[name] {
 			rest = append(rest, name)
@@ -323,43 +371,18 @@ func trees(c map[string]any, byTree map[string][]map[string]any) []any {
 	return out
 }
 
-// challenges summarises the Legacy challenges: counts, completed names and the open ones with what they ask.
-func challenges(raw any) map[string]any {
-	section := snapshot.AsMap(raw)
-	if section == nil {
-		return nil
-	}
-	list := snapshot.AsList(section["list"])
-	completed, open := []any{}, []any{}
-	for _, item := range list {
-		ch := snapshot.AsMap(item)
-		if done, _ := ch["completed"].(bool); done {
-			completed = append(completed, ch["name"])
-			continue
-		}
-		if len(open) < maxOpenChallenges {
-			entry := map[string]any{"name": ch["name"]}
-			for _, key := range []string{"category", "description", "reward", "points"} {
-				if v, ok := ch[key]; ok {
-					entry[key] = v
-				}
-			}
-			open = append(open, entry)
+// summariseChallenges counts the Legacy challenges and keeps the completed names and the first open ones.
+func summariseChallenges(list []Challenge) *ChallengeReport {
+	r := &ChallengeReport{Total: len(list), CompletedNames: []any{}}
+	for _, ch := range list {
+		if ch.Completed {
+			r.CompletedNames = append(r.CompletedNames, ch.Name)
+		} else if len(r.Open) < maxOpenChallenges {
+			r.Open = append(r.Open, ch)
 		}
 	}
-	out := map[string]any{"total": len(list), "completed": len(completed), "completedNames": completed, "open": open}
-	if len(list) == 0 {
-		out["note"] = "No achievement category named Legacy in this client; challenges may live elsewhere (see discovery=true)."
-	} else if len(list)-len(completed) > len(open) {
-		out["openTruncated"] = len(list) - len(completed) - len(open)
+	if left := len(list) - len(r.CompletedNames) - len(r.Open); left > 0 {
+		r.NotListed = left
 	}
-	return out
-}
-
-// addNote appends a sentence to the response's note field.
-func addNote(out map[string]any, text string) {
-	if prev, ok := out["note"].(string); ok && prev != "" {
-		text = prev + " " + text
-	}
-	out["note"] = text
+	return r
 }

@@ -14,6 +14,8 @@ import (
 	"strconv"
 	"strings"
 	"unicode/utf8"
+
+	"wowmcp/internal/snapshot"
 )
 
 // Type is the kind of goal (the template).
@@ -191,7 +193,7 @@ func (g Goal) Label() string {
 	case Level:
 		return fmt.Sprintf("Level %d", g.Target)
 	case Gold:
-		return fmt.Sprintf("Gold: %s", goldText(g.Target))
+		return fmt.Sprintf("Gold: %s", snapshot.Money(g.Target))
 	case Reputation:
 		if g.Standing != "" {
 			return fmt.Sprintf("%s with %s", g.Standing, g.Faction)

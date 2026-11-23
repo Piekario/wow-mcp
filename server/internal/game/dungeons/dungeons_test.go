@@ -69,3 +69,33 @@ func TestDungeonIDsAndLocale(t *testing.T) {
 		t.Error("the classic table on a German client needs the note")
 	}
 }
+
+func TestAnalyseFromTableSplitsByLevel(t *testing.T) {
+	s := snapshot.Snapshot{
+		"character": map[string]any{"level": int64(20)},
+		"quests":    []any{map[string]any{"title": "Mine", "zone": "The Deadmines", "level": int64(20)}},
+	}
+	r := Analyse(s, Query{}, fixtures.At(0))
+	if r.Source != FromTable || r.Level != 20 {
+		t.Fatalf("report: %+v", r)
+	}
+	var fit []string
+	for _, e := range r.Fit {
+		fit = append(fit, e.Name)
+	}
+	if !strings.Contains(strings.Join(fit, ","), "Wailing Caverns") || strings.Contains(strings.Join(fit, ","), "Blackfathom") {
+		t.Errorf("fit: %v", fit)
+	}
+	if len(r.Soon) == 0 || r.Soon[0].LevelsToGo <= 0 {
+		t.Errorf("soon: %+v", r.Soon)
+	}
+	var deadmines Entry
+	for _, e := range r.Fit {
+		if e.Name == "The Deadmines" {
+			deadmines = e
+		}
+	}
+	if len(deadmines.Quests) != 1 || !deadmines.Quests[0].HasDifficulty {
+		t.Errorf("deadmines quests: %+v", deadmines.Quests)
+	}
+}
