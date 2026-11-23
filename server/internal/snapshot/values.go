@@ -24,7 +24,6 @@ func AsInt(v any) (int64, bool) {
 	return 0, false
 }
 
-// AsFloat converts a number from the snapshot to float64.
 func AsFloat(v any) (float64, bool) {
 	switch n := v.(type) {
 	case int64:

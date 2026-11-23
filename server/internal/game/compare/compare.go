@@ -93,7 +93,6 @@ func find(db *snapshot.Database, query, fallback string) (string, error) {
 	return "", fmt.Errorf("no character %q in the dump. Available: %v", query, db.CharacterNames())
 }
 
-// View compares two characters.
 func View(db *snapshot.Database, q Query, fresh snapshot.Freshness) (map[string]any, error) {
 	an, bn, err := Resolve(db, q)
 	if err != nil {
@@ -113,7 +112,6 @@ func View(db *snapshot.Database, q Query, fresh snapshot.Freshness) (map[string]
 	return out, nil
 }
 
-// card is one column of the comparison.
 func card(name string, s snapshot.Snapshot, fresh snapshot.Freshness) map[string]any {
 	c := s.Character()
 	level, money := s.LevelAndMoney()

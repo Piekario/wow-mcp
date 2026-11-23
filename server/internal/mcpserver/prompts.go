@@ -41,7 +41,6 @@ const promptRules = "Answer in the language the user writes in; keep the names o
 	"Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. " +
 	"You only advise: do not propose macros or addons that play for the player."
 
-// prompt is one entry of the prompt registry: a description and a function that assembles the instruction with data.
 type prompt struct {
 	name, title, description string
 	build                    func(s *service, who string, snap snapshot.Snapshot) (task string, data map[string]any)
@@ -507,7 +506,6 @@ func petCare(s *service, who string, snap snapshot.Snapshot) (string, map[string
 		"Do not give numbers that are not in the data.", data
 }
 
-// weekDays is the window of the week_in_game prompt.
 const weekDays = 7
 
 func weekInGame(s *service, who string, snap snapshot.Snapshot) (string, map[string]any) {

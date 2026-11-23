@@ -129,7 +129,6 @@ func Notable(items []Item) (notable []Item, unknownQuality int) {
 	return notable, unknownQuality
 }
 
-// Total is the total number of units.
 func Total(items []Item) int64 {
 	var n int64
 	for _, it := range items {

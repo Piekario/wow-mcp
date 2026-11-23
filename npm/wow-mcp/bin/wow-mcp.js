@@ -88,8 +88,6 @@ function runServer(args) {
   });
 }
 
-// ---- install-addon ----------------------------------------------------------------------------------------
-
 function bundledAddon() {
   const addonRoot = path.join(PACKAGE_ROOT, "addon");
   const dirs = fs.existsSync(addonRoot)

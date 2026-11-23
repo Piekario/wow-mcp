@@ -34,7 +34,6 @@ const (
 		"Coordinates are map percentages (x from the left, y from the top) in the named zone."
 )
 
-// Quest states in an answer.
 const (
 	statusReady     = "in log, ready to turn in"
 	statusActive    = "in log, in progress"

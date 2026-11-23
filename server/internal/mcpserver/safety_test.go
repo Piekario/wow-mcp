@@ -3,7 +3,7 @@
 
 package mcpserver
 
-// Safety properties of the MCP adapter (code review 2026-11-16): concurrent requests, the response cap on resource
+// Safety properties of the MCP adapter: concurrent requests, the response cap on resource
 // reads, and resource URIs that can only name dump sections.
 
 import (

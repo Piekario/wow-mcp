@@ -2455,7 +2455,6 @@ def main() -> int:
         assert list(g.tooltip.lines.values()) == ["AH: 25c (2 h ago)"], list(g.tooltip.lines.values())
         g.clockNow = 1794760000
 
-    # --- 0.7.0 ---
     assert len(g.forbiddenCalls) == 0, f"addon called a server request: {list(g.forbiddenCalls.values())}"
     friends = snapshot["friends"]
     if mode == "legacy":
@@ -2514,7 +2513,7 @@ def main() -> int:
     else:
         assert any(f.frameName == "WowMcpMinimapButton" for f in g.frames.values())
 
-    # --- 0.9.0: locale-independent identifiers next to the client's text ---
+    # Locale-independent identifiers next to the client's text.
     check_identifiers(snapshot, mode)
     check_numeric_ids(snapshot, mode, runtime, addon_ns)
     check_quest_sources(snapshot, g, mode)

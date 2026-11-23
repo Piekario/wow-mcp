@@ -14,10 +14,6 @@ import (
 	"wowmcp/internal/snapshot"
 )
 
-// ---------------------------------------------------------------------------
-// Repair
-// ---------------------------------------------------------------------------
-
 type repairPlan struct {
 	present    bool
 	durability map[string]any
@@ -70,10 +66,6 @@ func (p repairPlan) view() map[string]any {
 	}
 	return out
 }
-
-// ---------------------------------------------------------------------------
-// Ammo
-// ---------------------------------------------------------------------------
 
 type ammoPlan struct {
 	f      ammo.Forecast
@@ -136,10 +128,6 @@ func (p *ammoPlan) view() map[string]any {
 	return out
 }
 
-// ---------------------------------------------------------------------------
-// Pet food
-// ---------------------------------------------------------------------------
-
 type petFoodPlan struct {
 	foodTypes any
 	inBags    int64
@@ -182,10 +170,6 @@ func (p *petFoodPlan) view() map[string]any {
 	}
 	return out
 }
-
-// ---------------------------------------------------------------------------
-// Consumable materials
-// ---------------------------------------------------------------------------
 
 type consumablePlan struct {
 	lines []map[string]any

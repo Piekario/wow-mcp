@@ -51,7 +51,6 @@ func parseResourceURI(uri string) (character, section string, ok bool) {
 	return character, section, true
 }
 
-// registerResources adds the index and the section resource template.
 func (s *service) registerResources(server *mcp.Server) {
 	server.AddResource(&mcp.Resource{
 		URI: resourceIndexURI, Name: "wow-index", Title: "Snapshot index",

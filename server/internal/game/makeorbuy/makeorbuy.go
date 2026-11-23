@@ -19,7 +19,6 @@ import (
 	"wowmcp/internal/snapshot"
 )
 
-// Verdicts.
 const (
 	VerdictMake    = "make"
 	VerdictBuy     = "buy"

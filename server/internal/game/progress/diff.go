@@ -150,7 +150,6 @@ type itemCount struct {
 	Count int64
 }
 
-// countItems sums items across all bags by name.
 func countItems(bags any) map[string]*itemCount {
 	counts := map[string]*itemCount{}
 	for _, rawBag := range snapshot.AsList(bags) {

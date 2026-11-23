@@ -16,7 +16,6 @@ type StockLine struct {
 	Bags, Bank          int64
 }
 
-// Total is the units in bags and bank together.
 func (l StockLine) Total() int64 { return l.Bags + l.Bank }
 
 // BagBankStock sums items from bags and bank by name (key: lowercase name).

@@ -24,7 +24,6 @@ import (
 	"wowmcp/internal/snapshot"
 )
 
-// Default history settings.
 const (
 	// DefaultCompressDays: snapshots older than this many days are gzip-compressed.
 	DefaultCompressDays = 7
@@ -92,7 +91,6 @@ func (h *History) now() time.Time {
 	return time.Now()
 }
 
-// entry is one remembered snapshot.
 type entry struct {
 	dumpedAt int64
 	path     string
@@ -104,7 +102,6 @@ func (e entry) gzipped() bool { return strings.HasSuffix(e.path, gzipExt) }
 // Fields not worth keeping in the history: the list of API functions says nothing about progress.
 var historySkip = map[string]bool{"probe": true}
 
-// characterDir returns the character directory inside Dir (characterDirName).
 func (h *History) characterDir(character string) string {
 	return filepath.Join(h.Dir, characterDirName(character))
 }

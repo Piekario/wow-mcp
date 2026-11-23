@@ -158,7 +158,7 @@ func BenchmarkParse(b *testing.B) {
 	}
 }
 
-// Code review 2026-11-16: a hostile SavedVariables file must not hang the parser or make it allocate more than its
+// A hostile SavedVariables file must not hang the parser or make it allocate more than its
 // input warrants. Memory stays proportional to the input (the file size is capped by storage.MaxDumpBytes).
 func TestParseHostileInputsAreBoundedAndFast(t *testing.T) {
 	huge := strings.Repeat("x", 4<<20)

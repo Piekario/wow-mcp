@@ -68,7 +68,6 @@ var specs = []spec{
 	{"flightPaths", []string{"name"}, []string{"state"}, ""},
 }
 
-// hit is one match.
 type hit struct {
 	label, field, text, summary string
 	path                        []string

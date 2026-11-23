@@ -101,7 +101,6 @@ function MinimapButton.isEnabled()
     return Store.settings().minimap ~= false
 end
 
--- /mcp minimap on|off
 function MinimapButton.setEnabled(enabled)
     if enabled then
         Store.settings().minimap = nil

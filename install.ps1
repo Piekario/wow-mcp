@@ -55,8 +55,6 @@ $ErrorActionPreference = 'Stop'
 $script:ProjectRoot = $PSScriptRoot
 $script:AddonName = 'WowMcp'
 
-# ---------------------------------------------------------------- messages
-
 function Write-Step([string]$Text) { Write-Host ('==> ' + $Text) -ForegroundColor Cyan }
 function Write-Ok([string]$Text) { Write-Host ('    ' + $Text) -ForegroundColor Green }
 function Write-Warn([string]$Text) { Write-Host ('    WARNING: ' + $Text) -ForegroundColor Yellow }
@@ -65,8 +63,6 @@ function Stop-Install([string]$Text) {
     Write-Host ('ERROR: ' + $Text) -ForegroundColor Red
     exit 1
 }
-
-# ---------------------------------------------------------------- paths
 
 function Get-Paths {
     $addonsDir = Join-Path (Join-Path $WowDir $Client) 'Interface\AddOns'
@@ -122,8 +118,6 @@ function Assert-SafeAddonTarget($Paths) {
     }
 }
 
-# ---------------------------------------------------------------- .toc and versions
-
 function Get-TocValue([string]$TocPath, [string]$Key) {
     $pattern = '^\s*##\s*' + [regex]::Escape($Key) + '\s*:\s*(.+?)\s*$'
     foreach ($line in (Get-Content -LiteralPath $TocPath)) {
@@ -154,8 +148,6 @@ function Get-ServerVersion([string]$ExePath) {
 function ConvertTo-SafeFileToken([string]$Text) {
     return ($Text -replace '[^0-9A-Za-z._-]', '_')
 }
-
-# ---------------------------------------------------------------- copying the addon
 
 function Copy-DirectoryMirror([string]$Source, [string]$Destination) {
     if (-not $PSCmdlet.ShouldProcess($Destination, 'Mirror the folder (copy and remove unneeded files)')) { return }
@@ -206,8 +198,6 @@ function Install-Addon($Paths) {
     Remove-OldAddonBackups $Paths
     Write-Ok ('Addon installed: ' + $Paths.AddonTarget)
 }
-
-# ---------------------------------------------------------------- Interface check (best effort)
 
 # "1.15.7.63000" -> 11507 (Interface number format: major*10000 + minor*100 + patch)
 function ConvertTo-InterfaceNumber([string]$Version) {
@@ -269,8 +259,6 @@ function Test-InterfaceVersion($Paths) {
         Write-Warn ('The Interface check failed (skipping): ' + $_.Exception.Message)
     }
 }
-
-# ---------------------------------------------------------------- server
 
 function Build-Server($Paths) {
     Write-Step 'Server: building from the server\ folder'
@@ -370,8 +358,6 @@ function Install-Server($Paths) {
     Remove-OldExes $Paths
 }
 
-# ---------------------------------------------------------------- dump check
-
 function Invoke-ServerCheck($Paths) {
     Write-Step 'Dump check (wow-mcp --check)'
     if (-not (Test-Path -LiteralPath $Paths.Exe)) { Write-Warn 'No bin\wow-mcp.exe - skipping.'; return }
@@ -393,8 +379,6 @@ function Invoke-ServerCheck($Paths) {
         Write-Ok 'Dump read successfully.'
     }
 }
-
-# ---------------------------------------------------------------- rollback
 
 function Restore-PreviousAddon($Paths) {
     Write-Step 'Addon rollback'
@@ -435,8 +419,6 @@ function Invoke-Rollback($Paths) {
     }
 }
 
-# ---------------------------------------------------------------- summary
-
 function Write-Summary($Paths) {
     $addonVersion = Get-TocValue $Paths.Toc 'Version'
     $serverVersion = Get-ServerVersion $Paths.Exe
@@ -454,8 +436,6 @@ function Write-Summary($Paths) {
     Write-Host '  2. In the game type /reload, then /mcp reload.'
     Write-Host '  3. Ask your assistant about wow_status.'
 }
-
-# ---------------------------------------------------------------- start
 
 function Invoke-Install($Paths) {
     Install-Addon $Paths

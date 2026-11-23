@@ -26,10 +26,6 @@ Guide.MAX_STEP_TEXT = 400
 local registered = {}   -- { text, group } in registration order
 local lastQuestIDs = {} -- quest IDs of the steps listed by the last collect()
 
----------------------------------------------------------------------------
--- Guide texts
----------------------------------------------------------------------------
-
 function Guide.remember(text, group)
     if type(text) ~= "string" then return end
     registered[#registered + 1] = { text = text, group = type(group) == "string" and group or nil }
@@ -75,10 +71,6 @@ function Guide.findText(name)
     return nil
 end
 
----------------------------------------------------------------------------
--- Steps
----------------------------------------------------------------------------
-
 local HEADER_CODES = { GA = true, N = true, NX = true, D = true, DL = true }
 local QUEST_ACTIONS = { A = "accept", P = "accept", C = "complete", W = "complete", T = "turnin", S = "skip" }
 
@@ -115,10 +107,6 @@ function Guide.parseStep(entry)
     if entry.text:find("%[OC?%]") then step.optional = true end
     return step
 end
-
----------------------------------------------------------------------------
--- Who the step is for
----------------------------------------------------------------------------
 
 local RACES = {
     human = true, dwarf = true, nightelf = true, gnome = true, orc = true, undead = true, tauren = true, troll = true,
@@ -163,10 +151,6 @@ function Guide.appliesTo(applies, player)
     end
     return allows(races, player.race) and allows(classes, player.class) and allows(factions, player.faction)
 end
-
----------------------------------------------------------------------------
--- Quest state
----------------------------------------------------------------------------
 
 -- Quests in the log: { [questID] = "complete" | "active" }.
 function Guide.logState()
@@ -222,10 +206,6 @@ local function allQuestsDone(step, log)
     end
     return true
 end
-
----------------------------------------------------------------------------
--- Section
----------------------------------------------------------------------------
 
 local function tickedByPlayer(progress, line)
     local entry = type(progress) == "table" and progress[line]

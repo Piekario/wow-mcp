@@ -12,7 +12,6 @@ import (
 	"wowmcp/internal/storage"
 )
 
-// TestRunCheck: --check reads the file and prints a summary, and a missing file returns an error.
 func TestRunCheck(t *testing.T) {
 	fresh := fixtures.At(3 * time.Hour)
 	store := &storage.Store{File: fixtures.Testdata("WowMcp_forever.lua"), History: &storage.History{Dir: t.TempDir(), Keep: 5}}
@@ -42,7 +41,7 @@ func TestResolveGoalsFile(t *testing.T) {
 	}
 }
 
-// Code review 2026-11-16: with only --file (no --wow-dir) the guard still knows the game directory, from the dump path.
+// With only --file (no --wow-dir) the guard still knows the game directory, from the dump path.
 func TestWriteGuardUsesTheGameDirectoryOfFile(t *testing.T) {
 	game := filepath.Join(t.TempDir(), "World of Warcraft")
 	dump := filepath.Join(game, "_forever_", "WTF", "Account", "ACC", "SavedVariables", storage.SavedVariablesFile)

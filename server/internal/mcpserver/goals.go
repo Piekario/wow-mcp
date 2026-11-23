@@ -13,7 +13,6 @@ import (
 	"wowmcp/internal/snapshot"
 )
 
-// goalArgs is the input of wow_goal_set.
 type goalArgs struct {
 	Type      string  `json:"type,omitempty" jsonschema:"goal type: level, gold, reputation, profession, spell, item"`
 	Target    float64 `json:"target,omitempty" jsonschema:"numeric target: level (level), amount in gold (gold), reputation value (reputation without standing), rank (profession), item count (item); not needed for spell"`
@@ -26,7 +25,6 @@ type goalArgs struct {
 	Remove    string  `json:"remove,omitempty" jsonschema:"ID of the goal to remove (e.g. g2); the other fields are then not needed"`
 }
 
-// goalBook builds the goal book over the port from the configuration.
 func (s *service) goalBook() goals.Book { return goals.Book{Store: s.goalStore()} }
 
 // goalStore returns the goals port, or a stub that returns an error when goals are disabled.

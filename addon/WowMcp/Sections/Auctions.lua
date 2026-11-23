@@ -4,7 +4,7 @@
 -- Section auctions (from the window): prices from search results that the player opened
 -- in the auction window, and the player's own auctions. The addon searches and posts nothing;
 -- it only reads what the client has already shown. Prices accumulate between visits
--- (the latest observation wins), and seen keeps several last minimums to judge the trend. Since 0.13.0 a gear entry also has
+-- (the latest observation wins), and seen keeps several last minimums to judge the trend. A gear entry also has
 -- the item details the client already holds (Items.addCachedDetails: never a request), so the server can compare it.
 
 local _, ns = ...
@@ -15,10 +15,6 @@ local AUCTION_MAX_ITEMS = 400
 local AUCTION_MAX_SEEN = 5
 local SAME_VISIT_SECONDS = 600
 local AUCTION_STATUS_SOLD = 1
-
----------------------------------------------------------------------------
--- Storing prices in the dump
----------------------------------------------------------------------------
 
 local function auctionsSection()
     local current = ns.Snapshot.current()
@@ -49,7 +45,7 @@ local function recordSeenMinimum(entry, minBuyout, now)
     end
 end
 
--- Item details that stay on a price entry (0.13.0). Filled from the client's cache only (Items.addCachedDetails); a later
+-- Item details that stay on a price entry. Filled from the client's cache only (Items.addCachedDetails); a later
 -- visit with uncached data keeps what an earlier one saved. The section is bounded (400 prices), so there is no tooltip text,
 -- no localized stat labels (statTokens say the same) and details only for gear: details for every price would add about
 -- 165 kB at the cap of 400, gear only about 135 kB (a cached weapon entry grows by about 340 bytes).
@@ -111,10 +107,6 @@ local function itemNameByID(itemID)
     return firstValue({ "C_Item.GetItemNameByID", "GetItemInfo" }, itemID)
 end
 
----------------------------------------------------------------------------
--- Classic auction window (GetAuctionItemInfo)
----------------------------------------------------------------------------
-
 -- Row of the classic auction list. Returns name, count, minBid, buyout, owner, saleStatus, itemID.
 local function classicAuctionRow(kind, index)
     local r = callFirst({ "GetAuctionItemInfo" }, kind, index)
@@ -129,7 +121,6 @@ local function classicAuctionRow(kind, index)
     return r[1], plain(r[3]), minBid, buyout, owner, saleStatus, itemID or Items.idFromLink(link)
 end
 
--- Current page of search results.
 local function captureClassicAuctionList()
     local counts = callFirst({ "GetNumAuctionItems" }, "list")
     local batch = counts and plain(counts[1])
@@ -164,10 +155,6 @@ local function classicOwnedAuctions()
     end
     return owned
 end
-
----------------------------------------------------------------------------
--- New auction window (C_AuctionHouse)
----------------------------------------------------------------------------
 
 -- Adds a browse result to the observation. Several item keys (e.g. different levels)
 -- may share a name: we take the lowest per-unit price and sum the quantities, as in observe.
@@ -252,10 +239,6 @@ local function modernOwnedAuctions(count)
     end
     return owned
 end
-
----------------------------------------------------------------------------
--- Auction window events
----------------------------------------------------------------------------
 
 -- The player's own auctions (the Auctions tab in the auction window), from the new or classic API.
 local function captureOwnedAuctions()

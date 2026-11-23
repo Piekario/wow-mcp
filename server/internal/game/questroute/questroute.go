@@ -27,7 +27,6 @@ const assumption = "The server has no world map or distances between zones, so t
 
 const noFlightsHint = "The dump has no flightPaths section: open the flight master window and run /mcp reload to see flight points next to zones."
 
-// Route phases.
 const (
 	phaseCurrent = "current zone"
 	phaseMain    = "to do"

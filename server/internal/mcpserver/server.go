@@ -62,7 +62,6 @@ const instructions = "The tools read World of Warcraft: Forever character state 
 	"Answer in the user's language and keep in-game names (items, spells, zones) in English. " +
 	"The server performs no actions in the game; it writes only the snapshot history and the goals file in its own directory (wow_goal_set)."
 
-// New assembles the MCP server: instructions, tools and prompts.
 func New(cfg Config) *mcp.Server {
 	server := mcp.NewServer(&mcp.Implementation{Name: cfg.Name, Version: cfg.Version}, &mcp.ServerOptions{
 		Instructions: instructions,
@@ -81,7 +80,6 @@ func New(cfg Config) *mcp.Server {
 	return server
 }
 
-// service holds the dependencies seen by tool and prompt handlers.
 type service struct {
 	Config
 	progress progress.Tracker
