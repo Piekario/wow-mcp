@@ -1,4 +1,4 @@
-# CurseForge: on an addon tag (addon-v<version>, the version in addon/WowMcp/WowMcp.toc), package the WowMcp addon with
+# CurseForge: on a release tag (v<version>; the addon and the server share one version number), package the WowMcp addon with
 # BigWigsMods/packager (see .pkgmeta) and upload it. Needs the CF_API_KEY secret (a CurseForge API token) and the
 # CF_PROJECT_ID repository variable (the project id from the CurseForge author console). The game version comes from
 # `## Interface:` in the .toc. Run it by hand with "dry run" to only build the zip and download it as an artifact.
@@ -7,7 +7,7 @@ name: CurseForge
 on:
   push:
     tags:
-      - 'addon-v*'
+      - 'v*'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -27,9 +27,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Tag matches the addon version
-        if: startsWith(github.ref, 'refs/tags/addon-v')
+        if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          want="addon-v$(scripts/version.sh addon)"
+          want="v$(scripts/version.sh addon)"
           if [ "$GITHUB_REF_NAME" != "$want" ]; then
             echo "tag $GITHUB_REF_NAME does not match the addon version (expected $want)" >&2
             exit 1

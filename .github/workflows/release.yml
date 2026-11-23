@@ -27,11 +27,15 @@ jobs:
           pip install lupa
           sudo apt-get update
           sudo apt-get install -y lua-check
-      - name: Tag matches the server version
+      - name: Tag matches the shared version (server and addon)
         run: |
           version="v$(scripts/version.sh server)"
           if [ "$GITHUB_REF_NAME" != "$version" ]; then
             echo "::error::tag $GITHUB_REF_NAME does not match serverVersion in server/main.go ($version)"
+            exit 1
+          fi
+          if [ "v$(scripts/version.sh addon)" != "$version" ]; then
+            echo "::error::the addon version in WowMcp.toc ($(scripts/version.sh addon)) differs from the server version ($version)"
             exit 1
           fi
       - name: Tests

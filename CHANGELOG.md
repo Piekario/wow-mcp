@@ -7,14 +7,19 @@ errors, dump 18 ms), addon 0.7.0 with server 0.9.0 (2026-11-15, no section error
 between are part of 0.11.0 / 0.12.2 and were run with them. Addon 0.14.0 was run on 2026-11-22 (client build 71037, no section errors, dump 25.7 ms: `questDb` for 22 log quests, `guide` reading TUGs, `/mcp quest The Glowing Shard`). **Server 0.15.0 and the 0.12.0 / 0.13.0 addon changes (carried periods, flight zones, auction gear details) have not yet been checked in a real client**: their fixes are
 based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` result and golden response tests.
 
-## Addon 0.18.0, server 0.18.1 (2026-11-23)
+## 0.19.0 (2026-11-23)
 
-### Server 0.18.1
+From this release the addon and the server share one version number, and one `v<version>` tag publishes everything: the
+GitHub release, the npm packages and the addon on CurseForge. Earlier entries below keep their separate numbers.
+
+### Server 0.19.0
 
 - **Changed**
-  - Expects addon 0.18.0 (`wow_doctor` and `wow_status` suggest the update to an older addon).
+  - Expects addon 0.19.0 (`wow_doctor` and `wow_status` suggest the update to an older addon).
 
-### Addon 0.18.0
+### Addon 0.19.0
+
+The changes below were prepared as addon 0.18.0, which was never released under that number.
 
 - **Added**
   - `/mcp quest`: with the TomTom addon installed, every "zone x, y" in the answer is a chat link; a click sets a TomTom waypoint
@@ -29,10 +34,6 @@ based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` 
 - **Changed**
   - TomTom is an optional dependency (`## OptionalDeps`), never required: without it, or in a client without
     `LinkUtil.RegisterLinkHandler`, the coordinates stay plain text, and the first lookup with coordinates in a session suggests TomTom once.
-
-### Server
-
-- `addon.ExpectedVersion` is 0.18.0 (no new dump fields; it ships with the next server release).
 
 ## Addon 0.17.0, server 0.18.0 (2026-11-22)
 
@@ -69,7 +70,7 @@ requirements, the shared point currency), but without tree names, with most desc
 
 ### Repository
 
-- CurseForge: an `addon-v<version>` tag packages the addon (`.pkgmeta`, BigWigsMods/packager) and uploads it with the
+- CurseForge: a release tag packages the addon (`.pkgmeta`, BigWigsMods/packager) and uploads it with the
   `CurseForge` workflow; running the workflow by hand builds the zip only.
 
 ## Server 0.17.1 (2026-11-22)

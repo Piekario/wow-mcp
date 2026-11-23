@@ -14,7 +14,7 @@ import (
 )
 
 // ExpectedVersion is the addon version that collects every section this server uses.
-const ExpectedVersion = "0.18.0"
+const ExpectedVersion = "0.19.0"
 
 // Version returns the version of the addon that made the dump ("" for a very old addon).
 func Version(s snapshot.Snapshot) string {

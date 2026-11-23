@@ -37,7 +37,7 @@
 
 local _, ns = ...
 
-ns.ADDON_VERSION = "0.18.0"
+ns.ADDON_VERSION = "0.19.0"
 ns.SCHEMA_VERSION = 2
 
 function ns.chat(text)

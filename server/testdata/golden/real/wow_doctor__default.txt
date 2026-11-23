@@ -4,7 +4,7 @@
 --- content[0] ---
 {
   "status": "warn",
-  "summary": "12 checks: 10 ok, 2 warnings, 0 failures (server 0.18.1, expected addon 0.18.0)",
+  "summary": "12 checks: 10 ok, 2 warnings, 0 failures (server 0.19.0, expected addon 0.19.0)",
   "nextStep": "Update the addon: copy the new WowMcp folder into Interface/AddOns (install.ps1 does it) and type /reload in game.",
   "checks": [
     {
@@ -28,7 +28,7 @@
     {
       "check": "addon version",
       "status": "warn",
-      "detail": "Addon 0.7.0, the server expects 0.18.0.",
+      "detail": "Addon 0.7.0, the server expects 0.19.0.",
       "fix": "Update the addon: copy the new WowMcp folder into Interface/AddOns (install.ps1 does it) and type /reload in game."
     },
     {

@@ -13,7 +13,7 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
 ```json
 {
   "addon": {
-    "addonVersion": "0.18.0",
+    "addonVersion": "0.19.0",
     "disabledNote": "Sections disabled in the addon: macros (wow_section). Tools that use them have no fresh data; enable a section in game with the command \"/mcp on section_name\" and run /mcp reload.",
     "disabledSections": [
       "macros"
@@ -27,7 +27,7 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
     "race": "Night Elf",
     "zone": "Stormwind City"
   },
-  "expectedAddonVersion": "0.18.0",
+  "expectedAddonVersion": "0.19.0",
   "sectionsInSnapshot": [
     "actionBars",
     "auctions",
