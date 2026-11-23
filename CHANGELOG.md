@@ -7,6 +7,26 @@ errors, dump 18 ms), addon 0.7.0 with server 0.9.0 (2026-11-15, no section error
 between are part of 0.11.0 / 0.12.2 and were run with them. Addon 0.14.0 was run on 2026-11-22 (client build 71037, no section errors, dump 25.7 ms: `questDb` for 22 log quests, `guide` reading TUGs, `/mcp quest The Glowing Shard`). **Server 0.15.0 and the 0.12.0 / 0.13.0 addon changes (carried periods, flight zones, auction gear details) have not yet been checked in a real client**: their fixes are
 based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` result and golden response tests.
 
+## Unreleased
+
+Internal quality work after a design review. No tool, prompt or dump field changes, except the one noted under "Changed".
+
+- **Changed**
+  - Item quality names come from one table (`itemkind.QualityName`). Bag plan and session journal answers now name
+    Artifact and Heirloom items instead of printing the quality number 6 or 7.
+  - The dump history is recorded by an explicit step after the dump is loaded (`mcpserver`), no longer as a side effect of
+    `storage.Store.Load`. Nothing changes for the player: every tool call and `--check` still record the dump.
+  - The tool registry is split into groups (status, character, windows, shopping, questing, progress, goals, account).
+  - Addon: the logout guard (`LogoutGuard.lua`), the carried loot and XP periods (`Periods.lua`) and the Legacy API
+    discovery scan (`LegacyDiscovery.lua`) moved out of `Snapshot.lua` and `Sections/Legacy.lua` into their own files.
+    The dump is byte-identical. New addon files need a full game restart, not only `/reload`.
+- **Added**
+  - `CONTRIBUTING.md` spells out the code rules (typed domain, rules apart from presentation, no hidden side effects,
+    one place for shared lookups, size limits), and `server/architecture_test.go` checks them: domain imports, untyped
+    maps per domain package and functions over 80 lines against baselines that may only go down, addon files over 350 lines.
+- **Fixed**
+  - The golden tests no longer fail on a Windows whose system language is not English (the "file not found" text).
+
 ## 0.19.0 (2026-11-23)
 
 From this release the addon and the server share one version number, and one `v<version>` tag publishes everything: the
