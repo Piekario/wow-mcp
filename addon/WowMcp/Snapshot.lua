@@ -175,74 +175,6 @@ function Snapshot.capture(name)
     end
 end
 
--- Whether the saved dump ends with a skipped logout dump (the client already had empty data):
--- then the disk holds an old dump, and the loot and XP period continues from it.
-function Snapshot.continuesPeriod(saved)
-    return type(saved) == "table" and type(saved.lastSkippedLogoutAt) == "number"
-        and type(saved.dumpedAt) == "number" and saved.lastSkippedLogoutAt >= saved.dumpedAt
-end
-
--- Closed periods. The addon never assumes the server read a dump: the game may save twice
--- (/mcp reload, then logout) before the server looks at the file, and the second save would otherwise
--- replace the first period's loot and XP. So when a login closes a period that has content, the period
--- (its fields plus until = the dumpedAt of the save that closed it) is appended to the section's
--- "periods" list, oldest first, and carried on. The list is bounded by count and by age; empty periods
--- are not stored.
-Snapshot.MAX_PERIODS = 20
-Snapshot.MAX_PERIOD_AGE = 7 * 24 * 3600
-
--- The carried periods that are still within the bounds at time now: tables with a numeric until not older
--- than MAX_PERIOD_AGE, at most MAX_PERIODS of the newest. Returns a new list (possibly empty).
-function Snapshot.keptPeriods(periods, now)
-    local kept = {}
-    if type(periods) ~= "table" then return kept end
-    for _, period in ipairs(periods) do
-        local ended = type(period) == "table" and period["until"]
-        if type(ended) == "number" and now - ended <= Snapshot.MAX_PERIOD_AGE then kept[#kept + 1] = period end
-    end
-    while #kept > Snapshot.MAX_PERIODS do table.remove(kept, 1) end
-    return kept
-end
-
--- Closes the saved section's period at time ended: returns the carried list with the closed period appended
--- when hasContent(section) says it holds anything, bounded by keptPeriods; nil when the list is empty.
-function Snapshot.closePeriod(section, ended, hasContent, now)
-    if type(section) ~= "table" then return nil end
-    local periods = section.periods
-    section.periods = nil
-    if type(section.since) == "number" and hasContent(section) then
-        section["until"] = ended
-        periods = type(periods) == "table" and periods or {}
-        periods[#periods + 1] = section
-    end
-    local kept = Snapshot.keptPeriods(periods, now)
-    if #kept == 0 then return nil end
-    return kept
-end
-
--- After login (and after /reload) starts a new period of section name: the previous dump is already
--- on disk, so the section starts from zero with since = its dumpedAt. fresh(since) creates an empty section,
--- and the closed period goes to the section's periods list when hasContent(section) is true.
--- When the previous logout dump was skipped, the period continues (with its periods). Returns since or nil.
-function Snapshot.startPeriod(name, fresh, hasContent)
-    local saved = Store.savedCurrentCharacter()
-    local previous = saved and type(saved[name]) == "table" and saved[name] or nil
-    if Snapshot.continuesPeriod(saved) and previous and type(previous.since) == "number" then
-        local kept = Snapshot.keptPeriods(previous.periods, time())
-        previous.periods = #kept > 0 and kept or nil
-        return previous.since
-    end
-    local since = (saved and type(saved.dumpedAt) == "number" and saved.dumpedAt) or time()
-    if Snapshot.isDisabled(name) then
-        if saved then saved[name] = nil end
-        return since
-    end
-    local section = fresh(since)
-    section.periods = Snapshot.closePeriod(previous, since, hasContent, time())
-    Snapshot.current()[name] = section
-    return since
-end
-
 local function collectSections(snapshot, recorder)
     for _, section in ipairs(dumpSections) do
         if not Snapshot.isDisabled(section.name) then
@@ -274,62 +206,11 @@ local function keepWindowSections(snapshot, previous)
     end
 end
 
-local function isEmptyList(value)
-    return type(value) == "table" and next(value) == nil
-end
-
-local function hasNoBagSpace(bags)
-    if type(bags) ~= "table" then return false end
-    for _, bag in ipairs(bags) do
-        if type(bag) == "table" and type(bag.size) == "number" and bag.size > 0 then return false end
-    end
-    return true
-end
-
--- The four sections whose emptiness says the client has unloaded the character. The guard reads them
--- even when the player turned them off with /mcp off (see guardView), so it never depends on that choice.
-local GUARD_SECTIONS = { "stats", "spells", "equipment", "bags" }
-
--- How many empty-client signs the dump has.
-function Snapshot.unloadedSignals(snapshot)
-    local signals = 0
-    if type(snapshot.stats) == "table" and not (type(snapshot.stats.healthMax) == "number" and snapshot.stats.healthMax > 0) then
-        signals = signals + 1
-    end
-    if isEmptyList(snapshot.spells) then signals = signals + 1 end
-    if isEmptyList(snapshot.equipment) then signals = signals + 1 end
-    if hasNoBagSpace(snapshot.bags) then signals = signals + 1 end
-    return signals
-end
-
 local function collectorOf(name)
     for _, section in ipairs(dumpSections) do
         if section.name == name then return section.collect end
     end
     return nil
-end
-
--- The sections the guard looks at: the dump's own, and for a disabled one a fresh read that is only used for the
--- check (never stored in the dump). A section that errored simply gives no sign, as before.
-local function guardView(snapshot)
-    local view = {}
-    for _, name in ipairs(GUARD_SECTIONS) do
-        view[name] = snapshot[name]
-        local collect = collectorOf(name)
-        if view[name] == nil and collect and Snapshot.isDisabled(name) then
-            local ok, result = pcall(collect)
-            if ok then view[name] = result end
-        end
-    end
-    return view
-end
-
--- On a real exit from the game (and logout to the menu) PLAYER_LOGOUT arrives once the client has
--- already unloaded the character: zero health, no spells, equipment or bags. Two signs are enough;
--- a real character has none (it always has a backpack, health and Attack in the spellbook).
--- Independent of /mcp off: a disabled sign section is read for the check only.
-function Snapshot.looksUnloaded(snapshot)
-    return Snapshot.unloadedSignals(guardView(snapshot)) >= 2
 end
 
 -- Last pass before the game writes SavedVariables: drops from the character's saved dump anything that is not a
@@ -358,7 +239,7 @@ function Snapshot.dump(reason)
     collectSections(snapshot, recorder)
     snapshot.timings = recorder.report()
 
-    if reason == "logout" and Snapshot.looksUnloaded(snapshot) then
+    if reason == "logout" and ns.LogoutGuard.looksUnloaded(snapshot, collectorOf, Snapshot.isDisabled) then
         if type(previous) == "table" and type(previous.dumpedAt) == "number" then
             previous.lastSkippedLogoutAt = time()
             Store.saveCharacter(key, previous)

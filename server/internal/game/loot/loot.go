@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"sort"
 
+	"wowmcp/internal/game/itemkind"
 	"wowmcp/internal/game/periods"
 	"wowmcp/internal/snapshot"
 )
@@ -19,12 +20,10 @@ const NotableQuality = 2
 // UnknownQuality marks loot for which the addon gave no quality.
 const UnknownQuality = -1
 
-var qualityNames = []string{"Poor", "Common", "Uncommon", "Rare", "Epic", "Legendary"}
-
 // QualityLabel returns the in-game quality name; "?" for an unknown one.
 func QualityLabel(q int64) string {
-	if q >= 0 && int(q) < len(qualityNames) {
-		return qualityNames[q]
+	if name, ok := itemkind.QualityName(q); ok {
+		return name
 	}
 	return "?"
 }

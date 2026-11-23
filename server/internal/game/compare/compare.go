@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"strings"
 
+	"wowmcp/internal/game/itemkind"
 	"wowmcp/internal/game/professions"
 	"wowmcp/internal/snapshot"
 )
@@ -25,8 +26,6 @@ var slotOrder = []string{"head", "neck", "shoulder", "back", "chest", "shirt", "
 
 // notGear are the slots not counted toward the average item level.
 var notGear = map[string]bool{"shirt": true, "tabard": true, "ammo": true}
-
-var qualityNames = []string{"Poor", "Common", "Uncommon", "Rare", "Epic", "Legendary", "Artifact", "Heirloom"}
 
 // Resolve picks two different characters: empty a = the most recently dumped, empty b = the only other character.
 // A name can be the full key ("Piekasz-Realm"), a name without the realm or an unambiguous prefix, case-insensitive.
@@ -171,8 +170,8 @@ func slotEntry(it map[string]any) map[string]any {
 		e["itemLevel"] = lvl
 	}
 	if q, ok := snapshot.AsInt(it["quality"]); ok {
-		if q >= 0 && int(q) < len(qualityNames) {
-			e["quality"] = qualityNames[q]
+		if name, known := itemkind.QualityName(q); known {
+			e["quality"] = name
 		}
 	}
 	return e

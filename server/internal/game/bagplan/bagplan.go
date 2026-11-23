@@ -208,11 +208,9 @@ func ammoLabel(kind string) string {
 	return kind
 }
 
-var qualityNames = []string{"Poor", "Common", "Uncommon", "Rare", "Epic", "Legendary"}
-
 func qualityLabel(q int64) string {
-	if q >= 0 && int(q) < len(qualityNames) {
-		return qualityNames[q]
+	if name, ok := itemkind.QualityName(q); ok {
+		return name
 	}
 	return fmt.Sprint(q)
 }

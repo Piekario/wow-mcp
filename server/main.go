@@ -85,8 +85,9 @@ func main() {
 
 	fresh := snapshot.Freshness{Now: time.Now, StaleAfter: time.Duration(*staleMinutes) * time.Minute}
 	store := &storage.Store{WowDir: *wowDir, Client: *client, File: *file, Account: *account}
+	var history *storage.History
 	if *historyDir != "" {
-		store.History = storage.NewHistory(*historyDir, *historyKeep,
+		history = storage.NewHistory(*historyDir, *historyKeep,
 			storage.WithMaxMB(*historyMaxMB), storage.WithCompressDays(*historyCompressDays))
 	}
 
@@ -97,7 +98,7 @@ func main() {
 	}
 
 	if *check {
-		if err := runCheck(store, fresh); err != nil {
+		if err := runCheck(store, history, fresh); err != nil {
 			log.Print("ERROR: ", err)
 			closeLog()
 			os.Exit(1)
@@ -106,7 +107,7 @@ func main() {
 	}
 
 	log.Printf("start: version %s, game directory %q, client %q, history %q", serverVersion, *wowDir, *client, *historyDir)
-	if err := newServer(store, fresh, goalsPath, func(c *mcpserver.Config) { c.MaxResponseKB = *maxResponseKB }).Run(context.Background(), &mcp.StdioTransport{}); err != nil {
+	if err := newServer(store, history, fresh, goalsPath, func(c *mcpserver.Config) { c.MaxResponseKB = *maxResponseKB }).Run(context.Background(), &mcp.StdioTransport{}); err != nil {
 		log.Print("ERROR: ", err)
 		closeLog()
 		os.Exit(1)
@@ -157,15 +158,15 @@ func resolveGoalsFile(flagValue, historyDir string) string {
 
 // newServer assembles the MCP server from the snapshot store and the freshness policy. Shared by main and tests.
 // An empty goalsPath means goals are disabled. Options adjust the configuration (e.g. the response size limit).
-func newServer(store *storage.Store, fresh snapshot.Freshness, goalsPath string, options ...func(*mcpserver.Config)) *mcp.Server {
+func newServer(store *storage.Store, history *storage.History, fresh snapshot.Freshness, goalsPath string, options ...func(*mcpserver.Config)) *mcp.Server {
 	cfg := mcpserver.Config{Name: serverName, Version: serverVersion, Snapshots: store, Freshness: fresh}
 	if goalsPath != "" {
 		cfg.Goals = storage.OwnFile{Path: goalsPath}
 		cfg.GoalsFile = goalsPath
 		cfg.Weights = storage.OwnFile{Path: filepath.Join(filepath.Dir(goalsPath), "weights.json")}
 	}
-	if h := store.History; h != nil && h.Dir != "" {
-		cfg.History, cfg.HistoryDir = h, h.Dir
+	if history != nil && history.Dir != "" {
+		cfg.History, cfg.HistoryDir = history, history.Dir
 	}
 	for _, option := range options {
 		option(&cfg)
@@ -174,11 +175,12 @@ func newServer(store *storage.Store, fresh snapshot.Freshness, goalsPath string,
 }
 
 // runCheck prints where the snapshot is read from, which characters it contains and how old the data is (--check).
-func runCheck(store *storage.Store, fresh snapshot.Freshness) error {
+func runCheck(store *storage.Store, history *storage.History, fresh snapshot.Freshness) error {
 	db, err := store.Load()
 	if err != nil {
 		return err
 	}
+	history.Record(db)
 	fmt.Println("File:", db.Path)
 	fmt.Println("Modified:", db.ModTime.Format("2006-01-02 15:04:05"))
 	if db.Account != "" {
@@ -194,8 +196,8 @@ func runCheck(store *storage.Store, fresh snapshot.Freshness) error {
 			fmt.Println("  Warning:", w)
 		}
 	}
-	if store.History != nil {
-		fmt.Println("History:", store.History.Dir)
+	if history != nil {
+		fmt.Println("History:", history.Dir)
 	}
 	return nil
 }

@@ -74,12 +74,14 @@ func TestServerEndToEnd(t *testing.T) {
 	dir := t.TempDir()
 	dump := filepath.Join(dir, storage.SavedVariablesFile)
 	history := &storage.History{Dir: filepath.Join(dir, "history"), Keep: 10}
-	store := &storage.Store{File: dump, History: history}
+	store := &storage.Store{File: dump}
 
 	writeDump(t, dump, fixtures.Forever(t))
-	if _, err := store.Load(); err != nil { // the first snapshot goes to the history
+	first, err := store.Load()
+	if err != nil {
 		t.Fatal(err)
 	}
+	history.Record(first)
 	writeDump(t, dump, fixtures.Later(t))
 
 	server := New(Config{Name: "wow-mcp", Version: "test", Snapshots: store, History: history,

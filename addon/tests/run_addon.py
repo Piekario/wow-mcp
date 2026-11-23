@@ -1717,7 +1717,7 @@ def check_carried_periods() -> None:
     assert g.SerializeSavedVariable("WowMcpDB", g.WowMcpDB) == before, "the sanitizer removed carried data"
 
     # (b) Bounds: at most MAX_PERIODS of the newest, none older than MAX_PERIOD_AGE.
-    max_periods, max_age = addon_ns.Snapshot.MAX_PERIODS, addon_ns.Snapshot.MAX_PERIOD_AGE
+    max_periods, max_age = addon_ns.Periods.MAX_PERIODS, addon_ns.Periods.MAX_PERIOD_AGE
     assert (max_periods, max_age) == (20, 7 * 24 * 3600)
     now = g.clockNow
     fill = runtime.eval('''function(section, now, count, maxAge)

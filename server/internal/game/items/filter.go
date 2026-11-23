@@ -72,15 +72,14 @@ func matcher(query string) func(map[string]any) bool {
 	}
 }
 
-var qualityNames = []string{"Poor", "Common", "Uncommon", "Rare", "Epic", "Legendary", "Artifact", "Heirloom"}
-
 // qualityName turns quality 0-7 into the in-game name; an empty string when there is none.
 func qualityName(item map[string]any) string {
 	q, ok := snapshot.AsInt(item["quality"])
-	if !ok || q < 0 || int(q) >= len(qualityNames) {
+	if !ok {
 		return ""
 	}
-	return qualityNames[q]
+	name, _ := itemkind.QualityName(q)
+	return name
 }
 
 // copyItem makes a shallow copy of an item to which the view adds computed fields.

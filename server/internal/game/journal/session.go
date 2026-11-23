@@ -8,6 +8,7 @@ import (
 	"sort"
 
 	"wowmcp/internal/game/character"
+	"wowmcp/internal/game/itemkind"
 	"wowmcp/internal/game/loot"
 	"wowmcp/internal/game/periods"
 	"wowmcp/internal/game/progress"
@@ -20,8 +21,6 @@ const notableQuality = 2
 
 // maxListed is how many list entries (quests, items, zones) we show in one session.
 const maxListed = 10
-
-var qualityNames = []string{"Poor", "Common", "Uncommon", "Rare", "Epic", "Legendary"}
 
 // ItemGain is an item that was gained in the bags during the session.
 type ItemGain struct {
@@ -259,8 +258,8 @@ func appendUnique(list []string, v string) []string {
 }
 
 func qualityLabel(q int64) string {
-	if q >= 0 && int(q) < len(qualityNames) {
-		return qualityNames[q]
+	if name, ok := itemkind.QualityName(q); ok {
+		return name
 	}
 	return fmt.Sprint(q)
 }

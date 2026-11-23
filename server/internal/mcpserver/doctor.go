@@ -26,7 +26,7 @@ func (s *service) doctorTool() tool {
 			"It reads the same file as the other tools and changes nothing in the game.",
 		add: func(server *mcp.Server, def *mcp.Tool) {
 			mcp.AddTool(server, def, func(ctx context.Context, req *mcp.CallToolRequest, a characterArgs) (*mcp.CallToolResult, any, error) {
-				db, err := s.Snapshots.Load()
+				db, err := s.loadDatabase()
 				if err != nil {
 					return textResult(doctor.Unreadable(err.Error(), s.doctorFacts(nil, "")))
 				}

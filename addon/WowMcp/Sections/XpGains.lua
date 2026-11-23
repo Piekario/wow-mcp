@@ -8,7 +8,7 @@
 -- Diagnostics: messagesSeen, messagesParsed, messagesSecret (content hidden by the client) and barXp,
 -- i.e. XP computed independently from the experience bar (UnitXP on PLAYER_XP_UPDATE). When barXp
 -- grows while total stands still, messages do not match the patterns or are hidden.
--- Closed periods with XP are carried in xpGains.periods (oldest first, bounded; see Snapshot.closePeriod).
+-- Closed periods with XP are carried in xpGains.periods (oldest first, bounded; see Periods.close).
 
 local _, ns = ...
 local plain = ns.Compat.plain
@@ -233,9 +233,9 @@ function XpGains.hasContent(section)
 end
 
 -- After login (and after /reload) the previous dump is already on disk together with its XP; the closed period
--- is carried in xpGains.periods (Snapshot.startPeriod).
+-- is carried in xpGains.periods (Periods.start).
 local function startXpPeriod()
-    xpSince = ns.Snapshot.startPeriod("xpGains", newSection, XpGains.hasContent)
+    xpSince = ns.Periods.start("xpGains", newSection, XpGains.hasContent)
     bar = readBar()
 end
 

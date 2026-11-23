@@ -343,7 +343,7 @@ func sessionSummary(s *service, who string, snap snapshot.Snapshot) (string, map
 
 func accountReview(s *service, who string, snap snapshot.Snapshot) (string, map[string]any) {
 	data := map[string]any{}
-	if db, err := s.Snapshots.Load(); err == nil {
+	if db, err := s.loadDatabase(); err == nil {
 		data["account"] = character.Account(db, s.Freshness)
 		if cds, err := cooldowns.View(db, cooldowns.Query{All: true}, s.Freshness); err == nil {
 			data["cooldowns"] = cds

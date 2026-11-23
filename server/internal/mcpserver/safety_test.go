@@ -46,7 +46,7 @@ func TestConcurrentToolCalls(t *testing.T) {
 	writeDump(t, dump, fixtures.Forever(t))
 	history := &storage.History{Dir: filepath.Join(dir, "history"), Keep: 10}
 	goalsPath := filepath.Join(dir, "goals.json")
-	cs := connectSession(t, Config{Name: "wow-mcp", Version: "test", Snapshots: &storage.Store{File: dump, History: history},
+	cs := connectSession(t, Config{Name: "wow-mcp", Version: "test", Snapshots: &storage.Store{File: dump},
 		History: history, HistoryDir: history.Dir, Freshness: fixtures.At(0),
 		Goals: storage.OwnFile{Path: goalsPath}, GoalsFile: goalsPath})
 

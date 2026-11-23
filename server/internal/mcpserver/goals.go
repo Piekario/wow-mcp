@@ -55,7 +55,7 @@ func (s *service) goalSetTool() tool {
 			"Examples: type=level target=25; type=gold target=10 (gold); type=reputation faction=Darnassus standing=Revered; type=profession name=Mining target=150; type=spell name=Aimed Shot; type=item item=Linen Cloth target=40.",
 		add: func(server *mcp.Server, def *mcp.Tool) {
 			mcp.AddTool(server, def, func(ctx context.Context, req *mcp.CallToolRequest, a goalArgs) (*mcp.CallToolResult, any, error) {
-				db, err := s.Snapshots.Load()
+				db, err := s.loadDatabase()
 				if err != nil {
 					return nil, nil, err
 				}

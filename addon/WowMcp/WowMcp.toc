@@ -20,7 +20,10 @@ TraitTree.lua
 Store.lua
 Events.lua
 Timing.lua
+LogoutGuard.lua
 Snapshot.lua
+Periods.lua
+LegacyDiscovery.lua
 
 # Sections collected on every dump. File order = section order in the dump.
 Sections\Character.lua

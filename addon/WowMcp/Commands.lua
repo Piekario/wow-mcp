@@ -194,7 +194,7 @@ local function showStatus()
     end
     chat("Version " .. ns.ADDON_VERSION .. ". Last dump: " .. Store.characterKey() .. ", " .. snapshot.dumpedAtText
         .. (Snapshot.isUnsaved() and " (not on disk yet)" or ""))
-    if Snapshot.continuesPeriod(snapshot) then
+    if ns.Periods.continues(snapshot) then
         chat("At the last logout the client no longer had character data, so the dump from "
             .. snapshot.dumpedAtText .. " was kept. Fresh save: /mcp reload")
     end
