@@ -5,7 +5,7 @@
 {
   "characters": [
     {
-      "addonUpdate": "Dump from addon 0.7.0; the server supports 0.17.0 (currencies, cooldowns, recipes, mail, played time, panel, note, deaths, dump timings, quest rewards, loot, stable, multiple vendors and trainers, XP by source, buyback list, equipment sets, PvP, friends and guild, zone and dungeon IDs, weapon speed, quest locations and guide steps). Copy the new addon into AddOns and run /reload.",
+      "addonUpdate": "Dump from addon 0.7.0; the server supports 0.18.0 (currencies, cooldowns, recipes, mail, played time, panel, note, deaths, dump timings, quest rewards, loot, stable, multiple vendors and trainers, XP by source, buyback list, equipment sets, PvP, friends and guild, zone and dungeon IDs, weapon speed, quest locations and guide steps). Copy the new addon into AddOns and run /reload.",
       "addonVersion": "0.7.0",
       "ageMinutes": 30,
       "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
@@ -42,7 +42,7 @@
       ]
     }
   ],
-  "expectedAddonVersion": "0.17.0",
+  "expectedAddonVersion": "0.18.0",
   "file": "<FILE>",
   "fileModified": "2026-11-15 22:43:06",
   "goalsFile": "<GOALS>",

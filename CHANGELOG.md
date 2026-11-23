@@ -7,6 +7,28 @@ errors, dump 18 ms), addon 0.7.0 with server 0.9.0 (2026-11-15, no section error
 between are part of 0.11.0 / 0.12.2 and were run with them. Addon 0.14.0 was run on 2026-11-22 (client build 71037, no section errors, dump 25.7 ms: `questDb` for 22 log quests, `guide` reading TUGs, `/mcp quest The Glowing Shard`). **Server 0.15.0 and the 0.12.0 / 0.13.0 addon changes (carried periods, flight zones, auction gear details) have not yet been checked in a real client**: their fixes are
 based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` result and golden response tests.
 
+## Addon 0.18.0 (2026-11-22)
+
+### Addon 0.18.0
+
+- **Added**
+  - `/mcp quest`: with the TomTom addon installed, every "zone x, y" in the answer is a chat link; a click sets a TomTom waypoint
+    (with its arrow) titled with the NPC or object and the quest, e.g. "Barithras Moonshade (Cave Mushrooms)". The map ID comes from
+    the zone data QuestieDB ships (the same area-to-map table and overrides Questie uses for its map pins), or from the zone name
+    through the client's map data. Only a click sets a waypoint; a shift-click keeps the client's default.
+  - `/mcp quest` also lists the objective targets (`objectives:`) between the start and the end.
+- **Fixed**
+  - The `group` section failed in a real party on Forever ("attempt to perform boolean test on ... a secret boolean value"):
+    `UnitInRange` returns its "range checked" value as a secret there. Secret values are now dropped before any test, so the
+    group is saved and `inRange` is left out when the client hides it.
+- **Changed**
+  - TomTom is an optional dependency (`## OptionalDeps`), never required: without it, or in a client without
+    `LinkUtil.RegisterLinkHandler`, the coordinates stay plain text, and the first lookup with coordinates in a session suggests TomTom once.
+
+### Server
+
+- `addon.ExpectedVersion` is 0.18.0 (no new dump fields; it ships with the next server release).
+
 ## Addon 0.17.0, server 0.18.0 (2026-11-22)
 
 Fixes from the first real Legacy dump (addon 0.16.0, Forever build 71037): the perk trees were read (27 perks, ranks,

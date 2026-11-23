@@ -31,6 +31,9 @@ and compare them with the code. The project is intended for personal use on your
   reads: it registers no corrections, changes no data of those addons and calls nothing that acts in the game. It ships no quest database and
   no guide text of its own; the dump holds the locations of the player's current quests and the next steps of the player's own guide, and
   stays on the player's computer. The server still reads only the WowMcp dump, never another addon's files.
+- With the TomTom addon installed (since addon 0.18.0), the coordinates in `/mcp quest` answers are chat links. Only a click on a link
+  passes its map and coordinates to TomTom (`TomTom:AddWaypoint`, the same call Questie makes), which shows a waypoint and its arrow.
+  Nothing is set without that click, the character is not moved or steered, and without TomTom the coordinates stay plain text.
 - Your own loot is computed by the addon from the chat messages about the player's own loot (`LOOT_ITEM_SELF` and related). It does not record other players' loot.
 - The item tooltip gets one added line with the last saved auction house price (`/mcp ahtip off` turns it off). It is only
   text in the tooltip: the addon searches for and lists nothing, and knows the price only from searches the player ran themselves.

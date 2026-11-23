@@ -1033,6 +1033,17 @@ end
 LibQuestieDB = { Quest = entity("Quest"), Npc = entity("Npc"), Object = entity("Object"), Item = entity("Item"),
                  addonName = "QuestieDB", contractVersion = 4, readMode = "baked" }
 C_AddOns = { GetAddOnMetadata = function(name, key) if name == "QuestieDB" and key == "Version" then return "1.1.3" end end }
+-- Addon 0.18.0: the zone support data (area ID -> UI map ID) as the Lua source text QuestieDB ships, and the client's
+-- link handler API (Forever: LinkUtil.RegisterLinkHandler, as Questie uses it). TomTom is absent unless a check adds it.
+LibQuestieDB.Support = { Get = function(name)
+    if name ~= "ZoneDB" then return nil end
+    return { private = { areaIdToUiMapId = "return { [148] = 1, [331] = 1440 }", areaIdToUiMapIdOverride = "return { [148] = 1439 }" } }
+end }
+linkHandlers = {}
+LinkProcessorResponse = { Unhandled = 1, Handled = 2 }
+LinkUtil = { RegisterLinkHandler = function(linkType, handler) linkHandlers[linkType] = handler end }
+modifiedClick = false
+IsModifiedClick = function() return modifiedClick end
 
 -- Guidelime: the registry function a guide addon calls, and the per-character progress data.
 guidelimeRegistered = 0
@@ -1223,8 +1234,8 @@ def event_dispatcher(g):
     return on_event
 
 
-def load_addon(mode: str):
-    """Loads the stubs for the mode and the addon files; returns (runtime, globals, addon ns)."""
+def load_addon(mode: str, before_addon: str = ""):
+    """Loads the stubs for the mode, then `before_addon` (Lua), then the addon files; returns (runtime, globals, addon ns)."""
     runtime = lua51.LuaRuntime(unpack_returned_tuples=True)
     runtime.execute(localize(mode, COMMON_STUBS))
     runtime.execute(LEGACY_STUBS if mode == "legacy" else localize(mode, MODERN_STUBS))
@@ -1237,6 +1248,8 @@ def load_addon(mode: str):
         runtime.execute(localize(mode, FOREVER_V4_STUBS))
         runtime.execute(QUEST_SOURCES_STUBS)
         runtime.execute(LEGACY_TREE_STUBS)
+    if before_addon:
+        runtime.execute(before_addon)
     # The client passes every addon file the same arguments: the addon name and a shared table.
     addon_ns = runtime.table()
     for path in addon_files():
@@ -2032,6 +2045,83 @@ def check_realmless_key() -> None:
     assert addon_ns.Store.characterKey() == "Piekasz-Realm2"
 
 
+TOMTOM_STUB = r"""
+tomTomWaypoints = {}
+TomTom = { AddWaypoint = function(self, mapID, x, y, opts)
+    tomTomWaypoints[#tomTomWaypoints + 1] = { mapID = mapID, x = x, y = y, title = opts.title, from = opts.from, crazy = opts.crazy }
+    return tomTomWaypoints[#tomTomWaypoints]
+end }
+"""
+
+
+def check_waypoint_links() -> None:
+    """Addon 0.18.0: with TomTom, /mcp quest coordinates are links that set a waypoint on click; without it, plain text."""
+    # Without TomTom: plain coordinates and a one-time tip.
+    runtime, g, _ = load_addon("forever")
+    event_dispatcher(g)(None, "PLAYER_LOGIN")
+    g.SlashCmdList["WOWMCP"]("quest 947")
+    g.SlashCmdList["WOWMCP"]("quest Murkdeep")
+    chat = [str(line) for line in g.chatlog.values()]
+    assert any(line.endswith("ends: Barithras Moonshade, Darkshore 37.3, 43.6") for line in chat), chat
+    assert any("objectives: Scaber Stalk, Darkshore 55.3, 34.7, 2 spawn points; Death Cap, item" in line for line in chat), chat
+    assert not any("|H" in line for line in chat), chat
+    assert sum("install TomTom" in line for line in chat) == 1, chat
+
+    # With TomTom: links whose map comes from the database's zone data (the override wins), a title per target.
+    runtime.execute(TOMTOM_STUB)
+    before = len(g.chatlog)
+    g.SlashCmdList["WOWMCP"]("quest 947")
+    chat = [str(line) for line in list(g.chatlog.values())[before:]]
+    link = "|cff71d5ff|Hwowmcp:way:1439:37.3:43.6|h[Darkshore 37.3, 43.6]|h|r"
+    assert any(line.endswith("ends: Barithras Moonshade, " + link) for line in chat), chat
+    assert not any("install TomTom" in line for line in chat), chat
+    handler = g.linkHandlers["wowmcp"]
+    assert handler("wowmcp:way:1439:37.3:43.6", "[Darkshore 37.3, 43.6]") == 2
+    waypoint = g.tomTomWaypoints[1]
+    assert (waypoint.mapID, round(waypoint.x, 3), round(waypoint.y, 3), waypoint.title, waypoint["from"], waypoint.crazy) == (1439, 0.373, 0.436, "Barithras Moonshade (Cave Mushrooms)", "WowMcp", True), dict(waypoint)
+    # A shift-click keeps the client's default, another addon's link is not ours, nothing is set without a click.
+    g.modifiedClick = True
+    assert handler("wowmcp:way:1439:37.3:43.6") == 1
+    g.modifiedClick = False
+    assert handler("questie:947:0") == 1
+    assert len(g.tomTomWaypoints) == 1
+    # A link from before a /reload has no stored title: the waypoint still gets set, with a generic one.
+    assert handler("wowmcp:way:1439:50:50") == 2 and g.tomTomWaypoints[2].title == "WowMcp waypoint"
+
+    # No zone data in the database: the map comes from the zone name through the client's map data.
+    runtime, g, _ = load_addon("forever")
+    runtime.execute("LibQuestieDB.Support = nil")
+    runtime.execute(TOMTOM_STUB)
+    event_dispatcher(g)(None, "PLAYER_LOGIN")
+    g.SlashCmdList["WOWMCP"]("quest Murkdeep")
+    assert str(list(g.chatlog.values())[-1]) == "|cff66ccff[WowMcp]|r NPC Murkdeep, |cff71d5ff|Hwowmcp:way:1439:36.4:76.6|h[Darkshore 36.4, 76.6]|h|r", \
+        list(g.chatlog.values())
+
+    # A client without the link handler API: plain text even with TomTom, and no tip.
+    runtime, g, _ = load_addon("forever", before_addon="LinkUtil = nil")
+    runtime.execute(TOMTOM_STUB)
+    event_dispatcher(g)(None, "PLAYER_LOGIN")
+    g.SlashCmdList["WOWMCP"]("quest 947")
+    chat = [str(line) for line in g.chatlog.values()]
+    assert not any("|H" in line or "install TomTom" in line for line in chat), chat
+
+
+def check_secret_group_range() -> None:
+    """Addon 0.18.0 fix: in a real group (Forever, 2026-11-22) UnitInRange returned a secret "range checked" value and
+    the boolean test on it failed the whole group section. Secrets are now dropped: the group is saved without inRange."""
+    runtime, g, _ = load_addon("forever")
+    runtime.execute("""
+        secretValues["SECRET_IN_RANGE"], secretValues["SECRET_CHECKED"] = true, true
+        function UnitInRange() return "SECRET_IN_RANGE", "SECRET_CHECKED" end
+    """)
+    event_dispatcher(g)(None, "PLAYER_LOGIN")
+    g.SlashCmdList["WOWMCP"]("reload")
+    snapshot = saved_character(g)
+    assert not values(snapshot["errors"]), values(snapshot["errors"])
+    members = values(snapshot["group"]["members"])
+    assert len(members) == 3 and all(m["inRange"] is None for m in members), [dict(m) for m in members]
+
+
 def check_quest_sources_absent() -> None:
     """Without the other addons (or with broken ones) the dump has no error and no section."""
     runtime, g, _ = load_addon("forever")
@@ -2437,6 +2527,8 @@ def main() -> int:
     check_robustness(runtime, g, on_event, mode)
     if mode == "forever":
         check_quest_sources_absent()
+        check_waypoint_links()
+        check_secret_group_range()
         check_passed_guide_steps()
         check_realmless_key()
         check_real_lifecycle()
