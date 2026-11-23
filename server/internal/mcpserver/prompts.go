@@ -201,8 +201,8 @@ func planSession(s *service, who string, snap snapshot.Snapshot) (string, map[st
 	if cds := cooldowns.For("", snap, s.Freshness); len(cds) > 0 {
 		data["cooldowns"] = cds
 	}
-	if m := mail.View(snap, s.Freshness); m["expiringSoon"] != nil {
-		data["mailExpiringSoon"] = m["expiringSoon"]
+	if soon := mail.Inspect(snap, s.Freshness).ExpiringSoonLabels(); len(soon) > 0 {
+		data["mailExpiringSoon"] = soon
 	}
 	if p, err := s.progress.Pace(who, snap, progress.PaceQuery{}); err == nil {
 		data["progress"] = p
@@ -441,8 +441,8 @@ func beforeLogout(s *service, who string, snap snapshot.Snapshot) (string, map[s
 		"bagSpace": items.BagSpace(snap),
 		"alerts":   alerts.Messages(alerts.For(snap, s.Freshness)),
 	}
-	if m := mail.View(snap, s.Freshness); m["count"] != nil {
-		data["mail"] = m
+	if box := mail.Inspect(snap, s.Freshness); box.Saved {
+		data["mail"] = box.Render(s.Freshness)
 	}
 	if ah := auctions.View(snap, auctions.Query{Mine: true}, s.Freshness); ah["myAuctions"] != nil {
 		data["myAuctions"] = ah["myAuctions"]

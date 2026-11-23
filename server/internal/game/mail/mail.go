@@ -1,90 +1,95 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 Piekasz (GitHub: Piekario). Author attribution must be kept: see NOTICE.
 
-// Package mail covers the mailbox from the last time it was opened: letters, gold, COD, attachments, expiry.
+// Package mail reads the mailbox saved when the player last opened it and says which letters expire soon.
 package mail
 
 import (
-	"fmt"
 	"time"
 
 	"wowmcp/internal/snapshot"
 )
 
-// expiringSoon: a letter expiring sooner than this goes on the expiringSoon list.
-const expiringSoon = 72 * time.Hour
+// ExpiringSoon: a letter with less time left than this needs the player's attention.
+const ExpiringSoon = 72 * time.Hour
 
-// View describes the mailbox with the time to expiry of each letter.
-func View(s snapshot.Snapshot, fresh snapshot.Freshness) map[string]any {
-	mail := s.Map("mail")
-	if mail == nil {
-		return map[string]any{"note": "No saved mail. Open the mailbox in game, then type /mcp reload."}
-	}
-	var money, cod int64
-	messages := []any{}
-	var expiring []string
-	for _, raw := range snapshot.AsList(mail["messages"]) {
-		m := snapshot.AsMap(raw)
-		e := map[string]any{"sender": m["sender"], "subject": m["subject"]}
-		if v, ok := snapshot.AsInt(m["moneyCopper"]); ok && v > 0 {
-			e["money"] = snapshot.Money(v).String()
-			money += v
-		}
-		if v, ok := snapshot.AsInt(m["codCopper"]); ok && v > 0 {
-			e["cod"] = snapshot.Money(v).String()
-			cod += v
-		}
-		if items := snapshot.AsList(m["items"]); len(items) > 0 {
-			e["items"] = attachmentNames(items)
-		}
-		if m["returned"] == true {
-			e["returned"] = true
-		}
-		if m["read"] != true {
-			e["unread"] = true
-		}
-		if at, ok := snapshot.AsInt(m["expiresAt"]); ok {
-			left, gone := fresh.Until(at)
-			if gone {
-				e["expired"] = true
-				e["note"] = "expired since the dump: the letter went back to the sender or disappeared"
-			} else {
-				e["expiresIn"] = snapshot.FormatAge(left)
-				if left < expiringSoon {
-					expiring = append(expiring, fmt.Sprintf("%v (%s)", m["subject"], snapshot.FormatAge(left)))
-				}
-			}
-		}
-		messages = append(messages, e)
-	}
-	out := map[string]any{"messages": messages, "count": len(messages)}
-	if money > 0 {
-		out["totalMoney"] = snapshot.Money(money).String()
-	}
-	if cod > 0 {
-		out["totalCOD"] = snapshot.Money(cod).String()
-	}
-	if len(expiring) > 0 {
-		out["expiringSoon"] = expiring
-	}
-	if total, ok := snapshot.AsInt(mail["totalOnServer"]); ok && total > int64(len(messages)) {
-		out["moreOnServer"] = total - int64(len(messages))
-	}
-	snapshot.Merge(out, fresh.CapturedMeta(mail))
-	return out
+type Attachment struct {
+	Name  any
+	Count int64
 }
 
-// attachmentNames lists the letter's attachments: "Linen Cloth x20".
-func attachmentNames(items []any) []string {
-	var names []string
-	for _, ri := range items {
-		it := snapshot.AsMap(ri)
-		n, ok := snapshot.AsInt(it["count"])
-		if ok && n > 1 {
-			names = append(names, fmt.Sprintf("%v x%d", it["name"], n))
-		} else {
-			names = append(names, fmt.Sprint(it["name"]))
+// Letter keeps Sender and Subject as the client gave them (they may be missing), so the answer shows
+// exactly what the dump holds.
+type Letter struct {
+	Sender, Subject any
+	Money, COD      int64
+	Attachments     []Attachment
+	Returned, Read  bool
+	ExpiresAt       int64
+	HasExpiry       bool
+}
+
+// Mailbox is the mail section: the letters the client had loaded and how many the game server holds.
+type Mailbox struct {
+	Letters       []Letter
+	TotalOnServer int64
+	Captured      snapshot.Captured
+}
+
+// Expiry is what is known about a letter's time limit at the moment of the question.
+type Expiry struct {
+	Known   bool
+	Expired bool
+	Left    time.Duration
+}
+
+func (e Expiry) Soon() bool { return e.Known && !e.Expired && e.Left < ExpiringSoon }
+
+type LetterStatus struct {
+	Letter
+	Expiry Expiry
+}
+
+// Report is the mailbox judged against the clock. Saved is false when the player never opened the mailbox.
+type Report struct {
+	Saved        bool
+	Letters      []LetterStatus
+	Money, COD   int64
+	MoreOnServer int64
+	Captured     snapshot.Captured
+}
+
+func Inspect(s snapshot.Snapshot, fresh snapshot.Freshness) Report {
+	box, ok := read(s)
+	if !ok {
+		return Report{}
+	}
+	r := Report{Saved: true, Captured: box.Captured}
+	for _, letter := range box.Letters {
+		r.Money += letter.Money
+		r.COD += letter.COD
+		r.Letters = append(r.Letters, LetterStatus{letter, expiryOf(letter, fresh)})
+	}
+	if more := box.TotalOnServer - int64(len(box.Letters)); more > 0 {
+		r.MoreOnServer = more
+	}
+	return r
+}
+
+func expiryOf(letter Letter, fresh snapshot.Freshness) Expiry {
+	if !letter.HasExpiry {
+		return Expiry{}
+	}
+	left, gone := fresh.Until(letter.ExpiresAt)
+	return Expiry{Known: true, Expired: gone, Left: left}
+}
+
+func (r Report) ExpiringSoon() []LetterStatus {
+	var soon []LetterStatus
+	for _, letter := range r.Letters {
+		if letter.Expiry.Soon() {
+			soon = append(soon, letter)
 		}
 	}
-	return names
+	return soon
 }

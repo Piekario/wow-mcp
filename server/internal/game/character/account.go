@@ -71,8 +71,12 @@ func overview(name string, s snapshot.Snapshot, fresh snapshot.Freshness) map[st
 			entry["played"] = snapshot.FormatSeconds(total)
 		}
 	}
-	if m := mail.View(s, fresh); m["count"] != nil && m["count"] != 0 {
-		entry["mail"] = map[string]any{"messages": m["count"], "expiringSoon": m["expiringSoon"]}
+	if box := mail.Inspect(s, fresh); len(box.Letters) > 0 {
+		var expiring any
+		if soon := box.ExpiringSoonLabels(); len(soon) > 0 {
+			expiring = soon
+		}
+		entry["mail"] = map[string]any{"messages": len(box.Letters), "expiringSoon": expiring}
 	}
 	if ready := cooldowns.ReadyNames(cooldowns.For(name, s, fresh)); len(ready) > 0 {
 		entry["cooldownsReady"] = ready

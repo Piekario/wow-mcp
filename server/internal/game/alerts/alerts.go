@@ -57,7 +57,7 @@ func unloadedDump(s snapshot.Snapshot, _ snapshot.Freshness) (Alert, bool) {
 }
 
 func mailExpiring(s snapshot.Snapshot, fresh snapshot.Freshness) (Alert, bool) {
-	expiring, _ := mail.View(s, fresh)["expiringSoon"].([]string)
+	expiring := mail.Inspect(s, fresh).ExpiringSoonLabels()
 	if len(expiring) == 0 {
 		return Alert{}, false
 	}
