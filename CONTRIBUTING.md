@@ -46,6 +46,8 @@ Questions and ideas that are not yet a concrete request fit better in
 - Addon (Lua 5.1): one dump section per file in `addon/WowMcp/Sections/`, registered in the section registry and listed in
   `WowMcp.toc`. Use the `Compat` helpers (`plain`, `callFirst`, `pick`) for client differences, and never write
   `cond and a or b` when `a` may be `nil`. A section must not fail the whole dump: errors are reported per section.
+- Comments only where they explain something the code cannot say (a reason, a client quirk, a non-obvious constraint).
+  Do not restate what the code does, and do not leave commented-out code.
 - Keep the layout described in the README's [Structure](README.md#structure) section.
 
 ## License of contributions
