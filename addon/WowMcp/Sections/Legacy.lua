@@ -255,8 +255,13 @@ end
 local function collectLegacy()
     local legacy = { configs = {} }
     local extraConfigIDs = {}
-    legacy.discovery = ns.LegacyDiscovery.discover(extraConfigIDs)
     readConfigs(legacy, configTypeNames(), extraConfigIDs)
+    -- The scan walks all of _G (70 to 140 ms in the real client), so it runs only when it can help:
+    -- no perk tree was found (a frame may hold the config ID), or the player asked with /mcp probe.
+    if #legacy.configs == 0 or ns.LegacyDiscovery.requested() then
+        legacy.discovery = ns.LegacyDiscovery.discover(extraConfigIDs)
+        if #legacy.configs == 0 then readConfigs(legacy, configTypeNames(), extraConfigIDs) end
+    end
     local ok, challenges = pcall(readChallenges)
     if ok then
         legacy.challenges = challenges

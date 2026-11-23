@@ -181,3 +181,9 @@ end
 
 -- Extra config IDs found on Legacy frames are appended to extraConfigIDs.
 LegacyDiscovery.discover = discover
+
+local requested = false
+
+-- /mcp probe asks for the scan in every dump until the UI reloads.
+function LegacyDiscovery.request() requested = true end
+function LegacyDiscovery.requested() return requested end

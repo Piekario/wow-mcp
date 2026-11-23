@@ -199,3 +199,14 @@ func TestTreeNameKeepsRealNames(t *testing.T) {
 		t.Fatal(got)
 	}
 }
+
+func TestDiscoveryAskedButNotInTheDump(t *testing.T) {
+	s := snapshot.Snapshot{"legacy": map[string]any{"configs": []any{legacyConfig(3)}}}
+	out := View(s, Query{Discovery: true})
+	if _, ok := out["discovery"]; ok {
+		t.Error("no discovery field when the dump has none")
+	}
+	if note, _ := out["discoveryNote"].(string); !strings.Contains(note, "/mcp probe") {
+		t.Errorf("discoveryNote = %q, want the hint to run /mcp probe", note)
+	}
+}

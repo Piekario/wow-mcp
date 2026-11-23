@@ -22,7 +22,8 @@ local HELP = {
     "/mcp compact on|off - one-line panel: dump age and Save button (off by default)",
     "/mcp ahtip on|off - auction house price in the item tooltip (on by default)",
     "/mcp options - open the WowMcp page in the game's options (the same switches as the commands above)",
-    "/mcp probe - diagnostics: list of client API functions (spells, items, maps, achievements...) and the events the client accepted",
+    "/mcp probe - diagnostics: list of client API functions (spells, items, maps, achievements...), the events the client accepted"
+        .. " and the client's Legacy API names",
     "Windows saved automatically when opened: trainer and vendor (last 10), bank, flights, professions, mail,"
         .. " auction house (search results), Inspect, stable, NPC quest (offer and turn-in),"
         .. " buyback list (at the vendor), friends and guild (from client memory once the window is open; the addon requests nothing from the server)",
@@ -225,6 +226,7 @@ local function dumpManually(reload)
 end
 
 local function probeAndReload()
+    ns.LegacyDiscovery.request()
     Snapshot.capture("probe")
     dumpManually(true)
 end

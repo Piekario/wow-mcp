@@ -26,6 +26,9 @@ one noted under "Changed". The server expects addon 0.19.1.
   - Addon: the logout guard (`LogoutGuard.lua`), the carried loot and XP periods (`Periods.lua`) and the Legacy API
     discovery scan (`LegacyDiscovery.lua`) moved out of `Snapshot.lua` and `Sections/Legacy.lua` into their own files.
     The dump is byte-identical. New addon files need a full game restart, not only `/reload`.
+  - Addon: the scan for the client's Legacy API names (`legacy.discovery`) no longer runs on every first dump of a
+    session, where it cost 70 to 140 ms in the real client (a normal logout included). It runs only when no perk tree
+    was found, or after `/mcp probe`. `wow_legacy discovery=true` says so (`discoveryNote`) when the dump has none.
 - **Added**
   - `CONTRIBUTING.md` spells out the code rules (typed domain, rules apart from presentation, no hidden side effects,
     one place for shared lookups, size limits), and `server/architecture_test.go` checks them: domain imports, untyped

@@ -47,8 +47,11 @@ func (r Report) Render() map[string]any {
 	if r.HasChallengesError {
 		out["challengesError"] = r.ChallengesError
 	}
-	if r.Discovery {
+	switch {
+	case r.Discovery && r.DiscoveryData != nil:
 		out["discovery"] = r.DiscoveryData
+	case r.Discovery:
+		out["discoveryNote"] = "This dump has no discovery data: since addon 0.19.1 the addon scans the client's Legacy API names only when it finds no perk tree or after /mcp probe. Type /mcp probe in game and ask again."
 	}
 	out["howToUse"] = howToUse
 	return out

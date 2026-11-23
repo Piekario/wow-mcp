@@ -21,7 +21,7 @@ import (
 type Query struct {
 	Character string `json:"character,omitempty" jsonschema:"character name; empty = the most recently dumped character"`
 	Tree      string `json:"tree,omitempty" jsonschema:"Legacy tree (tab) name, e.g. Adventure; empty = all"`
-	Discovery bool   `json:"discovery,omitempty" jsonschema:"true = also return what the addon found about the client's Legacy API (names of namespaces, functions, frames and their readings); shown anyway when no perk tree was found"`
+	Discovery bool   `json:"discovery,omitempty" jsonschema:"true = also return what the addon found about the client's Legacy API (names of namespaces, functions, frames and their readings); shown anyway when no perk tree was found. Since addon 0.19.1 the dump has it only then or after /mcp probe"`
 }
 
 type Status string
