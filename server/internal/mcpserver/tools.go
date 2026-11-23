@@ -52,20 +52,17 @@ import (
 	"wowmcp/internal/snapshot"
 )
 
-// characterArgs is the input shared by tools: an optional character name.
 type characterArgs struct {
 	Character string `json:"character,omitempty" jsonschema:"character name; empty = most recently dumped character"`
 }
 
 type noArgs struct{}
 
-// timelineArgs is the input of wow_timeline: a character plus timeline filters.
 type timelineArgs struct {
 	characterArgs
 	timeline.Query
 }
 
-// sectionArgs is the input of wow_section: a section name and an optional character.
 type sectionArgs struct {
 	Section   string `json:"section" jsonschema:"snapshot section name, e.g. actionBars, reputation, vendor, bank, flightPaths, macros, completedQuests, stats, auras, probe"`
 	Character string `json:"character,omitempty" jsonschema:"character name; empty = most recently dumped character"`

@@ -13,9 +13,7 @@ local NAMESPACES = {
     "C_UnitAuras", "C_PaperDollInfo", "C_Macro", "C_SpellBook", "C_Spell", "C_QuestLog",
     "C_Traits", "C_ClassTalents", "C_TradeSkillUI", "C_GameRules", "C_CurrencyInfo", "C_Mail", "C_Timer",
     "C_AuctionHouse", "C_LFGList", "C_PartyInfo", "C_EncounterJournal", "C_QuestInfoSystem", "TooltipDataProcessor",
-    -- 0.7.0: equipment sets, friends, guild, PvP, map (flight point zone), XP from quests
     "C_EquipmentSet", "C_FriendList", "C_GuildInfo", "C_PvP", "C_Map", "C_BattleNet",
-    -- 0.10.0: achievements (is there an API worth a section?), zone IDs for quests and flight points
     "C_AchievementInfo",
 }
 
@@ -29,9 +27,8 @@ local GLOBAL_PREFIXES = {
     "^GetBuyback", "^GetNumBuyback", "^GetEquipmentSet", "^GetNumEquipmentSet", "^GetFriendInfo", "^GetNumFriends",
     "^GetGuild", "^GetNumGuild", "^IsInGuild", "^GetPVP", "^UnitHonor", "^UnitPVP", "^GetHonor", "^GetCursorPosition",
     "^GetXPExhaustion", "^UnitXP",
-    -- 0.7.1: quest window at an NPC, repair at the vendor, flight map, buyback
     "^GetTitleText", "^GetQuestID", "^GetObjectiveText", "^CanMerchant", "^GetRepair", "^GetTaxi",
-    -- 0.10.0: achievements and statistics (probe before a section is written), weapon format strings are variables, not functions
+    -- Weapon format strings are variables, not functions.
     "^GetAchievement", "^GetCategory", "^GetTotalAchievement", "^GetNumCompletedAchievements",
     "^GetLatestCompletedAchievements", "^GetPreviousAchievement", "^GetNextAchievement", "^GetStatistic",
 }

@@ -318,7 +318,6 @@ func overallStats(points []progressPoint, sinceHours float64) (map[string]any, f
 	return overall, rate
 }
 
-// levelUps are the level-ups visible in history.
 func levelUps(points []progressPoint) []any {
 	var ups []any
 	for i := 1; i < len(points); i++ {

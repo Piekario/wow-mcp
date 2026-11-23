@@ -76,7 +76,6 @@ func RealTime() snapshot.Freshness {
 	return snapshot.Freshness{Now: time.Now, StaleAfter: StaleAfter}
 }
 
-// JSON turns a value into compact JSON.
 func JSON(t *testing.T, v any) string {
 	t.Helper()
 	b, err := json.Marshal(v)
@@ -86,7 +85,6 @@ func JSON(t *testing.T, v any) string {
 	return string(b)
 }
 
-// WantAll checks that the text contains all the fragments.
 func WantAll(t *testing.T, what, text string, wants ...string) {
 	t.Helper()
 	for _, w := range wants {

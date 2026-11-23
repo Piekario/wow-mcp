@@ -14,7 +14,6 @@ type Holdings struct {
 	Bags, Bank, Equipped int64
 }
 
-// Total is all units together.
 func (h Holdings) Total() int64 { return h.Bags + h.Bank + h.Equipped }
 
 // Count counts units of the item with the exact name (case-insensitive).

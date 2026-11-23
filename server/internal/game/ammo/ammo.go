@@ -32,7 +32,6 @@ type Stock struct {
 	InBags   int64
 }
 
-// Total is all the ammo of this kind.
 func (s Stock) Total() int64 { return s.Equipped + s.InBags }
 
 // isAmmoItem: ammo is an item of the Projectile class (for old dumps: type Projectile or subtype Arrow/Bullet).

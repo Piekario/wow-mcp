@@ -141,7 +141,6 @@ func AmmoKind(item map[string]any) string {
 	return ""
 }
 
-// IsAmmo says whether the item is ammunition (arrows, bullets).
 func IsAmmo(item map[string]any) bool {
 	if c, ok := ClassOf(item); ok {
 		return c == ClassProjectile
@@ -175,7 +174,6 @@ func RangedAmmo(weapon map[string]any) string {
 	return ""
 }
 
-// Consumable kinds.
 const (
 	Food    = "food"    // food and drink
 	Bandage = "bandage" // bandages

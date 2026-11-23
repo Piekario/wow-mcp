@@ -44,10 +44,6 @@ local recentOther -- { xp, at }: the latest "nameless" XP that may turn out to b
 local pendingQuest -- { xp, at }: quest turned in, and the XP message has not arrived yet
 local bar -- { level, xp, xpMax }: last experience bar read
 
----------------------------------------------------------------------------
--- Message recognition (pure functions)
----------------------------------------------------------------------------
-
 local function compile(globals, english, kind)
     local patterns = {}
     for _, global in ipairs(globals) do
@@ -123,10 +119,6 @@ function XpGains.parse(message, patterns)
     end
     return nil
 end
-
----------------------------------------------------------------------------
--- Recording in the dump
----------------------------------------------------------------------------
 
 local function newSection(since)
     return {
@@ -207,10 +199,6 @@ local function onXpMessage(message)
         XpGains.record(kind, xp)
     end
 end
-
----------------------------------------------------------------------------
--- Experience bar (independent of messages)
----------------------------------------------------------------------------
 
 local function readBar()
     local level, xp, xpMax = plain(UnitLevel("player")), plain(UnitXP("player")), plain(UnitXPMax("player"))

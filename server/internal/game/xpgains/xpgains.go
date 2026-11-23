@@ -22,10 +22,8 @@ type Gains struct {
 	Kills, Quests, Other Source
 }
 
-// Total is the combined XP from all sources.
 func (g Gains) Total() int64 { return g.Kills.XP + g.Quests.XP + g.Other.XP }
 
-// Add adds another set to this one.
 func (g *Gains) Add(o Gains) {
 	g.Kills.add(o.Kills)
 	g.Quests.add(o.Quests)

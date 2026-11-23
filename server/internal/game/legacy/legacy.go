@@ -24,7 +24,6 @@ type Query struct {
 	Discovery bool   `json:"discovery,omitempty" jsonschema:"true = also return what the addon found about the client's Legacy API (names of namespaces, functions, frames and their readings); shown anyway when no perk tree was found"`
 }
 
-// Perk statuses.
 const (
 	StatusMaxed     = "maxed"
 	StatusAvailable = "available"
@@ -225,7 +224,6 @@ func copyKeys(dst, src map[string]any, names map[string]string) {
 	}
 }
 
-// perk is one perk for the response.
 func perk(n map[string]any, noPoints bool) (map[string]any, bool) {
 	rank, _ := snapshot.AsInt(n["rank"])
 	maxRank, _ := snapshot.AsInt(n["maxRank"])

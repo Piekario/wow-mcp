@@ -3,7 +3,7 @@
 
 package storage
 
-// Safety properties of the storage layer (code review 2026-11-16): character names from the dump become directory
+// Safety properties of the storage layer: character names from the dump become directory
 // names, the history reader and the dump reader are bounded, concurrent saves do not corrupt the history, and the
 // game directory guard also covers a dump given with --file.
 

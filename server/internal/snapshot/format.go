@@ -73,7 +73,6 @@ func FormatTime(unix int64) string {
 // Empty is the label of an empty slot or a missing value.
 const Empty = "(empty)"
 
-// OrEmpty replaces an empty string with the Empty label.
 func OrEmpty(s string) string {
 	if s == "" {
 		return Empty

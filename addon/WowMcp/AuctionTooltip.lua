@@ -15,10 +15,6 @@ local COPPER_PER_SILVER, COPPER_PER_GOLD = 100, 10000
 local MINUTE, HOUR, DAY = 60, 3600, 86400
 local LINE_COLOR = { 0.4, 0.8, 1 }
 
----------------------------------------------------------------------------
--- Line text (pure functions)
----------------------------------------------------------------------------
-
 -- 12345 -> "1g 23s 45c"; skips zero parts (but 0 -> "0c").
 function AuctionTooltip.formatMoney(copper)
     local gold = math.floor(copper / COPPER_PER_GOLD)
@@ -47,10 +43,6 @@ function AuctionTooltip.lineFor(price, now)
     if type(copper) ~= "number" then return nil end
     return "AH: " .. AuctionTooltip.formatMoney(copper) .. " (" .. AuctionTooltip.formatAge(now - (price.seenAt or now)) .. ")"
 end
-
----------------------------------------------------------------------------
--- Setting and tooltip
----------------------------------------------------------------------------
 
 function AuctionTooltip.isEnabled()
     return ns.Store.settings().ahTooltip ~= false

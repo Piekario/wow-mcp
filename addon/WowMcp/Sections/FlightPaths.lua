@@ -2,9 +2,9 @@
 -- Copyright (C) 2026 Piekasz (GitHub: Piekario). Author attribution must be kept: see NOTICE.
 
 -- Section flightPaths (from the window): flight points visible on the flight master's map.
--- Diagnostics (0.7.1): taxiMapID, nodeFields (fields of the first raw node with types)
+-- Diagnostics: taxiMapID, nodeFields (fields of the first raw node with types)
 -- and zoneSources (where the zones came from: node, zoneMap, position). A position that only gives a continent
--- (0.12.0) goes to the node's continent field, never to zone.
+-- goes to the node's continent field, never to zone.
 
 local _, ns = ...
 local plain = ns.Compat.plain
@@ -67,8 +67,8 @@ local function nodeZone(node, mapID, childZones)
     if ok and type(info) == "table" then
         local zone, infoType = plain(info.name), plain(info.mapType)
         if type(zone) ~= "string" or zone == "" or plain(info.mapID) == mapID then return nil end
-        -- A map above zone level (continent, world) is no zone: addon 0.7.0 wrote "Eastern Kingdoms" as the zone
-        -- of every point. Such a name is kept as continent instead.
+        -- A map above zone level (continent, world) is no zone ("Eastern Kingdoms" must not become the zone
+        -- of every point). Such a name is kept as continent instead.
         if type(infoType) == "number" and infoType < mapType("Zone", ZONE_MAP_TYPE) then
             return nil, nil, nil, (infoType == mapType("Continent", CONTINENT_MAP_TYPE)) and zone or nil
         end

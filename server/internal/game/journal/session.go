@@ -160,7 +160,6 @@ type bagEntry struct {
 	count, quality int64
 }
 
-// bagCounts sums bag items by name.
 func bagCounts(s snapshot.Snapshot) map[string]*bagEntry {
 	out := map[string]*bagEntry{}
 	for _, bag := range s.Bags() {

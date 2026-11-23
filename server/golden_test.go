@@ -44,10 +44,6 @@ const (
 	charUnknown = "Unknown"
 )
 
-// ---------------------------------------------------------------------------
-// Case table
-// ---------------------------------------------------------------------------
-
 // goldenCase is one tool or prompt call.
 type goldenCase struct {
 	prompt  bool           // false = tools/call, true = prompts/get
@@ -65,7 +61,6 @@ func (c goldenCase) file() string { return c.name + "__" + c.variant + ".txt" }
 
 type args = map[string]any
 
-// tc adds a tool case.
 func tc(name, variant string, a args) goldenCase {
 	return goldenCase{name: name, variant: variant, args: a}
 }
@@ -94,14 +89,12 @@ func goldenCases() []goldenCase {
 	var cs []goldenCase
 	add := func(list ...goldenCase) { cs = append(cs, list...) }
 
-	// --- tools without filters (sectionTool / noArgs) ---
 	add(tcs("wow_status", "default", args{}))
 	add(characterVariants("wow_doctor")...)
 	for _, n := range []string{"wow_character", "wow_quests", "wow_bags", "wow_equipment", "wow_spells", "wow_pet", "wow_trainer"} {
 		add(characterVariants(n)...)
 	}
 
-	// --- wow_section ---
 	for _, sec := range []string{"actionBars", "macros", "completedQuests", "flightPaths", "vendor", "bank", "probe", "stats", "auras", "inspect", "buyback", "friends", "guild", "xpGains", "equipmentSets", "pvp"} {
 		add(tc("wow_section", "section_"+sec, args{"section": sec}))
 	}
@@ -123,7 +116,6 @@ func goldenCases() []goldenCase {
 		ro(tc("wow_section", "real_vendor_path", args{"section": "vendor", "path": "items", "limit": 3})),
 	)
 
-	// --- wow_reputation ---
 	add(
 		tcs("wow_reputation", "default", args{}),
 		tc("wow_reputation", "query_match", args{"query": "Darn"}),
@@ -135,7 +127,6 @@ func goldenCases() []goldenCase {
 		tc("wow_reputation", "unknown_character", args{"character": charUnknown}),
 	)
 
-	// --- wow_bank ---
 	add(
 		tcs("wow_bank", "default", args{}),
 		tc("wow_bank", "query_match", args{"query": "Cloth"}),
@@ -156,7 +147,6 @@ func goldenCases() []goldenCase {
 		ro(tc("wow_trainer", "real_npc_unknown", args{"npc": "Astaia"})),
 	)
 
-	// --- wow_vendor ---
 	add(
 		tcs("wow_vendor", "default", args{}),
 		tc("wow_vendor", "query_match", args{"query": "Arrow"}),
@@ -178,7 +168,6 @@ func goldenCases() []goldenCase {
 		ro(tc("wow_vendor", "real_npc_lewis", args{"npc": "Lewis"})),
 	)
 
-	// --- wow_compare_item ---
 	add(
 		tcs("wow_compare_item", "name_match", args{"item": "Bow"}),
 		tc("wow_compare_item", "id", args{"item": "2589"}),
@@ -208,7 +197,6 @@ func goldenCases() []goldenCase {
 		tc("wow_changes", "bad_type", args{"steps": "abc"}),
 	)
 
-	// --- wow_quest_plan ---
 	add(
 		tcs("wow_quest_plan", "default", args{}),
 		tc("wow_quest_plan", "zone_match", args{"zone": "Darkshore"}),
@@ -217,7 +205,6 @@ func goldenCases() []goldenCase {
 		tc("wow_quest_plan", "unknown_character", args{"character": charUnknown}),
 	)
 
-	// --- wow_progress ---
 	add(
 		tcs("wow_progress", "default", args{}),
 		tc("wow_progress", "since_hours", args{"sinceHours": 1.5}),
@@ -227,7 +214,6 @@ func goldenCases() []goldenCase {
 		tc("wow_progress", "unknown_character", args{"character": charUnknown}),
 	)
 
-	// --- wow_recipes ---
 	add(
 		tcs("wow_recipes", "default", args{}),
 		tc("wow_recipes", "profession_match", args{"profession": "Leather"}),
@@ -241,7 +227,6 @@ func goldenCases() []goldenCase {
 		tc("wow_recipes", "unknown_character", args{"character": charUnknown}),
 	)
 
-	// --- wow_mail, wow_talents, wow_auctions, wow_group, wow_dungeons, wow_export ---
 	add(characterVariants("wow_mail")...)
 
 	add(
@@ -303,7 +288,6 @@ func goldenCases() []goldenCase {
 		tc("wow_export", "unknown_character", args{"character": charUnknown}),
 	)
 
-	// --- wow_search ---
 	add(
 		tcs("wow_search", "text_match", args{"query": "cloth"}),
 		tc("wow_search", "quest_objective", args{"query": "death cap"}),
@@ -321,7 +305,6 @@ func goldenCases() []goldenCase {
 		tc("wow_search", "loot", args{"query": "linen"}),
 	)
 
-	// --- wow_rested, wow_leftovers ---
 	add(characterVariants("wow_rested")...)
 	add(characterVariants("wow_leftovers")...)
 
@@ -336,7 +319,6 @@ func goldenCases() []goldenCase {
 		tc("wow_gold_history", "bad_type", args{"days": "abc"}),
 	)
 
-	// --- wow_ammo ---
 	add(
 		tcs("wow_ammo", "default", args{}),
 		tc("wow_ammo", "hours_5", args{"hours": 5}),
@@ -347,7 +329,6 @@ func goldenCases() []goldenCase {
 		tc("wow_ammo", "unknown_character", args{"character": charUnknown}),
 	)
 
-	// --- wow_account, wow_cooldowns, wow_find_item ---
 	add(
 		tcs("wow_account", "default", args{}),
 
@@ -366,7 +347,6 @@ func goldenCases() []goldenCase {
 		tc("wow_find_item", "missing_required", args{}),
 	)
 
-	// --- new tools 0.7.0 ---
 	add(characterVariants("wow_bag_plan")...)
 	add(characterVariants("wow_reagents")...)
 	add(
@@ -401,7 +381,6 @@ func goldenCases() []goldenCase {
 		tc("wow_goal_set", "remove_unknown", args{"remove": "g99"}),
 		ir(tc("wow_goals", "after_remove", args{})),
 	)
-	// --- wow_quest_rewards, wow_shopping_list ---
 	add(characterVariants("wow_quest_rewards")...)
 	add(
 		tc("wow_quest_rewards", "quest_name", args{"quest": "defias"}),
@@ -425,7 +404,6 @@ func goldenCases() []goldenCase {
 		tc("wow_compare_item", "weights_bad", args{"item": "Skinning", "weights": args{"agility": "a lot"}}),
 	)
 
-	// --- new tools 0.8.0 ---
 	add(characterVariants("wow_timeline")...)
 	add(
 		tc("wow_timeline", "kind_level_up", args{"kind": "level_up"}),
@@ -441,9 +419,7 @@ func goldenCases() []goldenCase {
 	add(characterVariants("wow_flights")...)
 	add(characterVariants("wow_session_rating")...)
 
-	// --- new tools and arguments 0.9.0 ---
 	add(characterVariants("wow_quest_route")...)
-	// --- new tools 0.15.0 ---
 	add(characterVariants("wow_quest_lookup")...)
 	add(
 		tc("wow_quest_lookup", "quest_name", args{"quest": "cave"}),
@@ -532,10 +508,6 @@ func promptNames() []string {
 	return mcpserver.PromptNames()
 }
 
-// ---------------------------------------------------------------------------
-// Scenarios: which file, what snapshot age, whether history
-// ---------------------------------------------------------------------------
-
 type goldenScenario struct {
 	dir     string                // subdirectory of testdata/golden
 	fixture string                // file from testdata
@@ -594,10 +566,6 @@ func goldenScenarios() []goldenScenario {
 	out = append(out, goldenScenario{dir: "missing_file", fixture: "WowMcp", age: 30 * time.Minute, history: true, missing: true, filter: onlyStale})
 	return out
 }
-
-// ---------------------------------------------------------------------------
-// Running
-// ---------------------------------------------------------------------------
 
 func TestGolden(t *testing.T) {
 	pinGlobals(t)
@@ -891,7 +859,6 @@ func dropLastCompleted(s map[string]any) {
 	}
 }
 
-// firstBagWithItems returns the first bag that has items.
 func firstBagWithItems(s map[string]any) map[string]any {
 	for _, raw := range snapshot.AsList(s["bags"]) {
 		if b := snapshot.AsMap(raw); len(snapshot.AsList(b["items"])) > 0 {
@@ -1027,17 +994,12 @@ func mustJSON(v any) string {
 	return string(data)
 }
 
-// renderContent returns the text for TextContent, and the JSON for other types.
 func renderContent(c mcp.Content) string {
 	if tc, ok := c.(*mcp.TextContent); ok {
 		return tc.Text
 	}
 	return fmt.Sprintf("<%T> %s", c, mustJSON(c))
 }
-
-// ---------------------------------------------------------------------------
-// Comparing and writing golden files
-// ---------------------------------------------------------------------------
 
 func checkGolden(t *testing.T, rel, got string) {
 	t.Helper()

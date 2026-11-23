@@ -74,10 +74,6 @@ function Options.sectionSwitches()
     return switches
 end
 
----------------------------------------------------------------------------
--- Drawing
----------------------------------------------------------------------------
-
 local function addText(parent, template, text, x, y)
     local fontString = parent:CreateFontString(nil, "ARTWORK", template)
     fontString:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
@@ -144,10 +140,6 @@ local function onShow()
     pcall(refreshBoxes)
 end
 
----------------------------------------------------------------------------
--- Registering in the client
----------------------------------------------------------------------------
-
 local function hasModernApi()
     return type(Settings) == "table" and type(Settings.RegisterCanvasLayoutCategory) == "function"
         and type(Settings.RegisterAddOnCategory) == "function"
@@ -192,7 +184,6 @@ local function openLegacy()
     InterfaceOptionsFrame_OpenToCategory(panel)
 end
 
--- /mcp options: opens the page when the client has one.
 function Options.open()
     if not Options.register() then
         chat("This client has no options page for addons. The /mcp commands work: /mcp help")

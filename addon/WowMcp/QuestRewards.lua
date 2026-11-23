@@ -64,10 +64,6 @@ local function nonEmpty(rewards)
     return rewards
 end
 
----------------------------------------------------------------------------
--- Quest log
----------------------------------------------------------------------------
-
 -- Reads the i-th reward entry of the quest with the given ID (new API).
 local function byQuestID(paths, questID)
     return function(i)
@@ -114,10 +110,6 @@ function QuestRewards.fromLogEntry(questIndex)
     if ok then return rewards end
     return nil
 end
-
----------------------------------------------------------------------------
--- Quest giver window (QUEST_DETAIL, QUEST_COMPLETE)
----------------------------------------------------------------------------
 
 local function giverItem(kind)
     return function(i)

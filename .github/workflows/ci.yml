@@ -1,5 +1,4 @@
 # CI: server tests (Go, three operating systems), addon tests (Lua) and shell script lint.
-# Prepared for the day the repository is published.
 name: CI
 
 on:

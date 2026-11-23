@@ -90,8 +90,6 @@ case $CLIENT in
 esac
 [ -n "$INSTALL_DIR" ] || die "the install directory must not be empty"
 
-# ------------------------------------------------------------ helpers
-
 stamp() { date +%Y%m%d-%H%M%S; }
 
 # unique_path BASE -> BASE, or BASE-2, BASE-3 ... when it already exists
@@ -124,8 +122,6 @@ server_version() { # server_version BINARY -> "0.10.0" or empty
 }
 
 json_escape() { printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g'; }
-
-# ------------------------------------------------------------ finding the game
 
 is_client_dir() { [ -d "$1/$CLIENT" ]; }
 
@@ -191,8 +187,6 @@ resolve_game() {
 	ADDON_TARGET="$ADDONS_DIR/$ADDON_NAME"
 }
 
-# ------------------------------------------------------------ safety
-
 # We only ever copy into / delete inside .../AddOns/WowMcp.
 assert_safe_addon_target() {
 	if [ "$(basename "$ADDON_TARGET")" != "$ADDON_NAME" ] || [ "$(basename "$(dirname "$ADDON_TARGET")")" != AddOns ]; then
@@ -226,8 +220,6 @@ assert_outside_game() {
 	"$ao_game"/*) die "the install directory must be outside the game directory: $ao_dir" ;;
 	esac
 }
-
-# ------------------------------------------------------------ addon
 
 # mirror_dir SRC DST: copies SRC into DST and removes files in DST that are not in SRC
 mirror_dir() {
@@ -297,8 +289,6 @@ install_addon() {
 	prune_backups
 }
 
-# ------------------------------------------------------------ Interface check (best effort)
-
 check_interface() {
 	step "Interface number check"
 	ci_toc="$ADDON_SRC/$ADDON_NAME.toc"
@@ -328,8 +318,6 @@ check_interface() {
 		warn "Interface in .toc = $ci_iface, client $ci_ver suggests $ci_num. The addon may be marked 'out of date' (tick 'Load out of date AddOns' in the game)."
 	fi
 }
-
-# ------------------------------------------------------------ server binary
 
 unique_old_path() { # unique_old_path VERSION
 	uo_token=$(printf '%s' "$1" | tr -c '0-9A-Za-z._-' '_')
@@ -376,8 +364,6 @@ install_binary() {
 	prune_old_binaries
 }
 
-# ------------------------------------------------------------ rollback
-
 do_rollback() {
 	step "Rollback"
 	assert_safe_addon_target
@@ -414,8 +400,6 @@ do_rollback() {
 	fi
 }
 
-# ------------------------------------------------------------ check and configuration
-
 run_check() {
 	[ "$SKIP_CHECK" = 0 ] || return 0
 	step "Check: wow-mcp --check"
@@ -449,8 +433,6 @@ JSON
 	say "Then restart the MCP client completely. After an install that adds or removes addon files, close the game fully and start it"
 	say "again (/reload does not re-read the .toc), tick WowMcp on the character selection screen and type /mcp reload."
 }
-
-# ------------------------------------------------------------ main
 
 if [ "$DRY" = 1 ]; then
 	step "DRY RUN: nothing will be changed"

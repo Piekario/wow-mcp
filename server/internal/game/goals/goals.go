@@ -19,7 +19,6 @@ import (
 // Type is the kind of goal (the template).
 type Type string
 
-// Goal kinds.
 const (
 	Level      Type = "level"      // character level
 	Gold       Type = "gold"       // amount of gold

@@ -34,10 +34,6 @@ local ENGLISH_FORMATS = {
 local lootSince -- time of the dump that last reached the disk (or of login)
 local formatCount = 0 -- how many game format strings were found (0 = the English fallback)
 
----------------------------------------------------------------------------
--- Message recognition (pure functions)
----------------------------------------------------------------------------
-
 -- Converts a game format string ("You receive loot: %sx%d.") into a Lua pattern.
 -- Returns the pattern and the field order ("link", "count"), since some languages have %1$s and %2$d.
 function Loot.patternFrom(format)
@@ -79,10 +75,6 @@ function Loot.parseOwn(message, patterns)
     end
     return nil
 end
-
----------------------------------------------------------------------------
--- Recording in the dump
----------------------------------------------------------------------------
 
 local function newSection(since)
     return { since = since, items = {}, messagesSeen = 0, messagesParsed = 0, messagesSecret = 0 }

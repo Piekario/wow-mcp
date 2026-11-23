@@ -14,10 +14,6 @@ local function spentPoint(tree, name, rank, maxRank)
     return { tree = tree, name = name, rank = rank, maxRank = maxRank }
 end
 
----------------------------------------------------------------------------
--- Classic trees (GetTalentInfo)
----------------------------------------------------------------------------
-
 local function classicTabName(tab)
     if not GetTalentTabInfo then return nil end
     local a, b = GetTalentTabInfo(tab)
@@ -61,11 +57,9 @@ local function addClassicTalents(talents)
     talents.unspent = firstValue({ "UnitCharacterPoints", "GetUnspentTalentPoints" }, "player")
 end
 
----------------------------------------------------------------------------
 -- New API (C_Traits). In Forever the classic trees sit on the traits system:
 -- one config with one tree per class, and three tabs (e.g. Beast
 -- Mastery, Marksmanship, Survival) are node groups with their own name.
----------------------------------------------------------------------------
 
 -- Sum of spent and free points in the whole tree.
 local function addTreeCurrency(talents, configID, treeID)

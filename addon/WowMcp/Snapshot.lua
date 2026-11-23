@@ -60,10 +60,6 @@ function Snapshot.refreshOnDump(name, refresh)
     dumpRefreshers[#dumpRefreshers + 1] = { name = name, refresh = refresh }
 end
 
----------------------------------------------------------------------------
--- Section names and disabling
----------------------------------------------------------------------------
-
 -- All section names that can reach the dump, alphabetically.
 function Snapshot.sectionNames()
     local names = {}
@@ -115,10 +111,6 @@ function Snapshot.whenEnabled(name, handler)
         return handler(...)
     end
 end
-
----------------------------------------------------------------------------
--- Window data and the reminder to save
----------------------------------------------------------------------------
 
 -- Dump of the character being played (a place for window section results).
 Snapshot.current = Store.currentCharacter
@@ -183,10 +175,6 @@ function Snapshot.capture(name)
     end
 end
 
----------------------------------------------------------------------------
--- Periods of continuously collected data (loot, XP)
----------------------------------------------------------------------------
-
 -- Whether the saved dump ends with a skipped logout dump (the client already had empty data):
 -- then the disk holds an old dump, and the loot and XP period continues from it.
 function Snapshot.continuesPeriod(saved)
@@ -194,7 +182,7 @@ function Snapshot.continuesPeriod(saved)
         and type(saved.dumpedAt) == "number" and saved.lastSkippedLogoutAt >= saved.dumpedAt
 end
 
--- Closed periods (addon 0.12.0). The addon never assumes the server read a dump: the game may save twice
+-- Closed periods. The addon never assumes the server read a dump: the game may save twice
 -- (/mcp reload, then logout) before the server looks at the file, and the second save would otherwise
 -- replace the first period's loot and XP. So when a login closes a period that has content, the period
 -- (its fields plus until = the dumpedAt of the save that closed it) is appended to the section's
@@ -255,10 +243,6 @@ function Snapshot.startPeriod(name, fresh, hasContent)
     return since
 end
 
----------------------------------------------------------------------------
--- Dump
----------------------------------------------------------------------------
-
 local function collectSections(snapshot, recorder)
     for _, section in ipairs(dumpSections) do
         if not Snapshot.isDisabled(section.name) then
@@ -289,10 +273,6 @@ local function keepWindowSections(snapshot, previous)
         end
     end
 end
-
----------------------------------------------------------------------------
--- Dump from a client that has already unloaded character data
----------------------------------------------------------------------------
 
 local function isEmptyList(value)
     return type(value) == "table" and next(value) == nil

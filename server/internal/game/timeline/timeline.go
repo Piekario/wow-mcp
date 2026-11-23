@@ -25,7 +25,6 @@ const (
 	KindProfession = "profession"
 )
 
-// Kinds is all the allowed event kinds.
 var Kinds = []string{KindLevelUp, KindNewSpell, KindEquipment, KindQuest, KindDeath, KindProfession}
 
 // The default and maximum event limit and how many of the newest history dumps we read.

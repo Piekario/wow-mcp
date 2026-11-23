@@ -11,7 +11,6 @@ import (
 	"wowmcp/internal/snapshot"
 )
 
-// skill is a skill to buy from a trainer.
 type skill struct {
 	name, rank    string
 	cost          int64

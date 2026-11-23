@@ -39,10 +39,6 @@ local function append(list, value, limit)
     if #list < (limit or MAX_DISCOVERED) then list[#list + 1] = value end
 end
 
----------------------------------------------------------------------------
--- Perk trees (C_Traits configs other than the class talents)
----------------------------------------------------------------------------
-
 -- Enum.TraitConfigType: value -> name (empty when the client has no such enum).
 local function configTypeNames()
     local names = {}
@@ -232,10 +228,6 @@ local function readConfigs(legacy, typeNames, extraConfigIDs)
     end
 end
 
----------------------------------------------------------------------------
--- Challenges (achievements in a "Legacy" category)
----------------------------------------------------------------------------
-
 local function legacyCategories()
     local titles, parents, picked = {}, {}, {}
     for _, categoryID in ipairs(GetCategoryList() or {}) do
@@ -271,10 +263,6 @@ local function readChallenges()
     end
     return challenges
 end
-
----------------------------------------------------------------------------
--- Discovery: what this client calls the Legacy API
----------------------------------------------------------------------------
 
 -- A bounded copy of a returned value (plain values, small tables).
 local function boundedCopy(value, depth)
@@ -423,8 +411,6 @@ local function discover(extraConfigIDs)
     end
     return discovery
 end
-
----------------------------------------------------------------------------
 
 local function collectLegacy()
     local legacy = { configs = {} }

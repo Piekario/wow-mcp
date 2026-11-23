@@ -87,7 +87,6 @@ local function addItemStats(item, link)
     if any then item.stats, item.statTokens = out, tokens end
 end
 
--- Adds type, level, sell price and stats to the item.
 function Items.addDetails(item, link)
     if type(link) ~= "string" then return end
     addItemInfo(item, link)
@@ -141,7 +140,7 @@ function Items.addCachedDetails(item, itemID, gearOnly)
     addStatDps(item)
 end
 
--- Weapon numbers (0.10.0): damage range, speed and DPS as numbers, so the server does not read English tooltip text.
+-- Weapon numbers: damage range, speed and DPS as numbers, so the server does not read English tooltip text.
 -- Damage and DPS lines are found with the client's own format strings (DAMAGE_TEMPLATE "%s - %s Damage",
 -- DPS_TEMPLATE "(%s damage per second)"); speed is the right-hand part of the damage line (where the client puts it,
 -- in every language) or, when it stands alone, the number after the client's WEAPON_SPEED label.

@@ -16,7 +16,6 @@ import (
 	"wowmcp/internal/snapshot"
 )
 
-// Status of one check.
 const (
 	OK   = "ok"
 	Warn = "warn"
@@ -44,7 +43,6 @@ type Facts struct {
 	GoalsFile string // "" = goals disabled
 }
 
-// Check is one diagnostic line.
 type Check struct {
 	Check  string `json:"check"`
 	Status string `json:"status"`
