@@ -14,11 +14,11 @@ import (
 
 func TestRunCheck(t *testing.T) {
 	fresh := fixtures.At(3 * time.Hour)
-	store := &storage.Store{File: fixtures.Testdata("WowMcp_forever.lua"), History: &storage.History{Dir: t.TempDir(), Keep: 5}}
-	if err := runCheck(store, fresh); err != nil {
+	store := &storage.Store{File: fixtures.Testdata("WowMcp_forever.lua")}
+	if err := runCheck(store, &storage.History{Dir: t.TempDir(), Keep: 5}, fresh); err != nil {
 		t.Fatal(err)
 	}
-	if err := runCheck(&storage.Store{File: filepath.Join(t.TempDir(), "missing.lua")}, fresh); err == nil {
+	if err := runCheck(&storage.Store{File: filepath.Join(t.TempDir(), "missing.lua")}, nil, fresh); err == nil {
 		t.Error("no error for a nonexistent file")
 	}
 }

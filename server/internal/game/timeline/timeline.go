@@ -44,60 +44,74 @@ type Query struct {
 	Days  float64 `json:"days,omitempty" jsonschema:"only events from the last N days (counted from the time of the last dump)"`
 }
 
-// Event is one event on the timeline.
+// Event is one event on the timeline; What holds the facts of its kind.
 type Event struct {
-	At      int64
-	Kind    string
-	Text    string
-	Details map[string]any
+	At   int64
+	Kind string
+	What fact
 }
 
-func (e Event) view() map[string]any {
-	out := map[string]any{"at": e.At, "atText": snapshot.FormatTime(e.At), "kind": e.Kind, "text": e.Text}
-	if len(e.Details) > 0 {
-		out["details"] = e.Details
-	}
-	return out
+type LevelUp struct{ From, To int64 }
+
+type NewSpell struct {
+	Name    string
+	Rank    any
+	HasRank bool
 }
 
-// View builds the character's timeline from history and the current dump.
-func View(name string, current snapshot.Snapshot, tr progress.Tracker, q Query) (map[string]any, error) {
+// GearChange names are as the dump holds them; an empty one is an empty slot.
+type GearChange struct{ Slot, Before, After string }
+
+type TurnedInQuest struct {
+	ID, Title any
+	Zone      string
+}
+
+// ProfessionStep is a new profession (New) or crossing a Milestone.
+type ProfessionStep struct {
+	Name                     string
+	Before, After, Milestone int64
+	New                      bool
+}
+
+// Death keeps the place as the addon recorded it; Known is false when the recent list did not cover the death.
+type Death struct {
+	Known bool
+	recentDeath
+}
+
+// report is the timeline after the filters; Events holds at most the limit, the newest.
+type report struct {
+	SnapshotsRead int
+	Events        []Event
+	Total         int
+	OlderNotShown int
+}
+
+func build(name string, current snapshot.Snapshot, tr progress.Tracker, q Query) (report, error) {
 	limit, err := q.limit()
 	if err != nil {
-		return nil, err
+		return report{}, err
 	}
 	if tr.History == nil {
-		return nil, fmt.Errorf("dump history is disabled (the server was started with --history-dir \"\"), and the timeline is built from it")
+		return report{}, fmt.Errorf("dump history is disabled (the server was started with --history-dir \"\"), and the timeline is built from it")
 	}
 	snaps, err := load(name, current, tr.History)
 	if err != nil {
-		return nil, err
+		return report{}, err
 	}
-	out := map[string]any{
-		"order": "from the oldest to the newest event (with a limit the newest are kept)",
-		"assumption": "an event gets the time of the first dump in which it is visible (the game saves data only on /reload and logout), " +
-			"so the real time may be earlier; the exception is deaths, which the addon saves with an exact time",
-		"snapshotsRead": len(snaps),
-	}
-	tr.NoteSkipped(out, name, current)
+	r := report{SnapshotsRead: len(snaps)}
 	if len(snaps) < 2 {
-		out["events"] = []any{}
-		out["note"] = "The history has one dump, so there is nothing to compare with. Events will appear after the next /mcp reload in game."
-		return out, nil
+		return r, nil
 	}
-	events := Build(snaps)
-	events = filter(events, q, snaps[len(snaps)-1])
-	out["total"] = len(events)
+	events := filter(Build(snaps), q, snaps[len(snaps)-1])
+	r.Total = len(events)
 	if len(events) > limit {
-		out["olderNotShown"] = len(events) - limit
+		r.OlderNotShown = len(events) - limit
 		events = events[len(events)-limit:]
 	}
-	list := make([]any, len(events))
-	for i, e := range events {
-		list[i] = e.view()
-	}
-	out["events"] = list
-	return out, nil
+	r.Events = events
+	return r, nil
 }
 
 func (q Query) limit() (int, error) {
@@ -125,34 +139,6 @@ func validKind(k string) bool {
 	return false
 }
 
-// load reads the newest history dumps (oldest first) and appends the current one if it is newer than the last.
-func load(name string, current snapshot.Snapshot, h progress.History) ([]snapshot.Snapshot, error) {
-	times, err := h.List(name)
-	if err != nil {
-		return nil, err
-	}
-	if len(times) > maxSnapshots {
-		times = times[len(times)-maxSnapshots:]
-	}
-	var snaps []snapshot.Snapshot
-	for _, at := range times {
-		if s, err := h.Load(name, at); err == nil { // a corrupt history file does not spoil the timeline
-			snaps = append(snaps, s)
-		}
-	}
-	cur, ok := current.DumpedAt()
-	// A dump from an empty client (exit from the game) does not describe the character: we do not append it.
-	if last := len(snaps) - 1; ok && !current.IsUnloadedDump() && (last < 0 || dumpedAt(snaps[last]) < cur) {
-		snaps = append(snaps, current)
-	}
-	return snaps, nil
-}
-
-func dumpedAt(s snapshot.Snapshot) int64 {
-	at, _ := s.DumpedAt()
-	return at
-}
-
 func filter(events []Event, q Query, newest snapshot.Snapshot) []Event {
 	var cutoff int64
 	if q.Days > 0 {
@@ -177,98 +163,44 @@ func Build(snaps []snapshot.Snapshot) []Event {
 	return events
 }
 
-// between extracts events from the difference of two dumps (progress.Diff).
+// between extracts events from the comparison of two dumps (progress.Compare).
 func between(before, after snapshot.Snapshot) []Event {
 	at, ok := after.DumpedAt()
 	if !ok {
 		return nil
 	}
-	d := progress.Diff(before, after)
+	c := progress.Compare(before, after)
 	var events []Event
-	events = append(events, levelUp(d, at)...)
-	events = append(events, spells(d, at)...)
-	events = append(events, equipment(d, at)...)
-	events = append(events, quests(d, at)...)
-	events = append(events, professions(d, at)...)
-	events = append(events, deaths(before, after, d, at)...)
+	if c.XP != nil && c.XP.LevelUp() {
+		events = append(events, Event{at, KindLevelUp, LevelUp{c.XP.LevelBefore, c.XP.LevelAfter}})
+	}
+	for _, s := range c.NewSpells {
+		if name, _ := s.Name.(string); name != "" {
+			events = append(events, Event{at, KindNewSpell, NewSpell{name, s.Rank, s.HasRank && s.Rank != nil}})
+		}
+	}
+	for _, g := range c.Equipment {
+		events = append(events, Event{at, KindEquipment, GearChange{g.Slot, g.Before, g.After}})
+	}
+	for _, q := range c.Quests.TurnedIn {
+		zone, _ := q.Zone.(string)
+		events = append(events, Event{at, KindQuest, TurnedInQuest{q.ID, q.Title, zone}})
+	}
+	events = append(events, professions(c.Professions, at)...)
+	if c.Deaths != nil {
+		events = append(events, deaths(before, after, c.Deaths.Delta(), at)...)
+	}
 	return events
 }
 
-func levelUp(d map[string]any, at int64) []Event {
-	xp := snapshot.AsMap(d["experience"])
-	if xp["levelUp"] != true {
-		return nil
-	}
-	from, _ := snapshot.AsInt(xp["levelBefore"])
-	to, _ := snapshot.AsInt(xp["levelAfter"])
-	return []Event{{At: at, Kind: KindLevelUp, Text: fmt.Sprintf("Level up: level %d -> %d", from, to),
-		Details: map[string]any{"levelBefore": from, "levelAfter": to}}}
-}
-
-func spells(d map[string]any, at int64) []Event {
-	var out []Event
-	for _, raw := range snapshot.AsList(d["newSpells"]) {
-		s := snapshot.AsMap(raw)
-		name, _ := s["name"].(string)
-		if name == "" {
-			continue
-		}
-		text := "New spell: " + name
-		details := map[string]any{"name": name}
-		if rank, ok := s["rank"]; ok && rank != nil {
-			text += fmt.Sprintf(" (%v)", rank)
-			details["rank"] = rank
-		}
-		out = append(out, Event{At: at, Kind: KindNewSpell, Text: text, Details: details})
-	}
-	return out
-}
-
-func equipment(d map[string]any, at int64) []Event {
-	var out []Event
-	for _, raw := range snapshot.AsList(d["equipment"]) {
-		e := snapshot.AsMap(raw)
-		slot, _ := e["slot"].(string)
-		before, after := fmt.Sprint(e["before"]), fmt.Sprint(e["after"])
-		out = append(out, Event{At: at, Kind: KindEquipment, Text: fmt.Sprintf("Equipment, slot %s: %s -> %s", slot, before, after),
-			Details: map[string]any{"slot": slot, "before": before, "after": after}})
-	}
-	return out
-}
-
-func quests(d map[string]any, at int64) []Event {
-	var out []Event
-	for _, raw := range snapshot.AsList(snapshot.AsMap(d["quests"])["turnedIn"]) {
-		q := snapshot.AsMap(raw)
-		details := map[string]any{"id": q["id"]}
-		text := fmt.Sprintf("Quest turned in: %v", q["title"])
-		if zone, ok := q["zone"].(string); ok && zone != "" {
-			details["zone"] = zone
-			text += " (" + zone + ")"
-		}
-		out = append(out, Event{At: at, Kind: KindQuest, Text: text, Details: details})
-	}
-	return out
-}
-
 // professions reports a new profession and crossing the 75/150/225/300 threshold (classic WoW ranks).
-func professions(d map[string]any, at int64) []Event {
+func professions(changes []progress.SkillChange, at int64) []Event {
 	var out []Event
-	for _, raw := range snapshot.AsList(d["professions"]) {
-		p := snapshot.AsMap(raw)
-		name, _ := p["name"].(string)
-		after, _ := snapshot.AsInt(p["after"])
-		before, hadBefore := snapshot.AsInt(p["before"])
-		details := map[string]any{"name": name, "after": after}
-		switch {
-		case !hadBefore:
-			details["note"] = "new"
-			out = append(out, Event{At: at, Kind: KindProfession, Text: fmt.Sprintf("New profession or skill: %s (%d)", name, after), Details: details})
-		default:
-			if m, ok := crossed(before, after); ok {
-				details["before"], details["milestone"] = before, m
-				out = append(out, Event{At: at, Kind: KindProfession, Text: fmt.Sprintf("%s: %d -> %d (milestone %d)", name, before, after, m), Details: details})
-			}
+	for _, p := range changes {
+		if p.New {
+			out = append(out, Event{at, KindProfession, ProfessionStep{Name: p.Name, After: p.After, New: true}})
+		} else if m, ok := crossed(p.Before, p.After); ok {
+			out = append(out, Event{at, KindProfession, ProfessionStep{Name: p.Name, Before: p.Before, After: p.After, Milestone: m}})
 		}
 	}
 	return out
@@ -285,40 +217,20 @@ func crossed(before, after int64) (int64, bool) {
 }
 
 // deaths creates one event per new death; the time comes from the recent list or, when missing, from the dump time.
-func deaths(before, after snapshot.Snapshot, d map[string]any, at int64) []Event {
-	n, _ := snapshot.AsInt(snapshot.AsMap(d["deaths"])["new"])
-	if n <= 0 {
-		return nil
-	}
+func deaths(before, after snapshot.Snapshot, n, at int64) []Event {
 	from, _ := before.DumpedAt()
 	var out []Event
-	for _, raw := range snapshot.AsList(after.Map("deaths")["recent"]) {
-		r := snapshot.AsMap(raw)
-		when, ok := snapshot.AsInt(r["at"])
-		if !ok || when <= from || when > at {
+	for _, r := range readRecentDeaths(after) {
+		if !r.HasAt || r.At <= from || r.At > at {
 			continue
 		}
-		out = append(out, deathEvent(when, r))
+		out = append(out, Event{r.At, KindDeath, Death{true, r}})
 	}
 	if int64(len(out)) > n {
 		out = out[int64(len(out))-n:]
 	}
 	for int64(len(out)) < n {
-		out = append(out, deathEvent(at, nil))
+		out = append(out, Event{at, KindDeath, Death{}})
 	}
 	return out
-}
-
-func deathEvent(at int64, r map[string]any) Event {
-	details := map[string]any{}
-	text := "Death"
-	for _, key := range []string{"zone", "subZone", "level"} {
-		if v, ok := r[key]; ok {
-			details[key] = v
-		}
-	}
-	if zone, ok := r["zone"].(string); ok && zone != "" {
-		text += ": " + zone
-	}
-	return Event{At: at, Kind: KindDeath, Text: text, Details: details}
 }

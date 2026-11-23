@@ -672,10 +672,11 @@ func newGoldenEnv(t *testing.T, sc goldenScenario) *goldenEnv {
 
 	store := &storage.Store{File: file}
 	histDir := filepath.Join(tmp, "history")
+	var history *storage.History
 	if sc.history {
-		store.History = &storage.History{Dir: histDir, Keep: 50}
+		history = &storage.History{Dir: histDir, Keep: 50}
 		if !sc.missing {
-			seedHistory(t, file, store.History)
+			seedHistory(t, file, history)
 		}
 	}
 
@@ -686,7 +687,7 @@ func newGoldenEnv(t *testing.T, sc goldenScenario) *goldenEnv {
 			t.Fatal(err)
 		}
 	}
-	server := newServer(store, fresh, goalsPath)
+	server := newServer(store, history, fresh, goalsPath)
 	ct, st := mcp.NewInMemoryTransports()
 	ctx := context.Background()
 	ss, err := server.Connect(ctx, st, nil)
@@ -758,8 +759,11 @@ func (s pathScrubber) Replace(text string) string {
 	text = s.afterDir.ReplaceAllStringFunc(text, func(m string) string {
 		return regexp.MustCompile(`\\+`).ReplaceAllString(m, "/")
 	})
-	return s.osErrors.Replace(text)
+	// The only OS error in the golden files is a missing dump; Windows words it in the system language.
+	return notFound.ReplaceAllString(s.osErrors.Replace(text), "${1}no such file or directory")
 }
+
+var notFound = regexp.MustCompile(`(stat <FILE>: )[^"\n]+\.`)
 
 // seedHistory saves, through the History API, two older snapshots of the current character:
 // a lower level, less XP and gold, fewer quests, a different bag composition, a shorter played time.

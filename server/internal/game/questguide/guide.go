@@ -3,168 +3,120 @@
 
 package questguide
 
-import (
-	"fmt"
-	"regexp"
-	"strings"
+import "wowmcp/internal/snapshot"
 
-	"wowmcp/internal/snapshot"
-)
+// Tag is a quest tag of a guide step: what to do with which quest.
+type Tag struct {
+	ID        int64
+	Action    string
+	Objective any
+}
+
+// Step is a line of the player's Guidelime guide.
+type Step struct {
+	Line             any
+	Text             string
+	Optional, Passed bool
+	Tags             []Tag
+}
+
+// GuideData is the guide section.
+type GuideData struct {
+	Name                string
+	Addon, NextGuide    any
+	TextUnavailable     bool
+	Total, Done, Passed int64
+	Next                []Step
+}
+
+// TagAnswer is the quest part of a step. Entry is nil when the quest database does not know the quest.
+type TagAnswer struct {
+	Tag    Tag
+	Status string
+	Entry  *Entry
+	Where  []Place
+}
+
+// StepAnswer is a guide step with its quests placed on the map.
+type StepAnswer struct {
+	Step   Step
+	Quests []TagAnswer
+}
+
+// Availability says why a guide answer is empty.
+type Availability int
 
 const (
-	noGuideHint = "The dump has no guide section. It needs addon 0.14.0 or newer and the Guidelime addon with a guide (for example TUGs) selected in game; then run /mcp reload. " +
-		"Without it, do not invent the guide's steps."
-	noGuideTextHint = "The player follows this guide, but the addon did not see its text (the guide addon loaded before WowMcp, or the guide is a custom one). " +
-		"A full restart of the game usually fixes it. Do not invent the guide's steps."
-	guideNote = "Steps are the player's own guide in guide order; follow that order rather than a shortest path. Quest locations come from the installed quest database. " +
-		"A step marked passedEarlier is a quest step before the player's furthest progress that is still open (skipped or optional); only the first few are listed, passedEarlierSteps counts all of them, and the steps after them are where the player is now."
+	GuideAvailable Availability = iota
+	NoGuide
+	NoGuideText
 )
 
-var (
-	guideTag    = regexp.MustCompile(`\[([A-Z]+)\s*([^\]]*)\]`)
-	spaces      = regexp.MustCompile(`\s{2,}`)
-	coordinates = regexp.MustCompile(`^(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*(.*)$`)
-)
+// GuideResult is the next steps of the player's leveling guide with quest names and places.
+type GuideResult struct {
+	Availability Availability
+	Guide        GuideData
+	Player       Player
+	Steps        []StepAnswer
+	Names        map[int64]string
+	Finished     bool
+}
+
+// Next reads the guide and places the quests of its next steps.
+func Next(s snapshot.Snapshot) GuideResult {
+	g := readGuide(s)
+	r := GuideResult{Guide: g}
+	switch {
+	case g.Name == "":
+		r.Availability = NoGuide
+		return r
+	case g.TextUnavailable:
+		r.Availability = NoGuideText
+		return r
+	}
+	r.Player = readPlayer(s)
+	states := logStates(s)
+	index := questIndex(readDatabase(s))
+	r.Names = map[int64]string{}
+	for id, e := range index {
+		r.Names[id], _ = e.Name.(string)
+	}
+	for _, step := range g.Next {
+		answer := StepAnswer{Step: step}
+		for _, tag := range step.Tags {
+			answer.Quests = append(answer.Quests, answerTag(tag, index, states, r.Player))
+		}
+		r.Steps = append(r.Steps, answer)
+	}
+	r.Finished = r.Steps == nil && g.Total > 0 && g.Done >= g.Total
+	return r
+}
 
 // questIndex maps quest ID -> its questDb entry.
-func questIndex(s snapshot.Snapshot) map[int64]map[string]any {
-	index := map[int64]map[string]any{}
-	for _, raw := range snapshot.AsList(s.Map("questDb")["quests"]) {
-		q := snapshot.AsMap(raw)
-		if id, ok := snapshot.AsInt(q["id"]); ok {
-			index[id] = q
+func questIndex(db Database) map[int64]Entry {
+	index := map[int64]Entry{}
+	for _, e := range db.Quests {
+		if id, ok := snapshot.AsInt(e.ID); ok {
+			index[id] = e
 		}
 	}
 	return index
 }
 
-// readable turns Guidelime markup into plain text: quest tags become quest names, coordinates and flight
-// targets stay, control tags (optional, who the step is for) and icon tags (hearthstone, flight path, trainer) disappear.
-func readable(text string, names map[int64]string) string {
-	out := guideTag.ReplaceAllStringFunc(text, func(tag string) string {
-		m := guideTag.FindStringSubmatch(tag)
-		code, rest := m[1], strings.TrimSpace(m[2])
-		switch code {
-		case "QA", "QC", "QT", "QS", "QP", "QW":
-			var id int64
-			fmt.Sscanf(rest, "%d", &id)
-			if name := names[id]; name != "" {
-				return fmt.Sprintf("%q", name)
-			}
-			return fmt.Sprintf("quest %d", id)
-		case "G", "L":
-			if m := coordinates.FindStringSubmatch(rest); m != nil {
-				return strings.TrimSpace(fmt.Sprintf("%s, %s %s", m[1], m[2], m[3]))
-			}
-			return rest
-		case "O", "OC", "C", "A", "GA", "OR", "H", "S", "P", "T", "V", "R":
-			return "" // control tags and icons: the words around them already say it
-		}
-		return rest
-	})
-	return strings.TrimSpace(spaces.ReplaceAllString(out, " "))
-}
-
-// stepQuest describes the quest part of a step: what to do and where.
-func stepQuest(raw any, index map[int64]map[string]any, states map[int64]string, p player) map[string]any {
-	tag := snapshot.AsMap(raw)
-	id, _ := snapshot.AsInt(tag["id"])
-	action, _ := tag["action"].(string)
-	out := map[string]any{"id": id, "action": action, "status": statusOf(states, id)}
-	if objective, ok := tag["objective"]; ok {
-		out["objective"] = objective
-	}
-	q, known := index[id]
+func answerTag(tag Tag, index map[int64]Entry, states map[int64]string, p Player) TagAnswer {
+	a := TagAnswer{Tag: tag, Status: statusOf(states, tag.ID)}
+	e, known := index[tag.ID]
 	if !known {
-		out["note"] = "not in the quest database: ask the player for /mcp quest " + fmt.Sprint(id)
-		return out
+		return a
 	}
-	if name, ok := q["name"]; ok {
-		out["name"] = name
-	}
-	var where []any
-	switch action {
+	a.Entry = &e
+	switch tag.Action {
 	case "accept":
-		where = places(q["startedBy"], p)
+		a.Where = places(e.StartedBy, p)
 	case "turnin":
-		where = places(q["finishedBy"], p)
+		a.Where = places(e.FinishedBy, p)
 	case "complete":
-		where = places(q["objectives"], p)
-		if text, ok := q["objectivesText"]; ok {
-			out["objectivesText"] = text
-		}
+		a.Where = places(e.Objectives, p)
 	}
-	if where != nil {
-		out["where"] = where
-	}
-	return out
-}
-
-// Guide is the wow_guide answer: the next steps of the player's leveling guide with quest names and places.
-func Guide(s snapshot.Snapshot) map[string]any {
-	out := map[string]any{}
-	guide := s.Map("guide")
-	name, _ := guide["name"].(string)
-	if name == "" {
-		out["available"] = false
-		out["hint"] = noGuideHint
-		return out
-	}
-	out["guide"] = name
-	if addon, ok := guide["addon"]; ok {
-		out["guideAddon"] = addon
-	}
-	if guide["textUnavailable"] == true {
-		out["available"] = false
-		out["hint"] = noGuideTextHint
-		return out
-	}
-	if next, ok := guide["nextGuide"]; ok {
-		out["nextGuide"] = next
-	}
-	total, _ := snapshot.AsInt(guide["totalSteps"])
-	done, _ := snapshot.AsInt(guide["doneSteps"])
-	out["progress"] = map[string]any{"doneSteps": done, "totalSteps": total, "remainingSteps": total - done}
-
-	p := playerOf(s)
-	states := logStates(s)
-	index := questIndex(s)
-	names := map[int64]string{}
-	for id, q := range index {
-		names[id], _ = q["name"].(string)
-	}
-	var steps []any
-	for _, raw := range snapshot.AsList(guide["next"]) {
-		step := snapshot.AsMap(raw)
-		text, _ := step["text"].(string)
-		view := map[string]any{"line": step["line"], "text": readable(text, names)}
-		if step["optional"] == true {
-			view["optional"] = true
-		}
-		if step["passed"] == true {
-			view["passedEarlier"] = true
-		}
-		var quests []any
-		for _, tag := range snapshot.AsList(step["quests"]) {
-			quests = append(quests, stepQuest(tag, index, states, p))
-		}
-		if quests != nil {
-			view["quests"] = quests
-		}
-		steps = append(steps, view)
-	}
-	out["shownSteps"] = len(steps)
-	if passed, ok := snapshot.AsInt(guide["passedSteps"]); ok && passed > 0 {
-		out["passedEarlierSteps"] = passed
-	}
-	if steps != nil {
-		out["steps"] = steps
-	} else if total > 0 && done >= total {
-		out["hint"] = "Every step of this guide is done: the player should switch to the next guide in Guidelime."
-	}
-	if p.has {
-		out["character"] = map[string]any{"zone": p.zone, "x": p.x, "y": p.y}
-	}
-	out["note"] = guideNote
-	return out
+	return a
 }

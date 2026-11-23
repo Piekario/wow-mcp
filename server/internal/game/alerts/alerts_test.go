@@ -70,11 +70,11 @@ func TestBagsRule(t *testing.T) {
 		}
 		snapshot.AsMap(raw)["free"] = f
 	}
-	if _, ok := bagsAlmostFull(s, fixtures.RealTime()); !ok {
+	if !Assess(s, fixtures.RealTime()).BagsAlmostFull() {
 		t.Error("2 free slots is a warning")
 	}
 	snapshot.AsMap(bags[0])["free"] = int64(3)
-	if _, ok := bagsAlmostFull(s, fixtures.RealTime()); ok {
+	if Assess(s, fixtures.RealTime()).BagsAlmostFull() {
 		t.Error("3 free slots is not a warning yet")
 	}
 }
@@ -86,5 +86,16 @@ func TestForUnloadedDump(t *testing.T) {
 	}
 	if strings.Contains(kinds(For(fixtures.Real(t), fixtures.RealTime())), "unloadedDump") {
 		t.Error("good dump flagged as from an empty client")
+	}
+}
+
+func TestAssessmentRulesWithoutADump(t *testing.T) {
+	quiet := Assessment{BagSlots: 20, BagFree: 3, DumpMs: 200, HasDumpMs: true}
+	if len(quiet.Alerts()) != 0 {
+		t.Errorf("nothing applies: %v", quiet.Alerts())
+	}
+	noisy := Assessment{BagSlots: 20, BagFree: 2, DumpMs: 201, HasDumpMs: true, ErrorCount: 2, LowDurability: []string{"Helm 5%"}}
+	if got := kinds(noisy.Alerts()); got != "durability,bags,slowDump,addonErrors" {
+		t.Errorf("kinds: %s", got)
 	}
 }

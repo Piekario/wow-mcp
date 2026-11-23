@@ -10,10 +10,7 @@ import (
 	"fmt"
 	"math"
 
-	"wowmcp/internal/game/items"
-	"wowmcp/internal/game/pet"
 	"wowmcp/internal/game/progress"
-	"wowmcp/internal/game/reagents"
 	"wowmcp/internal/snapshot"
 )
 
@@ -26,137 +23,102 @@ type Query struct {
 // defaultHours is the default play time we compute purchases for.
 const defaultHours = 2
 
-// maxSellers is how many vendors of an item we show.
-const maxSellers = 3
-
-// step is one budget item in priority order.
-type step struct {
-	key, label string
-	cost       int64
-	unknown    []string // items without a known price (not counted in the cost)
+// List is the shopping list: what to buy in priority order, what the gold covers and when to return to town.
+type List struct {
+	Money, Level int64
+	Hours        float64
+	Trainer      TrainerPlan
+	Repair       RepairPlan
+	Ammo         *AmmoPlan
+	PetFood      *PetFoodPlan
+	Consumables  *ConsumablePlan
+	Budget       Budget
+	Return       Departure
 }
 
-// View builds the shopping list: trainer, repair, ammo, pet food, materials, budget and return to town.
-func View(name string, s snapshot.Snapshot, tr progress.Tracker, q Query, fresh snapshot.Freshness) (map[string]any, error) {
+// Inspect builds the shopping list for hours of play (q.Hours, default 2): trainer, repair, ammo, pet food,
+// materials, budget and return to town.
+func Inspect(name string, s snapshot.Snapshot, tr progress.Tracker, q Query, fresh snapshot.Freshness) (List, error) {
 	hours := q.Hours
 	switch {
 	case hours == 0:
 		hours = defaultHours
 	case hours < 0 || math.IsNaN(hours):
-		return nil, fmt.Errorf("hours must be positive (default %d), got %g", defaultHours, q.Hours)
+		return List{}, fmt.Errorf("hours must be positive (default %d), got %g", defaultHours, q.Hours)
 	}
 	level, money := s.LevelAndMoney()
-	out := map[string]any{
-		"money": snapshot.Money(money).String(), "level": level, "planningHours": hours,
-		"order": "purchase priority: trainer skills, repair, ammo, food and materials",
-	}
-	var steps []step
+	l := List{Money: money, Level: level, Hours: hours}
+	l.Trainer = planTrainer(readOffers(s), level, money, fresh)
+	steps := []Step{{Label: "trainer skills", Cost: l.Trainer.Total}}
 
-	plan := planTrainer(s, level, money, fresh)
-	out["trainer"] = plan.view()
-	steps = append(steps, step{key: "trainer", label: "trainer skills", cost: plan.total})
-
-	repair := planRepair(s, fresh)
-	if repair.present {
-		out["repair"] = repair.view()
-		steps = append(steps, step{key: "repair", label: "repair", cost: repair.cost})
+	l.Repair = planRepair(s)
+	if l.Repair.Present {
+		steps = append(steps, Step{Label: "repair", Cost: l.Repair.Cost})
 	}
-
-	if a := planAmmo(name, s, tr, hours); a != nil {
-		out["ammo"] = a.view()
-		steps = append(steps, step{key: "ammo", label: "ammo", cost: a.cost, unknown: a.unknown()})
+	if l.Ammo = planAmmo(name, s, tr, hours); l.Ammo != nil {
+		steps = append(steps, Step{Label: "ammo", Cost: l.Ammo.Cost, Unpriced: l.Ammo.Unpriced()})
 	}
-
-	food := step{key: "food", label: "food and materials"}
-	if p := planPetFood(s); p != nil {
-		out["petFood"] = p.view()
+	l.PetFood = planPetFood(s)
+	food := Step{Label: "food and materials"}
+	if l.Consumables = planConsumables(name, s, tr, hours); l.Consumables != nil {
+		food.Cost, food.Unpriced = l.Consumables.Cost, l.Consumables.Missing
 	}
-	if c := planConsumables(name, s, tr, hours); c != nil {
-		out["consumables"] = c.view()
-		food.cost, food.unknown = c.cost, c.unknown()
-	}
-	steps = append(steps, food)
-
-	out["budget"] = budget(money, steps)
-	out["returnToTown"] = ReturnToTown(name, s, tr, fresh)
-	out["note"] = "Vendor prices come from remembered windows (vendors) and may be old; the price in the vendor window is per pack (stack), the price of one piece is the pack price divided by its size. " +
-		"The server buys, teaches and repairs nothing."
-	return out, nil
+	l.Budget = planBudget(money, append(steps, food))
+	l.Return = planDeparture(name, s, tr)
+	return l, nil
 }
 
-// budget checks in priority order what the gold covers; it skips items without a cost.
-func budget(money int64, steps []step) map[string]any {
+// Step is one budget item in priority order; Unpriced are items without a known price (not counted in the cost).
+type Step struct {
+	Label    string
+	Cost     int64
+	Unpriced []string
+}
+
+type BudgetLine struct {
+	What      string
+	Cost      int64
+	Covered   bool
+	LeftAfter int64 // when covered
+	ShortBy   int64 // when not
+}
+
+// Budget checks in priority order what the gold covers; steps without a cost are skipped.
+type Budget struct {
+	Lines        []BudgetLine
+	Total        int64
+	CanAffordAll bool
+	Over         bool // Total is more than the money
+	ShortBy      int64
+	LeftAfterAll int64
+	Unpriced     []string
+}
+
+func planBudget(money int64, steps []Step) Budget {
 	remaining := money
-	var total int64
+	b := Budget{}
 	covered := true
-	list := []any{}
-	var unknown []string
 	for _, st := range steps {
-		unknown = append(unknown, st.unknown...)
-		if st.cost <= 0 {
+		b.Unpriced = append(b.Unpriced, st.Unpriced...)
+		if st.Cost <= 0 {
 			continue
 		}
-		total += st.cost
-		ok := st.cost <= remaining
-		e := map[string]any{"what": st.label, "cost": snapshot.Money(st.cost).String(), "covered": ok}
-		if ok {
-			remaining -= st.cost
-			e["leftAfter"] = snapshot.Money(remaining).String()
+		b.Total += st.Cost
+		line := BudgetLine{What: st.Label, Cost: st.Cost, Covered: st.Cost <= remaining}
+		if line.Covered {
+			remaining -= st.Cost
+			line.LeftAfter = remaining
 		} else {
-			e["shortBy"] = snapshot.Money(st.cost - remaining).String()
+			line.ShortBy = st.Cost - remaining
 			covered = false
 		}
-		list = append(list, e)
+		b.Lines = append(b.Lines, line)
 	}
-	out := map[string]any{
-		"steps": list, "totalCost": snapshot.Money(total).String(), "canAffordAll": covered && total <= money,
-	}
-	if total > money {
-		out["shortBy"] = snapshot.Money(total - money).String()
+	b.CanAffordAll = covered && b.Total <= money
+	if b.Over = b.Total > money; b.Over {
+		b.ShortBy = b.Total - money
 	} else {
-		out["leftAfterAll"] = snapshot.Money(money - total).String()
+		b.LeftAfterAll = money - b.Total
 	}
-	if len(unknown) > 0 {
-		out["unpriced"] = unknown
-		out["unpricedNote"] = "these items are needed, but no remembered vendor has them, so they are not included in the cost"
-	}
-	return out
-}
-
-// sellersView describes the cheapest vendors of an item; nil when no remembered vendor has it.
-func sellersView(s snapshot.Snapshot, name string) []any {
-	var out []any
-	for i, sl := range items.SellersOf(s, name) {
-		if i == maxSellers {
-			break
-		}
-		out = append(out, sl.Describe())
-	}
-	return out
-}
-
-// buyPlan computes buying n pieces from the cheapest remembered vendor: description and cost (0 when nobody sells).
-func buyPlan(s snapshot.Snapshot, name string, n int64) (view map[string]any, cost int64) {
-	sellers := items.SellersOf(s, name)
-	if n <= 0 || len(sellers) == 0 {
-		return nil, 0
-	}
-	best := sellers[0]
-	packs, cost := best.CostFor(n)
-	return map[string]any{"npc": best.Npc, "packs": packs, "stack": best.Stack, "cost": snapshot.Money(cost).String()}, cost
-}
-
-// petFoodCount sums the food in bags that can be given to the pet.
-func petFoodCount(s snapshot.Snapshot) int64 {
-	var n int64
-	for _, raw := range pet.FoodInBags(s) {
-		c, _ := snapshot.AsInt(snapshot.AsMap(raw)["count"])
-		n += c
-	}
-	return n
-}
-
-// reagentShortages are items with too little stock at the consumption rate from history.
-func reagentShortages(name string, s snapshot.Snapshot, tr progress.Tracker) []reagents.Shortage {
-	return reagents.LowStock(reagents.View(name, s, tr))
+	return b
 }

@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"wowmcp/internal/fixtures"
+	"wowmcp/internal/game/professions"
 	"wowmcp/internal/snapshot"
 )
 
@@ -122,5 +123,23 @@ func TestErrorsAndNoRecipes(t *testing.T) {
 	out, _ := View(empty, Query{}, fixtures.At(0))
 	if !strings.Contains(out["note"].(string), "/mcp reload") || out["count"] != 0 {
 		t.Errorf("hint: %v", out)
+	}
+}
+
+func TestAssessOnTypedResult(t *testing.T) {
+	st := stock{"thread": {"Crafter": 1, "Alt": 5}, "dye": {"Alt": 1}}
+	r := recipe{Recipe: professions.Recipe{Name: "Cloak", Reagents: []professions.Reagent{{Name: "Thread", Need: 2}, {Name: "Dye", Need: 3}}}, label: "Cloak"}
+	c, ok := assess("Crafter", r, st)
+	if !ok || c.AccountCanMake != 0 || c.CrafterCanMake != 0 {
+		t.Fatalf("craft: %+v", c)
+	}
+	if len(c.Missing) != 1 || c.Missing[0] != (Shortfall{"Dye", 2}) {
+		t.Errorf("missing: %+v", c.Missing)
+	}
+	if len(c.Borrow) != 1 || c.Borrow[0] != (Loan{"Alt", "Crafter", "Thread", 1}) {
+		t.Errorf("borrow: %+v", c.Borrow)
+	}
+	if _, ok := assess("Crafter", recipe{}, st); ok {
+		t.Error("a recipe without reagents is not assessed")
 	}
 }

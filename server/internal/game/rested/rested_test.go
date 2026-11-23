@@ -78,3 +78,16 @@ func TestFullPoolAndNoPool(t *testing.T) {
 		t.Errorf("max level: %v", out)
 	}
 }
+
+func TestInspectPool(t *testing.T) {
+	r := Inspect(Character{XPMax: 1000, XP: 400, Rested: 300}, fixtures.RealTime())
+	if !r.Valid || !r.CoversRest || r.XPLeftAfter != 0 || r.ToNextLevel != 600 {
+		t.Errorf("coverage: %+v", r)
+	}
+	if r.Pool.Cap != 1500 || r.Pool.Missing != 1200 || r.Pool.Outside.After != 4*r.Pool.Inn.After {
+		t.Errorf("pool: %+v", r.Pool)
+	}
+	if Inspect(Character{}, fixtures.RealTime()).Valid {
+		t.Error("no xpMax, no rested XP")
+	}
+}

@@ -6,8 +6,6 @@ package items
 import (
 	"math"
 	"sort"
-
-	"wowmcp/internal/snapshot"
 )
 
 // Evaluation is the assessment of one item against what the character has equipped: for choosing a quest
@@ -29,36 +27,30 @@ type Evaluation struct {
 // Upgrade says whether the assessment indicates an upgrade: it can be equipped, the character can use it and the score is positive.
 func (e Evaluation) Upgrade() bool { return e.Equippable && e.Usable && e.Score > 0 }
 
-// Evaluate assesses an item against the character's equipment. Without weights (nil or empty) it counts the change in item
+// Evaluate assesses an item against the buyer's equipment. Without weights (nil or empty) it counts the change in item
 // level and DPS, like the hints in wow_vendor; with weights, the sum of stat differences times the weight.
-func Evaluate(s snapshot.Snapshot, item map[string]any, w Weights) Evaluation {
-	level, _ := s.LevelAndMoney()
-	req, _ := snapshot.AsInt(item["requiredLevel"])
-	sell, _ := snapshot.AsInt(item["sellPrice"])
+func (b Buyer) Evaluate(it Item, w Weights) Evaluation {
 	e := Evaluation{
-		Equippable: Equippable(item), Usable: item["usable"] != false,
-		RequiredLevel: req, LevelOk: req <= level, SellValue: sell * snapshot.ItemCount(item),
+		Equippable: it.Equippable(), Usable: !it.Unusable,
+		RequiredLevel: it.RequiredLevel, LevelOk: it.LevelOk(b.Level), SellValue: it.SellValue(),
 	}
 	if !e.Equippable {
 		return e
 	}
 	best := math.Inf(-1)
 	unweighted := map[string]bool{}
-	for _, raw := range Compare(item, s.Equipment()) {
-		c := snapshot.AsMap(raw)
-		delta, _ := c["delta"].(map[string]float64)
-		score := delta["Item Level"] + delta["DPS"]
+	for _, c := range GearOf(b.Equipped).Compare(it) {
+		score := c.UpgradeScore()
 		if len(w) > 0 {
 			var skipped []string
-			score, skipped = w.score(delta)
+			score, skipped = w.score(c.Delta)
 			for _, stat := range skipped {
 				unweighted[stat] = true
 			}
 		}
 		if score > best {
 			best = score
-			e.Slot, e.Delta, e.Score = c["slot"].(string), delta, score
-			e.SlotEmpty = c["equipped"] == snapshot.Empty
+			e.Slot, e.Delta, e.Score, e.SlotEmpty = c.Slot, c.Delta, score, c.Empty()
 		}
 	}
 	e.Weighted = len(w) > 0

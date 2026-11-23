@@ -8,140 +8,210 @@ import (
 	"sort"
 
 	"wowmcp/internal/game/character"
+	"wowmcp/internal/game/loot"
+	"wowmcp/internal/game/periods"
 	"wowmcp/internal/game/talents"
+	"wowmcp/internal/game/xpgains"
 	"wowmcp/internal/snapshot"
 )
 
-// Diff describes what changed between two dumps of the same character:
-// gold, level and XP, bag items, equipment, quests, reputation,
-// new abilities, professions and talents. Empty categories are omitted.
-func Diff(before, after snapshot.Snapshot) map[string]any {
-	out := map[string]any{}
+// Change is a number in the older and the newer dump.
+type Change struct{ Before, After int64 }
 
-	if from, ok := before.DumpedAt(); ok {
-		out["from"] = snapshot.FormatTime(from)
-		if to, ok := after.DumpedAt(); ok {
-			out["to"] = snapshot.FormatTime(to)
-			out["elapsed"] = snapshot.FormatSeconds(to - from)
-		}
-	}
+func (c Change) Delta() int64 { return c.After - c.Before }
 
-	cb, ca := snapshot.AsMap(before["character"]), snapshot.AsMap(after["character"])
-	if mb, ok := snapshot.AsInt(cb["moneyCopper"]); ok {
-		if ma, ok := snapshot.AsInt(ca["moneyCopper"]); ok && ma != mb {
-			out["money"] = map[string]any{"before": snapshot.Money(mb).String(), "after": snapshot.Money(ma).String(), "change": snapshot.Money(ma - mb).Signed()}
-		}
-	}
-	if xp := diffXP(cb, ca); xp != nil {
-		out["experience"] = xp
-	}
-	if zb, za := cb["zone"], ca["zone"]; zb != za && za != nil {
-		out["zone"] = map[string]any{"before": zb, "after": za}
-	}
-
-	if gained, lost := diffItems(countItems(before["bags"]), countItems(after["bags"])); len(gained)+len(lost) > 0 {
-		items := map[string]any{}
-		if len(gained) > 0 {
-			items["gained"] = gained
-		}
-		if len(lost) > 0 {
-			items["lost"] = lost
-		}
-		out["bags"] = items
-	}
-	if eq := diffEquipment(before["equipment"], after["equipment"]); len(eq) > 0 {
-		out["equipment"] = eq
-	}
-	if q := diffQuests(before, after); len(q) > 0 {
-		out["quests"] = q
-	}
-	if r := diffReputation(before["reputation"], after["reputation"]); len(r) > 0 {
-		out["reputation"] = r
-	}
-	if s := newSpells(before["spells"], after["spells"]); len(s) > 0 {
-		out["newSpells"] = s
-	}
-	if p := diffProfessions(before["professions"], after["professions"]); len(p) > 0 {
-		out["professions"] = p
-	}
-	if c := diffCurrencies(before["currencies"], after["currencies"]); len(c) > 0 {
-		out["currencies"] = c
-	}
-	if pb, ok := snapshot.AsInt(snapshot.AsMap(before["played"])["totalSeconds"]); ok {
-		if pa, ok := snapshot.AsInt(snapshot.AsMap(after["played"])["totalSeconds"]); ok && pa > pb {
-			out["playedBetween"] = snapshot.FormatSeconds(pa - pb)
-		}
-	}
-	if d := diffDeaths(before, after); d != nil {
-		out["deaths"] = d
-	}
-	if l := diffLoot(before, after); l != nil {
-		out["loot"] = l
-	}
-	if x := diffXPGains(before, after); x != nil {
-		out["xpSources"] = x
-	}
-	tb, ta := snapshot.AsMap(before["talents"]), snapshot.AsMap(after["talents"])
-	if sb, ok := snapshot.AsInt(tb["spent"]); ok {
-		if sa, ok := snapshot.AsInt(ta["spent"]); ok && sa != sb {
-			out["talentPointsSpent"] = map[string]any{"before": sb, "after": sa}
-		}
-	}
-	if learned := talents.Diff(before["talents"], after["talents"]); len(learned) > 0 {
-		out["talentsLearned"] = learned
-	}
-
-	if !hasChanges(out) {
-		out["note"] = "No changes between these dumps."
-	}
-	return out
+// XPChange is the experience in both dumps; Gained is known within one level and across a single level-up
+// (then the XP of the previous level is estimated from its xpMax).
+type XPChange struct {
+	LevelBefore, LevelAfter, XPBefore, XPAfter int64
+	Gained                                     int64
+	GainedKnown                                bool
 }
 
-// diffDeaths shows how many times the character died between dumps; nil when the counter did not increase or is missing from one of the dumps.
-func diffDeaths(before, after snapshot.Snapshot) map[string]any {
+func (x XPChange) LevelUp() bool { return x.LevelAfter > x.LevelBefore }
+
+// ZoneChange keeps the zones as the client gave them.
+type ZoneChange struct{ Before, After any }
+
+type ItemChange struct {
+	Name string
+	ID   int64
+	Change
+}
+
+type GearChange struct{ Slot, Before, After string }
+
+// QuestRef keeps the quest's ID, title and zone exactly as the dump holds them.
+type QuestRef struct {
+	ID, Title, Zone any
+	HasZone         bool
+}
+
+type ObjectiveChange struct {
+	Text, Need any
+	Change
+}
+
+type QuestProgress struct {
+	ID         int64
+	Title      any
+	Objectives []ObjectiveChange
+}
+
+type QuestChanges struct {
+	New, ReadyToTurnIn, TurnedIn, RemovedFromLog []QuestRef
+	Progress                                     []QuestProgress
+	CompletedCountChange                         int
+}
+
+func (q QuestChanges) Empty() bool {
+	return len(q.New)+len(q.ReadyToTurnIn)+len(q.TurnedIn)+len(q.RemovedFromLog)+len(q.Progress) == 0 && q.CompletedCountChange == 0
+}
+
+// ReputationChange is a faction met for the first time (New) or one whose value moved.
+type ReputationChange struct {
+	Name                     string
+	Standing, StandingBefore any
+	New, StandingChanged     bool
+	Change                   int64
+}
+
+type Spell struct {
+	Name, Rank any
+	HasRank    bool
+}
+
+func (s Spell) key() string { return fmt.Sprintf("%v|%v", s.Name, s.Rank) }
+
+// SkillChange is a profession or skill rank change; a New one has no Before.
+type SkillChange struct {
+	Name          string
+	Before, After int64
+	Max           any
+	New           bool
+}
+
+type CurrencyChange struct {
+	Name string
+	Change
+}
+
+// LootGained is the player's own loot gained after the older dump, with the carried periods merged into it.
+type LootGained struct {
+	Items []loot.Item
+	Merge periods.Merge
+}
+
+type XPGained struct {
+	Gains xpgains.Gains
+	Merge periods.Merge
+}
+
+// Comparison is what changed between two dumps of the same character. Nil and empty fields did not change.
+type Comparison struct {
+	From, To       int64
+	HasFrom, HasTo bool
+	Money          *Change
+	XP             *XPChange
+	Zone           *ZoneChange
+	Gained, Lost   []ItemChange
+	Equipment      []GearChange
+	Quests         QuestChanges
+	Reputation     []ReputationChange
+	NewSpells      []Spell
+	Professions    []SkillChange
+	Currencies     []CurrencyChange
+	PlayedBetween  int64
+	Deaths         *Change
+	Loot           *LootGained
+	XPSources      *XPGained
+	TalentPoints   *Change
+	TalentsLearned []any
+}
+
+// HasChanges says whether anything changed besides the time span itself.
+func (c Comparison) HasChanges() bool {
+	return c.Money != nil || c.XP != nil || c.Zone != nil || len(c.Gained)+len(c.Lost) > 0 || len(c.Equipment) > 0 ||
+		!c.Quests.Empty() || len(c.Reputation) > 0 || len(c.NewSpells) > 0 || len(c.Professions) > 0 ||
+		len(c.Currencies) > 0 || c.Deaths != nil || c.Loot != nil || c.XPSources != nil || c.TalentPoints != nil ||
+		len(c.TalentsLearned) > 0
+}
+
+// Compare describes what changed between two dumps of the same character: gold, level and XP, bag items, equipment,
+// quests, reputation, new abilities, professions, currencies, deaths, loot and talents.
+func Compare(before, after snapshot.Snapshot) Comparison {
+	var c Comparison
+	c.From, c.HasFrom = before.DumpedAt()
+	if c.HasFrom {
+		c.To, c.HasTo = after.DumpedAt()
+	}
+	cb, ca := readCharacter(before), readCharacter(after)
+	if cb.HasMoney && ca.HasMoney && ca.Money != cb.Money {
+		c.Money = &Change{cb.Money, ca.Money}
+	}
+	c.XP = diffXP(cb, ca)
+	if cb.Zone != ca.Zone && ca.Zone != nil {
+		c.Zone = &ZoneChange{cb.Zone, ca.Zone}
+	}
+	c.Gained, c.Lost = diffItems(readBagCounts(before), readBagCounts(after))
+	c.Equipment = diffEquipment(readEquipment(before), readEquipment(after))
+	c.Quests = diffQuests(before, after)
+	c.Reputation = diffReputation(readFactions(before), readFactions(after))
+	c.NewSpells = newSpells(readSpells(before), readSpells(after))
+	c.Professions = diffSkills(readSkills(before), readSkills(after))
+	c.Currencies = diffCurrencies(readCurrencies(before), readCurrencies(after))
+	if pb, ok := readPlayedTotal(before); ok {
+		if pa, ok := readPlayedTotal(after); ok && pa > pb {
+			c.PlayedBetween = pa - pb
+		}
+	}
+	c.Deaths = diffDeaths(before, after)
+	c.Loot = diffLoot(before, after)
+	c.XPSources = diffXPGains(before, after)
+	if sb, ok := readTalentsSpent(before); ok {
+		if sa, ok := readTalentsSpent(after); ok && sa != sb {
+			c.TalentPoints = &Change{sb, sa}
+		}
+	}
+	c.TalentsLearned = talents.Diff(before["talents"], after["talents"])
+	return c
+}
+
+// diffDeaths is nil when the counter did not increase or is missing from one of the dumps.
+func diffDeaths(before, after snapshot.Snapshot) *Change {
 	nb, ok1 := character.DeathCount(before)
 	na, ok2 := character.DeathCount(after)
 	if !ok1 || !ok2 || na <= nb {
 		return nil
 	}
-	return map[string]any{"before": nb, "after": na, "new": na - nb}
+	return &Change{nb, na}
 }
 
-// hasChanges says whether the diff has anything besides the description of the time span.
-func hasChanges(diff map[string]any) bool {
-	for k := range diff {
-		if k != "from" && k != "to" && k != "elapsed" && k != "playedBetween" {
-			return true
-		}
-	}
-	return false
-}
-
-// diffXP computes gained experience, also across a level-up (then the XP from the previous level is estimated from xpMax).
-func diffXP(before, after map[string]any) map[string]any {
-	lb, ok1 := snapshot.AsInt(before["level"])
-	la, ok2 := snapshot.AsInt(after["level"])
-	xb, ok3 := snapshot.AsInt(before["xp"])
-	xa, ok4 := snapshot.AsInt(after["xp"])
-	if !(ok1 && ok2 && ok3 && ok4) {
+// diffXP is nil when a dump lacks the numbers or nothing changed.
+func diffXP(before, after characterState) *XPChange {
+	if !(before.HasLevel && after.HasLevel && before.HasXP && after.HasXP) {
 		return nil
 	}
-	if lb == la && xb == xa {
+	if before.Level == after.Level && before.XP == after.XP {
 		return nil
 	}
-	out := map[string]any{"levelBefore": lb, "levelAfter": la, "xpBefore": xb, "xpAfter": xa}
+	x := &XPChange{LevelBefore: before.Level, LevelAfter: after.Level, XPBefore: before.XP, XPAfter: after.XP}
 	switch {
-	case la == lb:
-		out["xpGained"] = xa - xb
-	case la == lb+1:
-		if maxBefore, ok := snapshot.AsInt(before["xpMax"]); ok {
-			out["xpGained"] = (maxBefore - xb) + xa
-		}
-		out["levelUp"] = true
-	default:
-		out["levelUp"] = la > lb
+	case after.Level == before.Level:
+		x.Gained, x.GainedKnown = after.XP-before.XP, true
+	case after.Level == before.Level+1 && before.HasXPMax:
+		x.Gained, x.GainedKnown = (before.XPMax-before.XP)+after.XP, true
 	}
-	return out
+	return x
+}
+
+// xpGained is the XP between two dumps; false when a jump of 2+ levels makes it impossible to compute.
+func xpGained(before, after characterState) (int64, bool) {
+	x := diffXP(before, after)
+	if x == nil {
+		return 0, true
+	}
+	return x.Gained, x.GainedKnown
 }
 
 type itemCount struct {
@@ -150,28 +220,7 @@ type itemCount struct {
 	Count int64
 }
 
-func countItems(bags any) map[string]*itemCount {
-	counts := map[string]*itemCount{}
-	for _, rawBag := range snapshot.AsList(bags) {
-		for _, rawItem := range snapshot.AsList(snapshot.AsMap(rawBag)["items"]) {
-			item := snapshot.AsMap(rawItem)
-			name, _ := item["name"].(string)
-			if name == "" {
-				continue
-			}
-			c := counts[name]
-			if c == nil {
-				id, _ := snapshot.AsInt(item["id"])
-				c = &itemCount{ID: id, Name: name}
-				counts[name] = c
-			}
-			c.Count += snapshot.ItemCount(item)
-		}
-	}
-	return counts
-}
-
-func diffItems(before, after map[string]*itemCount) (gained, lost []any) {
+func diffItems(before, after map[string]*itemCount) (gained, lost []ItemChange) {
 	names := map[string]bool{}
 	for n := range before {
 		names[n] = true
@@ -185,42 +234,24 @@ func diffItems(before, after map[string]*itemCount) (gained, lost []any) {
 	}
 	sort.Strings(sorted)
 	for _, n := range sorted {
-		var b, a int64
-		var id int64
+		entry := ItemChange{Name: n}
 		if c := before[n]; c != nil {
-			b, id = c.Count, c.ID
+			entry.Before, entry.ID = c.Count, c.ID
 		}
 		if c := after[n]; c != nil {
-			a, id = c.Count, c.ID
+			entry.After, entry.ID = c.Count, c.ID
 		}
-		entry := map[string]any{"name": n, "id": id, "before": b, "after": a}
 		switch {
-		case a > b:
-			entry["change"] = a - b
+		case entry.After > entry.Before:
 			gained = append(gained, entry)
-		case a < b:
-			entry["change"] = a - b
+		case entry.After < entry.Before:
 			lost = append(lost, entry)
 		}
 	}
 	return gained, lost
 }
 
-func equipmentBySlot(list any) map[string]string {
-	out := map[string]string{}
-	for _, raw := range snapshot.AsList(list) {
-		item := snapshot.AsMap(raw)
-		slot, _ := item["slot"].(string)
-		name, _ := item["name"].(string)
-		if slot != "" {
-			out[slot] = name
-		}
-	}
-	return out
-}
-
-func diffEquipment(before, after any) []any {
-	b, a := equipmentBySlot(before), equipmentBySlot(after)
+func diffEquipment(b, a map[string]string) []GearChange {
 	slots := map[string]bool{}
 	for s := range b {
 		slots[s] = true
@@ -235,52 +266,41 @@ func diffEquipment(before, after any) []any {
 		}
 	}
 	sort.Strings(names)
-	var out []any
+	var out []GearChange
 	for _, s := range names {
-		out = append(out, map[string]any{"slot": s, "before": snapshot.OrEmpty(b[s]), "after": snapshot.OrEmpty(a[s])})
+		out = append(out, GearChange{Slot: s, Before: b[s], After: a[s]})
 	}
 	return out
 }
 
-func questsByID(list any) map[int64]map[string]any {
-	out := map[int64]map[string]any{}
-	for _, raw := range snapshot.AsList(list) {
-		q := snapshot.AsMap(raw)
-		if id, ok := snapshot.AsInt(q["id"]); ok {
-			out[id] = q
-		}
-	}
-	return out
+type objective struct {
+	text, need any
+	have       int64
 }
 
-func idSet(list any) map[int64]bool {
-	out := map[int64]bool{}
-	for _, raw := range snapshot.AsList(list) {
-		if id, ok := snapshot.AsInt(raw); ok {
-			out[id] = true
-		}
-	}
-	return out
+type quest struct {
+	QuestRef
+	complete   bool
+	objectives []objective
 }
 
-func diffQuests(before, after map[string]any) map[string]any {
-	qb, qa := questsByID(before["quests"]), questsByID(after["quests"])
-	completedAfter := idSet(after["completedQuests"])
-	completedBefore := idSet(before["completedQuests"])
-
-	var added, turnedIn, dropped, nowComplete, progressed []any
+func diffQuests(before, after snapshot.Snapshot) QuestChanges {
+	qb, qa := readQuests(before), readQuests(after)
+	completedBefore, listedBefore := readCompleted(before)
+	completedAfter, listedAfter := readCompleted(after)
+	var out QuestChanges
 	for _, id := range sortedIDs(qa) {
 		q := qa[id]
 		old, had := qb[id]
 		if !had {
-			added = append(added, questLabel(q))
+			out.New = append(out.New, q.QuestRef)
 			continue
 		}
-		if q["complete"] == true && old["complete"] != true {
-			nowComplete = append(nowComplete, questLabel(q))
+		if q.complete && !old.complete {
+			out.ReadyToTurnIn = append(out.ReadyToTurnIn, q.QuestRef)
 		}
 		if changes := objectiveChanges(old, q); len(changes) > 0 {
-			progressed = append(progressed, map[string]any{"title": q["title"], "id": id, "objectives": changes})
+			out.Progress = append(out.Progress, QuestProgress{ID: id, Title: q.Title, Objectives: changes})
 		}
 	}
 	for _, id := range sortedIDs(qb) {
@@ -288,37 +308,20 @@ func diffQuests(before, after map[string]any) map[string]any {
 			continue
 		}
 		if completedAfter[id] && !completedBefore[id] {
-			turnedIn = append(turnedIn, questLabel(qb[id]))
+			out.TurnedIn = append(out.TurnedIn, qb[id].QuestRef)
 		} else {
-			dropped = append(dropped, questLabel(qb[id]))
+			out.RemovedFromLog = append(out.RemovedFromLog, qb[id].QuestRef)
 		}
 	}
-
-	out := map[string]any{}
-	set := func(k string, v []any) {
-		if len(v) > 0 {
-			out[k] = v
-		}
-	}
-	set("new", added)
-	set("readyToTurnIn", nowComplete)
-	set("turnedIn", turnedIn)
-	set("removedFromLog", dropped)
-	set("progress", progressed)
-	if bothHaveList(before["completedQuests"], after["completedQuests"]) {
+	if listedBefore && listedAfter {
 		if n := len(completedAfter) - len(completedBefore); n > 0 {
-			out["completedCountChange"] = n
+			out.CompletedCountChange = n
 		}
 	}
 	return out
 }
 
-// bothHaveList says whether both dumps have a list (even an empty one), as opposed to a missing section.
-func bothHaveList(before, after any) bool {
-	return snapshot.AsList(before) != nil && snapshot.AsList(after) != nil
-}
-
-func sortedIDs(m map[int64]map[string]any) []int64 {
+func sortedIDs(m map[int64]quest) []int64 {
 	ids := make([]int64, 0, len(m))
 	for id := range m {
 		ids = append(ids, id)
@@ -327,128 +330,127 @@ func sortedIDs(m map[int64]map[string]any) []int64 {
 	return ids
 }
 
-func questLabel(q map[string]any) map[string]any {
-	out := map[string]any{"title": q["title"], "id": q["id"]}
-	if z, ok := q["zone"]; ok {
-		out["zone"] = z
-	}
-	return out
-}
-
-func objectiveChanges(before, after map[string]any) []any {
-	ob, oa := snapshot.AsList(before["objectives"]), snapshot.AsList(after["objectives"])
-	var out []any
-	for i, raw := range oa {
-		a := snapshot.AsMap(raw)
-		if i >= len(ob) {
+func objectiveChanges(before, after quest) []ObjectiveChange {
+	var out []ObjectiveChange
+	for i, a := range after.objectives {
+		if i >= len(before.objectives) {
 			break
 		}
-		b := snapshot.AsMap(ob[i])
-		hb, _ := snapshot.AsInt(b["have"])
-		ha, _ := snapshot.AsInt(a["have"])
-		if ha != hb {
-			out = append(out, map[string]any{"text": a["text"], "before": hb, "after": ha, "need": a["need"]})
+		if b := before.objectives[i]; a.have != b.have {
+			out = append(out, ObjectiveChange{Text: a.text, Need: a.need, Change: Change{b.have, a.have}})
 		}
 	}
 	return out
 }
 
-func diffReputation(before, after any) []any {
-	vb := map[string]map[string]any{}
-	for _, raw := range snapshot.AsList(before) {
-		f := snapshot.AsMap(raw)
-		if name, ok := f["name"].(string); ok {
-			vb[name] = f
+type faction struct {
+	name            string
+	named, hasValue bool
+	value           int64
+	standing        any
+}
+
+func diffReputation(before, after []faction) []ReputationChange {
+	known := map[string]faction{}
+	for _, f := range before {
+		if f.named {
+			known[f.name] = f
 		}
 	}
-	var out []any
-	for _, raw := range snapshot.AsList(after) {
-		f := snapshot.AsMap(raw)
-		name, _ := f["name"].(string)
-		va, ok := snapshot.AsInt(f["value"])
-		if name == "" || !ok {
+	var out []ReputationChange
+	for _, f := range after {
+		if f.name == "" || !f.hasValue {
 			continue
 		}
-		old, had := vb[name]
+		old, had := known[f.name]
 		if !had {
-			out = append(out, map[string]any{"name": name, "standing": f["standing"], "note": "new faction"})
+			out = append(out, ReputationChange{Name: f.name, Standing: f.standing, New: true})
 			continue
 		}
-		vo, _ := snapshot.AsInt(old["value"])
-		if va == vo {
+		if f.value == old.value {
 			continue
 		}
-		entry := map[string]any{"name": name, "change": va - vo, "standing": f["standing"]}
-		if old["standing"] != f["standing"] {
-			entry["standingBefore"] = old["standing"]
-		}
-		out = append(out, entry)
+		out = append(out, ReputationChange{Name: f.name, Standing: f.standing, Change: f.value - old.value,
+			StandingBefore: old.standing, StandingChanged: old.standing != f.standing})
 	}
 	return out
 }
 
-func spellKey(s snapshot.Snapshot) string {
-	return fmt.Sprintf("%v|%v", s["name"], s["rank"])
-}
-
-func newSpells(before, after any) []any {
+func newSpells(before, after []Spell) []Spell {
 	known := map[string]bool{}
-	for _, raw := range snapshot.AsList(before) {
-		known[spellKey(snapshot.AsMap(raw))] = true
+	for _, s := range before {
+		known[s.key()] = true
 	}
-	var out []any
-	for _, raw := range snapshot.AsList(after) {
-		s := snapshot.AsMap(raw)
-		if !known[spellKey(s)] {
-			entry := map[string]any{"name": s["name"]}
-			if r, ok := s["rank"]; ok {
-				entry["rank"] = r
-			}
-			out = append(out, entry)
+	var out []Spell
+	for _, s := range after {
+		if !known[s.key()] {
+			out = append(out, s)
 		}
 	}
 	return out
 }
 
-func diffProfessions(before, after any) []any {
-	rb := map[string]int64{}
-	for _, raw := range snapshot.AsList(before) {
-		p := snapshot.AsMap(raw)
-		if name, ok := p["name"].(string); ok {
-			rb[name], _ = snapshot.AsInt(p["rank"])
+type skill struct {
+	name  string
+	named bool
+	rank  int64
+	max   any
+}
+
+func diffSkills(before, after []skill) []SkillChange {
+	ranks := map[string]int64{}
+	for _, p := range before {
+		if p.named {
+			ranks[p.name] = p.rank
 		}
 	}
-	var out []any
-	for _, raw := range snapshot.AsList(after) {
-		p := snapshot.AsMap(raw)
-		name, _ := p["name"].(string)
-		ra, _ := snapshot.AsInt(p["rank"])
-		if old, ok := rb[name]; ok && old != ra {
-			out = append(out, map[string]any{"name": name, "before": old, "after": ra, "max": p["maxRank"]})
-		} else if !ok && name != "" {
-			out = append(out, map[string]any{"name": name, "after": ra, "max": p["maxRank"], "note": "new"})
+	var out []SkillChange
+	for _, p := range after {
+		if old, ok := ranks[p.name]; ok && old != p.rank {
+			out = append(out, SkillChange{Name: p.name, Before: old, After: p.rank, Max: p.max})
+		} else if !ok && p.name != "" {
+			out = append(out, SkillChange{Name: p.name, After: p.rank, Max: p.max, New: true})
 		}
 	}
 	return out
 }
 
-// diffCurrencies shows changes in currency and token amounts.
-func diffCurrencies(before, after any) []any {
-	vb := map[string]int64{}
-	for _, raw := range snapshot.AsList(before) {
-		c := snapshot.AsMap(raw)
-		if name, ok := c["name"].(string); ok {
-			vb[name], _ = snapshot.AsInt(c["quantity"])
+type currency struct {
+	name     string
+	named    bool
+	quantity int64
+}
+
+func diffCurrencies(before, after []currency) []CurrencyChange {
+	quantities := map[string]int64{}
+	for _, c := range before {
+		if c.named {
+			quantities[c.name] = c.quantity
 		}
 	}
-	var out []any
-	for _, raw := range snapshot.AsList(after) {
-		c := snapshot.AsMap(raw)
-		name, _ := c["name"].(string)
-		qa, _ := snapshot.AsInt(c["quantity"])
-		if qb := vb[name]; name != "" && qa != qb {
-			out = append(out, map[string]any{"name": name, "before": qb, "after": qa, "change": qa - qb})
+	var out []CurrencyChange
+	for _, c := range after {
+		if qb := quantities[c.name]; c.name != "" && c.quantity != qb {
+			out = append(out, CurrencyChange{Name: c.name, Change: Change{qb, c.quantity}})
 		}
 	}
 	return out
+}
+
+// diffLoot: the loot section of the newer dump carries what dropped since the previous write to disk, and since
+// addon 0.12.0 also the closed periods of saves the server never read (merged when they started at or after the older dump).
+func diffLoot(before, after snapshot.Snapshot) *LootGained {
+	items, m := loot.Gained(before, []snapshot.Snapshot{after})
+	if !m.Found || len(items) == 0 {
+		return nil
+	}
+	return &LootGained{items, m}
+}
+
+func diffXPGains(before, after snapshot.Snapshot) *XPGained {
+	g, m := xpgains.Gained(before, []snapshot.Snapshot{after})
+	if !m.Found || g.Empty() {
+		return nil
+	}
+	return &XPGained{g, m}
 }

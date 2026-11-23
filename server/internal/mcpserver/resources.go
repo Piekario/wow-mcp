@@ -73,7 +73,7 @@ func jsonContents(uri string, value any) (*mcp.ReadResourceResult, error) {
 }
 
 func (s *service) readResourceIndex(_ context.Context, req *mcp.ReadResourceRequest) (*mcp.ReadResourceResult, error) {
-	db, err := s.Snapshots.Load()
+	db, err := s.loadDatabase()
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +94,7 @@ func (s *service) readResourceSection(_ context.Context, req *mcp.ReadResourceRe
 	if !ok {
 		return nil, mcp.ResourceNotFoundError(uri)
 	}
-	db, err := s.Snapshots.Load()
+	db, err := s.loadDatabase()
 	if err != nil {
 		return nil, err
 	}

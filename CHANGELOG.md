@@ -7,6 +7,35 @@ errors, dump 18 ms), addon 0.7.0 with server 0.9.0 (2026-11-15, no section error
 between are part of 0.11.0 / 0.12.2 and were run with them. Addon 0.14.0 was run on 2026-11-22 (client build 71037, no section errors, dump 25.7 ms: `questDb` for 22 log quests, `guide` reading TUGs, `/mcp quest The Glowing Shard`). **Server 0.15.0 and the 0.12.0 / 0.13.0 addon changes (carried periods, flight zones, auction gear details) have not yet been checked in a real client**: their fixes are
 based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` result and golden response tests.
 
+## 0.19.1 (2026-11-23)
+
+Internal quality work after a design review, for the addon and the server. No tool, prompt or dump field changes, except the
+one noted under "Changed". The server expects addon 0.19.1.
+
+- **Changed**
+  - Item quality names come from one table (`itemkind.QualityName`). Bag plan and session journal answers now name
+    Artifact and Heirloom items instead of printing the quality number 6 or 7.
+  - The dump history is recorded by an explicit step after the dump is loaded (`mcpserver`), no longer as a side effect of
+    `storage.Store.Load`. Nothing changes for the player: every tool call and `--check` still record the dump.
+  - Every domain package (`server/internal/game/*`) now reads the dump into its own types in `read.go`, decides on
+    those types and builds the answer in `render.go`. Untyped maps outside those two files went from 642 to 0, and
+    no function is over 80 lines. Tool answers are byte-identical on all test dumps (golden tests unchanged).
+    Typed readers pass through only the fields they know: a field a newer addon adds to talents, Legacy perks or
+    similar typed sections shows up in `wow_section` at once, and in the dedicated tool after the server learns it.
+  - The tool registry is split into groups (status, character, windows, shopping, questing, progress, goals, account).
+  - Addon: the logout guard (`LogoutGuard.lua`), the carried loot and XP periods (`Periods.lua`) and the Legacy API
+    discovery scan (`LegacyDiscovery.lua`) moved out of `Snapshot.lua` and `Sections/Legacy.lua` into their own files.
+    The dump is byte-identical. New addon files need a full game restart, not only `/reload`.
+  - Addon: the scan for the client's Legacy API names (`legacy.discovery`) no longer runs on every first dump of a
+    session, where it cost 70 to 140 ms in the real client (a normal logout included). It runs only when no perk tree
+    was found, or after `/mcp probe`. `wow_legacy discovery=true` says so (`discoveryNote`) when the dump has none.
+- **Added**
+  - `CONTRIBUTING.md` spells out the code rules (typed domain, rules apart from presentation, no hidden side effects,
+    one place for shared lookups, size limits), and `server/architecture_test.go` checks them: domain imports, untyped
+    maps per domain package and functions over 80 lines against baselines that may only go down, addon files over 350 lines.
+- **Fixed**
+  - The golden tests no longer fail on a Windows whose system language is not English (the "file not found" text).
+
 ## 0.19.0 (2026-11-23)
 
 From this release the addon and the server share one version number, and one `v<version>` tag publishes everything: the

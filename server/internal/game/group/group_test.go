@@ -36,3 +36,34 @@ func TestGroupView(t *testing.T) {
 		t.Error("solo without a note")
 	}
 }
+
+func TestAnalyseFindsGroupProblems(t *testing.T) {
+	member := func(name string, level int64, role string, extra map[string]any) any {
+		m := map[string]any{"name": name, "level": level, "role": role, "class": "Mage", "subgroup": int64(1)}
+		for k, v := range extra {
+			m[k] = v
+		}
+		return m
+	}
+	s := snapshot.Snapshot{"group": map[string]any{"type": "party", "members": []any{
+		member("Dps", 10, "DAMAGER", map[string]any{"online": false}),
+		member("Hi", 20, "DAMAGER", map[string]any{"dead": true, "inRange": false}),
+	}}}
+	c := Analyse(s, fixtures.At(0)).Composition
+	var kinds []ProblemKind
+	for _, p := range c.Problems {
+		kinds = append(kinds, p.Kind)
+	}
+	want := []ProblemKind{MemberOffline, MemberDead, MemberOutOfRange, LevelGap, NoTank, NoHealer}
+	if len(kinds) != len(want) {
+		t.Fatalf("problems: %v", kinds)
+	}
+	for i := range want {
+		if kinds[i] != want[i] {
+			t.Fatalf("problems: %v, want %v", kinds, want)
+		}
+	}
+	if c.Roles[Damage] != 2 || c.Levels.Min != 10 || c.Levels.Max != 20 || c.Levels.Average != 15 {
+		t.Errorf("composition: %+v %+v", c.Roles, c.Levels)
+	}
+}

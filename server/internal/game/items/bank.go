@@ -14,50 +14,44 @@ type BankQuery struct {
 	Sellable   bool   `json:"sellable,omitempty" jsonschema:"true = only items a vendor will buy (sell price > 0)"`
 }
 
-// Bank describes the bank from the last visit: items with their vendor value and free slots.
-func Bank(s snapshot.Snapshot, q BankQuery, fresh snapshot.Freshness) map[string]any {
-	bank := s.Map("bank")
-	if bank == nil {
-		return map[string]any{"note": "No saved bank. Open the bank in game, then type /mcp reload."}
+// BankSection is the bank from the last visit.
+type BankSection struct {
+	Containers []Container
+	Captured   snapshot.Captured
+}
+
+type BankEntry struct {
+	Item
+	Container any
+}
+
+// BankReport is the bank filtered by a query. Saved is false when the player never opened the bank.
+type BankReport struct {
+	Saved                 bool
+	Entries               []BankEntry
+	TotalSlots, FreeSlots int64
+	TotalValue            int64
+	Captured              snapshot.Captured
+}
+
+func InspectBank(s snapshot.Snapshot, q BankQuery) BankReport {
+	bank, ok := readBank(s)
+	if !ok {
+		return BankReport{}
 	}
 	f := filter{query: q.Query, kind: q.Type, minQuality: q.MinQuality}
-	items := []any{}
-	var totalSlots, freeSlots, totalValue int64
-	for _, rawC := range snapshot.AsList(bank["containers"]) {
-		c := snapshot.AsMap(rawC)
-		size, _ := snapshot.AsInt(c["size"])
-		free, _ := snapshot.AsInt(c["free"])
-		totalSlots += size
-		freeSlots += free
-		for _, rawI := range snapshot.AsList(c["items"]) {
-			item := snapshot.AsMap(rawI)
-			if !f.match(item) {
+	slots := slotsOf(bank.Containers)
+	r := BankReport{Saved: true, TotalSlots: slots.Total, FreeSlots: slots.Free, Captured: bank.Captured}
+	for _, c := range bank.Containers {
+		for _, it := range c.Items {
+			if !f.matches(it) || (q.Sellable && it.SellPrice <= 0) {
 				continue
 			}
-			sell, _ := snapshot.AsInt(item["sellPrice"])
-			if q.Sellable && sell <= 0 {
-				continue
+			if it.SellPrice > 0 {
+				r.TotalValue += it.SellValue()
 			}
-			count := snapshot.ItemCount(item)
-			entry := copyItem(item)
-			entry["container"] = c["name"]
-			if name := qualityName(item); name != "" {
-				entry["qualityName"] = name
-			}
-			if sell > 0 {
-				entry["vendorValue"] = snapshot.Money(sell * count).String()
-				totalValue += sell * count
-			}
-			items = append(items, entry)
+			r.Entries = append(r.Entries, BankEntry{Item: it, Container: c.Name})
 		}
 	}
-	out := map[string]any{
-		"items":            items,
-		"count":            len(items),
-		"totalSlots":       totalSlots,
-		"freeSlots":        freeSlots,
-		"totalVendorValue": snapshot.Money(totalValue).String(),
-	}
-	snapshot.Merge(out, fresh.CapturedMeta(bank))
-	return out
+	return r
 }

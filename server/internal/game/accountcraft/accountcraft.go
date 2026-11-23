@@ -13,7 +13,6 @@ import (
 	"sort"
 	"strings"
 
-	"wowmcp/internal/game/items"
 	"wowmcp/internal/snapshot"
 )
 
@@ -32,19 +31,6 @@ type Query struct {
 // stock is the account's material stock: name (lowercase) -> character -> count (bags + bank).
 type stock map[string]map[string]int64
 
-func buildStock(db *snapshot.Database) stock {
-	out := stock{}
-	for _, char := range db.CharacterNames() {
-		for key, line := range items.BagBankStock(db.Characters[char], nil) {
-			if out[key] == nil {
-				out[key] = map[string]int64{}
-			}
-			out[key][char] = line.Total()
-		}
-	}
-	return out
-}
-
 func (st stock) total(name string) int64 {
 	var sum int64
 	for _, n := range st[strings.ToLower(name)] {
@@ -53,107 +39,127 @@ func (st stock) total(name string) int64 {
 	return sum
 }
 
+type Holder struct {
+	Character string
+	Count     int64
+}
+
 // holders lists who holds a material, largest stock first.
-func (st stock) holders(name string) []any {
+func (st stock) holders(name string) []Holder {
 	m := st[strings.ToLower(name)]
 	chars := slices.Sorted(maps.Keys(m))
 	sort.SliceStable(chars, func(i, j int) bool { return m[chars[i]] > m[chars[j]] })
-	out := make([]any, 0, len(chars))
+	out := make([]Holder, 0, len(chars))
 	for _, c := range chars {
-		out = append(out, map[string]any{"character": c, "count": m[c]})
+		out = append(out, Holder{c, m[c]})
 	}
 	return out
 }
 
-// recipeMatches: the fragment matches the recipe name or one of its materials.
-func recipeMatches(r map[string]any, query string) bool {
-	if query == "" {
+// ReagentLine is one material of a recipe against the crafter's own stock and the whole account's.
+type ReagentLine struct {
+	Name                         string
+	Need, CrafterHas, AccountHas int64
+	Holders                      []Holder
+}
+
+type Shortfall struct {
+	Name    string
+	Missing int64
+}
+
+// Loan is a parcel that would let the crafter make the recipe: Count of Material from From to To.
+type Loan struct {
+	From, To, Material string
+	Count              int64
+}
+
+// Craft is one recipe judged against the account's materials. Label, ItemID and Difficulty are the dump's values
+// (nil when the dump has none).
+type Craft struct {
+	Label, ItemID, Difficulty      any
+	Lines                          []ReagentLine
+	CrafterCanMake, AccountCanMake int64
+	Missing                        []Shortfall
+	Borrow                         []Loan
+}
+
+type CraftingBook struct {
+	Name          string
+	Rank, MaxRank any
+	Recipes       []Craft
+	Total         int
+	Captured      snapshot.Captured
+}
+
+func (b CraftingBook) Truncated() bool { return b.Total > len(b.Recipes) }
+
+type Crafter struct {
+	Name  string
+	Books []CraftingBook
+}
+
+// Report is who can craft what. WithoutRecipes are the characters that never saved a profession window.
+type Report struct {
+	Crafters       []Crafter
+	WithoutRecipes []string
+	Characters     int
+}
+
+// matches: the fragment matches the recipe name or one of its materials.
+func (r recipe) matches(query string) bool {
+	if query == "" || strings.Contains(strings.ToLower(r.Name), query) {
 		return true
 	}
-	if n, _ := r["name"].(string); strings.Contains(strings.ToLower(n), query) {
-		return true
-	}
-	for _, rr := range snapshot.AsList(r["reagents"]) {
-		if n := snapshot.ReagentName(snapshot.AsMap(rr)); strings.Contains(strings.ToLower(n), query) {
+	for _, re := range r.Reagents {
+		if strings.Contains(strings.ToLower(re.Name), query) {
 			return true
 		}
 	}
 	return false
 }
 
-type entry struct {
-	view       map[string]any
-	accountCan int64
-}
-
 // assess evaluates one recipe against the account stock; ok = false when it has no reagents (e.g. Beast Training).
-func assess(crafter string, r map[string]any, st stock) (entry, bool) {
-	reagents := snapshot.AsList(r["reagents"])
-	if len(reagents) == 0 {
-		return entry{}, false
+func assess(crafter string, r recipe, st stock) (Craft, bool) {
+	if len(r.Reagents) == 0 {
+		return Craft{}, false
 	}
-	accountCan, ownCan := int64(-1), int64(-1)
-	var lines []any
-	var missing, mail []string
-	for _, rr := range reagents {
-		re := snapshot.AsMap(rr)
-		name := snapshot.ReagentName(re)
-		need, _ := snapshot.AsInt(re["need"])
-		if need <= 0 {
-			need = 1
+	c := Craft{Label: r.label, ItemID: r.itemID, Difficulty: r.difficulty, AccountCanMake: -1, CrafterCanMake: -1}
+	for _, re := range r.Reagents {
+		need := max(re.Need, 1)
+		total := st.total(re.Name)
+		own := st[strings.ToLower(re.Name)][crafter]
+		holders := st.holders(re.Name)
+		c.Lines = append(c.Lines, ReagentLine{Name: re.Name, Need: need, CrafterHas: own, AccountHas: total, Holders: holders})
+		if n := total / need; c.AccountCanMake < 0 || n < c.AccountCanMake {
+			c.AccountCanMake = n
 		}
-		total := st.total(name)
-		own := st[strings.ToLower(name)][crafter]
-		line := map[string]any{"name": name, "need": need, "crafterHas": own, "accountHas": total, "holders": st.holders(name)}
-		lines = append(lines, line)
-		if c := total / need; accountCan < 0 || c < accountCan {
-			accountCan = c
-		}
-		if c := own / need; ownCan < 0 || c < ownCan {
-			ownCan = c
+		if n := own / need; c.CrafterCanMake < 0 || n < c.CrafterCanMake {
+			c.CrafterCanMake = n
 		}
 		if total < need {
-			missing = append(missing, fmt.Sprintf("%s: missing %d", name, need-total))
-			continue
-		}
-		if own < need {
-			for _, h := range st.holders(name) {
-				hm := h.(map[string]any)
-				if hm["character"] != crafter {
-					mail = append(mail, fmt.Sprintf("%s -> %s: %s x%d", hm["character"], crafter, name, min(hm["count"].(int64), need-own)))
+			c.Missing = append(c.Missing, Shortfall{re.Name, need - total})
+		} else if own < need {
+			for _, h := range holders {
+				if h.Character != crafter {
+					c.Borrow = append(c.Borrow, Loan{h.Character, crafter, re.Name, min(h.Count, need-own)})
 					break
 				}
 			}
 		}
 	}
-	v := map[string]any{
-		"name": r["name"], "reagents": lines,
-		"crafterCanMake": ownCan, "accountCanMake": accountCan,
-	}
-	for _, k := range []string{"itemId", "difficulty"} {
-		if val, ok := r[k]; ok {
-			v[k] = val
-		}
-	}
-	if len(missing) > 0 {
-		v["missing"] = missing
-	}
-	if len(mail) > 0 {
-		v["borrowFrom"] = mail
-	}
-	return entry{view: v, accountCan: accountCan}, true
+	return c, true
 }
 
-// View lists the recipes of all characters against the stock of the whole account.
-func View(db *snapshot.Database, q Query, fresh snapshot.Freshness) (map[string]any, error) {
+func analyse(db *snapshot.Database, q Query, fresh snapshot.Freshness) (Report, error) {
 	if db == nil || len(db.Characters) == 0 {
-		return nil, fmt.Errorf("no characters in the dump. %s", snapshot.AltsHint)
+		return Report{}, fmt.Errorf("no characters in the dump. %s", snapshot.AltsHint)
 	}
 	names := db.CharacterNames()
 	if q.Character != "" {
 		name, _, err := db.Lookup(q.Character)
 		if err != nil {
-			return nil, err
+			return Report{}, err
 		}
 		names = []string{name}
 	}
@@ -161,65 +167,41 @@ func View(db *snapshot.Database, q Query, fresh snapshot.Freshness) (map[string]
 	if limit <= 0 {
 		limit = defaultLimit
 	}
-	st := buildStock(db)
-	query, profQuery := strings.ToLower(q.Query), strings.ToLower(q.Profession)
+	st := readStock(db)
+	query := strings.ToLower(q.Query)
 
-	crafters := []any{}
-	var withoutRecipes []string
+	report := Report{Characters: len(names)}
 	for _, name := range names {
-		all := db.Characters[name].Map("recipes")
-		if len(all) == 0 {
-			withoutRecipes = append(withoutRecipes, name)
+		books, saved := readBooks(db.Characters[name], q.Profession, fresh)
+		if !saved {
+			report.WithoutRecipes = append(report.WithoutRecipes, name)
 			continue
 		}
-		profs := []any{}
-		for _, prof := range slices.Sorted(maps.Keys(all)) {
-			if profQuery != "" && !strings.Contains(strings.ToLower(prof), profQuery) {
-				continue
-			}
-			p := snapshot.AsMap(all[prof])
-			var list []entry
-			for _, raw := range snapshot.AsList(p["recipes"]) {
-				r := snapshot.AsMap(raw)
-				if !recipeMatches(r, query) {
-					continue
-				}
-				e, ok := assess(name, r, st)
-				if !ok || (q.Craftable && e.accountCan < 1) {
-					continue
-				}
-				list = append(list, e)
-			}
-			sort.SliceStable(list, func(i, j int) bool { return list[i].accountCan > list[j].accountCan })
-			shown := list
-			if len(shown) > limit {
-				shown = shown[:limit]
-			}
-			views := make([]any, len(shown))
-			for i, e := range shown {
-				views[i] = e.view
-			}
-			pe := map[string]any{"name": prof, "rank": p["rank"], "maxRank": p["maxRank"], "recipes": views, "shown": len(views), "total": len(list)}
-			if len(list) > len(shown) {
-				pe["truncated"] = true
-			}
-			snapshot.Merge(pe, fresh.CapturedMeta(p))
-			profs = append(profs, pe)
+		var crafted []CraftingBook
+		for _, b := range books {
+			crafted = append(crafted, craftingBook(name, b, st, query, q.Craftable, limit))
 		}
-		if len(profs) > 0 {
-			crafters = append(crafters, map[string]any{"character": name, "professions": profs})
+		if len(crafted) > 0 {
+			report.Crafters = append(report.Crafters, Crafter{name, crafted})
 		}
 	}
-	out := map[string]any{
-		"crafters": crafters, "count": len(crafters),
-		"note": "accountCanMake = how many can be crafted from the materials in the bags and banks of all characters combined; crafterCanMake = from the crafter's own materials only. borrowFrom suggests where to send missing materials from (mail between characters on the same realm and faction; the server sends nothing). Banks show the state from the last visits. Recipes under collapsed headers of the profession window are not included in the dump.",
+	return report, nil
+}
+
+func craftingBook(crafter string, b book, st stock, query string, craftableOnly bool, limit int) CraftingBook {
+	var list []Craft
+	for _, r := range b.recipes {
+		if !r.matches(query) {
+			continue
+		}
+		c, ok := assess(crafter, r, st)
+		if !ok || (craftableOnly && c.AccountCanMake < 1) {
+			continue
+		}
+		list = append(list, c)
 	}
-	if len(withoutRecipes) > 0 {
-		out["withoutRecipes"] = withoutRecipes
-		out["hint"] = "These characters have no saved recipes: log in on them, open the profession window (e.g. Leatherworking) and type /mcp reload."
-	}
-	if len(crafters) == 0 && len(withoutRecipes) == len(names) {
-		out["note"] = "No saved recipes on the account. Open the profession window in game, then type /mcp reload. Each profession is saved separately."
-	}
-	return out, nil
+	sort.SliceStable(list, func(i, j int) bool { return list[i].AccountCanMake > list[j].AccountCanMake })
+	out := CraftingBook{Name: b.name, Rank: b.rank, MaxRank: b.maxRank, Total: len(list), Captured: b.captured}
+	out.Recipes = list[:min(len(list), limit)]
+	return out
 }

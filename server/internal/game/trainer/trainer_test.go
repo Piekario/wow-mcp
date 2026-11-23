@@ -75,3 +75,16 @@ func TestGoldOffersSkipPetTraining(t *testing.T) {
 		t.Error("named trainers stay")
 	}
 }
+
+func TestOfferRules(t *testing.T) {
+	o := readOffer(map[string]any{"npc": "Astaia", "services": []any{
+		map[string]any{"category": "available", "costCopper": int64(100)},
+		map[string]any{"category": "unavailable", "costCopper": int64(900)},
+	}})
+	if o.IsPetTraining() || len(o.ServicesIn("available")) != 1 || !o.Services[0].CanAfford(100) || o.Services[1].CanAfford(899) {
+		t.Errorf("offer: %+v", o)
+	}
+	if !readOffer(map[string]any{}).IsPetTraining() || readOffer(nil) != nil {
+		t.Error("no NPC name means Beast Training; no section means no offer")
+	}
+}

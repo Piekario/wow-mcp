@@ -32,8 +32,8 @@ func petSnap(t *testing.T, free any, lessons ...any) snapshot.Snapshot {
 
 func TestRankNumber(t *testing.T) {
 	for in, want := range map[string]int{"Rank 3": 3, " Rank 12 ": 12, "": 0, "Pet Stance": 0, "Rank X": 0, "Rang 4": 4, "Ранг 2": 2, "7": 0} {
-		if got := rankNumber(in); got != want {
-			t.Errorf("rankNumber(%q) = %d, want %d", in, got, want)
+		if got := RankNumber(in); got != want {
+			t.Errorf("RankNumber(%q) = %d, want %d", in, got, want)
 		}
 	}
 }
@@ -44,7 +44,7 @@ func TestLearnableSkipsUsedAndKnownRanks(t *testing.T) {
 		lesson1("Growl", "Rank 4", "available", 12, int64(6)),
 		lesson1("Claw", "Rank 2", "available", 8, int64(5)), // the pet has Claw Rank 2: skipped
 		lesson1("Bite", "Rank 3", "available", 24, int64(7)))
-	review := rankReview(s, s.Map("pet"))
+	review := Examine(s).Ranks.render()
 	learn := snapshot.AsList(review["learnable"])
 	if len(learn) != 2 {
 		t.Fatalf("to learn: %v", learn)
@@ -65,7 +65,7 @@ func TestTrainingPlanFitsPointsUpgradesFirst(t *testing.T) {
 		lesson1("Prowl", "Rank 1", "available", 10, int64(5)), // new, 5 pts: will not fit after Growl
 		lesson1("Bite", "Rank 3", "available", 24, int64(7)),  // pet level too low (19)
 		lesson1("Cower", "Rank 2", "available", 10, nil))      // no cost
-	plan := trainingPlan(s, s.Map("pet"))
+	plan := Examine(s).Plan.render()
 	suggested := snapshot.AsList(plan["suggested"])
 	if len(suggested) == 0 || snapshot.AsMap(suggested[0])["ability"] != "Growl Rank 4" {
 		t.Fatalf("upgrade first: %v", plan)
@@ -79,12 +79,12 @@ func TestTrainingPlanFitsPointsUpgradesFirst(t *testing.T) {
 
 func TestTrainingPlanWithoutFreePointsOrWindow(t *testing.T) {
 	s := petSnap(t, nil, lesson1("Dash", "Rank 1", "available", 10, int64(3)))
-	if plan := trainingPlan(s, s.Map("pet")); plan["note"] == nil || plan["suggested"] != nil {
+	if plan := Examine(s).Plan.render(); plan["note"] == nil || plan["suggested"] != nil {
 		t.Errorf("without free points: %v", plan)
 	}
 	s = fixtures.Forever(t)
 	delete(s["recipes"].(map[string]any), "Beast Training")
-	if plan := trainingPlan(s, s.Map("pet")); plan["learnableNote"] == nil {
+	if plan := Examine(s).Plan.render(); plan["learnableNote"] == nil {
 		t.Errorf("without the Beast Training window: %v", plan)
 	}
 }
@@ -94,7 +94,7 @@ func TestNotLearnedByHunterFromTrainerOffers(t *testing.T) {
 	astaia := snapshot.AsMap(snapshot.AsMap(s["trainers"])["Astaia"])
 	astaia["services"] = append(snapshot.AsList(astaia["services"]), map[string]any{
 		"name": "Growl", "rank": "Rank 4", "category": "unavailable", "costCopper": int64(900), "levelRequired": int64(30)})
-	review := rankReview(s, s.Map("pet"))
+	review := Examine(s).Ranks.render()
 	text := fixtures.JSON(t, review["notLearnedByHunter"])
 	fixtures.WantAll(t, "trainers", text, "Growl Rank 4", "Astaia", "unavailable")
 	if strings.Contains(text, "Disengage") {
@@ -136,12 +136,36 @@ func TestReviewWithoutPetOrStable(t *testing.T) {
 // The real 0.7.0 dump: Beast Training saved as a trainer window without an NPC (Arcane Resistance Rank 1, which the pet already has).
 func TestBeastTrainingFromTrainerWindow(t *testing.T) {
 	s := fixtures.Real(t)
-	review := rankReview(s, s.Map("pet"))
+	review := Examine(s).Ranks.render()
 	if review["windowNote"] == nil || review["learnableNote"] != "the Beast Training window has no ranks higher than those the pet already has" {
 		t.Errorf("ranks from the trainer window: %v", review)
 	}
-	plan := trainingPlan(s, s.Map("pet"))
+	plan := Examine(s).Plan.render()
 	if plan["learnableNote"] != "there are no lessons the Hunter knows that the pet does not have" {
 		t.Errorf("plan from the trainer window: %v", plan)
+	}
+}
+
+func TestTrainingPlanTyped(t *testing.T) {
+	s := petSnap(t, int64(10),
+		lesson1("Growl", "Rank 4", "available", 12, int64(8)),
+		lesson1("Dash", "Rank 1", "available", 10, int64(3)),
+		lesson1("Prowl", "Rank 1", "available", 10, int64(5)),
+		lesson1("Bite", "Rank 3", "available", 24, int64(7)),
+		lesson1("Cower", "Rank 2", "available", 10, nil))
+	plan := Examine(s).Plan
+	if len(plan.Suggested) != 1 || plan.Suggested[0].Label() != "Growl Rank 4" || plan.PointsLeft != 2 {
+		t.Errorf("suggested: %+v", plan)
+	}
+	if len(plan.DoesNotFit) != 2 || len(plan.LevelTooLow) != 1 || len(plan.CostUnknown) != 1 || plan.NothingToLearn() {
+		t.Errorf("the rest: %+v", plan)
+	}
+}
+
+func TestStableReviewTyped(t *testing.T) {
+	s := fixtures.Forever(t)
+	review := Examine(s).Stable
+	if !review.Present || !review.HasActive || len(review.Pets) != 1 || review.Pets[0].VsActive.LevelDiff != -1 || review.Pets[0].VsActive.SameFamily {
+		t.Errorf("stable: %+v", review)
 	}
 }

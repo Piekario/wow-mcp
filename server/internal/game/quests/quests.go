@@ -6,12 +6,98 @@
 package quests
 
 import (
-	"fmt"
 	"sort"
 	"strings"
 
 	"wowmcp/internal/snapshot"
 )
+
+// Difficulty colors of the quest log.
+const (
+	Red    = "red"
+	Orange = "orange"
+	Yellow = "yellow"
+	Green  = "green"
+	Gray   = "gray"
+)
+
+// Objective is one line of a quest's objectives. HasCount: the client gave have and need.
+type Objective struct {
+	Text       string
+	HasText    bool
+	Have, Need int64
+	HasCount   bool
+	Done       bool
+}
+
+// Quest is one quest of the log. ID is passed through as the dump has it.
+type Quest struct {
+	ID             any
+	Title, Zone    string
+	Level          int64
+	HasLevel       bool
+	ZoneMapID      int64
+	Complete       bool
+	Failed         bool
+	SuggestedGroup int64
+	Objectives     []Objective
+}
+
+// Log is the quest log with what the quest rules need to know about the character.
+type Log struct {
+	Present      bool
+	Quests       []Quest
+	Level        int64
+	GameGreen    int64
+	HasGameGreen bool
+	MaxQuests    int64
+	HasMaxQuests bool
+}
+
+// EffectiveGreen is the green quest range: from the game when it gave a positive value, else the classic table.
+func (l Log) EffectiveGreen() (green int64, fromGame bool) {
+	if l.HasGameGreen && l.GameGreen > 0 {
+		return l.GameGreen, true
+	}
+	return GreenRange(l.Level), false
+}
+
+// ObjectiveTexts returns the texts of the objectives.
+func (q Quest) ObjectiveTexts() []string {
+	var texts []string
+	for _, o := range q.Objectives {
+		if o.HasText {
+			texts = append(texts, o.Text)
+		}
+	}
+	return texts
+}
+
+// Progress is the objective progress in percent (a quest without numbers: 0 or 100) and the texts of the open objectives.
+func (q Quest) Progress() (percent int64, left []string) {
+	var have, need int64
+	for _, o := range q.Objectives {
+		if o.HasCount && o.Need > 0 {
+			have += min(o.Have, o.Need)
+			need += o.Need
+		} else {
+			need++
+			if o.Done {
+				have++
+			}
+		}
+		if !o.Done && o.HasText {
+			left = append(left, o.Text)
+		}
+	}
+	if need == 0 {
+		if q.Complete {
+			return 100, nil
+		}
+		return 0, left
+	}
+	return have * 100 / need, left
+}
 
 // GreenRange is the classic table: how many levels lower a quest is still green.
 // Used when the addon did not save the value from the game (character.questGreenRange).
@@ -48,99 +134,29 @@ func Difficulty(questLevel, playerLevel, green int64) string {
 	diff := questLevel - playerLevel
 	switch {
 	case diff >= 5:
-		return "red"
+		return Red
 	case diff >= 3:
-		return "orange"
+		return Orange
 	case diff >= -2:
-		return "yellow"
+		return Yellow
 	case -diff <= green:
-		return "green"
+		return Green
 	}
-	return "gray"
+	return Gray
 }
 
-var difficultyLabels = map[string]string{
-	"red":    "too hard: quest 5+ levels higher, come back later or with a group",
-	"orange": "hard: 3-4 levels higher, be careful",
-	"yellow": "just right",
-	"green":  "easy: less XP",
-	"gray":   "gray: almost no XP, worth turning in on the way or abandoning",
-}
+// Summary counts the log.
+type Summary struct{ Count, Ready int }
 
-// objectiveProgress computes objective progress in percent (a quest without numbers: 0 or 100).
-func objectiveProgress(q map[string]any) (percent int64, left []string) {
-	var have, need int64
-	for _, raw := range snapshot.AsList(q["objectives"]) {
-		o := snapshot.AsMap(raw)
-		h, ok1 := snapshot.AsInt(o["have"])
-		n, ok2 := snapshot.AsInt(o["need"])
-		done := o["done"] == true
-		if ok1 && ok2 && n > 0 {
-			have += min(h, n)
-			need += n
-		} else {
-			need++
-			if done {
-				have++
-			}
-		}
-		if !done {
-			if t, ok := o["text"].(string); ok {
-				left = append(left, t)
-			}
+func Summarize(s snapshot.Snapshot) Summary {
+	log := ReadLog(s)
+	sum := Summary{Count: len(log.Quests)}
+	for _, q := range log.Quests {
+		if q.Complete {
+			sum.Ready++
 		}
 	}
-	if need == 0 {
-		if q["complete"] == true {
-			return 100, nil
-		}
-		return 0, left
-	}
-	return have * 100 / need, left
-}
-
-// Objectives returns the quest's objective texts.
-func Objectives(q map[string]any) []string {
-	var goals []string
-	for _, o := range snapshot.AsList(q["objectives"]) {
-		if t, ok := snapshot.AsMap(o)["text"].(string); ok {
-			goals = append(goals, t)
-		}
-	}
-	return goals
-}
-
-// ObjectiveTexts returns quest titles with objectives: enough to recognize items needed for quests.
-func ObjectiveTexts(s snapshot.Snapshot) []any {
-	var out []any
-	for _, raw := range s.List("quests") {
-		q := snapshot.AsMap(raw)
-		out = append(out, map[string]any{"title": q["title"], "objectives": strings.Join(Objectives(q), "; ")})
-	}
-	return out
-}
-
-// SummarizeLog adds the number of quests and of those ready to turn in to the wow_quests response.
-func SummarizeLog(s snapshot.Snapshot, out map[string]any) {
-	quests := s.List("quests")
-	ready := 0
-	for _, raw := range quests {
-		if q, ok := raw.(map[string]any); ok && q["complete"] == true {
-			ready++
-		}
-	}
-	out["count"] = len(quests)
-	out["readyToTurnIn"] = ready
-}
-
-// greenRangeOf returns the character's green quest range: from the game or from the classic table.
-func greenRangeOf(s snapshot.Snapshot) (green int64, source string) {
-	level, _ := s.LevelAndMoney()
-	green, ok := snapshot.AsInt(s.Character()["questGreenRange"])
-	if !ok || green <= 0 {
-		return GreenRange(level), "from the classic table"
-	}
-	return green, "from the game"
+	return sum
 }
 
 // PlanQuery is the input of wow_quest_plan.
@@ -149,154 +165,133 @@ type PlanQuery struct {
 	Zone      string `json:"zone,omitempty" jsonschema:"only quests from this zone (name fragment)"`
 }
 
-// zoneGroup is the quests of one zone in the plan.
-type zoneGroup struct {
-	name            string
-	quests          []any
-	ready, playable int
+// Status is where a quest stands in the plan.
+type Status int
+
+const (
+	InProgress Status = iota
+	ReadyToTurnIn
+	FailedQuest
+)
+
+// PlanEntry is one quest of the plan with its rating.
+type PlanEntry struct {
+	Quest      Quest
+	Difficulty string
+	Percent    int64
+	Left       []string
+	Status     Status
 }
 
-// planWarnings collects the labels of quests the plan warns about.
-type planWarnings struct {
-	tooHard, gray, failed, group, ready []string
+// ZoneGroup is the quests of one zone in the plan.
+type ZoneGroup struct {
+	Name            string
+	Quests          []PlanEntry
+	Ready, Playable int
 }
 
-func (w planWarnings) messages() []string {
-	var out []string
-	if len(w.tooHard) > 0 {
-		out = append(out, fmt.Sprintf("Too hard (red): %s.", strings.Join(w.tooHard, "; ")))
-	}
-	if len(w.gray) > 0 {
-		out = append(out, fmt.Sprintf("Gray, almost no XP: %s. Turn in on the way or abandon if they take up space.", strings.Join(w.gray, "; ")))
-	}
-	if len(w.failed) > 0 {
-		out = append(out, fmt.Sprintf("Failed: %s.", strings.Join(w.failed, "; ")))
-	}
-	if len(w.group) > 0 {
-		out = append(out, fmt.Sprintf("Group quests: %s.", strings.Join(w.group, "; ")))
-	}
-	return out
+// Flag is a quest the plan warns about.
+type Flag struct {
+	Quest Quest
+	Zone  string
 }
 
-// Plan groups the log by zone (zones with the most things to do
-// first), rates the difficulty of each quest and warns about quests that are too hard,
-// gray, failed, group quests and a full log.
-func Plan(s snapshot.Snapshot, q PlanQuery) map[string]any {
-	c := s.Character()
-	level, _ := s.LevelAndMoney()
-	green, greenSource := greenRangeOf(s)
+// PlanResult is the log grouped by zone with the quests that need attention.
+type PlanResult struct {
+	PlayerLevel                         int64
+	Green                               int64
+	GreenFromGame                       bool
+	Zones                               []ZoneGroup
+	Count                               int
+	ByDifficulty                        map[string]int
+	NoLog                               bool
+	Ready, TooHard, Gray, Failed, Group []Flag
+	ShowLogSize                         bool
+	LogMax                              int64
+	AlmostFull                          bool
+}
 
-	zones := map[string]*zoneGroup{}
-	counts := map[string]int{}
-	var warn planWarnings
-	total := 0
-	for _, raw := range s.List("quests") {
-		quest := snapshot.AsMap(raw)
-		zone, _ := quest["zone"].(string)
+// Analyse groups the log by zone (zones with the most things to do first) and rates each quest.
+func Analyse(s snapshot.Snapshot, q PlanQuery) PlanResult {
+	log := ReadLog(s)
+	green, fromGame := log.EffectiveGreen()
+	r := PlanResult{PlayerLevel: log.Level, Green: green, GreenFromGame: fromGame, ByDifficulty: map[string]int{}, NoLog: !log.Present}
+	zones := map[string]*ZoneGroup{}
+	for _, quest := range log.Quests {
+		zone := quest.Zone
 		if zone == "" {
 			zone = "(no zone)"
 		}
 		if q.Zone != "" && !strings.Contains(strings.ToLower(zone), strings.ToLower(q.Zone)) {
 			continue
 		}
-		total++
+		r.Count++
 		z := zones[zone]
 		if z == nil {
-			z = &zoneGroup{name: zone}
+			z = &ZoneGroup{Name: zone}
 			zones[zone] = z
 		}
-		e, diff := planEntry(quest, zone, level, green, z, &warn)
-		counts[diff]++
-		z.quests = append(z.quests, e)
+		entry := r.rate(quest, zone, z)
+		r.ByDifficulty[entry.Difficulty]++
+		z.Quests = append(z.Quests, entry)
 	}
-
-	out := map[string]any{
-		"playerLevel":   level,
-		"zones":         sortedZones(zones),
-		"count":         total,
-		"byDifficulty":  counts,
-		"readyToTurnIn": warn.ready,
-		"grayBelow":     fmt.Sprintf("quests of level %d and below are gray (green range: %d, %s)", level-green-1, green, greenSource),
+	r.Zones = sortedZones(zones)
+	if log.HasMaxQuests && log.MaxQuests > 0 && q.Zone == "" {
+		r.ShowLogSize, r.LogMax = true, log.MaxQuests
+		r.AlmostFull = int64(r.Count) >= log.MaxQuests-2
 	}
-	warnings := warn.messages()
-	if maxQ, ok := snapshot.AsInt(c["maxQuests"]); ok && maxQ > 0 && q.Zone == "" {
-		out["log"] = fmt.Sprintf("%d/%d", total, maxQ)
-		if int64(total) >= maxQ-2 {
-			warnings = append(warnings, fmt.Sprintf("Quest log almost full (%d/%d): at most %d more quests will fit.", total, maxQ, maxQ-int64(total)))
-		}
-	}
-	if len(warnings) > 0 {
-		out["warnings"] = warnings
-	}
-	if _, ok := s["quests"]; !ok {
-		out["note"] = "The dump has no quest log. Run /mcp reload in game."
-	}
-	return out
+	return r
 }
 
-// planEntry describes one quest of the plan and adds it to the zone counters and warnings.
-func planEntry(q map[string]any, zone string, level, green int64, z *zoneGroup, warn *planWarnings) (map[string]any, string) {
-	ql, _ := snapshot.AsInt(q["level"])
-	diff := Difficulty(ql, level, green)
-	percent, left := objectiveProgress(q)
-	title := fmt.Sprint(q["title"])
-	label := fmt.Sprintf("%s [%d] (%s)", title, ql, zone)
-	e := map[string]any{
-		"id": q["id"], "title": title, "level": ql,
-		"difficulty": diff, "difficultyInfo": difficultyLabels[diff],
-		"progressPercent": percent,
-	}
-	if len(left) > 0 {
-		e["todo"] = left
-	}
-	if g, ok := snapshot.AsInt(q["suggestedGroup"]); ok && g > 1 {
-		e["suggestedGroup"] = g
-		warn.group = append(warn.group, fmt.Sprintf("%s: group of %d", label, g))
+// rate rates one quest and adds it to the zone counters and the warning lists.
+func (r *PlanResult) rate(quest Quest, zone string, z *ZoneGroup) PlanEntry {
+	diff := Difficulty(quest.Level, r.PlayerLevel, r.Green)
+	percent, left := quest.Progress()
+	entry := PlanEntry{Quest: quest, Difficulty: diff, Percent: percent, Left: left}
+	flag := Flag{quest, zone}
+	if quest.SuggestedGroup > 1 {
+		r.Group = append(r.Group, flag)
 	}
 	switch {
-	case q["failed"] == true:
-		e["status"] = "failed: abandon and pick it up again"
-		warn.failed = append(warn.failed, label)
-	case q["complete"] == true:
-		e["status"] = "ready to turn in"
-		warn.ready = append(warn.ready, label)
-		z.ready++
+	case quest.Failed:
+		entry.Status = FailedQuest
+		r.Failed = append(r.Failed, flag)
+	case quest.Complete:
+		entry.Status = ReadyToTurnIn
+		r.Ready = append(r.Ready, flag)
+		z.Ready++
 	default:
-		e["status"] = "in progress"
-		if diff == "red" {
-			warn.tooHard = append(warn.tooHard, label)
+		entry.Status = InProgress
+		if diff == Red {
+			r.TooHard = append(r.TooHard, flag)
 		} else {
-			z.playable++
+			z.Playable++
 		}
 	}
-	if diff == "gray" && q["complete"] != true {
-		warn.gray = append(warn.gray, label)
+	if diff == Gray && !quest.Complete {
+		r.Gray = append(r.Gray, flag)
 	}
-	return e, diff
+	return entry
 }
 
 // sortedZones puts the zones with the most things to do and turn in on top,
 // and the quests within a zone from the lowest level.
-func sortedZones(zones map[string]*zoneGroup) []any {
-	list := make([]*zoneGroup, 0, len(zones))
+func sortedZones(zones map[string]*ZoneGroup) []ZoneGroup {
+	list := make([]*ZoneGroup, 0, len(zones))
 	for _, z := range zones {
 		list = append(list, z)
 	}
 	sort.Slice(list, func(i, j int) bool {
-		si, sj := list[i].ready+list[i].playable, list[j].ready+list[j].playable
+		si, sj := list[i].Ready+list[i].Playable, list[j].Ready+list[j].Playable
 		if si != sj {
 			return si > sj
 		}
-		return list[i].name < list[j].name
+		return list[i].Name < list[j].Name
 	})
-	out := []any{}
+	out := make([]ZoneGroup, 0, len(list))
 	for _, z := range list {
-		sort.SliceStable(z.quests, func(i, j int) bool {
-			return snapshot.AsMap(z.quests[i])["level"].(int64) < snapshot.AsMap(z.quests[j])["level"].(int64)
-		})
-		out = append(out, map[string]any{
-			"zone": z.name, "quests": z.quests, "readyToTurnIn": z.ready, "inProgress": z.playable,
-		})
+		sort.SliceStable(z.Quests, func(i, j int) bool { return z.Quests[i].Quest.Level < z.Quests[j].Quest.Level })
+		out = append(out, *z)
 	}
 	return out
 }

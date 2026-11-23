@@ -222,3 +222,23 @@ func TestGuessableKeepsMatchingZonesAndRetriesTheRest(t *testing.T) {
 		t.Errorf("continents: %+v", n)
 	}
 }
+
+func TestAnalyseSplitsQuestZonesByFlightPoint(t *testing.T) {
+	s := snapshot.Snapshot{
+		"flightPaths": map[string]any{"nodes": []any{map[string]any{"name": "Auberdine, Darkshore", "state": "reachable"}}},
+		"quests": []any{
+			map[string]any{"title": "a", "zone": "Darkshore"},
+			map[string]any{"title": "b", "zone": "Elsewhere"},
+		},
+	}
+	r := Analyse(s, snapshot.Freshness{})
+	if r.Known != 1 || len(r.With) != 1 || r.With[0].Zone != "Darkshore" || r.With[0].Matches[0].By != byNameSuffix {
+		t.Errorf("with: %+v", r.With)
+	}
+	if len(r.Without) != 1 || r.Without[0].Zone != "Elsewhere" || r.NoQuestZones || r.HasAge {
+		t.Errorf("without: %+v", r)
+	}
+	if !Analyse(snapshot.Snapshot{}, snapshot.Freshness{}).Missing {
+		t.Error("no flightPaths section means Missing")
+	}
+}

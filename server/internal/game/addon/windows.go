@@ -3,12 +3,6 @@
 
 package addon
 
-import (
-	"strings"
-
-	"wowmcp/internal/snapshot"
-)
-
 // window is a section saved only after a window is opened in game (the state "from the last visit").
 type window struct {
 	section string
@@ -32,30 +26,4 @@ var windows = []window{
 	{"friends", "social window with the friends list (the addon does not request the list from the server itself)", "wow_social"},
 	{"guild", "guild window (only when the character is in a guild; the addon does not request the list from the server itself)", "wow_social"},
 	{"inspect", "Inspect window on another player", "wow_group"},
-}
-
-// RefreshHint says how to refresh data in game; the window list comes from the windows table.
-func RefreshHint() string {
-	names := make([]string, len(windows))
-	opened := make([]string, len(windows))
-	for i, w := range windows {
-		names[i], opened[i] = w.section, w.opened
-	}
-	return "In game type /mcp reload or click Save on the WowMcp panel. Sections " + strings.Join(names, ", ") +
-		" are saved when the character opens: " + strings.Join(opened, "; ") + "; then /mcp reload."
-}
-
-// WindowCoverage says which visit-based sections are already in the dump, which are missing and what to open in game.
-func WindowCoverage(s snapshot.Snapshot, fresh snapshot.Freshness) []any {
-	out := make([]any, len(windows))
-	for i, w := range windows {
-		e := map[string]any{"section": w.section, "open": w.opened, "tool": w.tool}
-		section, present := s[w.section]
-		e["captured"] = present
-		if present {
-			snapshot.Merge(e, fresh.CapturedMeta(snapshot.AsMap(section)))
-		}
-		out[i] = e
-	}
-	return out
 }

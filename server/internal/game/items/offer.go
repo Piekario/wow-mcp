@@ -13,13 +13,12 @@ import (
 // level, money and the equipped items. The same judgement backs wow_vendor and wow_auctions.
 type Buyer struct {
 	Level, Money int64
-	Equipped     []any
+	Equipped     []Item
 }
 
-// NewBuyer reads the buyer from a snapshot.
 func NewBuyer(s snapshot.Snapshot) Buyer {
 	level, money := s.LevelAndMoney()
-	return Buyer{Level: level, Money: money, Equipped: s.Equipment()}
+	return Buyer{Level: level, Money: money, Equipped: readEquipment(s)}
 }
 
 // OfferFilter holds the filters shared by wow_vendor and wow_auctions.
@@ -29,52 +28,53 @@ type OfferFilter struct {
 	Equippable bool // only equippable things
 }
 
-// Admits says whether the offer passes the filters. An unknown price or an unknown required level never excludes.
-func (b Buyer) Admits(item map[string]any, price int64, hasPrice bool, f OfferFilter) bool {
+// Allows says whether the offer passes the filters. An unknown price or an unknown required level never excludes.
+func (b Buyer) Allows(it Item, price int64, hasPrice bool, f OfferFilter) bool {
 	if f.Affordable && hasPrice && price > b.Money {
 		return false
 	}
-	if req, _ := snapshot.AsInt(item["requiredLevel"]); f.Usable && req > b.Level {
+	if f.Usable && !it.LevelOk(b.Level) {
 		return false
 	}
-	return !f.Equippable || Equippable(item)
+	return !f.Equippable || it.Equippable()
 }
 
-// Judge adds to the entry what the buyer wants to know about the offer: canAfford (when there is a price),
-// levelOk, the quality name and, for equippable items, vsEquipped: the difference to what is worn.
-func (b Buyer) Judge(entry, item map[string]any, price int64, hasPrice bool) {
-	if hasPrice {
-		entry["canAfford"] = price <= b.Money
-	}
-	req, _ := snapshot.AsInt(item["requiredLevel"])
-	entry["levelOk"] = req <= b.Level
-	if name := qualityName(item); name != "" {
-		entry["qualityName"] = name
-	}
-	if Equippable(item) {
-		if cmp := Compare(item, b.Equipped); len(cmp) > 0 {
-			entry["vsEquipped"] = bestComparison(cmp)
-		}
-	}
+// Offer is what the buyer wants to know about an item on offer. VsEquipped is the best slot comparison of an
+// equippable item, nil otherwise.
+type Offer struct {
+	HasPrice, CanAfford bool
+	LevelOk             bool
+	Quality             string
+	VsEquipped          *SlotComparison
 }
 
-// MatchesType says whether the item is of the given type or subtype (e.g. Weapon, Armor, Bow); by class ID where the
-// dump has it, otherwise by the type text.
-func MatchesType(item map[string]any, kind string) bool {
-	return filter{kind: kind}.match(item)
+func (b Buyer) Assess(it Item, price int64, hasPrice bool) Offer {
+	o := Offer{HasPrice: hasPrice, CanAfford: hasPrice && price <= b.Money, LevelOk: it.LevelOk(b.Level), Quality: it.QualityName()}
+	if best, ok := bestSlot(GearOf(b.Equipped).Compare(it)); ok {
+		o.VsEquipped = &best
+	}
+	return o
 }
 
-// UpgradeScore ranks the vsEquipped comparison of Judge: item level plus DPS gained (the same measure that picks the
-// best slot). An entry without a comparison gets -Inf, so it sorts last.
-func UpgradeScore(entry map[string]any) float64 {
-	vs := snapshot.AsMap(entry["vsEquipped"])
-	if vs == nil {
+// UpgradeScore ranks offers by their best comparison; an offer without one gets -Inf, so it sorts last.
+func (o Offer) UpgradeScore() float64 {
+	if o.VsEquipped == nil {
 		return math.Inf(-1)
 	}
-	return comparisonScore(vs)
+	return o.VsEquipped.UpgradeScore()
 }
 
-func comparisonScore(c map[string]any) float64 {
-	delta, _ := c["delta"].(map[string]float64)
-	return delta["Item Level"] + delta["DPS"]
+// UpgradeSlot says whether an equippable item looks like an upgrade over what is equipped in the matching slot
+// (higher item level or DPS, or an empty slot) and for which slot; false when it cannot be equipped or the level is
+// too low for it. This is only a hint: the player decides about stats.
+func (b Buyer) UpgradeSlot(it Item) (string, bool) {
+	if !it.Equippable() || !it.LevelOk(b.Level) {
+		return "", false
+	}
+	for _, c := range GearOf(b.Equipped).Compare(it) {
+		if c.LooksLikeUpgrade() {
+			return c.Slot, true
+		}
+	}
+	return "", false
 }

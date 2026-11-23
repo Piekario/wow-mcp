@@ -20,3 +20,16 @@ func TestReputationView(t *testing.T) {
 		t.Errorf("standing filter does not work: %v", out)
 	}
 }
+
+func TestInspectProgress(t *testing.T) {
+	r := Inspect([]Faction{
+		{Name: "A", StandingText: "Friendly", Value: 1200, Floor: 0, Ceiling: 6000, HasValue: true, HasFloor: true, HasCeiling: true},
+		{Name: "B", StandingText: "Neutral", Value: 5, HasValue: true},
+	}, true, Query{})
+	if p := r.Factions[0].Progress; p == nil || p.Percent != 20 || p.ToNext != 4800 {
+		t.Errorf("progress: %+v", p)
+	}
+	if r.Factions[1].Progress != nil {
+		t.Error("no thresholds, no progress")
+	}
+}

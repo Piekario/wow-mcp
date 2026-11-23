@@ -55,7 +55,7 @@ func (s *service) goalSetTool() tool {
 			"Examples: type=level target=25; type=gold target=10 (gold); type=reputation faction=Darnassus standing=Revered; type=profession name=Mining target=150; type=spell name=Aimed Shot; type=item item=Linen Cloth target=40.",
 		add: func(server *mcp.Server, def *mcp.Tool) {
 			mcp.AddTool(server, def, func(ctx context.Context, req *mcp.CallToolRequest, a goalArgs) (*mcp.CallToolResult, any, error) {
-				db, err := s.Snapshots.Load()
+				db, err := s.loadDatabase()
 				if err != nil {
 					return nil, nil, err
 				}
@@ -102,9 +102,10 @@ func (s *service) setGoal(db *snapshot.Database, a goalArgs) (map[string]any, er
 		return nil, err
 	}
 	out := map[string]any{"added": g, "goal": g.Label(), "file": s.GoalsFile}
-	for _, r := range goals.View(all, goals.Env{Character: name, Snap: snap, History: s.progress})["goals"].([]any) {
-		if m := r.(map[string]any); m["id"] == g.ID {
-			out["progress"] = m
+	judged := goals.Evaluate(all, goals.Env{Character: name, Snap: snap, History: s.progress})
+	for _, p := range judged.Goals {
+		if p.Goal.ID == g.ID {
+			out["progress"] = p.Render(judged.Rates)
 		}
 	}
 	return out, nil

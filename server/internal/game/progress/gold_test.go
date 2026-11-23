@@ -107,3 +107,26 @@ func TestStretches(t *testing.T) {
 		t.Error("a dump without a time and without history should give an error")
 	}
 }
+
+func TestCompareTypedChanges(t *testing.T) {
+	dump := func(level, xp, money int64, spells ...string) snapshot.Snapshot {
+		list := []any{}
+		for _, s := range spells {
+			list = append(list, map[string]any{"name": s})
+		}
+		return snapshot.Snapshot{"character": map[string]any{"level": level, "xp": xp, "xpMax": int64(1000), "moneyCopper": money}, "spells": list}
+	}
+	c := progress.Compare(dump(10, 900, 100, "Attack"), dump(11, 50, 40, "Attack", "Arcane Shot"))
+	if c.XP == nil || !c.XP.LevelUp() || !c.XP.GainedKnown || c.XP.Gained != 150 {
+		t.Errorf("xp: %+v", c.XP)
+	}
+	if c.Money == nil || c.Money.Delta() != -60 || len(c.NewSpells) != 1 || c.NewSpells[0].Name != "Arcane Shot" || !c.HasChanges() {
+		t.Errorf("comparison: %+v", c)
+	}
+	if skip := progress.Compare(dump(10, 0, 0), dump(12, 0, 0)); skip.XP.GainedKnown {
+		t.Error("two levels at once: XP unknown")
+	}
+	if progress.Compare(dump(10, 5, 5), dump(10, 5, 5)).HasChanges() {
+		t.Error("identical dumps")
+	}
+}

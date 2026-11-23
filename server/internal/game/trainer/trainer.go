@@ -12,22 +12,66 @@ type Query struct {
 	Npc       string `json:"npc,omitempty" jsonschema:"name (or fragment) of one of the remembered trainers; empty = the most recently visited. The list of remembered ones is in the known field"`
 }
 
-// noNpcNote describes an offer without an NPC name. A real dump (Forever 1.60.1) had such an offer
-// with a single Arcane Resistance Rank 1 service for 5: it looks like a Beast Training window opened from a spell.
-const noNpcNote = "An offer without an NPC name: the window was opened without talking to a trainer. Assumption (not confirmed in game): " +
-	"it is the pet's Beast Training window, and costCopper is then the pet's training points, not copper, so cost and canAfford may make no sense."
+// Service is one thing a trainer teaches. The cost is copper, except in a Beast Training window (see IsPetTraining).
+// raw is the dump's own entry: the answer shows it with the price added.
+type Service struct {
+	Category   string
+	CostCopper int64
+	HasCost    bool
+	raw        rawService
+}
 
-// Offers returns the remembered trainer offers: the newest for each NPC, from the most recent visit.
-func Offers(s snapshot.Snapshot) []snapshot.Visit { return s.Visits("trainer", "trainers") }
+// Offer is what one trainer window showed. A real dump (Forever 1.60.1) had an offer without an NPC name and with a
+// single Arcane Resistance Rank 1 service for 5: it looks like a Beast Training window opened from a spell.
+type Offer struct {
+	NPC      string
+	Captured snapshot.Captured
+	Services []Service
+	section  rawSection
+}
 
-// IsPetTraining says whether the offer is a window without an NPC name, i.e. (assumption) the pet's Beast Training
-// opened from a spell: its cost is training points, not copper.
-func IsPetTraining(offer map[string]any) bool {
-	if offer == nil {
-		return false
+// IsPetTraining says whether the window has no NPC name, i.e. (assumption, not confirmed in game) it is the pet's
+// Beast Training opened from a spell: its cost is training points, not copper.
+func (o Offer) IsPetTraining() bool { return o.NPC == "" }
+
+func (sv Service) CanAfford(money int64) bool { return sv.CostCopper <= money }
+
+// ServicesIn are the offer's services of one category (available, unavailable, used).
+func (o Offer) ServicesIn(category string) []Service {
+	var out []Service
+	for _, sv := range o.Services {
+		if sv.Category == category {
+			out = append(out, sv)
+		}
 	}
-	name, _ := offer["npc"].(string)
-	return name == ""
+	return out
+}
+
+// Report is the answer to "what does this trainer teach and can I pay for it". Offer is nil when there is none to
+// show; UnknownNpc is the name asked for when no remembered trainer matches it.
+type Report struct {
+	Money      int64
+	Offer      *Offer
+	UnknownNpc string
+	Known      []string
+}
+
+// Inspect picks the offer (the last one or the one named by npc) and lists the remembered trainers.
+func Inspect(s snapshot.Snapshot, q Query) Report {
+	offers := Offers(s)
+	_, money := s.LevelAndMoney()
+	r := Report{Money: money, Known: snapshot.VisitNames(offers)}
+	section := s.Map("trainer")
+	if q.Npc != "" {
+		v, ok := snapshot.FindVisit(offers, q.Npc)
+		if !ok {
+			r.UnknownNpc = q.Npc
+			return r
+		}
+		section = v.Section
+	}
+	r.Offer = readOffer(section)
+	return r
 }
 
 // GoldOffers is the trainer offers paid in copper (without the Beast Training window); for shopping lists and budgets.
@@ -36,81 +80,6 @@ func GoldOffers(s snapshot.Snapshot) []snapshot.Visit {
 	for _, v := range Offers(s) {
 		if !IsPetTraining(v.Section) {
 			out = append(out, v)
-		}
-	}
-	return out
-}
-
-// View describes one trainer's offer (the last one or the one given by npc) with prices and canAfford
-// and the list of remembered trainers (known). Note: prices are written into the services in the dump itself
-// (shared maps), so later reads of the same offer in the same call see them.
-func View(s snapshot.Snapshot, q Query, fresh snapshot.Freshness) map[string]any {
-	offers := Offers(s)
-	out := map[string]any{}
-	section := s.Map("trainer")
-	if q.Npc != "" {
-		v, ok := snapshot.FindVisit(offers, q.Npc)
-		if !ok {
-			_, money := s.LevelAndMoney()
-			out["money"] = snapshot.Money(money).String()
-			out["note"] = "I do not remember the trainer " + q.Npc + ". Remembered ones are in the known field; open that trainer's window in game and type /mcp reload."
-			out["known"] = snapshot.VisitNames(offers)
-			return out
-		}
-		section = v.Section
-	}
-	if section != nil {
-		out["trainer"] = section
-	}
-	priceSection(s, section, out, fresh)
-	if names := snapshot.VisitNames(offers); len(names) > 0 {
-		out["known"] = names
-	}
-	return out
-}
-
-// PriceOffer adds to the response the character's gold, the age of the last trainer's offer, and for each service
-// the price and canAfford (the same maps as in the dump, see View).
-func PriceOffer(s snapshot.Snapshot, out map[string]any, fresh snapshot.Freshness) {
-	priceSection(s, s.Map("trainer"), out, fresh)
-}
-
-func priceSection(s snapshot.Snapshot, trainer map[string]any, out map[string]any, fresh snapshot.Freshness) {
-	_, money := s.LevelAndMoney()
-	out["money"] = snapshot.Money(money).String()
-	if trainer == nil {
-		out["note"] = "No saved offer. Open a trainer window in game, then type /mcp reload."
-		return
-	}
-	snapshot.Merge(out, fresh.CapturedMeta(trainer))
-	if IsPetTraining(trainer) {
-		out["npcNote"] = noNpcNote
-	}
-	for _, raw := range snapshot.AsList(trainer["services"]) {
-		if svc, ok := raw.(map[string]any); ok {
-			if cost, ok := svc["costCopper"].(int64); ok {
-				svc["cost"] = snapshot.Money(cost).String()
-				svc["canAfford"] = cost <= money
-			}
-		}
-	}
-}
-
-// Services returns the last trainer's services of the given category (available, unavailable, used);
-// empty when the last window is Beast Training (cost in training points, not copper).
-func Services(s snapshot.Snapshot, category string) []any {
-	if last := s.Map("trainer"); !IsPetTraining(last) {
-		return ServicesOf(last, category)
-	}
-	return nil
-}
-
-// ServicesOf returns the services of a trainer's offer in the given category.
-func ServicesOf(offer map[string]any, category string) []any {
-	var out []any
-	for _, raw := range snapshot.AsList(offer["services"]) {
-		if svc := snapshot.AsMap(raw); svc["category"] == category {
-			out = append(out, svc)
 		}
 	}
 	return out

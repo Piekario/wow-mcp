@@ -78,3 +78,17 @@ func TestAllQuestItemsNeeded(t *testing.T) {
 		t.Errorf("everything needed: %v", out)
 	}
 }
+
+func TestInspectSeparatesNeededItemsFromLeftovers(t *testing.T) {
+	s := fixtures.Forever(t)
+	addQuestItem(s, 0, map[string]any{"name": "Death Cap", "count": int64(2)})
+	addQuestItem(s, 0, map[string]any{"name": "Crate of Wine", "count": int64(1)})
+	r := Inspect(s)
+	left := r.Leftovers()
+	if len(left) != 1 || left[0].Name != "Crate of Wine" || left[0].Confidence != ConfidenceMedium || r.Confidence() != ConfidenceMedium {
+		t.Errorf("leftovers = %+v, confidence %q", left, r.Confidence())
+	}
+	if !r.HasLog || len(r.Verdicts) != 2 || !r.Verdicts[1].Keep || r.Verdicts[1].ForQuests[0] != "Cave Mushrooms" {
+		t.Errorf("verdicts = %+v", r.Verdicts)
+	}
+}

@@ -1625,6 +1625,27 @@ def check_options_page() -> None:
         assert not list(saved_character(g)["errors"].values())
 
 
+def check_legacy_scan_only_when_needed() -> None:
+    """Addon 0.19.1: the scan of _G for Legacy names runs only when no perk tree was found or after /mcp probe."""
+    count_scans = "ScanCount = 0; local realPairs = pairs; function pairs(t) if t == _G then ScanCount = ScanCount + 1 end return realPairs(t) end"
+    runtime, g, _ = load_addon("forever", count_scans)
+    on_event = event_dispatcher(g)
+    legacy = lambda: g.WowMcpDB["characters"]["Piekasz"]["legacy"]
+    g.SlashCmdList["WOWMCP"]("")
+    on_event(None, "PLAYER_LOGOUT")
+    assert legacy()["discovery"] is None and len(legacy()["configs"]) == 1 and g.ScanCount == 0, g.ScanCount
+    g.SlashCmdList["WOWMCP"]("probe")
+    assert legacy()["discovery"]["frames"][1]["name"] == "LegacyFrameMock" and g.ScanCount == 2, g.ScanCount  # the probe section walks _G too
+    on_event(None, "PLAYER_LOGOUT")
+    assert legacy()["discovery"] is not None and g.ScanCount == 2, g.ScanCount
+
+    runtime, g, _ = load_addon("forever", count_scans)
+    runtime.execute("C_Traits.GetConfigsByType = function() return {} end")
+    g.SlashCmdList["WOWMCP"]("")
+    assert g.ScanCount == 1 and legacy()["discovery"] is not None, g.ScanCount
+    assert [c["typeName"] for c in legacy()["configs"].values()] == ["frame"], dict(legacy())
+
+
 def check_guard_ignores_disabled_sections() -> None:
     """Review follow-up: /mcp off on the sections the logout guard looks at does not switch the guard off."""
     for disabled in (("stats", "spells", "equipment", "bags"), ("spells", "equipment", "bags")):
@@ -1717,7 +1738,7 @@ def check_carried_periods() -> None:
     assert g.SerializeSavedVariable("WowMcpDB", g.WowMcpDB) == before, "the sanitizer removed carried data"
 
     # (b) Bounds: at most MAX_PERIODS of the newest, none older than MAX_PERIOD_AGE.
-    max_periods, max_age = addon_ns.Snapshot.MAX_PERIODS, addon_ns.Snapshot.MAX_PERIOD_AGE
+    max_periods, max_age = addon_ns.Periods.MAX_PERIODS, addon_ns.Periods.MAX_PERIOD_AGE
     assert (max_periods, max_age) == (20, 7 * 24 * 3600)
     now = g.clockNow
     fill = runtime.eval('''function(section, now, count, maxAge)
@@ -2529,6 +2550,7 @@ def main() -> int:
         check_waypoint_links()
         check_secret_group_range()
         check_passed_guide_steps()
+        check_legacy_scan_only_when_needed()
         check_realmless_key()
         check_real_lifecycle()
         print("lifecycle from the real game: OK")

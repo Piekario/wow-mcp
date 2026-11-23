@@ -10,87 +10,106 @@ import (
 	"wowmcp/internal/snapshot"
 )
 
-// stableReview compares the stabled pets with the active one (level and family). The addon saves for stabled pets
-// only the slot, name, level, family and specialization, so there is no data on abilities or fit.
-func stableReview(s snapshot.Snapshot, active map[string]any, hasActive bool, fresh snapshot.Freshness) map[string]any {
-	stable := s.Map("stable")
-	if stable == nil {
-		return map[string]any{"note": "no data: open the stable window (Stable Master) in game and run /mcp reload"}
-	}
-	activeLevel, _ := snapshot.AsInt(active["level"])
-	activeFamily, _ := active["family"].(string)
+// StabledDisplay holds a stabled pet's fields as the dump has them; nil means the dump has no such field.
+type StabledDisplay struct {
+	Slot, Name, Level, Family, Specialization, Loyalty, Active any
+}
 
-	pets := []any{}
-	var higher []string
-	for _, raw := range snapshot.AsList(stable["pets"]) {
-		p := snapshot.AsMap(raw)
-		if p["current"] == true {
-			continue // the pet with the character (slot 0 in the classic API) is the same as the active one
-		}
-		// Active slots from C_StableInfo.GetActivePetList (addon 0.7.1): the one with the character is the active pet.
-		if p["active"] == true && hasActive && p["name"] == active["name"] {
+// StabledPet is a pet in the stable. The addon saves only the slot, name, level, family and specialization,
+// so there is no data on abilities or fit.
+type StabledPet struct {
+	Shown         StabledDisplay
+	Level         int64
+	HasLevel      bool
+	Family        string
+	WithCharacter bool // the pet with the character (slot 0 in the classic API): the same as the active one
+	Active        bool // from C_StableInfo.GetActivePetList (addon 0.7.1)
+}
+
+type Stable struct {
+	Pets     []StabledPet
+	Slots    int64
+	HasSlots bool
+	Captured snapshot.Captured
+}
+
+// VsActive compares a stabled pet with the active one.
+type VsActive struct {
+	LevelDiff     int64
+	HasLevelDiff  bool
+	SameFamily    bool
+	HasSameFamily bool
+}
+
+type StabledComparison struct {
+	StabledPet
+	VsActive VsActive
+}
+
+// StableReview compares the stabled pets with the active one (level and family).
+type StableReview struct {
+	Present      bool
+	Pets         []StabledComparison // highest level first
+	Slots        int64
+	HasSlots     bool
+	Captured     snapshot.Captured
+	HasActive    bool
+	ActiveName   any
+	ActiveLevel  int64
+	ActiveFamily string
+	HigherLevel  []string
+}
+
+func reviewStable(stable Stable, present bool, active Pet) StableReview {
+	r := StableReview{Present: present}
+	if !present {
+		return r
+	}
+	r.Slots, r.HasSlots, r.Captured = stable.Slots, stable.HasSlots, stable.Captured
+	r.HasActive, r.ActiveName, r.ActiveLevel, r.ActiveFamily = active.Summoned, active.Shown.Name, active.Level, active.Family
+	for _, p := range stable.Pets {
+		if p.WithCharacter || (p.Active && r.HasActive && p.Shown.Name == active.Shown.Name) {
 			continue
 		}
-		e := map[string]any{}
-		for _, k := range []string{"slot", "name", "level", "family", "specialization", "loyalty", "active"} {
-			if v, ok := p[k]; ok {
-				e[k] = v
-			}
-		}
-		if hasActive {
-			cmp := map[string]any{}
-			if level, ok := snapshot.AsInt(p["level"]); ok {
-				cmp["levelDiff"] = level - activeLevel
-				if level > activeLevel {
-					higher = append(higher, fmt.Sprint(p["name"]))
+		c := StabledComparison{StabledPet: p}
+		if r.HasActive {
+			if p.HasLevel {
+				c.VsActive.LevelDiff, c.VsActive.HasLevelDiff = p.Level-active.Level, true
+				if p.Level > active.Level {
+					r.HigherLevel = append(r.HigherLevel, fmt.Sprint(p.Shown.Name))
 				}
 			}
-			if family, _ := p["family"].(string); family != "" && activeFamily != "" {
-				cmp["sameFamily"] = family == activeFamily
+			if p.Family != "" && active.Family != "" {
+				c.VsActive.SameFamily, c.VsActive.HasSameFamily = p.Family == active.Family, true
 			}
-			e["vsActive"] = cmp
 		}
-		pets = append(pets, e)
+		r.Pets = append(r.Pets, c)
 	}
-	sort.SliceStable(pets, func(i, j int) bool {
-		li, _ := snapshot.AsInt(snapshot.AsMap(pets[i])["level"])
-		lj, _ := snapshot.AsInt(snapshot.AsMap(pets[j])["level"])
-		return li > lj
-	})
-	out := map[string]any{"pets": pets, "count": len(pets)}
-	if slots, ok := snapshot.AsInt(stable["slots"]); ok {
-		out["slots"] = slots
-	}
-	snapshot.Merge(out, fresh.CapturedMeta(stable))
-	if hasActive {
-		out["active"] = map[string]any{"name": active["name"], "level": activeLevel, "family": activeFamily}
-		if len(higher) > 0 {
-			out["higherLevelThanActive"] = higher
-		}
-	} else {
-		out["note"] = "there is no pet with the character right now, so there is nothing to compare levels with"
-	}
-	out["limits"] = "the addon saves for stabled pets only the slot, name, level, family and specialization; there is no data on their abilities, loyalty and diet"
-	return out
+	sort.SliceStable(r.Pets, func(i, j int) bool { return r.Pets[i].Level > r.Pets[j].Level })
+	return r
 }
 
-// Review collects the pet description extras: ability ranks (rankReview), the training points plan and the stable comparison.
-// Sections whose data is not in the dump say what to open in game. For a character without an active pet it returns only the stable.
-func Review(s snapshot.Snapshot, fresh snapshot.Freshness) map[string]any {
-	out := map[string]any{}
-	p := s.Map("pet")
-	active := Exists(s)
-	if active {
-		out["rankReview"] = rankReview(s, p)
-		out["trainingPlan"] = trainingPlan(s, p)
-	}
-	if s.Map("stable") != nil || active {
-		out["stable"] = stableReview(s, p, active, fresh)
-	}
-	return out
+// Checkup is what the pet description adds to its state: ability ranks, the training points plan and the stable.
+// Ranks and Plan are filled only for a summoned pet; Stable only when HasStable.
+type Checkup struct {
+	Pet       Pet
+	Ranks     RankReview
+	Plan      TrainingPlan
+	Stable    StableReview
+	HasStable bool
 }
 
-// Summarize adds Review to the wow_pet response.
-func Summarize(s snapshot.Snapshot, out map[string]any, fresh snapshot.Freshness) {
-	snapshot.Merge(out, Review(s, fresh))
+func Examine(s snapshot.Snapshot) Checkup {
+	c := Checkup{Pet: readPet(s)}
+	if c.Pet.Summoned {
+		lessons := readLessons(s)
+		c.Ranks = reviewRanks(c.Pet, lessons, readTrainerServices(s))
+		c.Plan = planTraining(c.Pet, lessons)
+	}
+	stable, present := readStable(s)
+	c.HasStable = present || c.Pet.Summoned
+	if c.HasStable {
+		c.Stable = reviewStable(stable, present, c.Pet)
+	}
+	return c
 }

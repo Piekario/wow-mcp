@@ -21,8 +21,8 @@ import (
 // Period is one interval of a continuously collected section.
 type Period struct {
 	Since, Until int64
-	Carried      bool           // a closed period from the section's periods list (false: a dump's current period)
-	Fields       map[string]any // the section fields of the period (items, kills, quests...)
+	Carried      bool // a closed period from the section's periods list (false: a dump's current period)
+	Raw          any  // the period's node in the dump; the package that owns the section reads it (items, kills, quests...)
 }
 
 // Merge is the result of After.
@@ -53,20 +53,18 @@ func After(baseline snapshot.Snapshot, dumps []snapshot.Snapshot, section string
 	from, _ := baseline.DumpedAt()
 	counted := map[int64]bool{}
 	for _, d := range dumps {
-		sec := d.Map(section)
-		if sec == nil {
+		current, ok := readCurrent(d, section)
+		if !ok {
 			continue
 		}
 		m.Found = true
-		since, _ := snapshot.AsInt(sec["since"])
-		until, _ := d.DumpedAt()
-		m.Periods = append(m.Periods, Period{Since: since, Until: until, Fields: sec})
-		counted[since] = true
+		m.Periods = append(m.Periods, current)
+		counted[current.Since] = true
 	}
 	carried := map[int64]Period{}
 	for _, d := range dumps {
-		for _, raw := range snapshot.AsList(d.Map(section)["periods"]) {
-			p, ok := closed(raw)
+		for _, p := range readClosed(d, section) {
+			ok := true
 			if !ok || p.Since < from || counted[p.Since] {
 				continue
 			}
@@ -81,24 +79,4 @@ func After(baseline snapshot.Snapshot, dumps []snapshot.Snapshot, section string
 	m.Carried = len(carried)
 	sort.SliceStable(m.Periods, func(i, j int) bool { return m.Periods[i].Since < m.Periods[j].Since })
 	return m
-}
-
-// closed reads one entry of a periods list; false when it lacks since or until.
-func closed(raw any) (Period, bool) {
-	fields := snapshot.AsMap(raw)
-	since, ok1 := snapshot.AsInt(fields["since"])
-	until, ok2 := snapshot.AsInt(fields["until"])
-	if !ok1 || !ok2 || until < since {
-		return Period{}, false
-	}
-	return Period{Since: since, Until: until, Carried: true, Fields: fields}, true
-}
-
-// Describe adds to out how many carried periods were merged (nothing when none was).
-func (m Merge) Describe(out map[string]any) {
-	if m.Carried == 0 || out == nil {
-		return
-	}
-	out["periodsMerged"] = m.Carried
-	out["periodsNote"] = "includes periods closed by earlier saves to disk that the server never read (carried by the addon in the section's periods list)"
 }

@@ -7,7 +7,7 @@
 -- it starts from zero, so each dump carries what came in since the previous one. The section is
 -- in the dump from the start of the period (even empty), and the counters messagesSeen, messagesParsed,
 -- messagesSecret and formats show whether messages arrive at all and whether they match the patterns.
--- Closed periods with loot are carried in loot.periods (oldest first, bounded; see Snapshot.closePeriod).
+-- Closed periods with loot are carried in loot.periods (oldest first, bounded; see Periods.close).
 
 local _, ns = ...
 local plain, callFirst = ns.Compat.plain, ns.Compat.callFirst
@@ -152,9 +152,9 @@ function Loot.hasContent(section)
 end
 
 -- After login (and after /reload) the previous dump is already on disk together with its loot; the closed period
--- is carried in loot.periods (Snapshot.startPeriod), so a second save before the server reads the file loses nothing.
+-- is carried in loot.periods (Periods.start), so a second save before the server reads the file loses nothing.
 local function startLootPeriod()
-    lootSince = ns.Snapshot.startPeriod("loot", newSection, Loot.hasContent)
+    lootSince = ns.Periods.start("loot", newSection, Loot.hasContent)
 end
 
 ns.Snapshot.addWindowSection("loot", nil, nil, { quiet = true })

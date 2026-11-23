@@ -20,165 +20,81 @@ type Query struct {
 	IncludeOffline bool   `json:"includeOffline,omitempty" jsonschema:"true = also show guild members who were offline (default online only; the rest as a count)"`
 }
 
-const privacyNote = "The addon reads only what the client has in memory after the social or guild window is opened; it never asks the game server for these lists itself. " +
-	"The list is the state at the time of saving (capturedAge), so who is online may have changed."
-
-const friendsHint = "The friends list has not been read yet (this does not mean it is empty): open the social window (friends list) in game and run /mcp reload. The addon never asks the server for this list."
-const friendsEmptyNote = "The friends list is empty: the client showed it to the addon and there was nobody on it."
-
-const guildHint = "The dump does not say whether the character is in a guild (an addon older than 0.7.1 saved only the list from the guild window). After /mcp reload, addon 0.7.1 will save it itself."
-const notInGuildNote = "The character is not in a guild (the addon checks this on every dump via IsInGuild, without asking the server)."
-const rosterHint = "The character is in a guild, but the member list has not been read yet: open the guild window in game and run /mcp reload. The addon never asks the server for this list."
-
-// View describes the character's friends and guild.
-func View(s snapshot.Snapshot, q Query, fresh snapshot.Freshness) map[string]any {
-	out := map[string]any{"privacy": privacyNote}
-	if f := Friends(s, fresh); f != nil {
-		out["friends"] = f
-	} else {
-		out["friendsHint"] = friendsHint
-	}
-	if g := Guild(s, q.IncludeOffline, fresh); g != nil {
-		out["guild"] = g
-	} else {
-		out["guildHint"] = guildHint
-	}
-	return out
+// Count is a number the dump may not have.
+type Count struct {
+	N     int64
+	Known bool
 }
 
-// InGuild says whether the character is in a guild; known = false when the dump does not know (no guild section).
-// A member list without the inGuild field (addon up to 0.7.0) also means a guild.
-func InGuild(s snapshot.Snapshot) (in, known bool) {
-	sec := s.Map("guild")
-	if sec == nil {
-		return false, false
-	}
-	if v, ok := sec["inGuild"].(bool); ok {
-		return v, true
-	}
-	return true, true
+// Capture is when a list was saved. Age is read apart from Captured because the age accepts a number type
+// that the capture meta does not.
+type Capture struct {
+	Captured snapshot.Captured
+	Age      Count
 }
 
-// Friends describes the friends list; nil when the dump has no friends section.
-func Friends(s snapshot.Snapshot, fresh snapshot.Freshness) map[string]any {
-	sec := s.Map("friends")
-	if sec == nil {
-		return nil
-	}
-	list := []any{}
-	for _, raw := range snapshot.AsList(sec["friends"]) {
-		m := snapshot.AsMap(raw)
-		e := pick(m, "name", "level", "class", "area", "notes")
-		online, _ := m["connected"].(bool)
-		e["online"] = online
-		list = append(list, e)
-	}
-	out := map[string]any{"friends": list}
-	copyInt(out, sec, "total")
-	copyInt(out, sec, "online")
-	addCapture(out, sec, fresh)
-	if len(list) == 0 {
-		out["note"] = friendsEmptyNote
-	}
-	return out
+// The text fields of Friend, Member, Guild and PvP are kept as the client gave them; nil means the dump has no such field.
+type Friend struct {
+	Name, Level, Class, Area, Notes any
+	Online                          bool
 }
 
-// Guild describes the guild: name, the player's rank, counts and online members (everyone when includeOffline); nil without a guild section.
-func Guild(s snapshot.Snapshot, includeOffline bool, fresh snapshot.Freshness) map[string]any {
-	sec := s.Map("guild")
-	if sec == nil {
-		return nil
-	}
-	if in, _ := InGuild(s); !in {
-		out := map[string]any{"inGuild": false, "note": notInGuildNote}
-		addCapture(out, sec, fresh)
-		return out
-	}
-	out := pick(sec, "name", "rank", "rankIndex")
-	out["inGuild"] = true
-	if _, ok := sec["members"]; !ok {
-		out["rosterHint"] = rosterHint
-		addCapture(out, sec, fresh)
-		return out
-	}
-	copyInt(out, sec, "total")
-	copyInt(out, sec, "online")
-	addCapture(out, sec, fresh)
+type FriendList struct {
+	Saved         bool
+	List          []Friend
+	Total, Online Count
+	Capture
+}
 
-	var shown []map[string]any
-	offline := 0
-	for _, raw := range snapshot.AsList(sec["members"]) {
-		m := snapshot.AsMap(raw)
-		on, _ := m["online"].(bool)
-		if !on && !includeOffline {
-			offline++
+type Member struct {
+	Name, Rank, RankIndex, Level, Class, Zone any
+	Online                                    bool
+}
+
+type GuildState struct {
+	Saved                 bool
+	In                    bool
+	Name, Rank, RankIndex any
+	HasRoster, OnlineOnly bool
+	Members               []Member
+	Total, Online         Count
+	Capture
+}
+
+// PvP is the pvp section; a classic client has ranks, Forever does not.
+type PvPRecord struct {
+	Saved                                                                       bool
+	HonorableKills, DishonorableKills, HighestRank, Honor, HonorMax, HonorLevel any
+	Rank, RankName                                                              any
+}
+
+// Roster is the guild members to show: the online ones, or everyone, by rank and then by name.
+type Roster struct {
+	Shown         []Member
+	OfflineHidden int
+}
+
+func (g GuildState) Roster(includeOffline bool) Roster {
+	var r Roster
+	for _, m := range g.Members {
+		if !m.Online && !includeOffline {
+			r.OfflineHidden++
 			continue
 		}
-		e := pick(m, "name", "rank", "rankIndex", "level", "class", "zone")
-		e["online"] = on
-		shown = append(shown, e)
+		r.Shown = append(r.Shown, m)
 	}
-	sort.SliceStable(shown, func(i, j int) bool {
-		a, _ := snapshot.AsInt(shown[i]["rankIndex"])
-		b, _ := snapshot.AsInt(shown[j]["rankIndex"])
+	sort.SliceStable(r.Shown, func(i, j int) bool {
+		a, _ := snapshot.AsInt(r.Shown[i].RankIndex)
+		b, _ := snapshot.AsInt(r.Shown[j].RankIndex)
 		if a != b {
 			return a < b
 		}
-		return strings.ToLower(asString(shown[i]["name"])) < strings.ToLower(asString(shown[j]["name"]))
+		return strings.ToLower(asString(r.Shown[i].Name)) < strings.ToLower(asString(r.Shown[j].Name))
 	})
-	members := make([]any, len(shown))
-	for i, m := range shown {
-		members[i] = m
-	}
-	label := "onlineMembers"
-	if includeOffline {
-		label = "members"
-	}
-	out[label] = members
-	if !includeOffline && offline > 0 {
-		out["offlineHidden"] = offline
-	}
-	if only, _ := sec["onlineOnly"].(bool); only {
-		out["onlineOnlyNote"] = "The guild is large (over 200 people), so the addon saved only online members; the total and online counts come from the client."
-	}
-	return out
-}
-
-// PvP describes the pvp section (honorable kills, honor, rank); nil when the dump has no section.
-func PvP(s snapshot.Snapshot) map[string]any {
-	sec := s.Map("pvp")
-	if sec == nil {
-		return nil
-	}
-	return pick(sec, "honorableKills", "dishonorableKills", "highestRank", "honor", "honorMax", "honorLevel", "rank", "rankName")
+	return r
 }
 
 func asString(v any) string {
 	s, _ := v.(string)
 	return s
-}
-
-// pick copies the given keys that occur in the map.
-func pick(m map[string]any, keys ...string) map[string]any {
-	out := map[string]any{}
-	for _, k := range keys {
-		if v, ok := m[k]; ok {
-			out[k] = v
-		}
-	}
-	return out
-}
-
-func copyInt(dst, src map[string]any, key string) {
-	if v, ok := snapshot.AsInt(src[key]); ok {
-		dst[key] = v
-	}
-}
-
-// addCapture adds the time and age of the list capture.
-func addCapture(out, sec map[string]any, fresh snapshot.Freshness) {
-	snapshot.Merge(out, fresh.CapturedMeta(sec))
-	if at, ok := snapshot.AsInt(sec["capturedAt"]); ok && fresh.Now != nil {
-		out["capturedAge"] = snapshot.FormatAge(fresh.Age(at))
-	}
 }

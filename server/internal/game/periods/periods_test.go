@@ -107,3 +107,10 @@ func TestAfterKeepsTheLatestUntilOfAContinuedPeriod(t *testing.T) {
 		t.Fatalf("nothing carried, nothing described: %v", out)
 	}
 }
+
+func TestReadClosedSkipsBrokenEntries(t *testing.T) {
+	d := dump(100, 50, period(10, 20, "ok"), period(30, 20, "backwards"), "garbage")
+	if got := readClosed(d, "loot"); len(got) != 1 || got[0].Since != 10 || !got[0].Carried {
+		t.Fatalf("closed: %+v", got)
+	}
+}

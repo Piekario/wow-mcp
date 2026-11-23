@@ -14,19 +14,11 @@ package flights
 import (
 	"sort"
 	"strings"
+	"time"
 
+	"wowmcp/internal/game/quests"
 	"wowmcp/internal/snapshot"
 )
-
-const missingHint = "The dump has no flightPaths section. Go to a flight master, open the window (flight map), then run /mcp reload so the server can see the flight points."
-
-const assumption = "Flight points and quests are matched by the zone's map ID when both have one (addon 0.10.0; the same in every game language). Otherwise, and for points without a zone field, I match the zone from the point name (the part after the last comma, or, if there is none, " +
-	"the whole name containing the zone name, or an abbreviation: Lakeshire, Redridge -> Redridge Mountains, Stormwind, Elwynn -> Stormwind City). The zone field of a quest is sometimes a subzone or a city, so a missing match does not prove there is no flight point nearby. " +
-	"The list from the flight master window is the points known to the character; the meaning of the unreachable state is NOT confirmed: it is an assumption (probably no connection from the current point rather than an undiscovered one), to be verified in game."
-
-// withoutNote explains why a zone may show no point despite a flight point being there.
-const withoutNote = "The flight master window usually shows only the points of the continent where it was opened, so a zone from another continent " +
-	"(e.g. Darkshore with the window opened in the Eastern Kingdoms) lands here even with a known flight point. A missing match does not prove there is no flight point."
 
 // Matching values say how a flight point was matched to a zone.
 const (
@@ -89,149 +81,10 @@ func (q QuestZones) Guessable(nodes []Node) []Node {
 	return out
 }
 
-// View matches flight points against quest zones.
-func View(s snapshot.Snapshot, fresh snapshot.Freshness) map[string]any {
-	out := map[string]any{"assumption": assumption}
-	section := s.Map("flightPaths")
-	rawNodes, has := section["nodes"]
-	if !has {
-		out["note"] = missingHint
-		out["hint"] = missingHint
-		return out
-	}
-	nodes := ParseNodes(snapshot.AsList(rawNodes))
-	if at, ok := snapshot.AsInt(section["capturedAt"]); ok {
-		out["capturedAt"] = snapshot.FormatTime(at)
-		if fresh.Now != nil {
-			out["capturedAge"] = snapshot.FormatAge(fresh.Age(at))
-		}
-	}
-	out["knownFlightPoints"] = len(nodes)
-
-	byZone, ids, order := questZones(s.List("quests"))
-	nodes = QuestZones(ids).Guessable(nodes)
-	var with, without []any
-	for _, zone := range order {
-		titles := byZone[zone]
-		entry := map[string]any{"zone": zone, "quests": len(titles), "titles": titles}
-		matches := MatchZoneID(zone, ids[zone], nodes)
-		if len(matches) == 0 {
-			without = append(without, entry)
-			continue
-		}
-		points := make([]any, len(matches))
-		for i, m := range matches {
-			points[i] = m.View()
-		}
-		entry["flightPoints"] = points
-		with = append(with, entry)
-	}
-	out["questZonesWithFlightPoint"] = nonNil(with)
-	out["questZonesWithoutFlightPoint"] = nonNil(without)
-	if len(without) > 0 {
-		out["withoutNote"] = withoutNote
-	}
-	if len(order) == 0 {
-		out["note"] = "The quest log is empty or the quests have no zone, so there is nothing to match flight points against."
-	}
-	AddNameMatchNote(s, out, nodes)
-	return out
-}
-
-// AddNameMatchNote adds the localeNote when some flight points have neither a zone map ID nor a zone field (or only one
-// that matched no quest zone): those are matched to zones by their names, with a table of English zone abbreviations.
-func AddNameMatchNote(s snapshot.Snapshot, out map[string]any, nodes []Node) {
-	for _, n := range nodes {
-		if n.Zone == "" && n.ZoneMapID == 0 {
-			s.AddEnglishOnlyNote(out, "Flight points without a zone ID or zone field are matched to zones by their names, with a table of English zone abbreviations")
-			return
-		}
-	}
-}
-
-func nonNil(l []any) []any {
-	if l == nil {
-		return []any{}
-	}
-	return l
-}
-
-// isRetiredNode says whether the point is a retired game data entry (zzOLD prefix, e.g. "zzOLDRiverglades, Farholde Keep"
-// next to the real "Farholde Keep, Riverglades" in a Forever 1.60.1 dump).
-func isRetiredNode(name string) bool {
-	return strings.HasPrefix(strings.ToLower(name), "zzold")
-}
-
-// ParseNodes reads the flightPaths.nodes list (skips entries without a name and retired zzOLD entries).
-func ParseNodes(list []any) []Node {
-	var out []Node
-	for _, raw := range list {
-		m := snapshot.AsMap(raw)
-		name, _ := m["name"].(string)
-		if name == "" || isRetiredNode(name) {
-			continue
-		}
-		n := Node{Name: name}
-		n.State, _ = m["state"].(string)
-		n.Zone, _ = m["zone"].(string)
-		n.Continent, _ = m["continent"].(string)
-		if isContinentName(n.Zone) {
-			n.Continent, n.Zone = n.Zone, ""
-		}
-		n.NodeID, _ = snapshot.AsInt(m["nodeID"])
-		n.ZoneMapID, _ = snapshot.AsInt(m["zoneMapID"])
-		out = append(out, n)
-	}
-	return out
-}
-
-// questZones groups quest titles by zone; ids has every zone with its map ID (the first quest that has one, else 0);
-// order lists zones by most quests, then alphabetically.
-func questZones(quests []any) (map[string][]string, map[string]int64, []string) {
-	byZone := map[string][]string{}
-	ids := map[string]int64{}
-	for _, raw := range quests {
-		q := snapshot.AsMap(raw)
-		zone, _ := q["zone"].(string)
-		if zone == "" {
-			continue
-		}
-		title, _ := q["title"].(string)
-		byZone[zone] = append(byZone[zone], title)
-		if _, seen := ids[zone]; !seen {
-			ids[zone] = 0
-		}
-		if id, ok := snapshot.AsInt(q["zoneMapID"]); ok && id > 0 && ids[zone] == 0 {
-			ids[zone] = id
-		}
-	}
-	order := make([]string, 0, len(byZone))
-	for zone := range byZone {
-		order = append(order, zone)
-	}
-	sort.Slice(order, func(i, j int) bool {
-		if a, b := len(byZone[order[i]]), len(byZone[order[j]]); a != b {
-			return a > b
-		}
-		return order[i] < order[j]
-	})
-	return byZone, ids, order
-}
-
 // Match is a flight point matched to a zone and the way it matched (By: zone field, name suffix, name contains zone).
 type Match struct {
 	Node Node
 	By   string
-}
-
-// View is the match as in responses: name, state, matchedBy, and zoneFieldUnmatched when the point's own zone field
-// or map ID matched no quest zone (so the name decided).
-func (m Match) View() map[string]any {
-	out := map[string]any{"name": m.Node.Name, "state": m.Node.State, "matchedBy": m.By}
-	if m.Node.ZoneUnmatched {
-		out["zoneFieldUnmatched"] = true
-	}
-	return out
 }
 
 // MatchZoneID matches flight points to a zone by its map ID first: a point that has a zone map ID is a match when the
@@ -299,4 +152,90 @@ func suffixZone(name string) string {
 		return ""
 	}
 	return strings.TrimSpace(name[i+1:])
+}
+
+// ZoneMatches is a quest zone with the flight points matched to it.
+type ZoneMatches struct {
+	Zone    string
+	Titles  []string
+	Matches []Match
+}
+
+// Report is the flight points judged against the quest zones. Missing: the dump has no flightPaths section.
+type Report struct {
+	Missing      bool
+	HasCaptured  bool
+	CapturedAt   int64
+	HasAge       bool
+	Age          time.Duration
+	Known        int
+	With         []ZoneMatches
+	Without      []ZoneMatches
+	NoQuestZones bool
+	Nodes        []Node
+}
+
+// Analyse matches flight points against quest zones.
+func Analyse(s snapshot.Snapshot, fresh snapshot.Freshness) Report {
+	section, ok := readSection(s)
+	if !ok {
+		return Report{Missing: true}
+	}
+	r := Report{Known: len(section.Nodes), HasCaptured: section.HasCaptured, CapturedAt: section.CapturedAt}
+	if section.HasCaptured && fresh.Now != nil {
+		r.HasAge, r.Age = true, fresh.Age(section.CapturedAt)
+	}
+	byZone, ids, order := ZonesOf(quests.ReadLog(s).Quests)
+	r.Nodes = QuestZones(ids).Guessable(section.Nodes)
+	for _, zone := range order {
+		entry := ZoneMatches{Zone: zone, Titles: byZone[zone], Matches: MatchZoneID(zone, ids[zone], r.Nodes)}
+		if len(entry.Matches) == 0 {
+			r.Without = append(r.Without, entry)
+		} else {
+			r.With = append(r.With, entry)
+		}
+	}
+	r.NoQuestZones = len(order) == 0
+	return r
+}
+
+// NeedsNameMatchNote: some flight points have neither a zone map ID nor a zone field (or only one that matched no
+// quest zone), so they are matched to zones by their names with a table of English zone abbreviations.
+func NeedsNameMatchNote(nodes []Node) bool {
+	for _, n := range nodes {
+		if n.Zone == "" && n.ZoneMapID == 0 {
+			return true
+		}
+	}
+	return false
+}
+
+// ZonesOf groups quest titles by zone; ids has every zone with its map ID (the first quest that has one, else 0);
+// order lists zones by most quests, then alphabetically.
+func ZonesOf(log []quests.Quest) (map[string][]string, map[string]int64, []string) {
+	byZone := map[string][]string{}
+	ids := map[string]int64{}
+	for _, q := range log {
+		if q.Zone == "" {
+			continue
+		}
+		byZone[q.Zone] = append(byZone[q.Zone], q.Title)
+		if q.ZoneMapID > 0 && ids[q.Zone] == 0 {
+			ids[q.Zone] = q.ZoneMapID
+		}
+		if _, seen := ids[q.Zone]; !seen {
+			ids[q.Zone] = 0
+		}
+	}
+	order := make([]string, 0, len(byZone))
+	for zone := range byZone {
+		order = append(order, zone)
+	}
+	sort.Slice(order, func(i, j int) bool {
+		if a, b := len(byZone[order[i]]), len(byZone[order[j]]); a != b {
+			return a > b
+		}
+		return order[i] < order[j]
+	})
+	return byZone, ids, order
 }

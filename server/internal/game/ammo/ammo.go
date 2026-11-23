@@ -11,7 +11,7 @@ import (
 	"sort"
 
 	"wowmcp/internal/game/consumption"
-	"wowmcp/internal/game/itemkind"
+	"wowmcp/internal/game/items"
 	"wowmcp/internal/game/progress"
 	"wowmcp/internal/snapshot"
 )
@@ -34,22 +34,12 @@ type Stock struct {
 
 func (s Stock) Total() int64 { return s.Equipped + s.InBags }
 
-// isAmmoItem: ammo is an item of the Projectile class (for old dumps: type Projectile or subtype Arrow/Bullet).
-func isAmmoItem(item map[string]any) bool { return itemkind.IsAmmo(item) }
-
-// equippedAmmo returns the item in the ammo slot; nil when the slot is empty.
-func equippedAmmo(s snapshot.Snapshot) map[string]any {
-	return snapshot.EquippedBySlot(s.Equipment())["ammo"]
-}
-
 // bagAmmo counts ammo in bags by name.
 func bagAmmo(s snapshot.Snapshot) map[string]int64 {
 	out := map[string]int64{}
-	for _, bag := range s.Bags() {
-		for _, raw := range snapshot.AsList(snapshot.AsMap(bag)["items"]) {
-			if item := snapshot.AsMap(raw); isAmmoItem(item) {
-				out[fmt.Sprint(item["name"])] += snapshot.ItemCount(item)
-			}
+	for _, held := range items.StockOf(s, func(it items.Item) bool { return it.IsAmmo() }) {
+		if held.Bags > 0 {
+			out[held.Item.Name] += held.Bags
 		}
 	}
 	return out
@@ -59,8 +49,8 @@ func bagAmmo(s snapshot.Snapshot) map[string]int64 {
 // The second result is the other kinds from bags. false when the character has no ammo at all.
 func MainStock(s snapshot.Snapshot) (main Stock, others []Stock, ok bool) {
 	inBags := bagAmmo(s)
-	if eq := equippedAmmo(s); eq != nil {
-		main = Stock{Name: fmt.Sprint(eq["name"]), Equipped: snapshot.ItemCount(eq)}
+	if eq := items.InspectBags(s).Ammo; eq != nil {
+		main = Stock{Name: eq.Name, Equipped: eq.Count}
 	} else if name, found := mostNumerous(inBags); found {
 		main = Stock{Name: name}
 	} else {
@@ -88,78 +78,74 @@ func mostNumerous(counts map[string]int64) (string, bool) {
 // countOf counts ammo of a given kind in the dump (ammo slot and bags).
 func countOf(s snapshot.Snapshot, name string) int64 {
 	var n int64
-	if eq := equippedAmmo(s); eq != nil && fmt.Sprint(eq["name"]) == name {
-		n += snapshot.ItemCount(eq)
+	if eq := items.InspectBags(s).Ammo; eq != nil && eq.Name == name {
+		n += eq.Count
 	}
 	return n + bagAmmo(s)[name]
 }
 
-// View describes the ammo stock, the per-hour usage from history and how much to buy for q.Hours hours.
-func View(name string, s snapshot.Snapshot, tr progress.Tracker, q Query) (map[string]any, error) {
+// VendorOffer is the last vendor window's offer of the ammo; Stack is shown as the dump has it.
+type VendorOffer struct {
+	Npc, Stack any
+}
+
+// PurchasePlan is how much to buy to last Hours hours of play.
+type PurchasePlan struct {
+	Hours               float64
+	Needed, Have, ToBuy int64
+	Vendor              *VendorOffer
+}
+
+// Report is the ammo stock, its usage over the history and the purchase plan. Present is false when the
+// character has no ammo at all. UseErr says why there is no usage (history disabled or too short); HoursLeft and
+// Plan exist only when ammo is actually being used up.
+type Report struct {
+	Present      bool
+	Main         Stock
+	Others       []Stock
+	SlotEmpty    bool
+	Use          consumption.Usage
+	UseErr       string
+	HoursLeft    float64
+	HasHoursLeft bool
+	Plan         PurchasePlan
+}
+
+// Inspect measures the ammo stock and plans a purchase for q.Hours hours of play (default 2).
+func Inspect(name string, s snapshot.Snapshot, tr progress.Tracker, q Query) (Report, error) {
 	hours := q.Hours
 	switch {
 	case hours == 0:
 		hours = defaultHours
 	case hours < 0 || math.IsNaN(hours):
-		return nil, fmt.Errorf("hours must be positive (default %d), got %g", defaultHours, q.Hours)
+		return Report{}, fmt.Errorf("hours must be positive (default %d), got %g", defaultHours, q.Hours)
 	}
 	main, others, ok := MainStock(s)
 	if !ok {
-		return map[string]any{"note": "The character has no ammo: the ammo slot is empty and there are no arrows or bullets in bags. " +
-			"Ammo applies to characters with a ranged weapon that uses it (e.g. Hunter); if you have some, open your bags and run /mcp reload."}, nil
+		return Report{}, nil
 	}
-	out := map[string]any{"ammo": stockView(main)}
-	if len(others) > 0 {
-		views := make([]any, len(others))
-		for i, o := range others {
-			views[i] = stockView(o)
-		}
-		out["otherAmmoInBags"] = views
-	}
-	if equippedAmmo(s) == nil {
-		out["equippedNote"] = "The ammo slot is empty; calculated from the most numerous ammo in bags."
-	}
-
+	r := Report{Present: true, Main: main, Others: others, SlotEmpty: items.InspectBags(s).Ammo == nil}
 	use, err := consumption.Over(tr, name, s, func(snap snapshot.Snapshot) int64 { return countOf(snap, main.Name) })
 	if err != nil {
-		out["consumption"] = map[string]any{"note": err.Error()}
-		return out, nil
+		r.UseErr = err.Error()
+		return r, nil
 	}
-	out["consumption"] = use.Describe(consumptionHow, notShrunk)
+	r.Use = use
 	if left, ok := use.HoursLeft(main.Total()); ok {
-		out["hoursLeft"] = snapshot.Round1(left)
-		out["timeLeft"] = snapshot.FormatSeconds(int64(left * 3600))
-		out["plan"] = purchasePlan(main, use.PerHour, hours, s)
+		r.HoursLeft, r.HasHoursLeft = left, true
+		r.Plan = purchasePlan(main, use.PerHour, hours, s)
 	}
-	return out, nil
+	return r, nil
 }
-
-func stockView(st Stock) map[string]any {
-	return map[string]any{"name": st.Name, "equipped": st.Equipped, "inBags": st.InBags, "total": st.Total()}
-}
-
-// consumptionHow explains how ammo usage is calculated.
-const consumptionHow = "sum of drops in the count between consecutive dumps (purchases and increases do not count); this is an approximation, because the loss can have causes other than shooting"
-
-// notShrunk is the note used when the ammo did not decrease within the history stretch.
-const notShrunk = "The ammo did not decrease in this stretch of history, so there is nothing to compute a rate from."
 
 // purchasePlan computes how much to buy to last hours hours of play; adds the stack size if the last vendor sells this ammo.
-func purchasePlan(main Stock, perHour, hours float64, s snapshot.Snapshot) map[string]any {
+func purchasePlan(main Stock, perHour, hours float64, s snapshot.Snapshot) PurchasePlan {
 	needed := int64(math.Ceil(perHour * hours))
-	toBuy := max(needed-main.Total(), 0)
-	out := map[string]any{"hours": hours, "needed": needed, "have": main.Total(), "toBuy": toBuy}
-	if toBuy == 0 {
-		out["note"] = "The stock will last for the planned play time."
+	plan := PurchasePlan{Hours: hours, Needed: needed, Have: main.Total(), ToBuy: max(needed-main.Total(), 0)}
+	if offer, ok := readVendorOffer(s, main.Name); ok {
+		plan.Vendor = &offer
 	}
-	if vendor := s.Map("vendor"); vendor != nil {
-		for _, raw := range snapshot.AsList(vendor["items"]) {
-			if item := snapshot.AsMap(raw); item["name"] == main.Name {
-				out["vendor"] = map[string]any{"npc": vendor["npc"], "stack": item["stack"], "note": "offer from the last vendor visit"}
-			}
-		}
-	}
-	return out
+	return plan
 }
 
 // Forecast is the ammo supply forecast: how much there is and, when history allows, how many hours of play it lasts.

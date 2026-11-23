@@ -139,3 +139,25 @@ func TestMissingSections(t *testing.T) {
 	// Broken types do not cause a panic.
 	View(snapshot.Snapshot{"recipes": map[string]any{"X": "bad"}, "auctions": []any{}}, Query{}, fixtures.At(0))
 }
+
+func TestAnalysePricesCraftsWithoutZeroForMissingPrices(t *testing.T) {
+	r := Analyse(testSnap(), Query{}, fixtures.At(0))
+	byName := map[string]Evaluation{}
+	for _, e := range r.Evaluations {
+		byName[e.Name] = e
+	}
+	gloves := byName["Embossed Gloves"]
+	if !gloves.Known() || gloves.Cost != 460 || gloves.Margin != 440 || gloves.Verdict() != VerdictMake {
+		t.Errorf("gloves = %+v", gloves)
+	}
+	boots := byName["Mystery Boots"]
+	if boots.Known() || boots.Verdict() != VerdictUnknown || len(boots.Missing) != 1 || boots.Missing[0].Name != "Unpriced Dust" {
+		t.Errorf("boots = %+v", boots)
+	}
+	if len(byName["Old Belt"].Stale) != 1 || !byName["Old Belt"].Stale[0].Finished {
+		t.Errorf("belt stale = %+v", byName["Old Belt"].Stale)
+	}
+	if r.Total != 4 || r.ByVerdict[VerdictMake] != 2 || r.Truncated() {
+		t.Errorf("report: total %d, %v", r.Total, r.ByVerdict)
+	}
+}

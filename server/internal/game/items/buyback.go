@@ -9,49 +9,52 @@ import (
 	"wowmcp/internal/snapshot"
 )
 
-// buybackAssumption: what the server does not know about the buyback list.
-const buybackAssumption = "The buyback list is an assumption, not a certainty: the addon saves it from the vendor window, and the client keeps it only until logout, " +
-	"so after a relog the items on the list may no longer be buyable (the server cannot see this; see capturedAge). " +
-	"priceCopper is the price for the whole batch (count units), as in the vendor offer."
+// BuybackSection is the buyback list from the last vendor window. The client keeps it only until logout.
+type BuybackSection struct {
+	Npc      any
+	Items    []Item
+	Captured snapshot.Captured
+	At       int64 // capturedAt read as any number, for the age of the list
+	HasAt    bool
+}
 
-// Buyback describes the buyback list from the last vendor window (the buyback section): what can still be bought back, for how much,
-// whether the character can afford it and how long ago the list was saved. nil when the dump has no section. query narrows by item name.
-func Buyback(s snapshot.Snapshot, query string, fresh snapshot.Freshness) map[string]any {
-	sec := s.Map("buyback")
-	if sec == nil {
-		return nil
+type BuybackLine struct {
+	Item
+	CanAfford bool
+}
+
+type BuybackReport struct {
+	BuybackSection
+	Lines []BuybackLine
+	Total int64
+}
+
+// InspectBuyback narrows the buyback list by item name and judges each price against the character's money;
+// false when the dump has no buyback section.
+func InspectBuyback(s snapshot.Snapshot, query string) (BuybackReport, bool) {
+	sec, ok := readBuyback(s)
+	if !ok {
+		return BuybackReport{}, false
 	}
 	_, money := s.LevelAndMoney()
 	needle := strings.ToLower(query)
-	list := []any{}
-	var total int64
-	for _, raw := range snapshot.AsList(sec["items"]) {
-		item := snapshot.AsMap(raw)
-		name, _ := item["name"].(string)
-		if needle != "" && !strings.Contains(strings.ToLower(name), needle) {
+	r := BuybackReport{BuybackSection: sec}
+	for _, it := range sec.Items {
+		if needle != "" && !strings.Contains(strings.ToLower(it.Name), needle) {
 			continue
 		}
-		e := map[string]any{"name": name}
-		for _, k := range []string{"index", "id", "count"} {
-			if v, ok := item[k]; ok {
-				e[k] = v
-			}
+		line := BuybackLine{Item: it}
+		if it.HasPrice {
+			line.CanAfford = it.Price <= money
+			r.Total += it.Price
 		}
-		if price, ok := snapshot.AsInt(item["priceCopper"]); ok {
-			e["priceCopper"] = price
-			e["price"] = snapshot.Money(price).String()
-			e["canAfford"] = price <= money
-			total += price
-		}
-		list = append(list, e)
+		r.Lines = append(r.Lines, line)
 	}
-	out := map[string]any{"npc": sec["npc"], "items": list, "count": len(list), "assumption": buybackAssumption}
-	if len(list) > 0 {
-		out["totalPrice"] = snapshot.Money(total).String()
-	}
-	snapshot.Merge(out, fresh.CapturedMeta(sec))
-	if at, ok := snapshot.AsInt(sec["capturedAt"]); ok && fresh.Now != nil {
-		out["capturedAge"] = snapshot.FormatAge(fresh.Age(at))
-	}
-	return out
+	return r, true
+}
+
+// soldBy says whether the list came from the NPC whose name contains the fragment (case-insensitive).
+func (b BuybackSection) soldBy(fragment string) bool {
+	name, _ := b.Npc.(string)
+	return strings.Contains(strings.ToLower(name), strings.ToLower(fragment))
 }

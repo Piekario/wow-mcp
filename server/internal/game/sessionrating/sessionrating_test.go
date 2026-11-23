@@ -133,3 +133,15 @@ func TestZeroMedianAndHelpers(t *testing.T) {
 		t.Error("median of an empty list")
 	}
 }
+
+func TestMetricSpeed(t *testing.T) {
+	if m := metric(130, 100); !m.Known || m.Speed != Faster || m.Ratio != 1.3 {
+		t.Errorf("faster: %+v", m)
+	}
+	if m := metric(80, 100); m.Speed != Slower {
+		t.Errorf("slower: %+v", m)
+	}
+	if m := metric(100, 0); m.Known || m.Speed != "" {
+		t.Errorf("zero median: %+v", m)
+	}
+}

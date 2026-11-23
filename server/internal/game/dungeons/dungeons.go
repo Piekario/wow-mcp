@@ -14,12 +14,13 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+	"time"
 
 	"wowmcp/internal/game/quests"
 	"wowmcp/internal/snapshot"
 )
 
-type dungeonInfo struct {
+type Dungeon struct {
 	Name     string
 	Min, Max int64
 	Zone     string
@@ -31,7 +32,7 @@ type dungeonInfo struct {
 	MapID    int64 // the instance's map ID (lfgMapID), 0 when the client did not say
 }
 
-var classicDungeons = []dungeonInfo{
+var classicDungeons = []Dungeon{
 	{Name: "Ragefire Chasm", Min: 13, Max: 18, Zone: "Orgrimmar", Note: "entrance in the Horde capital"},
 	{Name: "Wailing Caverns", Min: 17, Max: 24, Zone: "The Barrens"},
 	{Name: "The Deadmines", Min: 17, Max: 26, Zone: "Westfall", Aliases: []string{"Deadmines"}},
@@ -71,78 +72,137 @@ type Query struct {
 	Name      string `json:"name,omitempty" jsonschema:"fragment of a dungeon name: only that dungeon, with its quests"`
 }
 
-// gameDungeons reads level ranges from client data (C_LFGList or GetLFGDungeonInfo).
-func gameDungeons(s snapshot.Snapshot) []dungeonInfo {
-	d := s.Map("dungeons")
-	var out []dungeonInfo
-	seen := map[string]bool{}
-	pick := func(vals ...any) int64 {
-		for _, v := range vals {
-			if n, ok := snapshot.AsInt(v); ok && n > 0 {
-				return n
-			}
-		}
-		return 0
-	}
-	for _, raw := range snapshot.AsList(d["activities"]) {
-		a := snapshot.AsMap(raw)
-		name, _ := a["name"].(string)
-		cat, _ := a["category"].(string)
-		lc := strings.ToLower(cat)
-		if name == "" || seen[name] || (cat != "" && !strings.Contains(lc, "dungeon") && !strings.Contains(lc, "raid")) {
-			continue
-		}
-		seen[name] = true
-		players := pick(a["maxPlayers"])
-		out = append(out, dungeonInfo{
-			Name:    name,
-			ID:      pick(a["id"]),
-			Min:     pick(a["minLevelSuggestion"], a["minLevel"]),
-			Max:     pick(a["maxLevelSuggestion"], a["maxLevel"]),
-			Players: players,
-			Raid:    strings.Contains(lc, "raid") || players > 5,
-		})
-	}
-	for _, raw := range snapshot.AsList(d["lfg"]) {
-		a := snapshot.AsMap(raw)
-		name, _ := a["name"].(string)
-		if name == "" || seen[name] {
-			continue
-		}
-		seen[name] = true
-		players := pick(a["maxPlayers"])
-		out = append(out, dungeonInfo{
-			Name:    name,
-			ID:      pick(a["id"]),
-			MapID:   pick(a["mapID"]),
-			Min:     pick(a["minRecLevel"], a["recLevel"], a["minLevel"]),
-			Max:     pick(a["maxRecLevel"], a["maxLevel"]),
-			Players: players,
-			Raid:    players > 5,
-		})
-	}
-	// Zone, notes and other names from the table, if the dungeon is in it.
-	for i := range out {
-		if ref, ok := findClassicDungeon(out[i].Name); ok {
-			out[i].Zone, out[i].Note, out[i].Aliases = ref.Zone, ref.Note, ref.Aliases
-		}
-	}
-	return out
-}
-
-func findClassicDungeon(name string) (dungeonInfo, bool) {
+func findClassicDungeon(name string) (Dungeon, bool) {
 	n := strings.ToLower(strings.TrimPrefix(name, "The "))
 	for _, d := range classicDungeons {
 		if strings.ToLower(strings.TrimPrefix(d.Name, "The ")) == n {
 			return d, true
 		}
 	}
-	return dungeonInfo{}, false
+	return Dungeon{}, false
+}
+
+// Source says where the dungeon list comes from.
+type Source int
+
+const (
+	FromGame Source = iota
+	FromTable
+)
+
+// Lockout is a saved instance. The fields that are only passed through stay as the dump has them.
+type Lockout struct {
+	Name                                                   any
+	Difficulty, DifficultyID, InstanceID, Raid, MaxPlayers any
+	InstanceMapID                                          int64
+	Released                                               bool // the dump says locked = false
+	Killed, Encounters                                     int64
+	HasKilled                                              bool
+	ResetAt                                                int64
+	HasReset                                               bool
+}
+
+// LockoutStatus is a lockout judged against the clock.
+type LockoutStatus struct {
+	Lockout
+	Passed bool
+	Left   time.Duration
+}
+
+// RelatedQuest is a quest of the log tied to a dungeon.
+type RelatedQuest struct {
+	Quest         quests.Quest
+	Difficulty    string
+	HasDifficulty bool
+}
+
+// Entry is a dungeon with what the character has to do with it.
+type Entry struct {
+	Dungeon
+	Locked     bool
+	Quests     []RelatedQuest
+	LevelsToGo int64
+}
+
+// Report splits the dungeons into those matching the level, those coming soon and the rest.
+type Report struct {
+	Level        int64
+	Source       Source
+	All          bool
+	Fit, Soon    []Entry
+	Other        []Entry
+	Lockouts     []LockoutStatus
+	WithoutTable int
+}
+
+// Analyse splits dungeons into those matching the level (Fit), those available in a few levels
+// (Soon) and the rest, with quest log quests and instance lockouts.
+func Analyse(s snapshot.Snapshot, q Query, fresh snapshot.Freshness) Report {
+	log := quests.ReadLog(s)
+	// Unlike in the quest plan: a value from the game <= 0 does not switch to the table.
+	green := quests.GreenRange(log.Level)
+	if log.HasGameGreen {
+		green = log.GameGreen
+	}
+	r := Report{Level: log.Level, All: q.All}
+	list := withTableData(readClientDungeons(s))
+	if len(list) == 0 {
+		list, r.Source = classicDungeons, FromTable
+	} else {
+		r.WithoutTable = withoutTableData(list)
+	}
+	lockouts := readLockouts(s)
+	locked := lockedInstanceIDs(lockouts)
+	nq := strings.ToLower(q.Name)
+	for _, d := range list {
+		if nq != "" && !strings.Contains(strings.ToLower(d.Name), nq) {
+			continue
+		}
+		e := Entry{Dungeon: d, Locked: d.MapID > 0 && locked[d.MapID], Quests: dungeonQuests(log.Quests, d, log.Level, green)}
+		r.place(e, nq != "", q.All)
+	}
+	r.Lockouts = judgeLockouts(lockouts, fresh)
+	return r
+}
+
+func (r *Report) place(e Entry, named, all bool) {
+	switch {
+	case named:
+		r.Fit = append(r.Fit, e)
+	case e.Min > 0 && r.Level >= e.Min-1 && (e.Max == 0 || r.Level <= e.Max):
+		r.Fit = append(r.Fit, e)
+	case e.Min > 0 && r.Level < e.Min-1 && r.Level >= e.Min-6:
+		e.LevelsToGo = e.Min - 1 - r.Level
+		r.Soon = append(r.Soon, e)
+	case all || len(e.Quests) > 0:
+		r.Other = append(r.Other, e)
+	}
+}
+
+// withTableData adds zone, notes and other names from the table to the client's dungeons it knows.
+func withTableData(list []Dungeon) []Dungeon {
+	for i := range list {
+		if ref, ok := findClassicDungeon(list[i].Name); ok {
+			list[i].Zone, list[i].Note, list[i].Aliases = ref.Zone, ref.Note, ref.Aliases
+		}
+	}
+	return list
+}
+
+// withoutTableData counts the client's dungeons the English table did not enrich (no zone from it).
+func withoutTableData(list []Dungeon) int {
+	n := 0
+	for _, d := range list {
+		if d.Zone == "" {
+			n++
+		}
+	}
+	return n
 }
 
 // dungeonQuests returns the quest log quests tied to a dungeon: the log header
 // is the dungeon name, or the dungeon name appears in the quest title or objectives.
-func dungeonQuests(s snapshot.Snapshot, d dungeonInfo, playerLevel, green int64) []any {
+func dungeonQuests(log []quests.Quest, d Dungeon, playerLevel, green int64) []RelatedQuest {
 	names := []string{strings.ToLower(d.Name), strings.ToLower(strings.TrimPrefix(d.Name, "The "))}
 	for _, a := range d.Aliases {
 		names = append(names, strings.ToLower(a))
@@ -156,178 +216,42 @@ func dungeonQuests(s snapshot.Snapshot, d dungeonInfo, playerLevel, green int64)
 		}
 		return false
 	}
-	out := []any{}
-	for _, raw := range s.List("quests") {
-		q := snapshot.AsMap(raw)
-		zone, _ := q["zone"].(string)
-		title, _ := q["title"].(string)
-		goals := quests.Objectives(q)
-		if !mentions(zone) && !mentions(title) && !mentions(strings.Join(goals, " ")) {
+	var out []RelatedQuest
+	for _, q := range log {
+		if !mentions(q.Zone) && !mentions(q.Title) && !mentions(strings.Join(q.ObjectiveTexts(), " ")) {
 			continue
 		}
-		e := map[string]any{"title": title, "id": q["id"], "level": q["level"]}
-		if lvl, ok := snapshot.AsInt(q["level"]); ok && playerLevel > 0 {
-			e["difficulty"] = quests.Difficulty(lvl, playerLevel, green)
+		related := RelatedQuest{Quest: q}
+		if q.HasLevel && playerLevel > 0 {
+			related.Difficulty, related.HasDifficulty = quests.Difficulty(q.Level, playerLevel, green), true
 		}
-		if q["complete"] == true {
-			e["complete"] = true
-		} else if len(goals) > 0 {
-			e["objectives"] = strings.Join(goals, "; ")
-		}
-		out = append(out, e)
+		out = append(out, related)
 	}
 	return out
-}
-
-// View splits dungeons into those matching the level (fitNow), those available in a few levels
-// (soon) and the rest, with quest log quests and instance lockouts.
-func View(s snapshot.Snapshot, q Query, fresh snapshot.Freshness) map[string]any {
-	level, _ := s.LevelAndMoney()
-	// Unlike in the quest plan: a value from the game <= 0 does not switch to the table.
-	green, ok := snapshot.AsInt(s.Character()["questGreenRange"])
-	if !ok {
-		green = quests.GreenRange(level)
-	}
-	list := gameDungeons(s)
-	source := "game"
-	sourceNote := "The level ranges come from the game client (the group finder tool)."
-	if len(list) == 0 {
-		list = classicDungeons
-		source = "classic"
-		sourceNote = "The client did not report a dungeon list, so the ranges come from the classic game table and are approximate; Forever may change them. If the game has a group finder tool, open it once and type /mcp reload."
-	}
-
-	lockedInstances := lockedInstanceIDs(s)
-	var fit, soon, other []any
-	nq := strings.ToLower(q.Name)
-	for _, d := range list {
-		if nq != "" && !strings.Contains(strings.ToLower(d.Name), nq) {
-			continue
-		}
-		e := map[string]any{"name": d.Name}
-		if d.ID > 0 {
-			e["id"] = d.ID
-		}
-		if d.MapID > 0 {
-			e["mapID"] = d.MapID
-			if lockedInstances[d.MapID] {
-				e["locked"] = true
-			}
-		}
-		if d.Min > 0 {
-			e["levels"] = fmt.Sprintf("%d-%d", d.Min, d.Max)
-		}
-		if d.Zone != "" {
-			e["zone"] = d.Zone
-		}
-		if d.Note != "" {
-			e["note"] = d.Note
-		}
-		if d.Raid {
-			e["raid"] = true
-		}
-		if d.Players > 0 {
-			e["players"] = d.Players
-		}
-		related := dungeonQuests(s, d, level, green)
-		if len(related) > 0 {
-			e["quests"] = related
-		}
-		switch {
-		case nq != "":
-			fit = append(fit, e)
-		case d.Min > 0 && level >= d.Min-1 && (d.Max == 0 || level <= d.Max):
-			fit = append(fit, e)
-		case d.Min > 0 && level < d.Min-1 && level >= d.Min-6:
-			e["levelsToGo"] = d.Min - 1 - level
-			soon = append(soon, e)
-		case q.All || len(related) > 0:
-			other = append(other, e)
-		}
-	}
-	out := map[string]any{
-		"level":      level,
-		"source":     source,
-		"sourceNote": sourceNote,
-		"fitNow":     orEmpty(fit),
-	}
-	if len(soon) > 0 {
-		out["soon"] = soon
-	}
-	if len(other) > 0 {
-		out["other"] = other
-		if !q.All {
-			out["otherNote"] = "Dungeons outside your level range that you have quests for in the log."
-		}
-	}
-	if lockouts := lockoutList(s, fresh); len(lockouts) > 0 {
-		out["lockouts"] = lockouts
-	}
-	if source == "classic" {
-		s.AddEnglishOnlyNote(out, "The dungeon list, zones, notes and the names used to find dungeon quests in the quest log come from a table of English dungeon names, because the client gave no dungeon list")
-	} else if n := withoutTableData(list); n > 0 {
-		s.AddEnglishOnlyNote(out, fmt.Sprintf("Levels come from the client, but the zone and notes of a dungeon come from a table of English dungeon names, so they are missing for %d dungeons", n))
-	}
-	return out
-}
-
-// withoutTableData counts the client's dungeons the English table did not enrich (no zone from it).
-func withoutTableData(list []dungeonInfo) int {
-	n := 0
-	for _, d := range list {
-		if d.Zone == "" {
-			n++
-		}
-	}
-	return n
 }
 
 // lockedInstanceIDs is the set of instance map IDs the character is saved to (the lockouts' instanceID, addon 0.10.0).
-func lockedInstanceIDs(s snapshot.Snapshot) map[int64]bool {
+func lockedInstanceIDs(lockouts []Lockout) map[int64]bool {
 	ids := map[int64]bool{}
-	for _, raw := range snapshot.AsList(s.Map("dungeons")["lockouts"]) {
-		l := snapshot.AsMap(raw)
-		if id, ok := snapshot.AsInt(l["instanceID"]); ok && id > 0 && l["locked"] != false {
-			ids[id] = true
+	for _, l := range lockouts {
+		if l.InstanceMapID > 0 && !l.Released {
+			ids[l.InstanceMapID] = true
 		}
 	}
 	return ids
 }
 
-// orEmpty turns nil into an empty list so JSON has [] instead of null.
-func orEmpty(list []any) []any {
-	if list == nil {
-		return []any{}
-	}
-	return list
-}
-
-// lockoutList describes the saved instance lockouts with the time to reset.
-func lockoutList(s snapshot.Snapshot, fresh snapshot.Freshness) []any {
-	out := []any{}
-	for _, raw := range snapshot.AsList(s.Map("dungeons")["lockouts"]) {
-		l := snapshot.AsMap(raw)
-		e := map[string]any{"name": l["name"]}
-		for _, k := range []string{"difficulty", "difficultyID", "instanceID", "raid", "maxPlayers"} {
-			if v, ok := l[k]; ok {
-				e[k] = v
-			}
+func judgeLockouts(lockouts []Lockout, fresh snapshot.Freshness) []LockoutStatus {
+	var out []LockoutStatus
+	for _, l := range lockouts {
+		st := LockoutStatus{Lockout: l}
+		if l.HasReset {
+			st.Left, st.Passed = fresh.Until(l.ResetAt)
 		}
-		if killed, ok := snapshot.AsInt(l["killed"]); ok {
-			total, _ := snapshot.AsInt(l["encounters"])
-			e["progress"] = fmt.Sprintf("%d/%d", killed, total)
-		}
-		if at, ok := snapshot.AsInt(l["resetAt"]); ok {
-			if left, passed := fresh.Until(at); passed {
-				e["reset"] = "already reset"
-			} else {
-				e["resetIn"] = snapshot.FormatAge(left)
-			}
-		}
-		out = append(out, e)
+		out = append(out, st)
 	}
 	sort.SliceStable(out, func(i, j int) bool {
-		return fmt.Sprint(snapshot.AsMap(out[i])["name"]) < fmt.Sprint(snapshot.AsMap(out[j])["name"])
+		return fmt.Sprint(out[i].Name) < fmt.Sprint(out[j].Name)
 	})
 	return out
 }

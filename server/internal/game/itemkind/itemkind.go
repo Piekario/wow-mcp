@@ -8,11 +8,7 @@
 // always came from English clients.
 package itemkind
 
-import (
-	"strings"
-
-	"wowmcp/internal/snapshot"
-)
+import "strings"
 
 // Item classes: Blizzard's Enum.ItemClass (the same values in classic and modern clients).
 const (
@@ -90,41 +86,41 @@ var tradeGoodsKinds = map[int64]string{
 	tradeHerb: "Herb", tradeEnchanting: "Enchanting",
 }
 
-// ClassOf returns the numeric item class; false when the dump has none (addon older than 0.9.0, or no item data).
-func ClassOf(item map[string]any) (int64, bool) { return snapshot.AsInt(item["classID"]) }
-
-// SubclassOf returns the numeric item subclass; false when the dump has none.
-func SubclassOf(item map[string]any) (int64, bool) { return snapshot.AsInt(item["subclassID"]) }
-
-// HasIDs says whether the item carries the locale-independent class (addon 0.9.0+).
-func HasIDs(item map[string]any) bool {
-	_, ok := ClassOf(item)
-	return ok
-}
-
-func text(item map[string]any, key string) string {
-	s, _ := item[key].(string)
-	return s
+// Item is what the dump says about one item, as far as classification needs it. Class, Subclass and Bind are the
+// client's numeric IDs (addon 0.9.0+); Type, SubType and Tooltip are client text, read only when the IDs are missing.
+type Item struct {
+	Name          string
+	Type, SubType string
+	Class         int64
+	HasClass      bool
+	Subclass      int64
+	HasSubclass   bool
+	Bind          int64
+	HasBind       bool
+	Bound         bool
+	BoundKnown    bool
+	QuestItem     bool
+	QuestID       int64
+	Tooltip       []string
 }
 
 // Is says whether the item belongs to a class: by classID, or for an old dump by the English type name.
-func Is(item map[string]any, class int64) bool {
-	if c, ok := ClassOf(item); ok {
-		return c == class
+func (i Item) Is(class int64) bool {
+	if i.HasClass {
+		return i.Class == class
 	}
-	return text(item, "type") == englishType[class]
+	return i.Type == englishType[class]
 }
 
-// IsGearClass says whether the item is a weapon or armor.
-func IsGearClass(item map[string]any) bool { return Is(item, ClassWeapon) || Is(item, ClassArmor) }
+func (i Item) IsGearClass() bool { return i.Is(ClassWeapon) || i.Is(ClassArmor) }
 
 // AmmoKind returns Arrow or Bullet for ammunition, "" for anything else (or ammo of an unknown kind).
-func AmmoKind(item map[string]any) string {
-	if c, ok := ClassOf(item); ok {
-		if c != ClassProjectile {
+func (i Item) AmmoKind() string {
+	if i.HasClass {
+		if i.Class != ClassProjectile {
 			return ""
 		}
-		switch sub, _ := SubclassOf(item); sub {
+		switch i.Subclass {
 		case projectileArrow:
 			return Arrow
 		case projectileBullet:
@@ -132,7 +128,7 @@ func AmmoKind(item map[string]any) string {
 		}
 		return ""
 	}
-	switch text(item, "subType") {
+	switch i.SubType {
 	case "Arrow":
 		return Arrow
 	case "Bullet":
@@ -141,23 +137,20 @@ func AmmoKind(item map[string]any) string {
 	return ""
 }
 
-func IsAmmo(item map[string]any) bool {
-	if c, ok := ClassOf(item); ok {
-		return c == ClassProjectile
+func (i Item) IsAmmo() bool {
+	if i.HasClass {
+		return i.Class == ClassProjectile
 	}
-	return text(item, "type") == "Projectile" || AmmoKind(item) != ""
+	return i.Type == "Projectile" || i.AmmoKind() != ""
 }
 
 // RangedAmmo says which ammo a ranged weapon fires: Arrow (bows, crossbows), Bullet (guns), "" when unknown.
-func RangedAmmo(weapon map[string]any) string {
-	if weapon == nil {
-		return ""
-	}
-	if c, ok := ClassOf(weapon); ok {
-		if c != ClassWeapon {
+func (i Item) RangedAmmo() string {
+	if i.HasClass {
+		if i.Class != ClassWeapon {
 			return ""
 		}
-		switch sub, _ := SubclassOf(weapon); sub {
+		switch i.Subclass {
 		case weaponBows, weaponCrossbow:
 			return Arrow
 		case weaponGuns:
@@ -165,7 +158,7 @@ func RangedAmmo(weapon map[string]any) string {
 		}
 		return ""
 	}
-	switch strings.ToLower(text(weapon, "subType")) {
+	switch strings.ToLower(i.SubType) {
 	case "bows", "bow", "crossbows", "crossbow":
 		return Arrow
 	case "guns", "gun":
@@ -182,12 +175,12 @@ const (
 )
 
 // ConsumableKind returns the kind of a consumable item (Food, Bandage, Potion, Other) or "" when it is not one.
-func ConsumableKind(item map[string]any) string {
-	if !Is(item, ClassConsumable) {
+func (i Item) ConsumableKind() string {
+	if !i.Is(ClassConsumable) {
 		return ""
 	}
-	if sub, ok := SubclassOf(item); ok && HasIDs(item) {
-		switch sub {
+	if i.HasSubclass && i.HasClass {
+		switch i.Subclass {
 		case consumableFoodDrink:
 			return Food
 		case consumableBandage:
@@ -196,16 +189,16 @@ func ConsumableKind(item map[string]any) string {
 			return Potion
 		}
 		// An item name is client text: only a last resort for bandages filed as generic consumables.
-		if nameMentionsBandage(item) {
+		if i.nameMentionsBandage() {
 			return Bandage
 		}
 		return Other
 	}
-	lower := strings.ToLower(text(item, "subType"))
+	lower := strings.ToLower(i.SubType)
 	switch {
 	case strings.Contains(lower, "food") || strings.Contains(lower, "drink"):
 		return Food
-	case strings.Contains(lower, "bandage") || nameMentionsBandage(item):
+	case strings.Contains(lower, "bandage") || i.nameMentionsBandage():
 		return Bandage
 	case strings.Contains(lower, "potion") || strings.Contains(lower, "elixir") || strings.Contains(lower, "flask"):
 		return Potion
@@ -213,61 +206,54 @@ func ConsumableKind(item map[string]any) string {
 	return Other
 }
 
-func nameMentionsBandage(item map[string]any) bool {
-	return strings.Contains(strings.ToLower(text(item, "name")), "bandage")
+func (i Item) nameMentionsBandage() bool {
+	return strings.Contains(strings.ToLower(i.Name), "bandage")
 }
 
 // IsFood says whether the item is food or drink (the Food & Drink subclass). Without IDs: a subtype containing "food".
-func IsFood(item map[string]any) bool {
-	if HasIDs(item) {
-		return ConsumableKind(item) == Food
+func (i Item) IsFood() bool {
+	if i.HasClass {
+		return i.ConsumableKind() == Food
 	}
-	return strings.Contains(strings.ToLower(text(item, "subType")), "food")
+	return strings.Contains(strings.ToLower(i.SubType), "food")
 }
 
 // TradeGoodsKind returns the kind of a Trade Goods material in English (Cloth, Leather, Metal & Stone, Cooking,
 // Herb, Enchanting), or "" when it is not Trade Goods or not one of those kinds.
-func TradeGoodsKind(item map[string]any) string {
-	if !Is(item, ClassTradeGoods) {
+func (i Item) TradeGoodsKind() string {
+	if !i.Is(ClassTradeGoods) {
 		return ""
 	}
-	if HasIDs(item) {
-		sub, _ := SubclassOf(item)
-		return tradeGoodsKinds[sub]
+	if i.HasClass {
+		return tradeGoodsKinds[i.Subclass]
 	}
-	sub := text(item, "subType")
-	if sub == "Meat" { // the classic name of the Cooking subclass
+	if i.SubType == "Meat" { // the classic name of the Cooking subclass
 		return "Cooking"
 	}
 	for _, kind := range tradeGoodsKinds {
-		if kind == sub {
+		if kind == i.SubType {
 			return kind
 		}
 	}
 	return ""
 }
 
-// IsQuestItem says whether the item is a quest item: the container's isQuestItem, the Quest class,
-// a quest binding, or for an old dump the English type Quest.
-func IsQuestItem(item map[string]any) bool {
-	if item["isQuestItem"] == true || Is(item, ClassQuest) {
-		return true
-	}
-	bind, ok := snapshot.AsInt(item["bindType"])
-	return ok && bind == BindQuest
+// IsQuestItem: the container's isQuestItem, the Quest class, a quest binding, or for an old dump the English type Quest.
+func (i Item) IsQuestItem() bool {
+	return i.QuestItem || i.Is(ClassQuest) || i.HasBind && i.Bind == BindQuest
 }
 
-// StartsQuest says whether the item begins a quest: questID from the container (addon 0.9.0), or for an old dump
-// the English tooltip line "This Item Begins a Quest".
-func StartsQuest(item map[string]any) bool {
-	if id, ok := snapshot.AsInt(item["questID"]); ok && id > 0 {
+// StartsQuest: questID from the container (addon 0.9.0), or for an old dump the English tooltip line
+// "This Item Begins a Quest".
+func (i Item) StartsQuest() bool {
+	if i.QuestID > 0 {
 		return true
 	}
-	if HasIDs(item) {
+	if i.HasClass {
 		return false
 	}
-	for _, line := range snapshot.AsList(item["tooltip"]) {
-		if l, _ := line.(string); strings.Contains(strings.ToLower(l), "begins a quest") {
+	for _, line := range i.Tooltip {
+		if strings.Contains(strings.ToLower(line), "begins a quest") {
 			return true
 		}
 	}
@@ -277,18 +263,18 @@ func StartsQuest(item map[string]any) bool {
 // IsBound says whether an owned item (bags, bank) is bound to the character: isBound from the container
 // (addon 0.9.0), then a binding that applies on pickup (Binds when picked up, quest items), and for old dumps
 // the English tooltip lines Soulbound and Quest Item.
-func IsBound(item map[string]any) bool {
-	if b, ok := item["isBound"].(bool); ok {
-		return b
+func (i Item) IsBound() bool {
+	if i.BoundKnown {
+		return i.Bound
 	}
-	if bind, ok := snapshot.AsInt(item["bindType"]); ok {
-		return bind == BindOnAcquire || bind == BindQuest
+	if i.HasBind {
+		return i.Bind == BindOnAcquire || i.Bind == BindQuest
 	}
-	if HasIDs(item) {
+	if i.HasClass {
 		return false
 	}
-	for _, line := range snapshot.AsList(item["tooltip"]) {
-		if l, _ := line.(string); strings.HasPrefix(l, "Soulbound") || strings.HasPrefix(l, "Quest Item") {
+	for _, line := range i.Tooltip {
+		if strings.HasPrefix(line, "Soulbound") || strings.HasPrefix(line, "Quest Item") {
 			return true
 		}
 	}
@@ -296,16 +282,10 @@ func IsBound(item map[string]any) bool {
 }
 
 // BindingKnown says whether the dump states the binding of the item without reading tooltip text.
-func BindingKnown(item map[string]any) bool {
-	if _, ok := item["isBound"].(bool); ok {
-		return true
-	}
-	_, ok := snapshot.AsInt(item["bindType"])
-	return ok
-}
+func (i Item) BindingKnown() bool { return i.BoundKnown || i.HasBind }
 
 // Tradable says whether an owned item can be mailed or sold at the auction house: neither bound nor a quest item.
-func Tradable(item map[string]any) bool { return !IsQuestItem(item) && !IsBound(item) }
+func (i Item) Tradable() bool { return !i.IsQuestItem() && !i.IsBound() }
 
 // ClassByEnglishName finds the item class for an English type name (e.g. "Trade Goods"), case-insensitive.
 // Used to filter items from a localized client by the English words a player or model types.

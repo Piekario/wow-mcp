@@ -52,3 +52,27 @@ func TestQuestPlan(t *testing.T) {
 		t.Errorf("zone filter: %v", only["count"])
 	}
 }
+
+func TestAnalyseRatesQuestsOnTheTypedResult(t *testing.T) {
+	s := snapshot.Snapshot{
+		"character": map[string]any{"level": int64(20)},
+		"quests": []any{
+			map[string]any{"title": "Hard", "level": int64(26), "zone": "A"},
+			map[string]any{"title": "Done", "level": int64(20), "zone": "A", "complete": true},
+			map[string]any{"title": "Old", "level": int64(5), "zone": "B", "failed": true},
+		},
+	}
+	r := Analyse(s, PlanQuery{})
+	if r.Count != 3 || r.Green != GreenRange(20) || r.GreenFromGame {
+		t.Fatalf("result: %+v", r)
+	}
+	if len(r.TooHard) != 1 || r.TooHard[0].Quest.Title != "Hard" || len(r.Failed) != 1 || len(r.Ready) != 1 {
+		t.Errorf("flags: %+v", r)
+	}
+	if r.Zones[0].Name != "A" || r.Zones[0].Ready != 1 || r.Zones[0].Quests[0].Status != ReadyToTurnIn && r.Zones[0].Quests[1].Status != ReadyToTurnIn {
+		t.Errorf("zones: %+v", r.Zones)
+	}
+	if p, _ := (Quest{Complete: true}).Progress(); p != 100 {
+		t.Errorf("a complete quest without objectives is 100%%, got %d", p)
+	}
+}

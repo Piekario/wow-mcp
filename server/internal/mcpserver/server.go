@@ -22,12 +22,18 @@ type Snapshots interface {
 	Load() (*snapshot.Database, error)
 }
 
+// History is the dump history: the progress tools read it, and every dump the server reads is recorded in it.
+type History interface {
+	progress.History
+	Record(db *snapshot.Database)
+}
+
 // Config holds the server dependencies, wired in main.
 type Config struct {
 	Name, Version string
 	Snapshots     Snapshots
-	History       progress.History // nil = history disabled
-	HistoryDir    string           // shown in wow_status; "" when history is disabled
+	History       History // nil = history disabled
+	HistoryDir    string  // shown in wow_status; "" when history is disabled
 	Freshness     snapshot.Freshness
 	Goals         goals.Store        // nil = goals disabled (wow_goals and wow_goal_set return an error)
 	GoalsFile     string             // shown in wow_status
@@ -66,7 +72,10 @@ func New(cfg Config) *mcp.Server {
 	server := mcp.NewServer(&mcp.Implementation{Name: cfg.Name, Version: cfg.Version}, &mcp.ServerOptions{
 		Instructions: instructions,
 	})
-	svc := &service{Config: cfg, progress: progress.Tracker{History: cfg.History}}
+	svc := &service{Config: cfg}
+	if cfg.History != nil {
+		svc.progress.History = cfg.History
+	}
 	limiter := responseCap{limitKB: cfg.MaxResponseKB, args: map[string][]string{}}
 	for _, t := range svc.tools() {
 		t.register(server)
@@ -88,9 +97,21 @@ type service struct {
 	goalsMu sync.Mutex
 }
 
+// loadDatabase reads the dump and records it in the history, so a tool that reads the history sees this dump too.
+func (s *service) loadDatabase() (*snapshot.Database, error) {
+	db, err := s.Snapshots.Load()
+	if err != nil {
+		return nil, err
+	}
+	if s.History != nil {
+		s.History.Record(db)
+	}
+	return db, nil
+}
+
 // load reads the file and returns the snapshot of the given character (empty name = most recently dumped).
 func (s *service) load(character string) (string, snapshot.Snapshot, error) {
-	db, err := s.Snapshots.Load()
+	db, err := s.loadDatabase()
 	if err != nil {
 		return "", nil, err
 	}

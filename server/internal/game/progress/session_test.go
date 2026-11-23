@@ -60,16 +60,15 @@ func TestRangeStatsXPSourcesSkipFirstSnapshot(t *testing.T) {
 		}}
 	}
 	mk := func(at int64, s snapshot.Snapshot) progressPoint {
-		return progressPoint{at: at, level: 10, xp: at, played: -1, deaths: -1, source: s}
+		return progressPoint{at: at, char: characterState{Level: 10, XP: at, HasLevel: true, HasXP: true}, played: -1, deaths: -1, source: s}
 	}
 	points := []progressPoint{mk(0, src(999, 999)), mk(600, src(100, 400)), mk(1200, src(50, 250))}
-	out, _ := rangeStats(points, 0, 2)
-	x, ok := out["xpSources"].(map[string]any)
-	if !ok || x["total"] != int64(800) {
-		t.Fatalf("xpSources: %v", out["xpSources"])
+	r := rangeStats(points, 0, 2)
+	if r.XPSources == nil || r.XPSources.Gains.Total() != 800 || r.XP != 1200 || !r.RateKnown || r.XPPerHour != 3600 {
+		t.Fatalf("rate: %+v", r)
 	}
 	points[1].source, points[2].source = snapshot.Snapshot{}, snapshot.Snapshot{}
-	if out, _ := rangeStats(points, 0, 2); out["xpSources"] != nil {
+	if r := rangeStats(points, 0, 2); r.XPSources != nil {
 		t.Error("without the xpGains section the field is omitted")
 	}
 }

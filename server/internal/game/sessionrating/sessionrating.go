@@ -50,130 +50,88 @@ func PaceOf(st progress.Stretch) (Pace, bool) {
 	}, true
 }
 
-// View rates the character's latest session against the median of earlier ones.
-func View(name string, current snapshot.Snapshot, tr progress.Tracker) (map[string]any, error) {
+type Speed string
+
+const (
+	Faster  Speed = "faster"
+	Slower  Speed = "slower"
+	Similar Speed = "similar"
+)
+
+// Metric is one pace against the median; Ratio and Speed are known only for a positive median.
+type Metric struct {
+	Current, Median, Ratio float64
+	Known                  bool
+	Speed                  Speed
+}
+
+func metric(cur, median float64) Metric {
+	m := Metric{Current: cur, Median: median}
+	if median <= 0 {
+		return m
+	}
+	m.Ratio, m.Known = cur/median, true
+	m.Speed = speed(m.Ratio)
+	return m
+}
+
+func speed(r float64) Speed {
+	switch {
+	case r >= fasterRatio:
+		return Faster
+	case r <= slowerRatio:
+		return Slower
+	}
+	return Similar
+}
+
+// Rating is the latest session against earlier ones. Current is nil when the latest session is too short;
+// the metrics are filled only when there are enough reliable sessions.
+type Rating struct {
+	Sessions         int
+	Current          *Pace
+	Compared         int
+	Enough           bool
+	Median           Pace
+	XP, Gold, Quests Metric
+}
+
+func rate(name string, current snapshot.Snapshot, tr progress.Tracker) (Rating, error) {
 	if tr.History == nil {
-		return nil, fmt.Errorf("dump history is disabled (the server was started with --history-dir \"\"), and the session rating is built from it")
+		return Rating{}, fmt.Errorf("dump history is disabled (the server was started with --history-dir \"\"), and the session rating is built from it")
 	}
 	stretches, err := tr.Sessions(name, current, 0)
 	if err != nil {
-		return nil, err
+		return Rating{}, err
 	}
-	out := map[string]any{"assumption": assumptionTxt, "totalSessions": len(stretches)}
+	r := Rating{Sessions: len(stretches)}
 	if len(stretches) == 0 {
-		out["note"] = "No sessions in history."
-		return out, nil
+		return r, nil
 	}
 	cur, ok := PaceOf(stretches[len(stretches)-1])
 	if !ok {
-		out["note"] = "The current session is too short (at least 2 dumps and 5 minutes of play are needed), so there is no pace yet. Try again after the next /mcp reload."
-		return out, nil
+		return r, nil
 	}
-	out["current"] = cur.view()
-
+	r.Current = &cur
 	var previous []Pace
 	for _, st := range stretches[:len(stretches)-1] {
 		if p, ok := PaceOf(st); ok {
 			previous = append(previous, p)
 		}
 	}
-	out["comparedSessions"] = len(previous)
-	if len(previous)+1 < minSessions {
-		out["note"] = fmt.Sprintf("Too few sessions to compare: %d reliable, at least %d needed (the current one and two earlier ones).", len(previous)+1, minSessions)
-		return out, nil
+	r.Compared = len(previous)
+	if r.Enough = len(previous)+1 >= minSessions; !r.Enough {
+		return r, nil
 	}
-	xp, gold, quests := medianOf(previous, func(p Pace) float64 { return p.XPPerHour }),
-		medianOf(previous, func(p Pace) float64 { return p.GoldPerHour }),
-		medianOf(previous, func(p Pace) float64 { return p.QuestsPerHour })
-	out["median"] = Pace{XPPerHour: xp, GoldPerHour: gold, QuestsPerHour: quests}.view()
-	metrics := map[string]any{
-		"xp":     metric(cur.XPPerHour, xp),
-		"gold":   metric(cur.GoldPerHour, gold),
-		"quests": metric(cur.QuestsPerHour, quests),
+	r.Median = Pace{
+		XPPerHour:     medianOf(previous, func(p Pace) float64 { return p.XPPerHour }),
+		GoldPerHour:   medianOf(previous, func(p Pace) float64 { return p.GoldPerHour }),
+		QuestsPerHour: medianOf(previous, func(p Pace) float64 { return p.QuestsPerHour }),
 	}
-	out["ratio"] = metrics
-	out["verdict"] = verdict(metrics)
-	return out, nil
-}
-
-func (p Pace) view() map[string]any {
-	out := map[string]any{
-		"xpPerHour":     snapshot.Round1(p.XPPerHour),
-		"goldPerHour":   snapshot.Money(int64(p.GoldPerHour)).Signed(),
-		"questsPerHour": snapshot.Round1(p.QuestsPerHour),
-	}
-	if p.Hours > 0 {
-		out["hours"] = snapshot.Round1(p.Hours)
-		out["start"] = snapshot.FormatTime(p.Start)
-	}
-	return out
-}
-
-// metric compares the pace with the median: ratio only for a positive median.
-func metric(cur, median float64) map[string]any {
-	m := map[string]any{"current": snapshot.Round1(cur), "median": snapshot.Round1(median)}
-	if median <= 0 {
-		m["note"] = "the median is not positive, so the ratio is not computed"
-		return m
-	}
-	r := cur / median
-	m["ratio"] = round2(r)
-	m["label"] = label(r)
-	return m
-}
-
-func label(r float64) string {
-	switch {
-	case r >= fasterRatio:
-		return "faster"
-	case r <= slowerRatio:
-		return "slower"
-	}
-	return "similar"
-}
-
-func verdict(metrics map[string]any) string {
-	names := map[string]string{"xp": "XP", "gold": "gold", "quests": "quests"}
-	faster, slower, same := 0, 0, 0
-	var parts []string
-	for _, key := range []string{"xp", "gold", "quests"} {
-		m := metrics[key].(map[string]any)
-		l, ok := m["label"].(string)
-		if !ok {
-			continue
-		}
-		switch l {
-		case "faster":
-			faster++
-		case "slower":
-			slower++
-		default:
-			same++
-		}
-		parts = append(parts, fmt.Sprintf("%s %s (x%v)", names[key], l, m["ratio"]))
-	}
-	if len(parts) == 0 {
-		return "No positive median in earlier sessions, so there is nothing to compare the pace with."
-	}
-	head := "Pace similar to a typical session"
-	switch {
-	case faster > slower && faster >= same:
-		head = "This session is faster than a typical one"
-	case slower > faster && slower >= same:
-		head = "This session is slower than a typical one"
-	}
-	return head + ": " + join(parts) + "."
-}
-
-func join(parts []string) string {
-	out := ""
-	for i, p := range parts {
-		if i > 0 {
-			out += ", "
-		}
-		out += p
-	}
-	return out
+	r.XP = metric(cur.XPPerHour, r.Median.XPPerHour)
+	r.Gold = metric(cur.GoldPerHour, r.Median.GoldPerHour)
+	r.Quests = metric(cur.QuestsPerHour, r.Median.QuestsPerHour)
+	return r, nil
 }
 
 func medianOf(list []Pace, f func(Pace) float64) float64 {
@@ -194,13 +152,4 @@ func median(vals []float64) float64 {
 		return vals[mid]
 	}
 	return (vals[mid-1] + vals[mid]) / 2
-}
-
-func round2(v float64) float64 { return float64(int64(v*100+sign(v)*0.5)) / 100 }
-
-func sign(v float64) float64 {
-	if v < 0 {
-		return -1
-	}
-	return 1
 }

@@ -26,50 +26,31 @@ const (
 	maxSessions     = 50
 )
 
-// View describes the character's latest sessions and its records from the whole history.
-func View(name string, current snapshot.Snapshot, tr progress.Tracker, q Query) (map[string]any, error) {
+// report is the journal: every session of the history (oldest first), the latest ones to describe and the records.
+type report struct {
+	All     []Session
+	Shown   []Session
+	Records Records
+}
+
+func build(name string, current snapshot.Snapshot, tr progress.Tracker, q Query) (report, error) {
 	n := q.Sessions
 	switch {
 	case n == 0:
 		n = defaultSessions
 	case n < 0 || n > maxSessions:
-		return nil, fmt.Errorf("sessions must be from 1 to %d (default %d), got %d", maxSessions, defaultSessions, q.Sessions)
+		return report{}, fmt.Errorf("sessions must be from 1 to %d (default %d), got %d", maxSessions, defaultSessions, q.Sessions)
 	}
 	if tr.History == nil {
-		return nil, fmt.Errorf("dump history is disabled (the server was started with --history-dir \"\"), and the journal is built from it")
+		return report{}, fmt.Errorf("dump history is disabled (the server was started with --history-dir \"\"), and the journal is built from it")
 	}
 	stretches, err := tr.Sessions(name, current, 0)
 	if err != nil {
-		return nil, err
+		return report{}, err
 	}
 	all := make([]Session, len(stretches))
 	for i, st := range stretches {
 		all[i] = Describe(st)
 	}
-
-	out := map[string]any{
-		"totalSessions": len(all),
-		"order":         "from the newest session to the oldest",
-		"howSessionsAreSplit": "the same rule as wow_progress: a new session after a gap longer than 30 min offline (from /played) or 120 min between dumps; " +
-			"the data comes only from dumps (/mcp reload, logout), so what happened between them shows only as differences",
-	}
-	tr.NoteSkipped(out, name, current)
-	shown := all[max(len(all)-n, 0):]
-	list := make([]any, 0, len(shown))
-	for i := len(shown) - 1; i >= 0; i-- {
-		list = append(list, shown[i].View())
-	}
-	out["sessions"] = list
-	if len(all) > len(shown) {
-		out["olderSessionsNotShown"] = len(all) - len(shown)
-	}
-
-	rec := records(all, stretches)
-	if len(rec) > 0 {
-		out["records"] = rec
-	}
-	if q.Markdown {
-		out["text"] = markdown(name, current, shown, rec)
-	}
-	return out, nil
+	return report{All: all, Shown: all[max(len(all)-n, 0):], Records: records(all, stretches)}, nil
 }

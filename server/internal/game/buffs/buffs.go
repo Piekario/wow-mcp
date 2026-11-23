@@ -23,9 +23,93 @@ import (
 	"wowmcp/internal/snapshot"
 )
 
-const assumption = "Heuristic: I warn about a missing buff only when you know the spell (spells section) and none of its group is among the auras. " +
-	"I do not know whether the buff is needed right now (e.g. in combat or in town), and the auras of other players and the pet are not in the dump " +
-	"visible other than as player auras. The dump shows the state at save time: after /reload it may already differ."
+// Aura is an effect on the character. ID and Icon (addon 0.10.0) are zero when the dump has none.
+type Aura struct {
+	Name         string
+	ID, Icon     int64
+	HasID        bool
+	Stacks       int64
+	HasStacks    bool
+	Harmful      bool
+	ExpiresAt    int64
+	HasExpiresAt bool
+	Remaining    int64
+	HasRemaining bool
+}
+
+// Spell is a known spell. SelfBuff is what the client flags as a self buff (and not passive).
+type Spell struct {
+	Name     string
+	ID, Icon int64
+	SelfBuff bool
+}
+
+// PetState is what the pet section says; PetUnknown covers a missing section and fields the client left out.
+type PetState int
+
+const (
+	PetUnknown PetState = iota
+	PetAbsent
+	PetAlive
+	PetDead
+)
+
+// Dump is everything the buffs rules need from one character's dump. DumpedAt is the time of the dump.
+type Dump struct {
+	HasAuras      bool
+	Auras         []Aura
+	Spells        []Spell
+	Class         string
+	EnglishClient bool
+	Pet           PetState
+	DumpedAt      int64
+	HasDumpedAt   bool
+}
+
+// Timing is when an aura ends. LeftAtDump is set when the dump time is known, Left when the clock is.
+type Timing struct {
+	ExpiresAt     int64
+	HasLeftAtDump bool
+	LeftAtDump    int64
+	HasLeft       bool
+	Expired       bool
+	Left          time.Duration
+}
+
+// AuraStatus is an aura with its timing; Timing is nil when the dump has no end time for it.
+type AuraStatus struct {
+	Aura
+	Timing *Timing
+}
+
+type GapKind int
+
+const (
+	GapGroup GapKind = iota
+	GapNoPet
+	GapDeadPet
+)
+
+// Gap is a class buff the character knows but has none active. Spells are the known spells of the group.
+type Gap struct {
+	Kind   GapKind
+	Group  string
+	Spells []string
+}
+
+// Report is the auras and the missing class buffs. HasAuras is false when the dump has no auras section.
+type Report struct {
+	HasAuras           bool
+	HasDump            bool
+	DumpedAt           int64
+	HasAge             bool
+	DumpAge            time.Duration
+	Stale              bool
+	Buffs, Debuffs     []AuraStatus
+	AnyTiming          bool
+	Missing            []Gap
+	SelfBuffsNotActive []string
+}
 
 // group is a family of spells of which one active is enough (e.g. one Aspect at a time).
 type group struct {
@@ -62,84 +146,64 @@ func rules() map[string][]group {
 	}
 }
 
-// View describes the character's auras and the missing class buffs.
-func View(s snapshot.Snapshot, fresh snapshot.Freshness) map[string]any {
-	out := map[string]any{"assumption": assumption}
-	auras := s.List("auras")
-	if s["auras"] == nil {
-		out["note"] = "The dump has no auras section (old addon or the section was disabled with /mcp off auras)."
-		return out
+// Inspect judges the auras against the clock and finds the class buffs that are missing.
+func Inspect(d Dump, fresh snapshot.Freshness) Report {
+	r := Report{HasAuras: d.HasAuras}
+	if !d.HasAuras {
+		return r
 	}
-	dumped, hasDump := s.DumpedAt()
-	if hasDump {
-		out["dumpedAt"] = snapshot.FormatTime(dumped)
+	if d.HasDumpedAt {
+		r.HasDump, r.DumpedAt = true, d.DumpedAt
 		if fresh.Now != nil {
-			out["dumpAge"] = snapshot.FormatAge(fresh.Age(dumped))
-		}
-		if fresh.Now != nil && fresh.IsStale(dumped) {
-			out["warning"] = "The dump is old, so auras may have expired or new ones appeared; run /mcp reload."
+			r.HasAge, r.DumpAge, r.Stale = true, fresh.Age(d.DumpedAt), fresh.IsStale(d.DumpedAt)
 		}
 	}
-
-	var buffList, debuffList []any
-	var active []aura
-	anyTiming := false
-	for _, raw := range auras {
-		a := snapshot.AsMap(raw)
-		name, _ := a["name"].(string)
-		if name == "" {
+	var active []Aura
+	for _, a := range d.Auras {
+		status := AuraStatus{Aura: a, Timing: timingOf(a, d, fresh)}
+		r.AnyTiming = r.AnyTiming || status.Timing != nil
+		if a.Harmful {
+			r.Debuffs = append(r.Debuffs, status)
 			continue
 		}
-		entry, timed := auraEntry(a, name, dumped, hasDump, fresh)
-		anyTiming = anyTiming || timed
-		if a["harmful"] == true {
-			debuffList = append(debuffList, entry)
-			continue
-		}
-		buffList = append(buffList, entry)
-		active = append(active, auraOf(a, name))
+		r.Buffs = append(r.Buffs, status)
+		active = append(active, a)
 	}
-	out["buffs"] = nonNil(buffList)
-	out["debuffs"] = nonNil(debuffList)
-	if !anyTiming {
-		out["timingNote"] = "The dump has no aura end times (the client did not give them, or the dump comes from an addon older than 0.7.0), so the time left is not given."
-	}
-	known := knownSpells(s)
-	out["missing"] = nonNil(missing(s, known, active))
+	r.Missing = missing(d, active)
 	// On an English client with rules for the class the name groups are the better answer (they know which buffs exclude
 	// each other); otherwise the ID and icon list is all there is.
-	if unmatched := selfBuffsNotActive(known, active); len(unmatched) > 0 && (!s.EnglishClient() || len(rules()[classOf(s)]) == 0) {
-		out["selfBuffsNotActive"] = unmatched
-		out["selfBuffsNote"] = "Spells the client flags as self buffs that you know and that have no active aura with the same spell ID or icon. Matched by IDs and icons, so it works in any game language, but it does not know which buffs exclude each other (e.g. only one Aspect at a time), so not every entry is a real gap."
+	if !d.EnglishClient || len(rules()[d.Class]) == 0 {
+		r.SelfBuffsNotActive = selfBuffsNotActive(d.Spells, active)
 	}
-	s.AddEnglishOnlyNote(out, "Missing class buff groups (the \"missing\" list) are matched by English spell names (e.g. Aspect of the ..., Arcane Intellect), because no language-independent spell grouping is in the dump; the selfBuffsNotActive list uses spell IDs and icons instead")
-	return out
+	return r
 }
 
-// aura is an active buff: the name, the spell ID and the icon file ID (addon 0.10.0; 0 = not in the dump).
-type aura struct {
-	name     string
-	id, icon int64
-}
-
-func auraOf(a map[string]any, name string) aura {
-	id, _ := snapshot.AsInt(a["id"])
-	icon, _ := snapshot.AsInt(a["icon"])
-	return aura{name: name, id: id, icon: icon}
-}
-
-// spell is a known spell: the name, the spell ID, the icon file ID and whether the client flags it as a self buff.
-type spell struct {
-	name     string
-	id, icon int64
-	selfBuff bool
+func timingOf(a Aura, d Dump, fresh snapshot.Freshness) *Timing {
+	var expires int64
+	switch {
+	case a.HasExpiresAt:
+		expires = a.ExpiresAt
+	case a.HasRemaining && d.HasDumpedAt:
+		expires = d.DumpedAt + a.Remaining
+	default:
+		return nil
+	}
+	t := &Timing{ExpiresAt: expires}
+	if d.HasDumpedAt {
+		t.HasLeftAtDump, t.LeftAtDump = true, max(expires-d.DumpedAt, 0)
+	}
+	if fresh.Now != nil {
+		t.HasLeft = true
+		t.Left, t.Expired = fresh.Until(expires)
+	}
+	return t
 }
 
 // isActive says whether an active aura is this spell's buff: the same spell ID or the same icon (every rank of a
 // spell has one icon), whatever language the names are in.
-func (sp spell) isActive(active []aura) bool {
+func (sp Spell) isActive(active []Aura) bool {
 	for _, a := range active {
-		if (sp.id > 0 && a.id == sp.id) || (sp.icon > 0 && a.icon == sp.icon) {
+		if (sp.ID > 0 && a.ID == sp.ID) || (sp.Icon > 0 && a.Icon == sp.Icon) {
 			return true
 		}
 	}
@@ -148,140 +212,54 @@ func (sp spell) isActive(active []aura) bool {
 
 // selfBuffsNotActive lists the known self-buff spells with no active aura of the same ID or icon: one entry per icon
 // (several ranks of a spell are one buff), sorted by name.
-func selfBuffsNotActive(known []spell, active []aura) []any {
+func selfBuffsNotActive(known []Spell, active []Aura) []string {
 	seen := map[string]bool{}
 	var names []string
 	for _, sp := range known {
-		if !sp.selfBuff || sp.isActive(active) {
+		if !sp.SelfBuff || sp.isActive(active) {
 			continue
 		}
-		key := sp.name
-		if sp.icon > 0 {
-			key = fmt.Sprint("icon:", sp.icon)
+		key := sp.Name
+		if sp.Icon > 0 {
+			key = fmt.Sprint("icon:", sp.Icon)
 		}
 		if !seen[key] {
 			seen[key] = true
-			names = append(names, sp.name)
+			names = append(names, sp.Name)
 		}
 	}
 	sort.Strings(names)
-	out := make([]any, len(names))
-	for i, n := range names {
-		out[i] = n
-	}
-	return out
-}
-
-func nonNil(l []any) []any {
-	if l == nil {
-		return []any{}
-	}
-	return l
-}
-
-// auraEntry describes one aura; timed = the dump had duration data.
-func auraEntry(a map[string]any, name string, dumped int64, hasDump bool, fresh snapshot.Freshness) (map[string]any, bool) {
-	entry := map[string]any{"name": name}
-	if id, ok := snapshot.AsInt(a["id"]); ok {
-		entry["id"] = id
-	}
-	if n, ok := snapshot.AsInt(a["stacks"]); ok {
-		entry["stacks"] = n
-	}
-	var expires int64
-	switch {
-	case hasInt(a, "expiresAt"):
-		expires, _ = snapshot.AsInt(a["expiresAt"])
-	case hasInt(a, "remaining") && hasDump:
-		left, _ := snapshot.AsInt(a["remaining"])
-		expires = dumped + left
-	default:
-		return entry, false
-	}
-	entry["expiresAt"] = snapshot.FormatTime(expires)
-	if hasDump {
-		entry["leftAtDump"] = snapshot.FormatSeconds(max(expires-dumped, 0))
-	}
-	if fresh.Now != nil {
-		left, passed := fresh.Until(expires)
-		if passed {
-			entry["expired"] = true
-		} else {
-			entry["leftNow"] = snapshot.FormatAge(left.Round(time.Second))
-		}
-	}
-	return entry, true
-}
-
-func hasInt(m map[string]any, key string) bool {
-	_, ok := snapshot.AsInt(m[key])
-	return ok
-}
-
-// classOf is the class token (HUNTER...); the class name stands in for it only on English clients.
-func classOf(s snapshot.Snapshot) string {
-	class, _ := s.Character()["classToken"].(string)
-	if class == "" && s.EnglishClient() { // the class name is a token only in English (Hunter -> HUNTER)
-		class = strings.ToUpper(fmt.Sprint(s.Character()["class"]))
-	}
-	return class
+	return names
 }
 
 // missing returns the class buff groups whose spell the character knows but with no aura from the group.
-func missing(s snapshot.Snapshot, knownList []spell, active []aura) []any {
-	class := classOf(s)
+func missing(d Dump, active []Aura) []Gap {
 	known := map[string]bool{}
-	for _, sp := range knownList {
-		known[sp.name] = true
+	for _, sp := range d.Spells {
+		known[sp.Name] = true
 	}
-	var out []any
-	for _, g := range rules()[class] {
+	var out []Gap
+	for _, g := range rules()[d.Class] {
 		spells := inGroup(g, known)
-		if len(spells) == 0 || anyIn(g, active, knownList) {
+		if len(spells) == 0 || anyIn(g, active, d.Spells) {
 			continue
 		}
-		out = append(out, map[string]any{
-			"group":       g.label,
-			"knownSpells": spells,
-			"text":        fmt.Sprintf("No active buff from the %s group, and you know: %s.", g.label, strings.Join(spells, ", ")),
-		})
+		out = append(out, Gap{Kind: GapGroup, Group: g.label, Spells: spells})
 	}
-	if class == "HUNTER" {
-		out = append(out, petWarnings(s, known)...)
+	if d.Class == "HUNTER" {
+		out = append(out, petGaps(d.Pet, known)...)
 	}
 	return out
 }
 
-// petWarnings: pet warnings only when the pet section is in the dump and the character knows the relevant spell.
-func petWarnings(s snapshot.Snapshot, known map[string]bool) []any {
-	if s["pet"] == nil {
-		return nil
-	}
-	pet := s.Map("pet")
-	var out []any
+func petGaps(pet PetState, known map[string]bool) []Gap {
 	switch {
-	case pet["exists"] == false && known["Call Pet"]:
-		out = append(out, map[string]any{"group": "Pet", "knownSpells": []string{"Call Pet"}, "text": "No pet with the character, and you know Call Pet."})
-	case pet["exists"] == true && pet["dead"] == true && known["Revive Pet"]:
-		out = append(out, map[string]any{"group": "Pet", "knownSpells": []string{"Revive Pet"}, "text": "The pet is dead, and you know Revive Pet."})
+	case pet == PetAbsent && known["Call Pet"]:
+		return []Gap{{Kind: GapNoPet, Group: "Pet", Spells: []string{"Call Pet"}}}
+	case pet == PetDead && known["Revive Pet"]:
+		return []Gap{{Kind: GapDeadPet, Group: "Pet", Spells: []string{"Revive Pet"}}}
 	}
-	return out
-}
-
-func knownSpells(s snapshot.Snapshot) []spell {
-	var out []spell
-	for _, raw := range s.List("spells") {
-		m := snapshot.AsMap(raw)
-		name, _ := m["name"].(string)
-		if name == "" {
-			continue
-		}
-		sp := spell{name: name, selfBuff: m["selfBuff"] == true && m["passive"] != true}
-		sp.id, _ = snapshot.AsInt(m["id"])
-		sp.icon, _ = snapshot.AsInt(m["icon"])
-		out = append(out, sp)
-	}
-	return out
+	return nil
 }
 
 // inGroup returns the known spells of the group (each once, in a fixed order: by name).
@@ -298,14 +276,14 @@ func inGroup(g group, known map[string]bool) []string {
 
 // anyIn says whether an active aura belongs to the group: its name matches, or it is the buff (same ID or icon) of a
 // known spell that is in the group.
-func anyIn(g group, active []aura, known []spell) bool {
+func anyIn(g group, active []Aura, known []Spell) bool {
 	for _, a := range active {
-		if g.matches(a.name) {
+		if g.matches(a.Name) {
 			return true
 		}
 	}
 	for _, sp := range known {
-		if g.matches(sp.name) && sp.isActive(active) {
+		if g.matches(sp.Name) && sp.isActive(active) {
 			return true
 		}
 	}

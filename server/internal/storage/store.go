@@ -33,9 +33,6 @@ type Store struct {
 	// Empty = the account whose dump was modified most recently.
 	Account string
 
-	// History, if set, receives every loaded snapshot (written to the server directory).
-	History *History
-
 	// Sleep is the pause between read retries; nil means time.Sleep. Tests substitute a stub.
 	Sleep func(time.Duration)
 }
@@ -284,6 +281,5 @@ func (s *Store) Load() (*snapshot.Database, error) {
 	if len(db.Characters) == 0 {
 		return nil, fmt.Errorf("%s contains no characters. Type /mcp reload in game", path)
 	}
-	s.History.Record(db)
 	return db, nil
 }

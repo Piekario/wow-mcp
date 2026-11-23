@@ -53,3 +53,9 @@ func TestDescribe(t *testing.T) {
 		t.Fatalf("kills: %v", k)
 	}
 }
+
+func TestEmpty(t *testing.T) {
+	if !(Gains{}).Empty() || (Gains{Other: Source{Count: 1}}).Empty() {
+		t.Fatal("a gain with an event is not empty")
+	}
+}

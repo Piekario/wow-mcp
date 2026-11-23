@@ -166,3 +166,17 @@ func TestLeft(t *testing.T) {
 		t.Error("character without ammo")
 	}
 }
+
+func TestInspectPurchasePlanTyped(t *testing.T) {
+	tr, cur := ammoHistory(t, 1212, 1012, 812)
+	r, err := Inspect("Piekasz", cur, tr, Query{Hours: 5})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !r.Present || r.SlotEmpty || r.Use.Used != 400 || !r.HasHoursLeft || r.Plan.Needed != 1000 || r.Plan.ToBuy != 188 || r.Plan.Vendor == nil {
+		t.Errorf("report: %+v", r)
+	}
+	if _, err := Inspect("Piekasz", cur, tr, Query{Hours: -2}); err == nil {
+		t.Error("negative hours")
+	}
+}

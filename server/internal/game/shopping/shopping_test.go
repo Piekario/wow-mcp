@@ -138,21 +138,36 @@ func TestNoHistoryMeansNoData(t *testing.T) {
 
 func TestNextTrainerSkills(t *testing.T) {
 	s := fixtures.Forever(t)
-	v, now := nextTrainerSkills(s, 20)
-	next := snapshot.AsMap(v["next"])
-	if next["level"].(int64) != 40 || next["levelsAway"].(int64) != 20 || !strings.Contains(text(next["skills"]), "Volley Rank 1") || len(next["trainers"].([]string)) != 2 {
-		t.Errorf("nearest skills: %v", v)
+	outlook := outlookTrainer(readOffers(s), 20)
+	next := outlook.Next
+	if next == nil || next.Level != 40 || next.LevelsAway != 20 || !strings.Contains(text(next.Skills), "Volley Rank 1") || len(next.Trainers) != 2 {
+		t.Errorf("nearest skills: %+v", outlook)
 	}
-	if now == "" {
+	if len(outlook.AvailableNow) == 0 {
 		t.Error("there are skills available to buy right now")
 	}
-	if v, _ := nextTrainerSkills(snapshot.Snapshot{}, 20); !strings.Contains(text(v), noData) {
-		t.Errorf("without offers: %v", v)
+	if outlook := outlookTrainer(readOffers(snapshot.Snapshot{}), 20); !outlook.NoOffers {
+		t.Errorf("without offers: %+v", outlook)
 	}
 }
 
 func TestNegativeHoursRejected(t *testing.T) {
 	if _, err := View("Piekasz", fixtures.Forever(t), progress.Tracker{}, Query{Hours: -1}, fixtures.At(0)); err == nil {
 		t.Error("hours < 0 must be an error")
+	}
+}
+
+func TestBudgetRuleOnTypedList(t *testing.T) {
+	s := fixtures.Forever(t)
+	snapshot.AsMap(s["character"])["moneyCopper"] = int64(3000)
+	l, err := Inspect("Piekasz", s, progress.Tracker{}, Query{}, fixtures.At(10*time.Minute))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if l.Hours != defaultHours || l.Budget.CanAffordAll || !l.Budget.Over || l.Budget.Lines[0].What != "trainer skills" || l.Budget.Lines[0].Covered {
+		t.Errorf("budget: %+v", l.Budget)
+	}
+	if l.Budget.ShortBy != l.Budget.Total-3000 {
+		t.Errorf("shortBy %d for total %d", l.Budget.ShortBy, l.Budget.Total)
 	}
 }

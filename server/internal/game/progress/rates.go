@@ -51,7 +51,7 @@ func ratesOver(points []progressPoint, from, to int) (Rates, bool) {
 	xp, _ := xpOver(points, from, to)
 	return Rates{
 		XPPerHour:    float64(xp) / hours,
-		MoneyPerHour: float64(points[to].money-points[from].money) / hours,
+		MoneyPerHour: float64(points[to].char.Money-points[from].char.Money) / hours,
 		Basis:        basis,
 	}, true
 }
@@ -100,15 +100,9 @@ func (t Tracker) Sessions(name string, current snapshot.Snapshot, breakMinutes i
 func (s Stretch) XPGained() (xp int64, exact bool) {
 	exact = true
 	for i := 1; i < len(s.Snapshots); i++ {
-		d := diffXP(snapshot.AsMap(s.Snapshots[i-1]["character"]), snapshot.AsMap(s.Snapshots[i]["character"]))
-		if d == nil {
-			continue
-		}
-		if n, ok := d["xpGained"].(int64); ok {
-			xp += n
-		} else {
-			exact = false
-		}
+		n, ok := xpGained(readCharacter(s.Snapshots[i-1]), readCharacter(s.Snapshots[i]))
+		xp += n
+		exact = exact && ok
 	}
 	return xp, exact
 }

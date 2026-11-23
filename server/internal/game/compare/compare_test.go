@@ -110,3 +110,27 @@ func TestViewError(t *testing.T) {
 		t.Error("expected an error")
 	}
 }
+
+func TestCompareRulesOnTheTypedReport(t *testing.T) {
+	report, err := Compare(testDB(), Query{"Aaa", "Bbb"}, fixtures.At(0))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if report.A.AverageItemLevel != 15 || report.A.GearPieces != 2 || report.B.Stale != true || report.B.AgeMinutes != 120 {
+		t.Errorf("cards: %+v %+v", report.A, report.B)
+	}
+	if len(report.Edges) != 3 || report.Edges[0] != (Edge{Kind: HigherLevel, Leader: "Bbb-Realm", Other: "Aaa-Realm", Gap: 10}) {
+		t.Errorf("edges: %+v", report.Edges)
+	}
+	if !report.Skew.Unfair() || report.Skew.Older != "Bbb-Realm" || report.Skew.GapSeconds != 7200 {
+		t.Errorf("skew: %+v", report.Skew)
+	}
+	for _, s := range report.Slots {
+		if s.Slot == "head" && s.Better != BetterA {
+			t.Errorf("head: %+v", s)
+		}
+		if s.Slot == "shirt" && s.Compared {
+			t.Error("a shirt is not compared")
+		}
+	}
+}

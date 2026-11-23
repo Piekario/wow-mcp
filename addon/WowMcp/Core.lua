@@ -25,7 +25,8 @@
 -- only when the player clicks. The addon never saves anything on its own.
 --
 -- File layout (load order in WowMcp.toc, dependencies only point down the list):
---   Core, Compat, Maps, QuestDb, Items, QuestRewards, TalentGrid, Store, Events, Timing, Snapshot - shared foundations
+--   Core, Compat, Maps, QuestDb, Items, QuestRewards, TalentGrid, TraitTree, Store, Events, Timing,
+--   LogoutGuard, Snapshot, Periods, LegacyDiscovery - shared foundations
 --   Sections/*                                    - one file per dump section;
 --                                                   each registers itself in Snapshot
 --   Panel, AuctionTooltip, WowMcp (lifecycle), Commands - player UI
@@ -37,7 +38,7 @@
 
 local _, ns = ...
 
-ns.ADDON_VERSION = "0.19.0"
+ns.ADDON_VERSION = "0.19.1"
 ns.SCHEMA_VERSION = 2
 
 function ns.chat(text)

@@ -135,7 +135,23 @@ func TestMissingDescriptionsNote(t *testing.T) {
 	}
 	note, _ := out["note"].(string)
 	fixtures.WantAll(t, "note", note, "talent window", "/mcp reload")
-	if got := missingDescriptions([]any{map[string]any{"description": "x"}, map[string]any{"description": ""}, map[string]any{}}); got != 2 {
-		t.Errorf("missingDescriptions = %d, want 2 (empty and missing)", got)
+}
+
+func TestAnalyseRules(t *testing.T) {
+	s := fixtures.Forever(t)
+	snapshot.AsMap(s["talents"])["unspent"] = int64(1)
+	r := Analyse(s, Query{})
+	if r.Advice != AdviceNone || len(r.CanBuy) != 2 || r.MainTree != "Beast Mastery" || r.Split[0] != 7 {
+		t.Errorf("free point: %+v", r)
+	}
+	if len(r.NotMaxed) == 0 {
+		t.Errorf("notMaxed empty: %+v", r)
+	}
+	if r := Analyse(fixtures.Forever(t), Query{}); r.Advice != AdviceNoFreePoints || len(r.CanBuy) != 0 {
+		t.Errorf("no free points: %+v", r)
+	}
+	gains := NewRanks(Sheet{Points: []Spent{{Name: "A", Rank: 1}}}, Sheet{Points: []Spent{{Name: "A", Rank: 2}, {Name: "B", Rank: 1}, {Name: "C"}}})
+	if len(gains) != 2 || gains[0] != (RankGain{"A", 1, 2}) || gains[1] != (RankGain{"B", 0, 1}) {
+		t.Errorf("NewRanks = %v", gains)
 	}
 }

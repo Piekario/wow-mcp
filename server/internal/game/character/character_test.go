@@ -72,3 +72,40 @@ func TestNoteAndDeaths(t *testing.T) {
 		t.Errorf("SummarizeSheet: %v", out)
 	}
 }
+
+func TestJudgeDurabilityOnTypedGear(t *testing.T) {
+	gear := []Gear{
+		{Slot: "head", Name: "Helm", Durability: 5, MaxDurability: 100, HasDurability: true},
+		{Slot: "chest", Name: "Robe", Durability: 90, MaxDurability: 100, HasDurability: true},
+		{Slot: "shirt", Name: "Shirt"},
+	}
+	report, ok := judgeDurability(gear, RepairQuote{}, false)
+	if !ok || report.Percent != 47.5 || report.Lowest.Name != "Helm" || len(report.NearlyBroken) != 1 || report.HasRepair {
+		t.Fatalf("report: %+v ok=%v", report, ok)
+	}
+	if _, ok := judgeDurability([]Gear{{Slot: "shirt"}}, RepairQuote{}, false); ok {
+		t.Error("gear without durability has no report")
+	}
+}
+
+func TestAverageItemLevelSkipsCosmeticSlots(t *testing.T) {
+	avg, ok := averageItemLevel([]Gear{
+		{Slot: "head", ItemLevel: 10, HasItemLevel: true},
+		{Slot: "chest", ItemLevel: 21, HasItemLevel: true},
+		{Slot: "tabard", ItemLevel: 100, HasItemLevel: true},
+	})
+	if !ok || avg != 15.5 {
+		t.Errorf("average = %v %v", avg, ok)
+	}
+}
+
+func TestInspectAccountSortsByLevel(t *testing.T) {
+	low, high := fixtures.Forever(t), fixtures.Forever(t)
+	snapshot.AsMap(low["character"])["level"] = int64(5)
+	snapshot.AsMap(high["character"])["level"] = int64(40)
+	db := &snapshot.Database{Last: "Low", Characters: map[string]snapshot.Snapshot{"Low": low, "High": high}}
+	report := InspectAccount(db, fixtures.At(time.Minute))
+	if report.Characters[0].Name != "High" || report.Last != "Low" || report.TotalMoney != report.Characters[0].Money+report.Characters[1].Money {
+		t.Errorf("report: %+v", report)
+	}
+}

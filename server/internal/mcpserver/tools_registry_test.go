@@ -139,7 +139,7 @@ func TestSectionPathAndLimitThroughTool(t *testing.T) {
 func TestDoctorTool(t *testing.T) {
 	dir := t.TempDir()
 	history := storage.NewHistory(filepath.Join(dir, "history"), 5)
-	store := &storage.Store{File: fixtures.Testdata("WowMcp_forever.lua"), History: history}
+	store := &storage.Store{File: fixtures.Testdata("WowMcp_forever.lua")}
 	cs := connect(t, Config{Name: "wow-mcp", Version: "test", Snapshots: store, History: history, HistoryDir: history.Dir, Freshness: fixtures.At(0)})
 	out, isErr := callText(t, cs, "wow_doctor", nil)
 	if isErr {

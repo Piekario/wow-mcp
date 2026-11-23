@@ -8,6 +8,8 @@ import (
 	"testing"
 
 	"wowmcp/internal/fixtures"
+	"wowmcp/internal/game/consumption"
+	"wowmcp/internal/game/items"
 	"wowmcp/internal/game/progress"
 	"wowmcp/internal/snapshot"
 	"wowmcp/internal/storage"
@@ -125,20 +127,25 @@ func TestNothingConsumable(t *testing.T) {
 	}
 }
 
-func TestLowStockSkipsAmmoAndPlentiful(t *testing.T) {
-	view := map[string]any{"categories": []any{
-		map[string]any{"category": "ammo", "items": []any{map[string]any{"name": "Sharp Arrow", "total": int64(10), "perHour": 100.0, "hoursLeft": 0.1}}},
-		map[string]any{"category": "bandages", "items": []any{
-			map[string]any{"name": "Linen Bandage", "total": int64(3), "perHour": 12.0, "hoursLeft": 0.3},
-			map[string]any{"name": "Silk Bandage", "total": int64(60), "perHour": 6.0, "hoursLeft": 10.0},
-			map[string]any{"name": "No rate", "total": int64(5)},
-		}},
-	}}
-	got := LowStock(view)
-	if len(got) != 1 || got[0].Name != "Linen Bandage" || got[0].Category != "bandages" || got[0].Total != 3 || got[0].PerHour != 12 {
-		t.Errorf("low stock: %+v", got)
+func TestShortagesSkipAmmoAndPlentiful(t *testing.T) {
+	use := func(perHour float64) consumption.Usage { return consumption.Usage{PerHour: perHour} }
+	line := func(name string, bags int64, perHour float64) Line {
+		l := Line{Name: name, Holdings: items.Holdings{Bags: bags}, Measured: true, Use: use(perHour)}
+		l.HoursLeft, l.HasHoursLeft = l.Use.HoursLeft(l.Total())
+		return l
 	}
-	if len(LowStock(map[string]any{"note": "empty"})) != 0 {
-		t.Error("response without categories")
+	r := Report{Groups: []Group{
+		{category: ammo, Lines: []Line{line("Sharp Arrow", 10, 100)}},
+		{category: bandages, Lines: []Line{line("Linen Bandage", 3, 12), line("Silk Bandage", 60, 6), {Name: "No rate", Holdings: items.Holdings{Bags: 5}}}},
+	}}
+	got := r.Shortages()
+	if len(got) != 1 || got[0].Name != "Linen Bandage" || got[0].Category != "bandages" || got[0].Total != 3 || got[0].PerHour != 12 || got[0].HoursLeft != 0.3 {
+		t.Errorf("shortages: %+v", got)
+	}
+	if low := r.LowStock(); len(low) != 2 || low[0] != "Linen Bandage" || low[1] != "Sharp Arrow" {
+		t.Errorf("low stock keeps ammo and sorts by name: %v", low)
+	}
+	if len(Report{}.Shortages()) != 0 {
+		t.Error("empty report")
 	}
 }

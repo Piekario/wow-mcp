@@ -58,13 +58,28 @@ func (f Freshness) SnapshotMeta(name string, s Snapshot) map[string]any {
 // CapturedMeta describes the age of a section collected when a window is opened (trainer, vendor, bank, flightPaths...).
 // These sections can be much older than the rest of the snapshot, because they hold the state from the last visit.
 func (f Freshness) CapturedMeta(section map[string]any) map[string]any {
-	unix, ok := section["capturedAt"].(int64)
-	if !ok {
+	return f.CapturedMetaOf(CapturedOf(section))
+}
+
+// Captured is when a window section was saved; Known is false for a section without that time.
+type Captured struct {
+	At    int64
+	Known bool
+}
+
+func CapturedOf(section map[string]any) Captured {
+	at, ok := section["capturedAt"].(int64)
+	return Captured{At: at, Known: ok}
+}
+
+// CapturedMetaOf is CapturedMeta for a section already read into a type.
+func (f Freshness) CapturedMetaOf(c Captured) map[string]any {
+	if !c.Known {
 		return nil
 	}
-	age := f.Age(unix)
+	age := f.Age(c.At)
 	meta := map[string]any{
-		"capturedAt":         FormatTime(unix),
+		"capturedAt":         FormatTime(c.At),
 		"capturedAgeMinutes": int64(age.Minutes()),
 	}
 	if f.isStale(age) {
