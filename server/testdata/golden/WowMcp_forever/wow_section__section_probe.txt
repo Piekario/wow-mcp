@@ -7,6 +7,12 @@
   "capturedAt": "2026-11-15 16:26",
   "probe": {
     "capturedAt": 1794760000,
+    "eventCandidates": {
+      "LOGOUT_CANCEL": true,
+      "PLAYER_CAMPING": true,
+      "PLAYER_LEAVING_WORLD": true,
+      "PLAYER_QUITING": true
+    },
     "events": {
       "ADDON_LOADED": true,
       "AUCTION_HOUSE_BROWSE_RESULTS_ADDED": true,

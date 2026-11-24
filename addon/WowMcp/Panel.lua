@@ -113,7 +113,7 @@ local function hideTooltip()
     if GameTooltip then GameTooltip:Hide() end
 end
 
-local function saveAndReload(reason)
+function Panel.saveAndReload(reason)
     pcall(Snapshot.dump, reason)
     ReloadUI()
 end
@@ -170,7 +170,7 @@ local function addSaveButton(f)
     save:SetSize(80, 20)
     save:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -8, 8)
     save:SetText("Save")
-    save:SetScript("OnClick", function() saveAndReload("panel") end)
+    save:SetScript("OnClick", function() Panel.saveAndReload("panel") end)
     save:SetScript("OnEnter", function(self)
         if GameTooltip then
             GameTooltip:SetOwner(self, "ANCHOR_TOP")

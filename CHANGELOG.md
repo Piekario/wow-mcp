@@ -10,6 +10,10 @@ based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` 
 ## Unreleased
 
 - **Added**
+  - A key binding "Save character state (dump and /reload)" in the game's Key Bindings, under WowMcp (`Bindings.xml`,
+    `Keybind.lua`). It does what the panel's Save button does, on one key the player picks; no key is bound by default.
+  - `/mcp probe` also reports whether the client knows the logout events `PLAYER_CAMPING`, `PLAYER_QUITING`,
+    `PLAYER_LEAVING_WORLD` and `LOGOUT_CANCEL` (`probe.eventCandidates`); the addon does not use them yet.
   - A PayPal donation link next to GitHub Sponsors: the repository's Sponsor button (`.github/FUNDING.yml`), the npm
     package (`funding`, shown by `npm fund`), two README badges, and one line in the README, `SUPPORT.md` and the npm README. Nothing in
     the addon or the server changes, and the game shows no donation message.

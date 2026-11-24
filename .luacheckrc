@@ -11,6 +11,9 @@ globals = {
     "SLASH_WOWMCP1",
     "SLASH_WOWMCP2",
     "SlashCmdList",
+    "BINDING_HEADER_WOWMCP",
+    "BINDING_NAME_WOWMCP_SAVE",
+    "WowMcp_SaveAndReload",
 }
 
 -- WoW client globals that the addon only reads (list derived from the addon code).

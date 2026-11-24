@@ -40,7 +40,7 @@
     {
       "check": "dump speed",
       "status": "ok",
-      "detail": "Collecting the dump took 66.5 ms.",
+      "detail": "Collecting the dump took 64.5 ms.",
       "fix": ""
     },
     {

@@ -2397,6 +2397,10 @@ def main() -> int:
         panel.scripts["OnLeave"](panel)
         assert not g.tooltip.shown
         g.reloaded = False
+        g.WowMcp_SaveAndReload()
+        assert g.reloaded and g.WowMcpDB["characters"]["Piekasz"]["reason"] == "keybind", "the key binding saves like the button"
+        assert g.BINDING_NAME_WOWMCP_SAVE and "WOWMCP_SAVE" in (ADDON_DIR / "Bindings.xml").read_text(encoding="utf-8")
+        g.reloaded = False
         panel.saveButton.scripts["OnClick"](panel.saveButton)
         assert g.reloaded, "the Save button should call ReloadUI"
         assert g.WowMcpDB["characters"]["Piekasz"]["reason"] == "panel"

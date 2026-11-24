@@ -1,0 +1,5 @@
+<Bindings>
+    <Binding name="WOWMCP_SAVE" header="WOWMCP" category="ADDONS">
+        WowMcp_SaveAndReload()
+    </Binding>
+</Bindings>

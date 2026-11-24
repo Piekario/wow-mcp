@@ -19,7 +19,7 @@
       ],
       "character": "Piekasz",
       "class": "Jäger",
-      "dumpTimeMs": 66.5,
+      "dumpTimeMs": 64.5,
       "dumpedAt": "2026-11-15 16:50:00",
       "level": 20,
       "note": {

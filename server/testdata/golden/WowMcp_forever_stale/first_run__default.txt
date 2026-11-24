@@ -14,7 +14,7 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
 {
   "addon": {
     "addonVersion": "0.19.2",
-    "dumpTimeMs": 66.5
+    "dumpTimeMs": 64.5
   },
   "character": {
     "class": "Hunter",

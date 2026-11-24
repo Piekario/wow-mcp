@@ -1377,6 +1377,12 @@ true, -- [1]
 },
 ["probe"] = {
 ["capturedAt"] = 1794760000,
+["eventCandidates"] = {
+["LOGOUT_CANCEL"] = true,
+["PLAYER_CAMPING"] = true,
+["PLAYER_LEAVING_WORLD"] = true,
+["PLAYER_QUITING"] = true,
+},
 ["events"] = {
 ["ADDON_LOADED"] = true,
 ["AUCTION_HOUSE_BROWSE_RESULTS_ADDED"] = true,
@@ -2766,26 +2772,26 @@ true, -- [1]
 ["slowest"] = {
 {
 ["ms"] = 2.5,
-["name"] = "completedQuests",
+["name"] = "actionBars",
 }, -- [1]
 {
 ["ms"] = 2.5,
-["name"] = "cooldowns",
+["name"] = "character",
 }, -- [2]
 {
 ["ms"] = 2.5,
-["name"] = "dungeons",
+["name"] = "currencies",
 }, -- [3]
 {
 ["ms"] = 2.5,
-["name"] = "guide",
+["name"] = "equipment",
 }, -- [4]
 {
 ["ms"] = 2.5,
-["name"] = "professions",
+["name"] = "group",
 }, -- [5]
 },
-["totalMs"] = 66.5,
+["totalMs"] = 64.5,
 },
 ["trainer"] = {
 ["capturedAt"] = 1794760000,
