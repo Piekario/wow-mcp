@@ -79,13 +79,15 @@ func (r Report) Render() map[string]any {
 	return out
 }
 
+const baseStatsNote = "Saved without the row's tooltip (addon before 0.19.2): if this is a random-suffix item (of the Eagle, of the Monkey...), the stats here are the base item's, without the suffix. Browse the auction house for it again and type /mcp reload."
+
 func (r Report) detailsNote() string {
-	const how = "Item details (type, level, stats, DPS) are saved from addon 0.13.0, only for gear and only when the client already holds the item data. Update the addon, browse the auction house for the items again and type /mcp reload."
+	const how = "Item details (type, level, stats, tooltip) are saved for gear only, once the client has loaded the item data (addon 0.19.2 asks for it and reads the row again; each random suffix is its own entry). Update the addon, browse the auction house for the items again, wait a second and type /mcp reload."
 	switch r.Gap {
 	case DetailsNone:
 		return "No saved price has item details, so gear cannot be compared. " + how
 	case DetailsPartial:
-		return fmt.Sprintf("%d saved prices have no item details and are left out of this answer (non-gear never has them; gear needs addon 0.13.0 and a browse with the item data cached). %s", r.NoDetails, how)
+		return fmt.Sprintf("%d saved prices have no item details and are left out of this answer (non-gear never has them; gear needs the item data loaded while the results were open). %s", r.NoDetails, how)
 	}
 	return ""
 }
@@ -112,6 +114,9 @@ func (r PriceRow) render() map[string]any {
 	if r.Judgement != nil {
 		passThrough(e, r.Details)
 		snapshot.Merge(e, r.Judgement.fields)
+		if r.HasNumbers && !r.HasTooltip {
+			e["statsNote"] = baseStatsNote
+		}
 	}
 	if o := r.Owned; o != nil {
 		e["have"] = o.Count

@@ -6,7 +6,7 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
 --- content[1] ---
 {
   "assumptions": "Profit is computed from the lowest buyout price per unit minus the 5% auction house cut. The listing deposit is lost if the item does not sell and is not counted here. Bound (Soulbound) and quest items cannot be listed.",
-  "count": 6,
+  "count": 9,
   "lastVisit": "3 h 20 min ago",
   "myAuctions": {
     "auctions": [
@@ -56,6 +56,9 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
       },
       "subType": "Bows",
       "subclassID": 2,
+      "tooltip": [
+        "Hornwood Recurve Bow"
+      ],
       "type": "Weapon",
       "vsEquipped": {
         "delta": {
@@ -116,6 +119,120 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
       "quantity": 80,
       "seenAgo": "3 h 20 min",
       "source": "browse"
+    },
+    {
+      "bindType": 2,
+      "canAfford": false,
+      "classID": 4,
+      "equipLoc": "INVTYPE_NECK",
+      "id": 12020,
+      "itemLevel": 36,
+      "levelOk": false,
+      "listings": 1,
+      "minBuyoutPerUnit": "94s 0c",
+      "name": "Thallium Choker of the Monkey",
+      "quality": 2,
+      "qualityName": "Uncommon",
+      "quantity": 1,
+      "requiredLevel": 31,
+      "seenAgo": "3 h 20 min",
+      "sellPrice": 3969,
+      "source": "item",
+      "statTokens": {
+        "ITEM_MOD_AGILITY_SHORT": 4,
+        "ITEM_MOD_STAMINA_SHORT": 4
+      },
+      "subType": "Miscellaneous",
+      "subclassID": 0,
+      "suffix": 600,
+      "tooltip": [
+        "Thallium Choker of the Monkey",
+        "Neck",
+        "+4 Agility"
+      ],
+      "type": "Armor",
+      "vsEquipped": {
+        "delta": {
+          "Agility": 4,
+          "Item Level": 36,
+          "Stamina": 4
+        },
+        "equipped": "(empty)",
+        "slot": "neck"
+      }
+    },
+    {
+      "bindType": 2,
+      "canAfford": false,
+      "classID": 4,
+      "equipLoc": "INVTYPE_NECK",
+      "id": 12020,
+      "itemLevel": 36,
+      "levelOk": false,
+      "minBuyoutPerUnit": "80s 1c",
+      "name": "Thallium Choker of the Owl",
+      "quality": 2,
+      "qualityName": "Uncommon",
+      "quantity": 3,
+      "requiredLevel": 31,
+      "seenAgo": "3 h 20 min",
+      "sellPrice": 3969,
+      "source": "browse",
+      "statTokens": {
+        "ITEM_MOD_INTELLECT_SHORT": 4,
+        "ITEM_MOD_SPIRIT_SHORT": 4
+      },
+      "subType": "Miscellaneous",
+      "subclassID": 0,
+      "suffix": 585,
+      "tooltip": [
+        "Thallium Choker of the Owl",
+        "Neck",
+        "+4 Intellect"
+      ],
+      "type": "Armor",
+      "vsEquipped": {
+        "delta": {
+          "Intellect": 4,
+          "Item Level": 36,
+          "Spirit": 4
+        },
+        "equipped": "(empty)",
+        "slot": "neck"
+      }
+    },
+    {
+      "bindType": 2,
+      "canAfford": false,
+      "classID": 4,
+      "equipLoc": "INVTYPE_TRINKET",
+      "id": 1404,
+      "itemLevel": 45,
+      "levelOk": false,
+      "minBuyoutPerUnit": "5g 20s 0c",
+      "name": "Tidal Charm",
+      "quality": 2,
+      "qualityName": "Uncommon",
+      "quantity": 1,
+      "requiredLevel": 40,
+      "seenAgo": "3 h 20 min",
+      "sellPrice": 2500,
+      "source": "browse",
+      "subType": "Miscellaneous",
+      "subclassID": 0,
+      "tooltip": [
+        "Tidal Charm",
+        "Trinket",
+        "Use: Stuns the target for 3 sec."
+      ],
+      "type": "Armor",
+      "vsEquipped": {
+        "delta": {
+          "Item Level": 45
+        },
+        "equipped": "(empty)",
+        "slot": "trinket1"
+      }
     }
   ],
   "sellOnAH": [

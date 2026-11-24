@@ -4,7 +4,7 @@
 --- content[0] ---
 {
   "status": "warn",
-  "summary": "12 checks: 10 ok, 2 warnings, 0 failures (server 0.19.1, expected addon 0.19.1)",
+  "summary": "12 checks: 10 ok, 2 warnings, 0 failures (server 0.19.2, expected addon 0.19.2)",
   "nextStep": "Turn a section back on with /mcp on \u003csection\u003e and type /mcp reload.",
   "checks": [
     {
@@ -28,7 +28,7 @@
     {
       "check": "addon version",
       "status": "ok",
-      "detail": "Addon 0.19.1, the server expects 0.19.1.",
+      "detail": "Addon 0.19.2, the server expects 0.19.2.",
       "fix": ""
     },
     {

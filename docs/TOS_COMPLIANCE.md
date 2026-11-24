@@ -39,6 +39,9 @@ and compare them with the code. The project is intended for personal use on your
   text in the tooltip: the addon searches for and lists nothing, and knows the price only from searches the player ran themselves.
 - For talent descriptions the addon asks the client to load the spell data (`C_Spell.RequestLoadSpellData`). This is a request for data to
   read, not an action in the game.
+- For the rows of an auction search the player ran, the addon asks the client to load the item data of rows it has not loaded yet
+  (`C_Item.RequestLoadItemDataByID`), as the auction window does for the rows it draws. It is an item cache request: the addon never
+  sends an auction house query, never searches, scans, bids or buys.
 - It writes data only to SavedVariables (`WowMcpDB`), as every addon does. The game saves this file
   itself, on `/reload` and logout.
 - The only "action" in the game is `ReloadUI()`, called after the `/mcp reload` command or a click on the "Save" button. The panel
@@ -84,7 +87,7 @@ grep -rnE "CastSpell|UseAction|UseContainerItem|PickupContainerItem|SendChatMess
 grep -rn "ReloadUI" addon/                                    # only Commands.lua and Panel.lua
 grep -rn "SendAddonMessage\|C_ChatInfo" addon/                # no communication between players
 grep -rnE "ShowFriends|GuildRoster\(|SendWho" addon/WowMcp   # only comments in Friends.lua and Guild.lua: the addon does not request friends or guild lists
-grep -rnE "Request[A-Z]|Query|Send[A-Z]" addon/WowMcp     # nothing besides RequestTimePlayed (Played.lua) and C_Spell.RequestLoadSpellData (Talents.lua); in Probe.lua it is only a name pattern
+grep -rnE "Request[A-Z]|Query|Send[A-Z]" addon/WowMcp     # nothing besides RequestTimePlayed (Played.lua), C_Spell.RequestLoadSpellData (Talents.lua) and C_Item.RequestLoadItemDataByID (AuctionItems.lua); in Probe.lua it is only a name pattern
 
 # server: files and network
 grep -rn "os.Create\|os.OpenFile\|os.WriteFile\|os.MkdirAll" server --include=*.go     # only internal/storage (history, log, goals file)

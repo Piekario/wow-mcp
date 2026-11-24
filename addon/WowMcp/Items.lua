@@ -116,25 +116,26 @@ end
 
 -- Whether the client already holds the item's data. IsItemDataCachedByID only looks in the local cache (no request);
 -- when the client lacks the function we cannot tell, so we treat the data as not cached.
-local function isItemDataCached(itemID)
+function Items.isDataCached(itemID)
     local result = callFirst({ "C_Item.IsItemDataCachedByID", "IsItemDataCachedByID" }, itemID)
     return result ~= nil and plain(result[1]) == true
 end
 
--- Details of an item known only by ID (auction results), taken ONLY from what the client already holds. GetItemInfo and
+-- Details of an item known only by ID (auction results), taken ONLY from what the client already holds. link names a
+-- variant of the item (a random suffix) when the ID alone does not. GetItemInfo and
 -- GetItemStats on an uncached item may ask the server to load it, so they run only after IsItemDataCachedByID says the data
 -- is local. Without cached data only the static GetItemInfoInstant fields are filled; never a request, an event wait or a
 -- tooltip. No tooltip text, so weapon DPS comes from the stat tokens and there is no speed or damage range.
 -- gearOnly: stop after the static fields when the item is not gear (keeps a bounded section small).
-function Items.addCachedDetails(item, itemID, gearOnly)
+function Items.addCachedDetails(item, itemID, gearOnly, link)
     if type(itemID) ~= "number" then return end
-    local itemString = "item:" .. itemID
+    local itemString = link or ("item:" .. itemID)
     pcall(addInstantInfo, item, itemID)
     if gearOnly and not Items.isGear(item) then
         item.type, item.subType, item.classID, item.subclassID = nil, nil, nil, nil
         return
     end
-    if not isItemDataCached(itemID) then return end
+    if not Items.isDataCached(itemID) then return end
     pcall(addItemInfo, item, itemString)
     pcall(addItemStats, item, itemString)
     addStatDps(item)

@@ -54,6 +54,7 @@ type Price struct {
 	HasDetails       bool // the addon saved item details (addon 0.13.0, gear it had cached)
 	HasRequiredLevel bool
 	HasNumbers       bool // item level or stat tokens: without them a comparison would only subtract the worn item
+	HasTooltip       bool // addon 0.19.2 read the row's own tooltip, so a random suffix has its stats
 	Raw              any
 }
 

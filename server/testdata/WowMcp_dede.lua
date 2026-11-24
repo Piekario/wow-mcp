@@ -28,7 +28,7 @@ WowMcpDB = {
 ["slot"] = 13,
 }, -- [3]
 },
-["addonVersion"] = "0.19.1",
+["addonVersion"] = "0.19.2",
 ["auctions"] = {
 ["capturedAt"] = 1794760000,
 ["lastVisitAt"] = 1794760000,
@@ -87,6 +87,9 @@ WowMcpDB = {
 },
 ["subType"] = "Bows",
 ["subclassID"] = 2,
+["tooltip"] = {
+"Hornwood Recurve Bow", -- [1]
+},
 ["type"] = "Weapon",
 },
 ["Light Leather"] = {
@@ -150,6 +153,104 @@ WowMcpDB = {
 },
 ["seenAt"] = 1794760000,
 ["source"] = "browse",
+},
+["Thallium Choker of the Monkey"] = {
+["bindType"] = 2,
+["classID"] = 4,
+["equipLoc"] = "INVTYPE_NECK",
+["id"] = 12020,
+["itemLevel"] = 36,
+["listings"] = 1,
+["minBuyout"] = 9400,
+["name"] = "Thallium Choker of the Monkey",
+["quality"] = 2,
+["quantity"] = 1,
+["requiredLevel"] = 31,
+["seen"] = {
+{
+["at"] = 1794760000,
+["minBuyout"] = 9400,
+}, -- [1]
+},
+["seenAt"] = 1794760000,
+["sellPrice"] = 3969,
+["source"] = "item",
+["statTokens"] = {
+["ITEM_MOD_AGILITY_SHORT"] = 4,
+["ITEM_MOD_STAMINA_SHORT"] = 4,
+},
+["subType"] = "Miscellaneous",
+["subclassID"] = 0,
+["suffix"] = 600,
+["tooltip"] = {
+"Thallium Choker of the Monkey", -- [1]
+"Neck", -- [2]
+"+4 Agility", -- [3]
+},
+["type"] = "Armor",
+},
+["Thallium Choker of the Owl"] = {
+["bindType"] = 2,
+["classID"] = 4,
+["equipLoc"] = "INVTYPE_NECK",
+["id"] = 12020,
+["itemLevel"] = 36,
+["minBuyout"] = 8001,
+["name"] = "Thallium Choker of the Owl",
+["quality"] = 2,
+["quantity"] = 3,
+["requiredLevel"] = 31,
+["seen"] = {
+{
+["at"] = 1794760000,
+["minBuyout"] = 8001,
+}, -- [1]
+},
+["seenAt"] = 1794760000,
+["sellPrice"] = 3969,
+["source"] = "browse",
+["statTokens"] = {
+["ITEM_MOD_INTELLECT_SHORT"] = 4,
+["ITEM_MOD_SPIRIT_SHORT"] = 4,
+},
+["subType"] = "Miscellaneous",
+["subclassID"] = 0,
+["suffix"] = 585,
+["tooltip"] = {
+"Thallium Choker of the Owl", -- [1]
+"Neck", -- [2]
+"+4 Intellect", -- [3]
+},
+["type"] = "Armor",
+},
+["Tidal Charm"] = {
+["bindType"] = 2,
+["classID"] = 4,
+["equipLoc"] = "INVTYPE_TRINKET",
+["id"] = 1404,
+["itemLevel"] = 45,
+["minBuyout"] = 52000,
+["name"] = "Tidal Charm",
+["quality"] = 2,
+["quantity"] = 1,
+["requiredLevel"] = 40,
+["seen"] = {
+{
+["at"] = 1794760000,
+["minBuyout"] = 52000,
+}, -- [1]
+},
+["seenAt"] = 1794760000,
+["sellPrice"] = 2500,
+["source"] = "browse",
+["subType"] = "Miscellaneous",
+["subclassID"] = 0,
+["tooltip"] = {
+"Tidal Charm", -- [1]
+"Trinket", -- [2]
+"Use: Stuns the target for 3 sec.", -- [3]
+},
+["type"] = "Armor",
 },
 },
 },
@@ -354,7 +455,7 @@ WowMcpDB = {
 ["npc"] = "Einris Brightspear",
 },
 ["character"] = {
-["addonVersion"] = "0.19.1",
+["addonVersion"] = "0.19.2",
 ["bindLocation"] = "Auberdine",
 ["class"] = "Jäger",
 ["classToken"] = "HUNTER",
@@ -1295,6 +1396,7 @@ true, -- [1]
 ["ADDON_LOADED"] = true,
 ["AUCTION_HOUSE_BROWSE_RESULTS_ADDED"] = true,
 ["AUCTION_HOUSE_BROWSE_RESULTS_UPDATED"] = true,
+["AUCTION_HOUSE_CLOSED"] = true,
 ["AUCTION_HOUSE_SHOW"] = true,
 ["AUCTION_ITEM_LIST_UPDATE"] = false,
 ["AUCTION_OWNED_LIST_UPDATE"] = false,
@@ -1305,8 +1407,11 @@ true, -- [1]
 ["CRAFT_SHOW"] = false,
 ["CRAFT_UPDATE"] = false,
 ["FRIENDLIST_UPDATE"] = true,
+["GET_ITEM_INFO_RECEIVED"] = true,
 ["GUILD_ROSTER_UPDATE"] = true,
 ["INSPECT_READY"] = true,
+["ITEM_DATA_LOAD_RESULT"] = true,
+["ITEM_KEY_ITEM_INFO_RECEIVED"] = true,
 ["ITEM_SEARCH_RESULTS_UPDATED"] = true,
 ["MAIL_INBOX_UPDATE"] = true,
 ["MAIL_SHOW"] = true,
@@ -1403,19 +1508,20 @@ true, -- [1]
 ["C_AuctionHouse"] = {
 "GetBrowseResults", -- [1]
 "GetCommoditySearchResultInfo", -- [2]
-"GetItemSearchResultInfo", -- [3]
-"GetNumCommoditySearchResults", -- [4]
-"GetNumItemSearchResults", -- [5]
-"GetNumOwnedAuctions", -- [6]
-"GetOwnedAuctionInfo", -- [7]
-"PlaceBid", -- [8]
-"PostItem", -- [9]
-"QueryOwnedAuctions", -- [10]
-"RefreshCommoditySearchResults", -- [11]
-"RefreshItemSearchResults", -- [12]
-"ReplicateItems", -- [13]
-"SendBrowseQuery", -- [14]
-"SendSearchQuery", -- [15]
+"GetItemKeyInfo", -- [3]
+"GetItemSearchResultInfo", -- [4]
+"GetNumCommoditySearchResults", -- [5]
+"GetNumItemSearchResults", -- [6]
+"GetNumOwnedAuctions", -- [7]
+"GetOwnedAuctionInfo", -- [8]
+"PlaceBid", -- [9]
+"PostItem", -- [10]
+"QueryOwnedAuctions", -- [11]
+"RefreshCommoditySearchResults", -- [12]
+"RefreshItemSearchResults", -- [13]
+"ReplicateItems", -- [14]
+"SendBrowseQuery", -- [15]
+"SendSearchQuery", -- [16]
 },
 ["C_ClassTalents"] = {
 "GetActiveConfigID", -- [1]
@@ -1460,6 +1566,7 @@ true, -- [1]
 "GetItemNameByID", -- [4]
 "GetItemStats", -- [5]
 "IsItemDataCachedByID", -- [6]
+"RequestLoadItemDataByID", -- [7]
 },
 ["C_LFGList"] = {
 "GetActivityInfoTable", -- [1]
@@ -1527,11 +1634,13 @@ true, -- [1]
 },
 ["C_TooltipInfo"] = {
 "GetBagItem", -- [1]
-"GetInventoryItem", -- [2]
-"GetItemByID", -- [3]
-"GetMerchantItem", -- [4]
-"GetQuestItem", -- [5]
-"GetSpellByID", -- [6]
+"GetHyperlink", -- [2]
+"GetInventoryItem", -- [3]
+"GetItemByID", -- [4]
+"GetItemKey", -- [5]
+"GetMerchantItem", -- [6]
+"GetQuestItem", -- [7]
+"GetSpellByID", -- [8]
 },
 ["C_TradeSkillUI"] = {
 "GetAllRecipeIDs", -- [1]
