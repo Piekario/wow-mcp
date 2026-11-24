@@ -1,0 +1,271 @@
+# tool wow_auctions variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "assumptions": "Profit is computed from the lowest buyout price per unit minus the 5% auction house cut. The listing deposit is lost if the item does not sell and is not counted here. Bound (Soulbound) and quest items cannot be listed.",
+  "count": 9,
+  "lastVisit": "30 min ago",
+  "myAuctions": {
+    "auctions": [
+      {
+        "buyout": "6s 0c",
+        "count": 10,
+        "name": "Copper Ore",
+        "timeLeft": "2 h"
+      }
+    ],
+    "checkedAgo": "30 min",
+    "count": 1,
+    "totalBuyout": "6s 0c"
+  },
+  "prices": [
+    {
+      "id": 5586,
+      "listings": 1,
+      "minBidPerUnit": "70s 0c",
+      "minBuyoutPerUnit": "90s 0c",
+      "name": "Curvewood Dagger",
+      "quantity": 1,
+      "seenAgo": "30 min",
+      "source": "item",
+      "trend": "-25% over 3 visits since 2026-10-26 16:26 (1g 20s 0c -\u003e 90s 0c)"
+    },
+    {
+      "bindType": 2,
+      "canAfford": true,
+      "classID": 2,
+      "dps": 9.7,
+      "equipLoc": "INVTYPE_RANGEDRIGHT",
+      "id": 2506,
+      "itemLevel": 19,
+      "levelOk": true,
+      "minBuyoutPerUnit": "42s 0c",
+      "name": "Hornwood Recurve Bow",
+      "quality": 2,
+      "qualityName": "Uncommon",
+      "quantity": 2,
+      "requiredLevel": 14,
+      "seenAgo": "30 min",
+      "sellPrice": 1500,
+      "source": "browse",
+      "statTokens": {
+        "ITEM_MOD_AGILITY_SHORT": 3,
+        "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 9.7
+      },
+      "subType": "Bows",
+      "subclassID": 2,
+      "tooltip": [
+        "Hornwood Recurve Bow"
+      ],
+      "trend": "-25% over 3 visits since 2026-10-26 16:26 (56s 0c -\u003e 42s 0c)",
+      "type": "Weapon",
+      "vsEquipped": {
+        "delta": {
+          "Agility": 3,
+          "DPS": 1.3,
+          "Item Level": 9
+        },
+        "equipped": "Light Hunting Bow",
+        "equippedNumbers": {
+          "DPS": 8.4,
+          "Item Level": 10,
+          "Speed": 1.6
+        },
+        "slot": "ranged"
+      }
+    },
+    {
+      "have": 7,
+      "id": 2318,
+      "minBuyoutPerUnit": "25c",
+      "name": "Light Leather",
+      "quantity": 150,
+      "seenAgo": "30 min",
+      "source": "browse",
+      "trend": "-24% over 3 visits since 2026-10-26 16:26 (33c -\u003e 25c)",
+      "vendorPerUnit": "13c",
+      "where": "bags"
+    },
+    {
+      "have": 34,
+      "id": 2589,
+      "listings": 2,
+      "minBuyoutPerUnit": "12c",
+      "name": "Linen Cloth",
+      "quantity": 140,
+      "seenAgo": "30 min",
+      "source": "commodity",
+      "trend": "-25% over 3 visits since 2026-10-26 16:26 (16c -\u003e 12c)",
+      "vendorPerUnit": "13c",
+      "where": "bags+bank"
+    },
+    {
+      "canAfford": true,
+      "classID": 2,
+      "equipLoc": "INVTYPE_RANGEDRIGHT",
+      "id": 2507,
+      "minBuyoutPerUnit": "31s 0c",
+      "name": "Ranger's Shortbow",
+      "quantity": 1,
+      "seenAgo": "30 min",
+      "source": "browse",
+      "subType": "Bows",
+      "subclassID": 2,
+      "trend": "-25% over 3 visits since 2026-10-26 16:26 (41s 33c -\u003e 31s 0c)",
+      "type": "Weapon"
+    },
+    {
+      "id": 2508,
+      "minBuyoutPerUnit": "40c",
+      "name": "Silk Thread",
+      "quantity": 80,
+      "seenAgo": "30 min",
+      "source": "browse",
+      "trend": "-25% over 3 visits since 2026-10-26 16:26 (53c -\u003e 40c)"
+    },
+    {
+      "bindType": 2,
+      "canAfford": false,
+      "classID": 4,
+      "equipLoc": "INVTYPE_NECK",
+      "id": 12020,
+      "itemLevel": 36,
+      "levelOk": false,
+      "listings": 1,
+      "minBuyoutPerUnit": "94s 0c",
+      "name": "Thallium Choker of the Monkey",
+      "quality": 2,
+      "qualityName": "Uncommon",
+      "quantity": 1,
+      "requiredLevel": 31,
+      "seenAgo": "30 min",
+      "sellPrice": 3969,
+      "source": "item",
+      "statTokens": {
+        "ITEM_MOD_AGILITY_SHORT": 4,
+        "ITEM_MOD_STAMINA_SHORT": 4
+      },
+      "subType": "Miscellaneous",
+      "subclassID": 0,
+      "suffix": 600,
+      "tooltip": [
+        "Thallium Choker of the Monkey",
+        "Neck",
+        "+4 Agility"
+      ],
+      "trend": "-25% over 3 visits since 2026-10-26 16:26 (1g 25s 33c -\u003e 94s 0c)",
+      "type": "Armor",
+      "vsEquipped": {
+        "delta": {
+          "Agility": 4,
+          "Item Level": 36,
+          "Stamina": 4
+        },
+        "equipped": "(empty)",
+        "slot": "neck"
+      }
+    },
+    {
+      "bindType": 2,
+      "canAfford": false,
+      "classID": 4,
+      "equipLoc": "INVTYPE_NECK",
+      "id": 12020,
+      "itemLevel": 36,
+      "levelOk": false,
+      "minBuyoutPerUnit": "80s 1c",
+      "name": "Thallium Choker of the Owl",
+      "quality": 2,
+      "qualityName": "Uncommon",
+      "quantity": 3,
+      "requiredLevel": 31,
+      "seenAgo": "30 min",
+      "sellPrice": 3969,
+      "source": "browse",
+      "statTokens": {
+        "ITEM_MOD_INTELLECT_SHORT": 4,
+        "ITEM_MOD_SPIRIT_SHORT": 4
+      },
+      "subType": "Miscellaneous",
+      "subclassID": 0,
+      "suffix": 585,
+      "tooltip": [
+        "Thallium Choker of the Owl",
+        "Neck",
+        "+4 Intellect"
+      ],
+      "trend": "-25% over 3 visits since 2026-10-26 16:26 (1g 6s 68c -\u003e 80s 1c)",
+      "type": "Armor",
+      "vsEquipped": {
+        "delta": {
+          "Intellect": 4,
+          "Item Level": 36,
+          "Spirit": 4
+        },
+        "equipped": "(empty)",
+        "slot": "neck"
+      }
+    },
+    {
+      "bindType": 2,
+      "canAfford": false,
+      "classID": 4,
+      "equipLoc": "INVTYPE_TRINKET",
+      "id": 1404,
+      "itemLevel": 45,
+      "levelOk": false,
+      "minBuyoutPerUnit": "5g 20s 0c",
+      "name": "Tidal Charm",
+      "quality": 2,
+      "qualityName": "Uncommon",
+      "quantity": 1,
+      "requiredLevel": 40,
+      "seenAgo": "30 min",
+      "sellPrice": 2500,
+      "source": "browse",
+      "subType": "Miscellaneous",
+      "subclassID": 0,
+      "tooltip": [
+        "Tidal Charm",
+        "Trinket",
+        "Use: Stuns the target for 3 sec."
+      ],
+      "trend": "-25% over 3 visits since 2026-10-26 16:26 (6g 93s 33c -\u003e 5g 20s 0c)",
+      "type": "Armor",
+      "vsEquipped": {
+        "delta": {
+          "Item Level": 45
+        },
+        "equipped": "(empty)",
+        "slot": "trinket1"
+      }
+    }
+  ],
+  "sellOnAH": [
+    {
+      "advice": "auction",
+      "afterCutTotal": "1s 61c",
+      "auctionPerUnit": "25c",
+      "have": 7,
+      "name": "Light Leather",
+      "vendorTotal": "91c",
+      "where": "bags"
+    },
+    {
+      "advice": "vendor: the auction adds almost nothing",
+      "afterCutTotal": "3s 74c",
+      "auctionPerUnit": "12c",
+      "have": 34,
+      "name": "Linen Cloth",
+      "vendorTotal": "4s 42c",
+      "where": "bags+bank"
+    }
+  ],
+  "sellOnAHSummary": "Listing the items with advice=auction: about 1s 61c after the cut instead of 91c from a vendor.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

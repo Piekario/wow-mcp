@@ -28,7 +28,7 @@ WowMcpDB = {
 ["slot"] = 13,
 }, -- [3]
 },
-["addonVersion"] = "0.19.2",
+["addonVersion"] = "0.20.0",
 ["auctions"] = {
 ["capturedAt"] = 1794760000,
 ["lastVisitAt"] = 1794760000,
@@ -455,7 +455,7 @@ WowMcpDB = {
 ["npc"] = "Einris Brightspear",
 },
 ["character"] = {
-["addonVersion"] = "0.19.2",
+["addonVersion"] = "0.20.0",
 ["bindLocation"] = "Auberdine",
 ["class"] = "Hunter",
 ["classToken"] = "HUNTER",
@@ -1415,6 +1415,7 @@ true, -- [1]
 ["OWNED_AUCTIONS_UPDATED"] = true,
 ["PET_STABLE_SHOW"] = true,
 ["PET_STABLE_UPDATE"] = true,
+["PLAYER_CAMPING"] = true,
 ["PLAYER_DEAD"] = true,
 ["PLAYER_EQUIPMENT_CHANGED"] = true,
 ["PLAYER_GUILD_UPDATE"] = true,
@@ -1422,6 +1423,7 @@ true, -- [1]
 ["PLAYER_LOGIN"] = true,
 ["PLAYER_LOGOUT"] = true,
 ["PLAYER_MONEY"] = true,
+["PLAYER_QUITING"] = true,
 ["PLAYER_XP_UPDATE"] = true,
 ["QUEST_ACCEPTED"] = true,
 ["QUEST_COMPLETE"] = true,

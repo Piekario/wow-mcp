@@ -239,7 +239,7 @@ function Snapshot.dump(reason)
     collectSections(snapshot, recorder)
     snapshot.timings = recorder.report()
 
-    if reason == "logout" and ns.LogoutGuard.looksUnloaded(snapshot, collectorOf, Snapshot.isDisabled) then
+    if (reason == "logout" or reason == "logoutStart") and ns.LogoutGuard.looksUnloaded(snapshot, collectorOf, Snapshot.isDisabled) then
         if type(previous) == "table" and type(previous.dumpedAt) == "number" then
             previous.lastSkippedLogoutAt = time()
             Store.saveCharacter(key, previous)

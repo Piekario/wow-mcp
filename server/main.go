@@ -37,7 +37,7 @@ import (
 
 const (
 	serverName    = "wow-mcp"
-	serverVersion = "0.19.2"
+	serverVersion = "0.20.0"
 	watchInterval = 5 * time.Second
 )
 

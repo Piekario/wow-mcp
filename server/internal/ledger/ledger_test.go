@@ -6,9 +6,11 @@ package ledger
 import (
 	"os"
 	"path/filepath"
+	"slices"
 	"sync"
 	"testing"
 
+	"wowmcp/internal/game/auctions"
 	"wowmcp/internal/game/progress"
 	"wowmcp/internal/snapshot"
 	"wowmcp/internal/storage"
@@ -171,5 +173,66 @@ func TestLatestMoneyValueWinsForTheSameTime(t *testing.T) {
 	got, err := l.Events("Ana", 0, 5000)
 	if err != nil || len(got) != 1 || got[0].Copper != 250 {
 		t.Fatalf("events = %+v, err = %v", got, err)
+	}
+}
+
+var _ auctions.PriceLog = (*Ledger)(nil)
+
+func withPrices(at int64, prices map[string]any) snapshot.Snapshot {
+	s := dump(at, 5, 0)
+	s["auctions"] = map[string]any{"prices": prices}
+	return s
+}
+
+func price(seenAt, buyout int64, seen ...[2]int64) map[string]any {
+	p := map[string]any{"minBuyout": buyout, "minBid": buyout / 2, "seenAt": seenAt}
+	var visits []any
+	for _, v := range seen {
+		visits = append(visits, map[string]any{"at": v[0], "minBuyout": v[1]})
+	}
+	if visits != nil {
+		p["seen"] = visits
+	}
+	return p
+}
+
+func TestPricesAreKeptOncePerRealmAcrossRepeatedDumps(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "history.db")
+	l := open(t, path)
+	first := withPrices(100, map[string]any{
+		"Linen Cloth":  price(50, 20, [2]int64{10, 30}, [2]int64{50, 20}),
+		"No Buyout":    map[string]any{"minBid": int64(5), "seenAt": int64(50)},
+		"Never Seen":   map[string]any{"minBuyout": int64(5)},
+		"Copper Ore":   price(60, 15),
+		"Wool Cloth":   price(70, 40),
+		"Zero Buyout":  price(70, 0),
+		"Silk Cloth":   price(80, 90, [2]int64{0, 70}),
+		"Mageweave Cl": price(0, 90),
+	})
+	l.Record(database("Ana-Realm", first), nil)
+	l.Record(database("Ana-Realm", first), nil)
+	l.Record(database("Bob-Realm", withPrices(200, map[string]any{"Linen Cloth": price(150, 25, [2]int64{50, 20}, [2]int64{150, 25})})), nil)
+	l.Record(database("Ana-Other", withPrices(200, map[string]any{"Linen Cloth": price(160, 99)})), nil)
+	l.Close()
+
+	l = open(t, path)
+	got, err := l.Prices("Realm", []string{"Linen Cloth", "No Buyout", "Never Seen", "Zero Buyout", "Silk Cloth", "Mageweave Cl"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []auctions.Observation{
+		{Item: "Linen Cloth", SeenAt: 10, MinBuyout: 30},
+		{Item: "Linen Cloth", SeenAt: 50, MinBuyout: 20, MinBid: 10},
+		{Item: "Silk Cloth", SeenAt: 80, MinBuyout: 90, MinBid: 45},
+		{Item: "Linen Cloth", SeenAt: 150, MinBuyout: 25, MinBid: 12},
+	}
+	if !slices.Equal(got, want) {
+		t.Fatalf("prices = %+v, want %+v", got, want)
+	}
+	if other, _ := l.Prices("Other", []string{"Linen Cloth"}); len(other) != 1 || other[0].MinBuyout != 99 {
+		t.Fatalf("the other realm = %+v", other)
+	}
+	if none, err := l.Prices("Realm", nil); err != nil || none != nil {
+		t.Fatalf("no items: %v %v", none, err)
 	}
 }

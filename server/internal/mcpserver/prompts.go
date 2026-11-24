@@ -262,7 +262,7 @@ func whatToSell(s *service, who string, snap snapshot.Snapshot) (string, map[str
 		"professions": snap["professions"],
 		"quests":      quests.ObjectiveTexts(snap),
 	}
-	if ah := auctions.Analyse(snap, auctions.Query{Mine: true}, s.Freshness); ah.Saved {
+	if ah := auctions.Analyse(snap, auctions.Query{Mine: true}, s.Freshness, s.pricePast(who)); ah.Saved {
 		data["auctionHouse"] = ah.Render()
 	}
 	return "Propose what to sell to a vendor and what to keep. Keep items needed for quests in the log, " +
@@ -305,7 +305,7 @@ func gearUpgrades(s *service, who string, snap snapshot.Snapshot) (string, map[s
 		"equipped":   worn,
 		"candidates": candidates,
 	}
-	if ah := auctions.View(snap, auctions.Query{Equippable: true}, s.Freshness); len(snapshot.AsList(ah["prices"])) > 0 {
+	if ah := auctions.View(snap, auctions.Query{Equippable: true}, s.Freshness, s.pricePast(who)); len(snapshot.AsList(ah["prices"])) > 0 {
 		data["auctionUpgrades"] = firstN(ah["prices"], maxAuctionCandidates)
 	}
 	return "Assess which of the candidates are upgrades for this class and level. The delta in comparisons is the candidate minus the equipped item " +
@@ -391,7 +391,7 @@ func talentGrowth(s *service, who string, snap snapshot.Snapshot) (string, map[s
 func auctionListing(s *service, who string, snap snapshot.Snapshot) (string, map[string]any) {
 	_, money := snap.LevelAndMoney()
 	data := map[string]any{
-		"auctionHouse": auctions.View(snap, auctions.Query{}, s.Freshness),
+		"auctionHouse": auctions.View(snap, auctions.Query{}, s.Freshness, s.pricePast(who)),
 		"professions":  professions.Summary(snap),
 		"quests":       quests.ObjectiveTexts(snap),
 		"money":        snapshot.Money(money).String(),
@@ -444,7 +444,7 @@ func beforeLogout(s *service, who string, snap snapshot.Snapshot) (string, map[s
 	if box := mail.Inspect(snap, s.Freshness); box.Saved {
 		data["mail"] = box.Render(s.Freshness)
 	}
-	if ah := auctions.View(snap, auctions.Query{Mine: true}, s.Freshness); ah["myAuctions"] != nil {
+	if ah := auctions.View(snap, auctions.Query{Mine: true}, s.Freshness, s.pricePast(who)); ah["myAuctions"] != nil {
 		data["myAuctions"] = ah["myAuctions"]
 		data["auctionsEndingSoon"] = auctions.EndingSoon(snap, s.Freshness, auctions.EndingSoonWithin)
 	}

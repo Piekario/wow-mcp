@@ -1737,6 +1737,22 @@ def check_guard_ignores_disabled_sections() -> None:
         assert "clientUnloaded" not in kept or kept["clientUnloaded"] is None
         assert kept["character"]["moneyCopper"] == 5212
 
+    # A plain logout: the dump taken when the logout timer starts is the one that stays on disk.
+    for start in ("PLAYER_CAMPING", "PLAYER_QUITING"):
+        runtime, g, addon_ns, on_event = relog("")
+        g.SlashCmdList["WOWMCP"]("")
+        g.clockNow += 300
+        g.reloaded = False
+        on_event(None, start)
+        fresh = saved_character(g)
+        assert fresh["reason"] == "logoutStart" and fresh["dumpedAt"] == g.clockNow and not g.reloaded, dict(fresh)
+        g.clockNow += 20
+        runtime.execute(UNLOADED_CLIENT)
+        on_event(None, "PLAYER_LOGOUT")
+        kept = saved_character(g)
+        assert kept["reason"] == "logoutStart" and kept["dumpedAt"] == g.clockNow - 20, dict(kept)
+        assert kept["lastSkippedLogoutAt"] == g.clockNow
+
 
 def periods_of(section) -> list:
     """The carried closed periods of a loot or xpGains section as a Python list (oldest first)."""

@@ -44,9 +44,11 @@ func readPrice(key string, raw any) Price {
 	p.MinBuyout, p.HasBuyout = snapshot.AsInt(m["minBuyout"])
 	p.MinBid, p.HasBid = snapshot.AsInt(m["minBid"])
 	p.SeenAt, p.HasSeenAt = snapshot.AsInt(m["seenAt"])
-	for _, visit := range snapshot.AsList(m["seen"]) {
-		buyout, _ := snapshot.AsInt(snapshot.AsMap(visit)["minBuyout"])
-		p.Buyouts = append(p.Buyouts, buyout)
+	for _, raw := range snapshot.AsList(m["seen"]) {
+		visit, o := snapshot.AsMap(raw), Observation{Item: key}
+		o.SeenAt, _ = snapshot.AsInt(visit["at"])
+		o.MinBuyout, _ = snapshot.AsInt(visit["minBuyout"])
+		p.Visits = append(p.Visits, o)
 	}
 	_, equip := m["equipLoc"]
 	_, class := m["classID"]
@@ -57,6 +59,21 @@ func readPrice(key string, raw any) Price {
 	p.HasNumbers = level || stats
 	_, p.HasTooltip = m["tooltip"]
 	return p
+}
+
+// Observations are the prices of a dump worth keeping: each item's latest price and its recent visits, those with a
+// time and a buyout. The latest comes first, so it wins over a visit of the same moment (it also has the bid).
+func Observations(s snapshot.Snapshot) []Observation {
+	var out []Observation
+	for _, p := range readSection(s).Prices {
+		latest := Observation{Item: p.Key, SeenAt: p.SeenAt, MinBuyout: p.MinBuyout, MinBid: p.MinBid}
+		for _, o := range append([]Observation{latest}, p.Visits...) {
+			if o.SeenAt > 0 && o.MinBuyout > 0 {
+				out = append(out, o)
+			}
+		}
+	}
+	return out
 }
 
 func present(m map[string]any, keys []string) []Detail {

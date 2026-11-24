@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"wowmcp/internal/game/auctions"
+	"wowmcp/internal/game/eventlog"
 	"wowmcp/internal/game/progress"
 	"wowmcp/internal/snapshot"
 )
@@ -52,6 +54,8 @@ func (f *fakeSource) loadCount() int {
 
 type fakeLedger struct {
 	progress.Series
+	eventlog.Store
+	auctions.PriceLog
 	mu      sync.Mutex
 	records int
 }

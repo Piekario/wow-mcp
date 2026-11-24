@@ -21,6 +21,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"runtime"
+	"slices"
 	"sort"
 	"strings"
 	"testing"
@@ -29,6 +30,8 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	"wowmcp/internal/fixtures"
+	"wowmcp/internal/game/auctions"
+	"wowmcp/internal/game/eventlog"
 	"wowmcp/internal/game/progress"
 	"wowmcp/internal/mcpserver"
 	"wowmcp/internal/snapshot"
@@ -525,7 +528,7 @@ var onlyStale = func(c goldenCase) bool { return c.stale }
 // forLedger selects the history tools whose numbers reach back into the long history.
 var forLedger = func(c goldenCase) bool {
 	switch c.name + "/" + c.variant {
-	case "wow_gold_history/days_big", "wow_progress/default", "wow_session_rating/default":
+	case "wow_gold_history/days_big", "wow_progress/default", "wow_session_rating/default", "wow_timeline/default", "wow_auctions/default":
 		return true
 	}
 	return false
@@ -834,11 +837,37 @@ func seedHistory(t *testing.T, file string, h *storage.History) {
 	}
 }
 
-// fakeLedger is a long history that already holds older points; it records nothing.
-type fakeLedger map[string][]progress.Point
+// fakeLedger is a long history that already holds older points, logged events and auction prices; it records nothing.
+type fakeLedger struct {
+	points map[string][]progress.Point
+	events map[string][]eventlog.Entry
+	prices map[string][]auctions.Observation // by realm
+}
 
-func (l fakeLedger) Points(character string) ([]progress.Point, error) { return l[character], nil }
-func (l fakeLedger) Record(*snapshot.Database, progress.History)       {}
+func (l fakeLedger) Points(character string) ([]progress.Point, error) {
+	return l.points[character], nil
+}
+func (l fakeLedger) Record(*snapshot.Database, progress.History) {}
+
+func (l fakeLedger) Events(character string, from, to int64) ([]eventlog.Entry, error) {
+	var out []eventlog.Entry
+	for _, e := range l.events[character] {
+		if e.At >= from && e.At <= to {
+			out = append(out, e)
+		}
+	}
+	return out, nil
+}
+
+func (l fakeLedger) Prices(realm string, items []string) ([]auctions.Observation, error) {
+	var out []auctions.Observation
+	for _, o := range l.prices[realm] {
+		if slices.Contains(items, o.Item) {
+			out = append(out, o)
+		}
+	}
+	return out, nil
+}
 
 // seedLedger gives every character two one-hour sessions, 20 and 10 days before the dump, with a lower level,
 // less gold and less play time than the oldest history file (seedHistory, two hours back).
@@ -849,12 +878,15 @@ func seedLedger(t *testing.T, file string) fakeLedger {
 		t.Fatal(err)
 	}
 	const day, hour = int64(86400), int64(3600)
-	out := fakeLedger{}
+	out := fakeLedger{points: map[string][]progress.Point{}, events: map[string][]eventlog.Entry{}, prices: map[string][]auctions.Observation{}}
 	for _, name := range db.CharacterNames() {
 		cur, ok := progress.PointOf(db.Characters[name])
 		if !ok {
 			continue
 		}
+		out.events[name] = seedEvents(cur)
+		realm := snapshot.RealmOf(name)
+		out.prices[realm] = append(out.prices[realm], seedPrices(db.Characters[name], cur.At)...)
 		for i, back := range []int64{20*day + hour, 20 * day, 10*day + hour, 10 * day} {
 			p := cur
 			p.At = cur.At - back
@@ -865,9 +897,35 @@ func seedLedger(t *testing.T, file string) fakeLedger {
 			if cur.Played >= 0 {
 				p.Played = cur.Played - 2*hour - int64(4-i)*hour
 			}
-			out[name] = append(out[name], p)
+			out.points[name] = append(out.points[name], p)
 		}
 	}
+	return out
+}
+
+// seedEvents logs the level-up seedHistory shows between its two files (earlier than the file that shows it), the
+// level before it and a quest turned in days before the oldest history file.
+func seedEvents(cur progress.Point) []eventlog.Entry {
+	const day = int64(86400)
+	return []eventlog.Entry{
+		{At: cur.At - 3*day, Kind: eventlog.KindQuestAccepted, QuestID: 90001, Title: "Seeded Errand"},
+		{At: cur.At - 2*day - 3600, Kind: eventlog.KindLevel, Level: max(cur.Level-1, 1)},
+		{At: cur.At - 2*day, Kind: eventlog.KindQuestTurnedIn, QuestID: 90001, XP: 450, Copper: 120},
+		{At: cur.At - 2*day + 60, Kind: eventlog.KindMoney, Copper: cur.Money},
+		{At: cur.At - 5000, Kind: eventlog.KindLevel, Level: cur.Level},
+	}
+}
+
+// seedPrices gives every saved auction price two older visits at a higher buyout, 20 and 10 days before the dump,
+// plus the price itself, as the real ledger would hold it.
+func seedPrices(s snapshot.Snapshot, at int64) []auctions.Observation {
+	const day = int64(86400)
+	var out []auctions.Observation
+	for _, o := range auctions.Observations(s) {
+		out = append(out, auctions.Observation{Item: o.Item, SeenAt: at - 20*day, MinBuyout: o.MinBuyout * 4 / 3},
+			auctions.Observation{Item: o.Item, SeenAt: at - 10*day, MinBuyout: o.MinBuyout * 6 / 5}, o)
+	}
+	sort.SliceStable(out, func(i, j int) bool { return out[i].SeenAt < out[j].SeenAt })
 	return out
 }
 

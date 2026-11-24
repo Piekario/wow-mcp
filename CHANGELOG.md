@@ -10,6 +10,11 @@ based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` 
 ## Unreleased
 
 - **Added**
+  - A plain logout now leaves a fresh dump on disk. The addon takes a dump when the logout timer starts or the player
+    chooses Exit (`PLAYER_CAMPING`, `PLAYER_QUITING`, both confirmed by `/mcp probe` in the real client on 2026-11-24),
+    while the character is still loaded; the dump at `PLAYER_LOGOUT`, when the client is already empty, is skipped as
+    before. The dump has `reason = "logoutStart"`. It only reads: nothing is reloaded and nothing is saved by the addon.
+  - The versions on this branch are 0.20.0 for the addon and the server (the server expects addon 0.20.0); not released.
   - A long history database on the server: `history.db` (SQLite, the cgo-free `modernc.org/sqlite` driver) inside the
     history directory. Every dump the server reads adds one compact row per character (level, XP, gold, rested XP,
     played time, deaths, completed quests, zone) and the rows are kept beyond the `--history-keep` limit of full dumps.
@@ -30,14 +35,23 @@ based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` 
   - A PayPal donation link next to GitHub Sponsors: the repository's Sponsor button (`.github/FUNDING.yml`), the npm
     package (`funding`, shown by `npm fund`), two README badges, and one line in the README, `SUPPORT.md` and the npm README. Nothing in
     the addon or the server changes, and the game shows no donation message.
+  - Auction prices are kept in `history.db` per realm (table `prices`: realm from the `Name-Realm` key, item = the name
+    the price is saved under, so a random suffix is its own item; time, lowest buyout and bid; each observation once).
+    Every dump adds each price's latest observation and the visits it carries in `seen`; prices without a time or a
+    buyout are not stored. The `wow_auctions` trend uses the longer of the dump's visits and the stored ones (one visit
+    = observations under 10 minutes apart) and then says since when (`over N visits since <date>`).
 - **Changed**
   - The feature request form on GitHub is now "Suggest a feature": it asks which game version you play, gives an example,
     says up front that only read-only ideas can be accepted, and asks to vote with a 👍 on existing suggestions. The README
     and `SUPPORT.md` link straight to it.
+  - `wow_timeline` reads the event log in `history.db`: a level-up or a turned-in quest the log recorded gets the logged
+    time (`exact: true`) instead of the time of the dump that showed it, and is listed once; logged level-ups and
+    turned-in quests no pair of kept dumps shows (older than the kept dumps) are added. The other kinds still come from
+    comparing dumps. A log that cannot be read leaves the dump times (`eventLogError`).
   - The number-only history answers read `history.db` before the oldest kept dump, so they are no longer limited to the
     last `--history-keep` dumps: `wow_gold_history`, `wow_progress` (overall pace, level-ups, sessions), the goal ETA
     rates and the earlier sessions `wow_session_rating` compares with. Answers that need the dump itself (`wow_changes`,
-    `wow_timeline`, `wow_journal`, consumption in `wow_ammo`, `wow_reagents`, `wow_shopping_list`) still use the kept
+    `wow_journal`, consumption in `wow_ammo`, `wow_reagents`, `wow_shopping_list`) still use the kept
     dumps. When a stretch starts before them, `xpSources` says from which dump it counts (`countedFrom`, `partialNote`).
     A `history.db` that cannot be read leaves the answers as they were.
 

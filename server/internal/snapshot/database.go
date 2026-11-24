@@ -27,6 +27,12 @@ type Database struct {
 // AltsHint says where the characters in the database come from.
 const AltsHint = "A character appears here after logging in with it with the addon enabled and running /mcp reload (or after logging out, because the addon dumps then by itself)."
 
+// RealmOf is the realm part of a "Name-Realm" character key; "" for a key saved without one.
+func RealmOf(key string) string {
+	_, realm, _ := strings.Cut(key, "-")
+	return realm
+}
+
 // Lookup returns the snapshot of the given character; an empty name means the most recently dumped one.
 // A character key is "Name-Realm". The full key always wins; otherwise the query is matched case-insensitively against the
 // full key and then against the name part, and a name shared by several realms is an error that lists the full keys.

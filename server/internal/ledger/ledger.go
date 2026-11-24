@@ -34,6 +34,14 @@ var migrations = []string{
 		data TEXT NOT NULL,
 		PRIMARY KEY (character, at, kind, key)
 	) WITHOUT ROWID`,
+	`CREATE TABLE prices (
+		realm TEXT NOT NULL,
+		item TEXT NOT NULL,
+		seen_at INTEGER NOT NULL,
+		min_buyout INTEGER NOT NULL,
+		min_bid INTEGER NOT NULL,
+		PRIMARY KEY (realm, item, seen_at)
+	) WITHOUT ROWID`,
 }
 
 // Ledger is safe for concurrent use, also by several server processes on the same file (the desktop app starts more

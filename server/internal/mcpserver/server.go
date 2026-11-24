@@ -11,6 +11,8 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
+	"wowmcp/internal/game/auctions"
+	"wowmcp/internal/game/eventlog"
 	"wowmcp/internal/game/goals"
 	"wowmcp/internal/game/items"
 	"wowmcp/internal/game/progress"
@@ -28,9 +30,12 @@ type History interface {
 	Record(db *snapshot.Database)
 }
 
-// Ledger is the long history: it keeps the numbers of every dump it is given, beyond the History limit.
+// Ledger is the long history: it keeps the numbers, logged events and auction prices of every dump it is given,
+// beyond the History limit.
 type Ledger interface {
 	progress.Series
+	eventlog.Store
+	auctions.PriceLog
 	Record(db *snapshot.Database, files progress.History)
 }
 
@@ -85,6 +90,7 @@ func New(cfg Config) *mcp.Server {
 	}
 	if cfg.Ledger != nil {
 		svc.progress.Series = cfg.Ledger
+		svc.progress.Log = cfg.Ledger
 	}
 	limiter := responseCap{limitKB: cfg.MaxResponseKB, args: map[string][]string{}}
 	for _, t := range svc.tools() {
@@ -120,6 +126,14 @@ func (s *service) loadDatabase() (*snapshot.Database, error) {
 		s.Ledger.Record(db, s.progress.History)
 	}
 	return db, nil
+}
+
+// pricePast is the long price history of the character's realm; empty without a ledger.
+func (s *service) pricePast(character string) auctions.Past {
+	if s.Ledger == nil {
+		return auctions.Past{}
+	}
+	return auctions.Past{Log: s.Ledger, Realm: snapshot.RealmOf(character)}
 }
 
 // load reads the file and returns the snapshot of the given character (empty name = most recently dumped).

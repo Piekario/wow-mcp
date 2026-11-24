@@ -45,3 +45,9 @@ func (e Entry) Key() string {
 	}
 	return ""
 }
+
+// Store is the long-kept event log: every entry ever recorded for a character, beyond what the addon still carries.
+type Store interface {
+	// Events returns the character's entries with from <= At <= to, oldest first.
+	Events(character string, from, to int64) ([]Entry, error)
+}

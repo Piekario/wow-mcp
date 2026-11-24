@@ -46,9 +46,10 @@ type Query struct {
 
 // Event is one event on the timeline; What holds the facts of its kind.
 type Event struct {
-	At   int64
-	Kind string
-	What fact
+	At    int64
+	Kind  string
+	What  fact
+	Exact bool // the time comes from the addon's event log, not from a dump
 }
 
 type LevelUp struct{ From, To int64 }
@@ -86,6 +87,8 @@ type report struct {
 	Events        []Event
 	Total         int
 	OlderNotShown int
+	LogUsed       bool   // a long-kept event log was asked for exact times
+	LogError      string // it failed: every event has the time of a dump
 }
 
 func build(name string, current snapshot.Snapshot, tr progress.Tracker, q Query) (report, error) {
@@ -101,10 +104,23 @@ func build(name string, current snapshot.Snapshot, tr progress.Tracker, q Query)
 		return report{}, err
 	}
 	r := report{SnapshotsRead: len(snaps)}
-	if len(snaps) < 2 {
-		return r, nil
+	var events []Event
+	if len(snaps) >= 2 {
+		events = Build(snaps)
 	}
-	events := filter(Build(snaps), q, snaps[len(snaps)-1])
+	newest := dumpedAt(current)
+	if len(snaps) > 0 {
+		newest = dumpedAt(snaps[len(snaps)-1])
+	}
+	if tr.Log != nil {
+		r.LogUsed = true
+		if entries, err := tr.Log.Events(name, 0, newest); err != nil {
+			r.LogError = err.Error()
+		} else {
+			events = withLog(events, entries)
+		}
+	}
+	events = filter(events, q, newest)
 	r.Total = len(events)
 	if len(events) > limit {
 		r.OlderNotShown = len(events) - limit
@@ -139,10 +155,10 @@ func validKind(k string) bool {
 	return false
 }
 
-func filter(events []Event, q Query, newest snapshot.Snapshot) []Event {
+func filter(events []Event, q Query, newest int64) []Event {
 	var cutoff int64
 	if q.Days > 0 {
-		cutoff = dumpedAt(newest) - int64(q.Days*float64(24*time.Hour/time.Second))
+		cutoff = newest - int64(q.Days*float64(24*time.Hour/time.Second))
 	}
 	var out []Event
 	for _, e := range events {
@@ -172,19 +188,19 @@ func between(before, after snapshot.Snapshot) []Event {
 	c := progress.Compare(before, after)
 	var events []Event
 	if c.XP != nil && c.XP.LevelUp() {
-		events = append(events, Event{at, KindLevelUp, LevelUp{c.XP.LevelBefore, c.XP.LevelAfter}})
+		events = append(events, Event{At: at, Kind: KindLevelUp, What: LevelUp{c.XP.LevelBefore, c.XP.LevelAfter}})
 	}
 	for _, s := range c.NewSpells {
 		if name, _ := s.Name.(string); name != "" {
-			events = append(events, Event{at, KindNewSpell, NewSpell{name, s.Rank, s.HasRank && s.Rank != nil}})
+			events = append(events, Event{At: at, Kind: KindNewSpell, What: NewSpell{name, s.Rank, s.HasRank && s.Rank != nil}})
 		}
 	}
 	for _, g := range c.Equipment {
-		events = append(events, Event{at, KindEquipment, GearChange{g.Slot, g.Before, g.After}})
+		events = append(events, Event{At: at, Kind: KindEquipment, What: GearChange{g.Slot, g.Before, g.After}})
 	}
 	for _, q := range c.Quests.TurnedIn {
 		zone, _ := q.Zone.(string)
-		events = append(events, Event{at, KindQuest, TurnedInQuest{q.ID, q.Title, zone}})
+		events = append(events, Event{At: at, Kind: KindQuest, What: TurnedInQuest{q.ID, q.Title, zone}})
 	}
 	events = append(events, professions(c.Professions, at)...)
 	if c.Deaths != nil {
@@ -198,9 +214,9 @@ func professions(changes []progress.SkillChange, at int64) []Event {
 	var out []Event
 	for _, p := range changes {
 		if p.New {
-			out = append(out, Event{at, KindProfession, ProfessionStep{Name: p.Name, After: p.After, New: true}})
+			out = append(out, Event{At: at, Kind: KindProfession, What: ProfessionStep{Name: p.Name, After: p.After, New: true}})
 		} else if m, ok := crossed(p.Before, p.After); ok {
-			out = append(out, Event{at, KindProfession, ProfessionStep{Name: p.Name, Before: p.Before, After: p.After, Milestone: m}})
+			out = append(out, Event{At: at, Kind: KindProfession, What: ProfessionStep{Name: p.Name, Before: p.Before, After: p.After, Milestone: m}})
 		}
 	}
 	return out
@@ -224,13 +240,13 @@ func deaths(before, after snapshot.Snapshot, n, at int64) []Event {
 		if !r.HasAt || r.At <= from || r.At > at {
 			continue
 		}
-		out = append(out, Event{r.At, KindDeath, Death{true, r}})
+		out = append(out, Event{At: r.At, Kind: KindDeath, What: Death{true, r}})
 	}
 	if int64(len(out)) > n {
 		out = out[int64(len(out))-n:]
 	}
 	for int64(len(out)) < n {
-		out = append(out, Event{at, KindDeath, Death{}})
+		out = append(out, Event{At: at, Kind: KindDeath, What: Death{}})
 	}
 	return out
 }
