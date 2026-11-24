@@ -226,6 +226,7 @@ local function reportEmptyJournal(query, journal)
             .. " /mcp loot again."
     end
     extra.journalLoaded = not EJ.notLoadedYet()
+    extra.loadAttempt = EJ.lastLoad
     recordAttempt("noMatch", query, journal, extra)
     chat(text .. " Type /mcp reload to save this for the assistant.")
 end
