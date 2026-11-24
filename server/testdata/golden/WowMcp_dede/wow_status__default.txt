@@ -19,7 +19,7 @@
       ],
       "character": "Piekasz",
       "class": "Jäger",
-      "dumpTimeMs": 80.5,
+      "dumpTimeMs": 84,
       "dumpedAt": "2026-11-15 16:50:00",
       "level": 20,
       "note": {
@@ -38,6 +38,7 @@
         "beasts",
         "buyback",
         "character",
+        "classBuffGroups",
         "collections",
         "completedQuests",
         "cooldowns",

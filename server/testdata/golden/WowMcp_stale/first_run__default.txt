@@ -18,7 +18,7 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
     "disabledSections": [
       "macros"
     ],
-    "dumpTimeMs": 77.5
+    "dumpTimeMs": 81
   },
   "character": {
     "class": "Hunter",

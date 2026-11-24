@@ -53,7 +53,20 @@ func (r Report) Render(s snapshot.Snapshot) map[string]any {
 		out["selfBuffsNotActive"] = names
 		out["selfBuffsNote"] = "Spells the client flags as self buffs that you know and that have no active aura with the same spell ID or icon. Matched by IDs and icons, so it works in any game language, but it does not know which buffs exclude each other (e.g. only one Aspect at a time), so not every entry is a real gap."
 	}
-	s.AddEnglishOnlyNote(out, "Missing class buff groups (the \"missing\" list) are matched by English spell names (e.g. Aspect of the ..., Arcane Intellect), because no language-independent spell grouping is in the dump; the selfBuffsNotActive list uses spell IDs and icons instead")
+	if len(r.IDMismatches) > 0 {
+		out["groupIdMismatches"] = renderMismatches(r.IDMismatches)
+	}
+	if !r.ByClientNames {
+		s.AddEnglishOnlyNote(out, "Missing class buff groups (the \"missing\" list) are matched by English spell names (e.g. Aspect of the ..., Arcane Intellect), because the dump has no classBuffGroups section (addon older than 0.22.0); the selfBuffsNotActive list uses spell IDs and icons instead")
+	}
+	return out
+}
+
+func renderMismatches(mismatches []IDMismatch) []any {
+	out := []any{}
+	for _, m := range mismatches {
+		out = append(out, map[string]any{"group": m.Group, "id": m.ID, "name": m.Name, "text": m.text()})
+	}
 	return out
 }
 

@@ -550,7 +550,7 @@ WowMcpDB = {
 ["expiresAt"] = 1794760450,
 ["icon"] = 136076,
 ["id"] = 13165,
-["name"] = "Aspect of the Hawk",
+["name"] = "Aspekt des Falken",
 }, -- [1]
 {
 ["harmful"] = true,
@@ -880,6 +880,37 @@ WowMcpDB = {
 ["y"] = 15.4,
 ["zone"] = "Stormwind City",
 },
+["classBuffGroups"] = {
+{
+["label"] = "Aspect",
+["spells"] = {
+{
+["id"] = 13163,
+["name"] = "Aspekt des Affen",
+}, -- [1]
+{
+["id"] = 13165,
+["name"] = "Aspekt des Falken",
+}, -- [2]
+{
+["id"] = 5118,
+["name"] = "Aspekt des Geparden",
+}, -- [3]
+{
+["id"] = 13159,
+["name"] = "Aspekt des Rudels",
+}, -- [4]
+{
+["id"] = 13161,
+["name"] = "Aspekt des Wildtiers",
+}, -- [5]
+{
+["id"] = 20043,
+["name"] = "Aspekt der Wildnis",
+}, -- [6]
+},
+}, -- [1]
+},
 ["collections"] = {
 ["companions"] = {
 ["list"] = {
@@ -916,7 +947,7 @@ WowMcpDB = {
 {
 ["id"] = 13165,
 ["kind"] = "spell",
-["name"] = "Aspect of the Hawk",
+["name"] = "Aspekt des Falken",
 ["readyAt"] = 1794760290,
 ["remainingSeconds"] = 290,
 }, -- [1]
@@ -3285,7 +3316,7 @@ true, -- [1]
 {
 ["icon"] = 136076,
 ["id"] = 13165,
-["name"] = "Aspect of the Hawk",
+["name"] = "Aspekt des Falken",
 ["rank"] = "Rang 2",
 ["selfBuff"] = true,
 ["tab"] = "Beast Mastery",
@@ -3525,22 +3556,22 @@ true, -- [1]
 }, -- [1]
 {
 ["ms"] = 2.5,
-["name"] = "character",
+["name"] = "completedQuests",
 }, -- [2]
 {
 ["ms"] = 2.5,
-["name"] = "equipment",
+["name"] = "equipmentSets",
 }, -- [3]
 {
 ["ms"] = 2.5,
-["name"] = "equipmentSets",
+["name"] = "guide",
 }, -- [4]
 {
 ["ms"] = 2.5,
-["name"] = "guide",
+["name"] = "legacy",
 }, -- [5]
 },
-["totalMs"] = 80.5,
+["totalMs"] = 84,
 },
 ["titles"] = {
 ["current"] = "the Patient",

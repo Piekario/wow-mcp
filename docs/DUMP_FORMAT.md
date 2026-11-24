@@ -143,6 +143,17 @@ including ammo. Since ≤0.4.0.
 a spell shares it) and `selfBuff` (`true` when `C_Spell.IsSelfBuff(id)` says the spell is a buff cast on oneself; only for non-passive spells).
 `game/buffs` uses the IDs and icons to match known spells to active auras without names. Pet entries that are commands or stances (`Enum.SpellBookItemType.PetAction`) have `petAction = true` (0.9.0).
 
+### `classBuffGroups`: class buff groups (list, since 0.22.0)
+
+`{label, spells = {{id, name}, ...}}` for the player's class only (`ClassBuffs.lua`); absent for a class without groups.
+A group is a family of standing buffs of which one is enough (`Aspect`, `Blessing`, `Armor`, `Shield`, `Arcane Intellect`,
+`Power Word: Fortitude`, `Mark of the Wild`, `Battle Shout`). `label` is always English (it is the group's key for the
+server); `id` is one spell ID of the spell (any rank) and `name` is what `C_Spell.GetSpellName` answers for it, in the
+client's language. All ranks of a spell share the name, so `game/buffs` groups known spells and auras by these names on
+any client. An ID the client does not know is left out. The IDs come from the original game and are not verified for
+Forever: on an English client `game/buffs` drops a spell whose name the English rule of the group does not accept and
+reports it as `groupIdMismatches` (`wow_buffs`) and in the `wow_doctor` check `class buff spell IDs`.
+
 ### `talents`: talents (table)
 
 | Field | Type | Description | Since |

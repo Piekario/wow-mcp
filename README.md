@@ -262,7 +262,7 @@ After login (and after every `/reload`) the addon asks the game for play time, l
 | `wow_goals` | the player's goals from `goals.json`: current state, how much is missing, percent and an ETA from the `wow_progress` rate |
 | `wow_goal_set` | adds or removes a goal (`level`, `gold`, `reputation`, `profession`, `spell`, `item`); **the only tool that writes**, and only to the server's goals file |
 | `wow_timeline` | a character timeline from the dump history: level-ups, new abilities, gear changes, quests turned in, deaths, profession thresholds; `kind`, `days`, `limit`. An event has the time of the first dump in which it is visible; level-ups and turned-in quests found in the addon's event log have their exact time (`exact`) and reach back before the kept dumps |
-| `wow_buffs` | active buffs and debuffs and missing standing class buffs (e.g. Aspect, Arcane Intellect); time remaining from `expiresAt` (addon 0.7.0 records `expiresAt` and `duration`) |
+| `wow_buffs` | active buffs and debuffs and missing standing class buffs (e.g. Aspect, Arcane Intellect; matched by the spell names the client gives, so it works in any game language with addon 0.22.0, and a wrong spell ID is reported as `groupIdMismatches`); time remaining from `expiresAt` (addon 0.7.0 records `expiresAt` and `duration`) |
 | `wow_flights` | known flight points matched against the zones where you have quests (zone from the flight point's `zone` field from addon 0.7.0, and for older dumps guessed from the name) |
 | `wow_session_rating` | the rate of the last session (XP, gold balance, quests per hour) against the median of earlier sessions |
 | `wow_compare_characters` | two characters of the account side by side: level, gold, play time, professions, ilvl and gear slot by slot (`a`, `b`) |
@@ -489,7 +489,7 @@ has no case). A new addon section is a file in `Sections/`, a registry call and 
 
 On every `/mcp reload`: character, statistics, buffs, quest log, IDs of completed quests, bags and gear
 (with stats and the full item description, and ammo with the item count), abilities, talents, professions
-and weapon skills, pet (action bar, learned abilities and, since 0.22.0, which bag food it can eat), `beasts` (Hunters only, since 0.22.0: beasts the account's Hunters tamed or examined with Beast Lore), `equipmentSets` (equipment sets), `pvp` (honor and kills), aura duration (`expiresAt`, `duration`), action bars, reputation, macros,
+and weapon skills, pet (action bar, learned abilities and, since 0.22.0, which bag food it can eat), `beasts` (Hunters only, since 0.22.0: beasts the account's Hunters tamed or examined with Beast Lore), `classBuffGroups` (since 0.22.0: the class buff groups with the client's spell names), `equipmentSets` (equipment sets), `pvp` (honor and kills), aura duration (`expiresAt`, `duration`), action bars, reputation, macros,
 `currencies` (currencies and tokens), `cooldowns` (cooldowns longer than 90 s, e.g. Hearthstone), `played` (play time),
 `group` (party or raid composition) and `dungeons` (dungeons from the group finder and instance lockouts). Talents have
 whole trees with descriptions. The character also has zone, subzone, coordinates, `resting` and `bindLocation`. The dump carries `timings`

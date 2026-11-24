@@ -1015,26 +1015,26 @@ WowMcpDB = {
 ["slowest"] = {
 {
 ["ms"] = 2.5,
-["name"] = "auras",
+["name"] = "achievements",
 }, -- [1]
 {
 ["ms"] = 2.5,
-["name"] = "bags",
+["name"] = "actionBars",
 }, -- [2]
 {
 ["ms"] = 2.5,
-["name"] = "equipmentSets",
+["name"] = "auras",
 }, -- [3]
 {
 ["ms"] = 2.5,
-["name"] = "guide",
+["name"] = "bags",
 }, -- [4]
 {
 ["ms"] = 2.5,
-["name"] = "pet",
+["name"] = "classBuffGroups",
 }, -- [5]
 },
-["totalMs"] = 77.5,
+["totalMs"] = 81,
 },
 ["titles"] = {
 ["current"] = "the Patient",

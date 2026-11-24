@@ -41,7 +41,7 @@ func clone(s snapshot.Snapshot) snapshot.Snapshot {
 func TestEveryCheckHasStatusAndOrder(t *testing.T) {
 	r := Diagnose(fixtures.Forever(t), goodFacts(), fixtures.At(10*time.Minute))
 	want := []string{"dump file", "account", "dump age", "addon version", "section errors", "dump speed", "disabled sections",
-		"window sections", "unloaded dump", "client language", "history", "goals file"}
+		"window sections", "unloaded dump", "client language", "class buff spell IDs", "history", "goals file"}
 	if len(r.Checks) != len(want) {
 		t.Fatalf("got %d checks", len(r.Checks))
 	}
@@ -230,5 +230,24 @@ func TestChecksJudgeTheTypedDump(t *testing.T) {
 	w := windowSections(dump{Windows: []window{{Section: "bank", Open: "the bank", Tool: "wow_bank"}, {Section: "guild"}, {Section: "mail", Captured: true}}})
 	if w.Status != Warn || !strings.Contains(w.Detail, "bank (open: the bank; read by wow_bank)") || strings.Contains(w.Detail, "guild") {
 		t.Errorf("windows: %+v", w)
+	}
+}
+
+func TestClassBuffIDsCheck(t *testing.T) {
+	s := clone(fixtures.Forever(t))
+	delete(s, "classBuffGroups")
+	for _, c := range Diagnose(s, goodFacts(), fixtures.At(10*time.Minute)).Checks {
+		if c.Check == "class buff spell IDs" {
+			t.Errorf("a dump without the section has no such check: %+v", c)
+		}
+	}
+	if c := classBuffIDs(dump{HasClassGroups: true}); c.Status != OK {
+		t.Errorf("no mismatch: %+v", c)
+	}
+	s["character"] = map[string]any{"classToken": "HUNTER", "locale": "enUS"}
+	s["classBuffGroups"] = []any{map[string]any{"label": "Aspect", "spells": []any{map[string]any{"id": int64(13163), "name": "Demon Skin"}}}}
+	c := byName(t, Diagnose(s, goodFacts(), fixtures.At(10*time.Minute)), "class buff spell IDs")
+	if c.Status != Warn || !strings.Contains(c.Detail, "13163") || c.Fix == "" {
+		t.Errorf("wrong name: %+v", c)
 	}
 }

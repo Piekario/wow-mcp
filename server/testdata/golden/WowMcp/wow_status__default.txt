@@ -13,7 +13,7 @@
       "disabledSections": [
         "macros"
       ],
-      "dumpTimeMs": 77.5,
+      "dumpTimeMs": 81,
       "dumpedAt": "2026-11-15 16:50:00",
       "level": 20,
       "race": "Night Elf",

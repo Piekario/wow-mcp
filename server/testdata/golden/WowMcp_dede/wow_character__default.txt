@@ -9,7 +9,7 @@
       "expiresAt": 1794760450,
       "icon": 136076,
       "id": 13165,
-      "name": "Aspect of the Hawk"
+      "name": "Aspekt des Falken"
     },
     {
       "harmful": true,

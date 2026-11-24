@@ -21,7 +21,7 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
       ],
       "character": "Piekasz",
       "class": "Hunter",
-      "dumpTimeMs": 80.5,
+      "dumpTimeMs": 84,
       "dumpedAt": "2026-11-15 16:50:00",
       "level": 20,
       "note": {
@@ -40,6 +40,7 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
         "beasts",
         "buyback",
         "character",
+        "classBuffGroups",
         "collections",
         "completedQuests",
         "cooldowns",

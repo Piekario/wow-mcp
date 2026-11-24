@@ -880,6 +880,37 @@ WowMcpDB = {
 ["y"] = 15.4,
 ["zone"] = "Stormwind City",
 },
+["classBuffGroups"] = {
+{
+["label"] = "Aspect",
+["spells"] = {
+{
+["id"] = 13163,
+["name"] = "Aspect of the Monkey",
+}, -- [1]
+{
+["id"] = 13165,
+["name"] = "Aspect of the Hawk",
+}, -- [2]
+{
+["id"] = 5118,
+["name"] = "Aspect of the Cheetah",
+}, -- [3]
+{
+["id"] = 13159,
+["name"] = "Aspect of the Pack",
+}, -- [4]
+{
+["id"] = 13161,
+["name"] = "Aspect of the Beast",
+}, -- [5]
+{
+["id"] = 20043,
+["name"] = "Aspect of the Wild",
+}, -- [6]
+},
+}, -- [1]
+},
 ["collections"] = {
 ["companions"] = {
 ["list"] = {
@@ -3835,22 +3866,22 @@ true, -- [1]
 }, -- [1]
 {
 ["ms"] = 2.5,
-["name"] = "character",
+["name"] = "completedQuests",
 }, -- [2]
 {
 ["ms"] = 2.5,
-["name"] = "equipment",
+["name"] = "equipmentSets",
 }, -- [3]
 {
 ["ms"] = 2.5,
-["name"] = "equipmentSets",
+["name"] = "guide",
 }, -- [4]
 {
 ["ms"] = 2.5,
-["name"] = "guide",
+["name"] = "legacy",
 }, -- [5]
 },
-["totalMs"] = 80.5,
+["totalMs"] = 84,
 },
 ["titles"] = {
 ["current"] = "the Patient",

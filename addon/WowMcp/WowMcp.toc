@@ -31,12 +31,14 @@ BeastLore.lua
 Periods.lua
 LegacyDiscovery.lua
 AchievementCategories.lua
+ClassBuffs.lua
 
 # Sections collected on every dump. File order = section order in the dump.
 Sections\Character.lua
 Sections\Quests.lua
 Sections\Inventory.lua
 Sections\Spells.lua
+Sections\ClassBuffGroups.lua
 Sections\Talents.lua
 Sections\Legacy.lua
 Sections\Professions.lua

@@ -18,6 +18,11 @@ func read(s snapshot.Snapshot) Dump {
 			d.Auras = append(d.Auras, a)
 		}
 	}
+	for _, raw := range s.List("classBuffGroups") {
+		if g, ok := readGroup(snapshot.AsMap(raw)); ok {
+			d.Groups = append(d.Groups, g)
+		}
+	}
 	for _, raw := range s.List("spells") {
 		if sp, ok := readSpell(snapshot.AsMap(raw)); ok {
 			d.Spells = append(d.Spells, sp)
@@ -49,6 +54,20 @@ func readSpell(m map[string]any) (Spell, bool) {
 	sp.ID, _ = snapshot.AsInt(m["id"])
 	sp.Icon, _ = snapshot.AsInt(m["icon"])
 	return sp, true
+}
+
+func readGroup(m map[string]any) (DumpGroup, bool) {
+	label, _ := m["label"].(string)
+	g := DumpGroup{Label: label}
+	for _, raw := range snapshot.AsList(m["spells"]) {
+		spell := snapshot.AsMap(raw)
+		name, _ := spell["name"].(string)
+		id, hasID := snapshot.AsInt(spell["id"])
+		if name != "" && hasID {
+			g.Spells = append(g.Spells, GroupSpell{ID: id, Name: name})
+		}
+	}
+	return g, label != "" && len(g.Spells) > 0
 }
 
 // classOf is the class token (HUNTER...); the class name stands in for it only on English clients.

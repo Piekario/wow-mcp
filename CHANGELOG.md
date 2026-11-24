@@ -9,8 +9,8 @@ based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` 
 
 ## 0.22.0 (unreleased)
 
-Pet food the client checks and where to tame missing ranks, for the addon and the server (roadmap 69 and 70). The server
-expects addon 0.22.0. **None of this has been run in the real client**: it was checked only on the addon's API mocks
+Pet food the client checks, where to tame missing ranks, and class buffs by spell ID, for the addon and the server
+(roadmap 69, 70 and 105). The server expects addon 0.22.0. **None of this has been run in the real client**: it was checked only on the addon's API mocks
 (`addon/tests/run_addon.py`), unit tests and golden responses. It assumes the following about Forever, to be confirmed with
 `/mcp probe` and a taming in game:
 
@@ -23,10 +23,24 @@ expects addon 0.22.0. **None of this has been run in the real client**: it was c
 - Beast Lore is spell ID 1462 and leaves an aura on the beast that `C_UnitAuras.GetUnitAuraBySpellID` (or, without it,
   `C_UnitAuras.GetAuraDataByIndex` / `UnitAura`) finds; the beast's abilities appear in the unit tooltip that
   `C_TooltipInfo.GetUnit` returns. The tooltip format is unknown, so the lines are saved raw.
+- Class buff spell IDs (`ClassBuffs.lua`) are the IDs of the original game and are not verified for Forever;
+  `C_Spell.GetSpellName` answers with the spell's name in the client's language, and all ranks of a spell share that
+  name. On English clients the server cross-checks every returned name against its English rule and reports an ID that
+  does not fit; on other clients the IDs cannot be cross-checked.
 - Events `PLAYER_TARGET_CHANGED`, `UPDATE_MOUSEOVER_UNIT`, `UNIT_AURA`, `UNIT_PET`, `PET_BAR_UPDATE`, `SPELLS_CHANGED`
   and the two spellcast events are accepted by the client (`probe.events` shows it).
 
 - **Added**
+  - Addon: section `classBuffGroups` (`ClassBuffs.lua`, `Sections/ClassBuffGroups.lua`): the player's class buff groups
+    (Aspects, Blessings, mage and warlock armors, shamans' shields, Arcane Intellect, Fortitude, Mark of the Wild, Battle
+    Shout) as `{label, spells = {{id, name}}}`, one ID per spell, with the name the client gives it in its language. An
+    ID the client does not know is left out; a class without groups has no section.
+  - Server: `wow_buffs` matches the groups by those names, so `missing` works on non-English clients and the `localeNote`
+    and the `selfBuffsNotActive` fallback appear only for dumps without the section. On an English client a returned name
+    that the English rule of the group (`rules()`) does not accept means the ID is wrong for this game version: the spell
+    is dropped from the group and listed in `groupIdMismatches`, and `wow_doctor` warns in the new check `class buff
+    spell IDs` (shown only when the dump has the section). The Hunter's pet warnings (Call Pet, Revive Pet) still match
+    English names.
   - Addon: `pet.bagFood` (`PetFood.lua`): for every distinct bag item that may be pet food (Food & Drink, and Trade Goods
     because raw meat and fish are trade goods) the addon asks the client `C_PetInfo.CanPetEatItem` and saves
     `{checkedWith, items = {id, name, count, canEat}}`. Nothing is saved when the client has no such function or never

@@ -605,9 +605,19 @@ lateItemLoaded, lateSpellLoaded = false, false
 local actions = { [1] = { "spell", 3044 }, [2] = { "macro", 1 }, [13] = { "item", 4540 } }
 function HasAction(slot) return actions[slot] ~= nil end
 function GetActionInfo(slot) local a = actions[slot]; if a then return a[1], a[2], "" end end
+-- Spell names the client gives for the class buff IDs of the Hunter (ClassBuffs.lua); 99999 has no entry, like an
+-- ID the client does not know. Warlock and Mage IDs are unknown here: only the Hunter's section is exercised.
+local classBuffNames = {
+    [13163] = "Aspect of the Monkey", [13165] = "Aspect of the Hawk", [5118] = "Aspect of the Cheetah",
+    [13159] = "Aspect of the Pack", [13161] = "Aspect of the Beast", [20043] = "Aspect of the Wild",
+}
 C_Spell = {
     IsSelfBuff = function(id) return id == 13165 end,
-    GetSpellName = function(id) if id == 3044 then return "Arcane Shot" end if id == 19416 then return "Efficiency" end end,
+    GetSpellName = function(id)
+        if id == 3044 then return "Arcane Shot" end
+        if id == 19416 then return "Efficiency" end
+        return classBuffNames[id]
+    end,
     GetSpellDescription = function(id)
         if id == 19416 then return "Reduces the Mana cost of your Shots and Stings by |cffffffff2%|r." end
         if id == 3044 then return "An instant shot that causes |cffffffff15|r Arcane damage." end
@@ -1624,6 +1634,9 @@ DEDE_TEXT = (
     ('function UnitRace() return "Night Elf", "NightElf", 4 end', 'function UnitRace() return "Nachtelf", "NightElf", 4 end'),
     ('return "Hunter", "", "header", true', 'return "Jäger", "", "header", true'),
     ('"Rank ', '"Rang '),
+    ('"Aspect of the Monkey"', '"Aspekt des Affen"'), ('"Aspect of the Hawk"', '"Aspekt des Falken"'),
+    ('"Aspect of the Cheetah"', '"Aspekt des Geparden"'), ('"Aspect of the Pack"', '"Aspekt des Rudels"'),
+    ('"Aspect of the Beast"', '"Aspekt des Wildtiers"'), ('"Aspect of the Wild"', '"Aspekt der Wildnis"'),
     ('[Skinning Knife]', '[Kürschnermesser]'), ('"Skinning Knife"', '"Kürschnermesser"'),
     ('[Sharp Arrow]', '[Scharfer Pfeil]'), ('"Sharp Arrow"', '"Scharfer Pfeil"'),
     ('[Tough Hunk of Bread]', '[Zähes Stück Brot]'), ('[Hearthstone]', '[Ruhestein]'),
@@ -1659,7 +1672,9 @@ DEDE_TEXT = (
 # Text the assertions expect, per mode (English unless the deDE client translates it).
 DEDE_EXPECT = {
     "One-Hand | Dagger": "Einhändig | Dolch", "9 - 18 Damage | Speed 1.60": "9 - 18 Schaden | Tempo 1,60",
-    "Hearthstone": "Ruhestein", "Skinning Knife": "Kürschnermesser", "Rank 1": "Rang 1", "Leatherworking": "Lederverarbeitung", "Attack": "Angriff",
+    "Hearthstone": "Ruhestein", "Aspect of the Hawk": "Aspekt des Falken",
+    "Aspect of the Monkey": "Aspekt des Affen", "Aspect of the Cheetah": "Aspekt des Geparden", "Aspect of the Pack": "Aspekt des Rudels",
+    "Aspect of the Beast": "Aspekt des Wildtiers", "Aspect of the Wild": "Aspekt der Wildnis", "Skinning Knife": "Kürschnermesser", "Rank 1": "Rang 1", "Leatherworking": "Lederverarbeitung", "Attack": "Angriff",
 }
 
 
@@ -3041,6 +3056,40 @@ def check_pet_food(snapshot, mode: str) -> None:
     assert items == [(2672, 12, True), (2287, 5, True), (1645, 3, False)], items
 
 
+def check_class_buff_groups(snapshot, mode: str) -> None:
+    """The Hunter's groups carry the name the client answers in its language; an ID it does not know is left out."""
+    groups = snapshot["classBuffGroups"]
+    if mode not in FOREVER_MODES:
+        assert groups is None, "no spell name API in this client: no section"
+        return
+    assert [g["label"] for g in groups.values()] == ["Aspect"], dict(groups)
+    spells = [(s["id"], s["name"]) for s in groups[1]["spells"].values()]
+    expected = [(13163, "Aspect of the Monkey"), (13165, "Aspect of the Hawk"), (5118, "Aspect of the Cheetah"),
+                (13159, "Aspect of the Pack"), (13161, "Aspect of the Beast"), (20043, "Aspect of the Wild")]
+    assert spells == [(i, expect(mode, n)) for i, n in expected], spells
+
+
+def check_class_buff_group_edges() -> None:
+    """A wrong name is saved as the client gave it (the server judges it), an unknown ID is left out, a class without
+    groups has no section, and a client that knows none of the IDs has no section either."""
+    runtime, g, addon_ns = load_addon("forever")
+    on_event = event_dispatcher(g)
+    on_event(None, "PLAYER_LOGIN")
+    g.C_Spell.GetSpellName = runtime.eval(
+        'function(id) if id == 13163 then return "Demon Skin" end if id == 13165 then return "Aspect of the Hawk" end end')
+    groups = addon_ns.Snapshot.dump("manual")[0]["classBuffGroups"]
+    spells = [(s["id"], s["name"]) for s in groups[1]["spells"].values()]
+    assert spells == [(13163, "Demon Skin"), (13165, "Aspect of the Hawk")], spells
+    g.C_Spell.GetSpellName = runtime.eval("function() return nil end")
+    assert addon_ns.Snapshot.dump("manual")[0]["classBuffGroups"] is None
+    g.C_Spell.GetSpellName = runtime.eval('function(id) return "Spell " .. id end')
+    g.UnitClass = runtime.eval('function() return "Rogue", "ROGUE", 4 end')
+    assert addon_ns.Snapshot.dump("manual")[0]["classBuffGroups"] is None, "Rogue has no groups"
+    g.UnitClass = runtime.eval('function() return "Mage", "MAGE", 8 end')
+    labels = [grp["label"] for grp in addon_ns.Snapshot.dump("manual")[0]["classBuffGroups"].values()]
+    assert labels == ["Arcane Intellect", "Armor"], labels
+
+
 def check_beast_store_edges() -> None:
     """The store keeps at most 300 beasts (oldest dropped), only Hunters record, and a CanPetEatItem that never answers
     with a boolean saves no bagFood."""
@@ -3187,7 +3236,7 @@ def main() -> int:
                         "currencies", "cooldowns", "played", "recipes", "mail"):
             assert snapshot[section] is not None, f"missing section {section}"
         cooldowns = {c["name"]: c for c in snapshot["cooldowns"].values()}
-        assert set(cooldowns) == {"Aspect of the Hawk", expect(mode, "Hearthstone")}, f"cooldowns: {list(cooldowns)}"
+        assert set(cooldowns) == {expect(mode, "Aspect of the Hawk"), expect(mode, "Hearthstone")}, f"cooldowns: {list(cooldowns)}"
         assert cooldowns[expect(mode, "Hearthstone")]["remainingSeconds"] == 3000
         assert snapshot["played"]["totalSeconds"] == 360000
         recipes = snapshot["recipes"]
@@ -3422,7 +3471,7 @@ def main() -> int:
         assert set(slots) == {"mainHand", "offHand"} and slots["mainHand"]["id"] == 5586, "slots 0 and 1 are empty and ignored"
     if mode in FOREVER_MODES:
         auras = {a["name"]: a for a in snapshot["auras"].values()}
-        hawk = auras["Aspect of the Hawk"]
+        hawk = auras[expect(mode, "Aspect of the Hawk")]
         assert hawk["duration"] == 600 and hawk["expiresAt"] == 1794760000 + 450, dict(hawk)
         assert auras["Ghost"]["expiresAt"] is None and auras["Ghost"]["duration"] is None, "an aura without a duration has no end"
     if mode in ("modern", "legacy"):
@@ -3460,6 +3509,7 @@ def main() -> int:
     if mode != "legacy":
         check_pet_food(snapshot, mode)
         check_beasts(snapshot, mode)
+    check_class_buff_groups(snapshot, mode)
 
     dump = g.SerializeSavedVariable("WowMcpDB", g.WowMcpDB)
     assert "INVTYPE_NON_EQUIP_IGNORE" not in dump, "equipLoc = INVTYPE_NON_EQUIP_IGNORE should not reach the dump"
@@ -3476,6 +3526,7 @@ def main() -> int:
         check_realmless_key()
         check_dungeon_loot_targets()
         check_beast_store_edges()
+        check_class_buff_group_edges()
         check_real_lifecycle()
         print("lifecycle from the real game: OK")
     return 0
