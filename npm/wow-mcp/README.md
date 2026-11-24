@@ -40,3 +40,5 @@ npm installs only the prebuilt server for your platform (Windows, macOS and Linu
 neither Go nor a separate download. The dump history is kept in your user data directory
 (`%LOCALAPPDATA%\wow-mcp`, `~/Library/Application Support/wow-mcp` or `~/.local/share/wow-mcp`), so it survives updates;
 pass `--history-dir` to choose another place.
+
+wow-mcp is free. To support the work: [GitHub Sponsors](https://github.com/sponsors/Piekario) or [PayPal](https://paypal.me/piekasz).

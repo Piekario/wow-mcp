@@ -6,6 +6,10 @@
   "homepage": "https://github.com/Piekario/wow-mcp#readme",
   "repository": { "type": "git", "url": "git+https://github.com/Piekario/wow-mcp.git" },
   "bugs": { "url": "https://github.com/Piekario/wow-mcp/issues" },
+  "funding": [
+    { "type": "github", "url": "https://github.com/sponsors/Piekario" },
+    { "type": "paypal", "url": "https://paypal.me/piekasz" }
+  ],
   "license": "SEE LICENSE IN LICENSE",
   "author": "Piekasz (https://github.com/Piekario)",
   "bin": { "wow-mcp": "bin/wow-mcp.js" },

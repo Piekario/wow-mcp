@@ -10,3 +10,4 @@
 4. **Security problems:** never in public; see [SECURITY.md](SECURITY.md).
 
 wow-mcp is maintained in spare time, so answers may take a few days. Help from other users in Discussions is very welcome.
+If you want to support the work: [GitHub Sponsors](https://github.com/sponsors/Piekario) or [PayPal](https://paypal.me/piekasz).

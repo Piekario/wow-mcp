@@ -6,6 +6,8 @@
 [![CurseForge downloads](https://img.shields.io/curseforge/dt/1824883?logo=curseforge&label=CurseForge)](https://www.curseforge.com/projects/1824883)
 [![CurseForge version](https://img.shields.io/curseforge/v/1824883?logo=curseforge&label=addon)](https://www.curseforge.com/projects/1824883)
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/Piekario?logo=githubsponsors&label=Sponsors)](https://github.com/sponsors/Piekario)
+[![Donate with PayPal](https://img.shields.io/badge/donate-PayPal-00457C?logo=paypal&logoColor=white)](https://paypal.me/piekasz)
 
 [![Go](https://img.shields.io/github/go-mod/go-version/Piekario/wow-mcp?filename=server%2Fgo.mod&logo=go&logoColor=white)](server/go.mod)
 [![Lua](https://img.shields.io/badge/addon-Lua-2C2D72?logo=lua&logoColor=white)](addon/WowMcp)
@@ -420,6 +422,8 @@ python3 addon/tests/run_addon.py forever server/testdata/WowMcp_forever.lua
   macOS and Windows. Reports from game clients other than WoW: Forever (`/mcp probe` output) are especially welcome.
 - **Security problems:** report privately, see [SECURITY.md](SECURITY.md).
 - Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md).
+- **Supporting the project:** wow-mcp is free and stays free. If it saves you time and you want to say thanks:
+  [GitHub Sponsors](https://github.com/sponsors/Piekario) or [PayPal](https://paypal.me/piekasz).
 
 ### Structure
 
