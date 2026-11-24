@@ -1796,6 +1796,11 @@ true, -- [1]
 ["totalSeconds"] = 360000,
 },
 ["probe"] = {
+["addons"] = {
+["Blizzard_EncounterJournal"] = {
+["frame"] = false,
+},
+},
 ["capturedAt"] = 1794760000,
 ["eventCandidates"] = {
 ["LOGOUT_CANCEL"] = true,
@@ -1817,6 +1822,7 @@ true, -- [1]
 ["COMMODITY_SEARCH_RESULTS_UPDATED"] = true,
 ["CRAFT_SHOW"] = false,
 ["CRAFT_UPDATE"] = false,
+["EJ_LOOT_DATA_RECIEVED"] = true,
 ["FRIENDLIST_UPDATE"] = true,
 ["GET_ITEM_INFO_RECEIVED"] = true,
 ["GUILD_ROSTER_UPDATE"] = true,
@@ -1937,6 +1943,9 @@ true, -- [1]
 "UnitXPMax", -- [79]
 },
 ["namespaces"] = {
+["C_AddOns"] = {
+"GetAddOnMetadata", -- [1]
+},
 ["C_AuctionHouse"] = {
 "GetBrowseResults", -- [1]
 "GetCommoditySearchResultInfo", -- [2]

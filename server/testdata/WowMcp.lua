@@ -451,6 +451,10 @@ WowMcpDB = {
 },
 ["dumpedAt"] = 1794760000,
 ["dumpedAtText"] = "2026-11-15 16:50:00",
+["dungeonLoot"] = {
+["checkedAt"] = 1794760000,
+["unavailable"] = "no EJ_GetInstanceByIndex in this client",
+},
 ["dungeons"] = {
 ["lfg"] = {
 {

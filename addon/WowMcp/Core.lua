@@ -18,6 +18,7 @@
 --   /mcp quest    <id or name>: where a quest starts and ends (from the installed Questie database)
 --   /mcp item     <id, link or name>: the item's description from the game, saved for the assistant
 --   /mcp spell    <id, link or name>: the spell's description, cast time, cost and range, saved for the assistant
+--   /mcp loot     [dungeon]: what a dungeon's bosses drop, read from the Encounter Journal on request
 --   /mcp ahtip    on|off: auction house price in the item tooltip
 --   /mcp minimap on|off: minimap button (left click shows the panel)
 --   /mcp compact on|off: one-line panel

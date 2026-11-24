@@ -6,6 +6,11 @@
   "capturedAgeMinutes": 30,
   "capturedAt": "2026-11-15 16:26",
   "probe": {
+    "addons": {
+      "Blizzard_EncounterJournal": {
+        "frame": true
+      }
+    },
     "capturedAt": 1794760000,
     "eventCandidates": {
       "LOGOUT_CANCEL": true,
@@ -27,6 +32,7 @@
       "COMMODITY_SEARCH_RESULTS_UPDATED": true,
       "CRAFT_SHOW": false,
       "CRAFT_UPDATE": false,
+      "EJ_LOOT_DATA_RECIEVED": true,
       "FRIENDLIST_UPDATE": true,
       "GET_ITEM_INFO_RECEIVED": true,
       "GUILD_ROSTER_UPDATE": true,
@@ -67,6 +73,14 @@
     },
     "globals": [
       "CanMerchantRepair",
+      "EJ_GetEncounterInfoByIndex",
+      "EJ_GetInstanceByIndex",
+      "EJ_GetLootFilter",
+      "EJ_GetNumLoot",
+      "EJ_ResetLootFilter",
+      "EJ_SelectEncounter",
+      "EJ_SelectInstance",
+      "EJ_SetLootFilter",
       "GetAchievementCriteriaInfo",
       "GetAchievementInfo",
       "GetAchievementNumCriteria",
@@ -135,6 +149,7 @@
       "GetTrainerServiceLevelReq",
       "GetXPExhaustion",
       "IsInGuild",
+      "IsInInstance",
       "IsTitleKnown",
       "RequestTimePlayed",
       "UnitHonor",
@@ -147,6 +162,9 @@
       "UnitXPMax"
     ],
     "namespaces": {
+      "C_AddOns": [
+        "GetAddOnMetadata"
+      ],
       "C_AuctionHouse": [
         "GetBrowseResults",
         "GetCommoditySearchResultInfo",
@@ -182,6 +200,13 @@
         "GetCurrencyListInfo",
         "GetCurrencyListLink",
         "GetCurrencyListSize"
+      ],
+      "C_EncounterJournal": [
+        "GetInstanceForGameMap",
+        "GetLootInfoByIndex",
+        "GetSlotFilter",
+        "ResetSlotFilter",
+        "SetSlotFilter"
       ],
       "C_EquipmentSet": [
         "GetEquipmentSetIDs",

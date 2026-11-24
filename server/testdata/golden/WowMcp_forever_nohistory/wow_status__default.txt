@@ -42,6 +42,7 @@
         "cooldowns",
         "currencies",
         "deaths",
+        "dungeonLoot",
         "dungeons",
         "equipment",
         "equipmentSets",

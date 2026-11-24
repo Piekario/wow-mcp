@@ -27,6 +27,7 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
         "bags",
         "character",
         "collections",
+        "dungeonLoot",
         "dungeons",
         "equipment",
         "equipmentSets",

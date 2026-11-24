@@ -2,4 +2,4 @@
 # args: {"section":"probe"}
 # isError: true
 --- content[0] ---
-no section "probe" in the snapshot of character Piekasz. Available: achievements, actionBars, auctions, auras, bags, character, collections, dungeons, equipment, equipmentSets, eventLog, friends, group, guild, legacy, loot, pet, played, professions, pvp, quests, reputation, spells, stable, statistics, stats, talents, titles, trainer, trainers, xpGains. The trainer, vendor, bank and flightPaths sections appear after opening the matching window in game and running /mcp reload
+no section "probe" in the snapshot of character Piekasz. Available: achievements, actionBars, auctions, auras, bags, character, collections, dungeonLoot, dungeons, equipment, equipmentSets, eventLog, friends, group, guild, legacy, loot, pet, played, professions, pvp, quests, reputation, spells, stable, statistics, stats, talents, titles, trainer, trainers, xpGains. The trainer, vendor, bank and flightPaths sections appear after opening the matching window in game and running /mcp reload

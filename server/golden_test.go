@@ -278,6 +278,15 @@ func goldenCases() []goldenCase {
 		tc("wow_dungeons", "all_args", args{"character": charKnown, "all": true, "name": "a"}),
 		tc("wow_dungeons", "unknown_character", args{"character": charUnknown}),
 	)
+	add(characterVariants("wow_dungeon_loot")...)
+	add(
+		tc("wow_dungeon_loot", "all_items", args{"upgradesOnly": false}),
+		tc("wow_dungeon_loot", "dungeon_match", args{"dungeon": "dead"}),
+		tc("wow_dungeon_loot", "dungeon_nomatch", args{"dungeon": "Zzzz"}),
+		tc("wow_dungeon_loot", "slot_back", args{"slot": "cloak"}),
+		tc("wow_dungeon_loot", "bad_slot", args{"slot": "moon"}),
+		tc("wow_dungeon_loot", "all_args", args{"character": charKnown, "dungeon": "wailing", "slot": "waist", "upgradesOnly": false}),
+	)
 
 	add(
 		tcs("wow_export", "default", args{}),

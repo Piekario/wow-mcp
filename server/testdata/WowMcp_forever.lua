@@ -801,6 +801,308 @@ WowMcpDB = {
 },
 ["dumpedAt"] = 1794760000,
 ["dumpedAtText"] = "2026-11-15 16:50:00",
+["dungeonLoot"] = {
+["capturedAt"] = 1794760000,
+["instances"] = {
+{
+["capturedAt"] = 1794760000,
+["encounters"] = {
+"Lady Anacondra", -- [1]
+"Lord Cobrahn", -- [2]
+"Lord Pythas", -- [3]
+},
+["items"] = {
+{
+["armorType"] = "Leather",
+["bindType"] = 1,
+["classID"] = 4,
+["encounter"] = "Lord Cobrahn",
+["encounterID"] = 2,
+["equipLoc"] = "INVTYPE_WAIST",
+["id"] = 6460,
+["itemLevel"] = 22,
+["name"] = "Cobrahn's Grasp",
+["quality"] = 3,
+["requiredLevel"] = 17,
+["sellPrice"] = 1000,
+["slotText"] = "Waist",
+["statTokens"] = {
+["ITEM_MOD_AGILITY_SHORT"] = 4,
+["ITEM_MOD_STAMINA_SHORT"] = 2,
+},
+["stats"] = {
+["Agility"] = 4,
+["ITEM_MOD_STAMINA_SHORT"] = 2,
+},
+["subType"] = "Leather",
+["subclassID"] = 2,
+["tooltip"] = {
+"Cobrahn's Grasp", -- [1]
+"Waist | Leather", -- [2]
+},
+["type"] = "Armor",
+}, -- [1]
+{
+["armorType"] = "Staff",
+["bindType"] = 1,
+["classID"] = 2,
+["encounter"] = "Lord Pythas",
+["encounterID"] = 3,
+["equipLoc"] = "INVTYPE_2HWEAPON",
+["id"] = 6631,
+["itemLevel"] = 23,
+["name"] = "Living Root",
+["quality"] = 3,
+["requiredLevel"] = 18,
+["sellPrice"] = 1000,
+["slotText"] = "Two-Hand",
+["statTokens"] = {
+["ITEM_MOD_DAMAGE_PER_SECOND_SHORT"] = 11.5,
+},
+["stats"] = {
+["Damage Per Second"] = 11.5,
+},
+["subType"] = "Staff",
+["subclassID"] = 10,
+["tooltip"] = {
+"Living Root", -- [1]
+"Two-Hand | Staff", -- [2]
+},
+["type"] = "Weapon",
+}, -- [2]
+},
+["journalInstanceID"] = 240,
+["mapID"] = 43,
+["name"] = "Wailing Caverns",
+}, -- [1]
+{
+["capturedAt"] = 1794760000,
+["encounters"] = {
+"Rhahk'Zor", -- [1]
+"Sneed's Shredder", -- [2]
+"Gilnid", -- [3]
+"Mr. Smite", -- [4]
+"Edwin VanCleef", -- [5]
+},
+["items"] = {
+{
+["armorType"] = "Axe",
+["bindType"] = 1,
+["classID"] = 2,
+["encounter"] = "Sneed's Shredder",
+["encounterID"] = 91,
+["equipLoc"] = "INVTYPE_WEAPON",
+["id"] = 5196,
+["itemLevel"] = 21,
+["name"] = "Smite's Reaver",
+["quality"] = 3,
+["requiredLevel"] = 16,
+["sellPrice"] = 1000,
+["slotText"] = "One-Hand",
+["statTokens"] = {
+["ITEM_MOD_DAMAGE_PER_SECOND_SHORT"] = 10.9,
+["ITEM_MOD_STRENGTH_SHORT"] = 4,
+},
+["stats"] = {
+["Damage Per Second"] = 10.9,
+["ITEM_MOD_STRENGTH_SHORT"] = 4,
+},
+["subType"] = "Axe",
+["subclassID"] = 0,
+["tooltip"] = {
+"Smite's Reaver", -- [1]
+"One-Hand | Axe", -- [2]
+},
+["type"] = "Weapon",
+}, -- [1]
+{
+["armorType"] = "Cloth",
+["bindType"] = 1,
+["classID"] = 4,
+["encounter"] = "Gilnid",
+["encounterID"] = 92,
+["equipLoc"] = "INVTYPE_CLOAK",
+["id"] = 5193,
+["itemLevel"] = 24,
+["name"] = "Cape of the Brotherhood",
+["quality"] = 3,
+["requiredLevel"] = 19,
+["sellPrice"] = 1000,
+["slotText"] = "Back",
+["statTokens"] = {
+["ITEM_MOD_AGILITY_SHORT"] = 3,
+["ITEM_MOD_STAMINA_SHORT"] = 1,
+},
+["stats"] = {
+["Agility"] = 3,
+["ITEM_MOD_STAMINA_SHORT"] = 1,
+},
+["subType"] = "Cloth",
+["subclassID"] = 1,
+["tooltip"] = {
+"Cape of the Brotherhood", -- [1]
+"Back | Cloth", -- [2]
+},
+["type"] = "Armor",
+}, -- [2]
+{
+["armorType"] = "Leather",
+["bindType"] = 1,
+["classID"] = 4,
+["encounter"] = "Gilnid",
+["encounterID"] = 92,
+["equipLoc"] = "INVTYPE_LEGS",
+["id"] = 5199,
+["itemLevel"] = 22,
+["name"] = "Smelting Pants",
+["quality"] = 3,
+["requiredLevel"] = 17,
+["sellPrice"] = 1000,
+["slotText"] = "Legs",
+["statTokens"] = {
+["ITEM_MOD_STAMINA_SHORT"] = 5,
+},
+["stats"] = {
+["ITEM_MOD_STAMINA_SHORT"] = 5,
+},
+["subType"] = "Leather",
+["subclassID"] = 2,
+["tooltip"] = {
+"Smelting Pants", -- [1]
+"Legs | Leather", -- [2]
+},
+["type"] = "Armor",
+}, -- [3]
+{
+["armorType"] = "Mail",
+["bindType"] = 1,
+["classID"] = 4,
+["encounter"] = "Mr. Smite",
+["encounterID"] = 93,
+["equipLoc"] = "INVTYPE_HAND",
+["id"] = 5195,
+["itemLevel"] = 23,
+["name"] = "Gold-flecked Gloves",
+["quality"] = 2,
+["requiredLevel"] = 18,
+["sellPrice"] = 1000,
+["slotText"] = "Hands",
+["statTokens"] = {
+["ITEM_MOD_INTELLECT_SHORT"] = 3,
+},
+["stats"] = {
+["ITEM_MOD_INTELLECT_SHORT"] = 3,
+},
+["subType"] = "Mail",
+["subclassID"] = 3,
+["tooltip"] = {
+"Gold-flecked Gloves", -- [1]
+"Hands | Mail", -- [2]
+},
+["type"] = "Armor",
+}, -- [4]
+{
+["armorType"] = "Wand",
+["bindType"] = 1,
+["classID"] = 2,
+["encounter"] = "Mr. Smite",
+["encounterID"] = 93,
+["equipLoc"] = "INVTYPE_RANGEDRIGHT",
+["id"] = 5198,
+["itemLevel"] = 22,
+["name"] = "Cookie's Stirring Rod",
+["quality"] = 3,
+["requiredLevel"] = 17,
+["sellPrice"] = 1000,
+["slotText"] = "Ranged",
+["statTokens"] = {
+["ITEM_MOD_DAMAGE_PER_SECOND_SHORT"] = 14.1,
+},
+["stats"] = {
+["Damage Per Second"] = 14.1,
+},
+["subType"] = "Wand",
+["subclassID"] = 19,
+["tooltip"] = {
+"Cookie's Stirring Rod", -- [1]
+"Ranged | Wand", -- [2]
+},
+["type"] = "Weapon",
+}, -- [5]
+{
+["armorType"] = "Sword",
+["encounter"] = "Edwin VanCleef",
+["encounterID"] = 95,
+["id"] = 5191,
+["name"] = "Cruel Barb",
+["pending"] = true,
+["quality"] = 3,
+["slotText"] = "One-Hand",
+}, -- [6]
+{
+["armorType"] = "Staff",
+["bindType"] = 1,
+["classID"] = 2,
+["encounter"] = "Edwin VanCleef",
+["encounterID"] = 95,
+["equipLoc"] = "INVTYPE_2HWEAPON",
+["id"] = 5201,
+["itemLevel"] = 24,
+["name"] = "Emberstone Staff",
+["quality"] = 3,
+["requiredLevel"] = 19,
+["sellPrice"] = 1000,
+["slotText"] = "Two-Hand",
+["statTokens"] = {
+["ITEM_MOD_DAMAGE_PER_SECOND_SHORT"] = 15.3,
+["ITEM_MOD_STAMINA_SHORT"] = 7,
+},
+["stats"] = {
+["Damage Per Second"] = 15.3,
+["ITEM_MOD_STAMINA_SHORT"] = 7,
+},
+["subType"] = "Staff",
+["subclassID"] = 10,
+["tooltip"] = {
+"Emberstone Staff", -- [1]
+"Two-Hand | Staff", -- [2]
+},
+["type"] = "Weapon",
+}, -- [7]
+{
+["armorType"] = "Dagger",
+["bindType"] = 1,
+["classID"] = 2,
+["encounterID"] = 90,
+["equipLoc"] = "INVTYPE_WEAPON",
+["id"] = 1937,
+["itemLevel"] = 15,
+["name"] = "Buzz Saw",
+["quality"] = 2,
+["requiredLevel"] = 10,
+["sellPrice"] = 1000,
+["slotText"] = "One-Hand",
+["statTokens"] = {
+["ITEM_MOD_DAMAGE_PER_SECOND_SHORT"] = 7.1,
+},
+["stats"] = {
+["Damage Per Second"] = 7.1,
+},
+["subType"] = "Dagger",
+["subclassID"] = 15,
+["tooltip"] = {
+"Buzz Saw", -- [1]
+"One-Hand | Dagger", -- [2]
+},
+["type"] = "Weapon",
+}, -- [8]
+},
+["journalInstanceID"] = 63,
+["mapID"] = 36,
+["name"] = "The Deadmines",
+}, -- [2]
+},
+},
 ["dungeons"] = {
 ["activities"] = {
 {
@@ -1781,6 +2083,11 @@ true, -- [1]
 ["totalSeconds"] = 360000,
 },
 ["probe"] = {
+["addons"] = {
+["Blizzard_EncounterJournal"] = {
+["frame"] = true,
+},
+},
 ["capturedAt"] = 1794760000,
 ["eventCandidates"] = {
 ["LOGOUT_CANCEL"] = true,
@@ -1802,6 +2109,7 @@ true, -- [1]
 ["COMMODITY_SEARCH_RESULTS_UPDATED"] = true,
 ["CRAFT_SHOW"] = false,
 ["CRAFT_UPDATE"] = false,
+["EJ_LOOT_DATA_RECIEVED"] = true,
 ["FRIENDLIST_UPDATE"] = true,
 ["GET_ITEM_INFO_RECEIVED"] = true,
 ["GUILD_ROSTER_UPDATE"] = true,
@@ -1842,86 +2150,98 @@ true, -- [1]
 },
 ["globals"] = {
 "CanMerchantRepair", -- [1]
-"GetAchievementCriteriaInfo", -- [2]
-"GetAchievementInfo", -- [3]
-"GetAchievementNumCriteria", -- [4]
-"GetBuybackItemInfo", -- [5]
-"GetBuybackItemLink", -- [6]
-"GetCategoryInfo", -- [7]
-"GetCategoryList", -- [8]
-"GetCategoryNumAchievements", -- [9]
-"GetCompanionInfo", -- [10]
-"GetCritChance", -- [11]
-"GetCurrentTitle", -- [12]
-"GetCursorPosition", -- [13]
-"GetGuildInfo", -- [14]
-"GetGuildRosterInfo", -- [15]
-"GetGuildRosterLastOnline", -- [16]
-"GetInboxHeaderInfo", -- [17]
-"GetInboxItem", -- [18]
-"GetInboxItemLink", -- [19]
-"GetInboxNumItems", -- [20]
-"GetInventoryItemCount", -- [21]
-"GetInventoryItemDurability", -- [22]
-"GetInventoryItemID", -- [23]
-"GetInventoryItemLink", -- [24]
-"GetInventoryItemQuality", -- [25]
-"GetLFDChoiceOrder", -- [26]
-"GetLFGDungeonInfo", -- [27]
-"GetMerchantItemLink", -- [28]
-"GetMerchantNumItems", -- [29]
-"GetNumBuybackItems", -- [30]
-"GetNumCompanions", -- [31]
-"GetNumCompletedAchievements", -- [32]
-"GetNumGuildMembers", -- [33]
-"GetNumQuestChoices", -- [34]
-"GetNumQuestLogChoices", -- [35]
-"GetNumQuestLogRewards", -- [36]
-"GetNumQuestRewards", -- [37]
-"GetNumSavedInstances", -- [38]
-"GetNumTitles", -- [39]
-"GetNumTrainerServices", -- [40]
-"GetObjectiveText", -- [41]
-"GetPVPLifetimeStats", -- [42]
-"GetPetActionInfo", -- [43]
-"GetPetExperience", -- [44]
-"GetQuestID", -- [45]
-"GetQuestItemInfo", -- [46]
-"GetQuestItemLink", -- [47]
-"GetQuestLogChoiceInfo", -- [48]
-"GetQuestLogRewardInfo", -- [49]
-"GetQuestLogRewardMoney", -- [50]
-"GetQuestLogRewardXP", -- [51]
-"GetRaidRosterInfo", -- [52]
-"GetRangedCritChance", -- [53]
-"GetRepairAllCost", -- [54]
-"GetRewardMoney", -- [55]
-"GetRewardText", -- [56]
-"GetRewardXP", -- [57]
-"GetSavedInstanceInfo", -- [58]
-"GetStatistic", -- [59]
-"GetStatisticsCategoryList", -- [60]
-"GetTaxiMapID", -- [61]
-"GetTitleName", -- [62]
-"GetTitleText", -- [63]
-"GetTotalAchievementPoints", -- [64]
-"GetTrainerServiceCost", -- [65]
-"GetTrainerServiceInfo", -- [66]
-"GetTrainerServiceLevelReq", -- [67]
-"GetXPExhaustion", -- [68]
-"IsInGuild", -- [69]
-"IsTitleKnown", -- [70]
-"RequestTimePlayed", -- [71]
-"UnitHonor", -- [72]
-"UnitHonorLevel", -- [73]
-"UnitHonorMax", -- [74]
-"UnitRangedAttackPower", -- [75]
-"UnitRangedDamage", -- [76]
-"UnitStat", -- [77]
-"UnitXP", -- [78]
-"UnitXPMax", -- [79]
+"EJ_GetEncounterInfoByIndex", -- [2]
+"EJ_GetInstanceByIndex", -- [3]
+"EJ_GetLootFilter", -- [4]
+"EJ_GetNumLoot", -- [5]
+"EJ_ResetLootFilter", -- [6]
+"EJ_SelectEncounter", -- [7]
+"EJ_SelectInstance", -- [8]
+"EJ_SetLootFilter", -- [9]
+"GetAchievementCriteriaInfo", -- [10]
+"GetAchievementInfo", -- [11]
+"GetAchievementNumCriteria", -- [12]
+"GetBuybackItemInfo", -- [13]
+"GetBuybackItemLink", -- [14]
+"GetCategoryInfo", -- [15]
+"GetCategoryList", -- [16]
+"GetCategoryNumAchievements", -- [17]
+"GetCompanionInfo", -- [18]
+"GetCritChance", -- [19]
+"GetCurrentTitle", -- [20]
+"GetCursorPosition", -- [21]
+"GetGuildInfo", -- [22]
+"GetGuildRosterInfo", -- [23]
+"GetGuildRosterLastOnline", -- [24]
+"GetInboxHeaderInfo", -- [25]
+"GetInboxItem", -- [26]
+"GetInboxItemLink", -- [27]
+"GetInboxNumItems", -- [28]
+"GetInventoryItemCount", -- [29]
+"GetInventoryItemDurability", -- [30]
+"GetInventoryItemID", -- [31]
+"GetInventoryItemLink", -- [32]
+"GetInventoryItemQuality", -- [33]
+"GetLFDChoiceOrder", -- [34]
+"GetLFGDungeonInfo", -- [35]
+"GetMerchantItemLink", -- [36]
+"GetMerchantNumItems", -- [37]
+"GetNumBuybackItems", -- [38]
+"GetNumCompanions", -- [39]
+"GetNumCompletedAchievements", -- [40]
+"GetNumGuildMembers", -- [41]
+"GetNumQuestChoices", -- [42]
+"GetNumQuestLogChoices", -- [43]
+"GetNumQuestLogRewards", -- [44]
+"GetNumQuestRewards", -- [45]
+"GetNumSavedInstances", -- [46]
+"GetNumTitles", -- [47]
+"GetNumTrainerServices", -- [48]
+"GetObjectiveText", -- [49]
+"GetPVPLifetimeStats", -- [50]
+"GetPetActionInfo", -- [51]
+"GetPetExperience", -- [52]
+"GetQuestID", -- [53]
+"GetQuestItemInfo", -- [54]
+"GetQuestItemLink", -- [55]
+"GetQuestLogChoiceInfo", -- [56]
+"GetQuestLogRewardInfo", -- [57]
+"GetQuestLogRewardMoney", -- [58]
+"GetQuestLogRewardXP", -- [59]
+"GetRaidRosterInfo", -- [60]
+"GetRangedCritChance", -- [61]
+"GetRepairAllCost", -- [62]
+"GetRewardMoney", -- [63]
+"GetRewardText", -- [64]
+"GetRewardXP", -- [65]
+"GetSavedInstanceInfo", -- [66]
+"GetStatistic", -- [67]
+"GetStatisticsCategoryList", -- [68]
+"GetTaxiMapID", -- [69]
+"GetTitleName", -- [70]
+"GetTitleText", -- [71]
+"GetTotalAchievementPoints", -- [72]
+"GetTrainerServiceCost", -- [73]
+"GetTrainerServiceInfo", -- [74]
+"GetTrainerServiceLevelReq", -- [75]
+"GetXPExhaustion", -- [76]
+"IsInGuild", -- [77]
+"IsInInstance", -- [78]
+"IsTitleKnown", -- [79]
+"RequestTimePlayed", -- [80]
+"UnitHonor", -- [81]
+"UnitHonorLevel", -- [82]
+"UnitHonorMax", -- [83]
+"UnitRangedAttackPower", -- [84]
+"UnitRangedDamage", -- [85]
+"UnitStat", -- [86]
+"UnitXP", -- [87]
+"UnitXPMax", -- [88]
 },
 ["namespaces"] = {
+["C_AddOns"] = {
+"GetAddOnMetadata", -- [1]
+},
 ["C_AuctionHouse"] = {
 "GetBrowseResults", -- [1]
 "GetCommoditySearchResultInfo", -- [2]
@@ -1957,6 +2277,13 @@ true, -- [1]
 "GetCurrencyListInfo", -- [2]
 "GetCurrencyListLink", -- [3]
 "GetCurrencyListSize", -- [4]
+},
+["C_EncounterJournal"] = {
+"GetInstanceForGameMap", -- [1]
+"GetLootInfoByIndex", -- [2]
+"GetSlotFilter", -- [3]
+"ResetSlotFilter", -- [4]
+"SetSlotFilter", -- [5]
 },
 ["C_EquipmentSet"] = {
 "GetEquipmentSetIDs", -- [1]

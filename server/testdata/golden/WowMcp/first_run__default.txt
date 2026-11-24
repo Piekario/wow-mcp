@@ -34,6 +34,7 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
     "bags",
     "character",
     "collections",
+    "dungeonLoot",
     "dungeons",
     "equipment",
     "equipmentSets",

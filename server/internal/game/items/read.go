@@ -203,6 +203,9 @@ func PossibleUpgrade(s snapshot.Snapshot, item map[string]any) (slot string, ok 
 	return NewBuyer(s).UpgradeSlot(readItem(item))
 }
 
+// Read turns a dump item into an Item, for packages that keep their own sections of items (e.g. dungeon loot).
+func Read(item map[string]any) Item { return readItem(item) }
+
 // Evaluate is Buyer.Evaluate for a dump item and the character of the snapshot.
 func Evaluate(s snapshot.Snapshot, item map[string]any, w Weights) Evaluation {
 	return NewBuyer(s).Evaluate(readItem(item), w)

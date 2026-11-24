@@ -25,6 +25,7 @@
         "bags",
         "character",
         "collections",
+        "dungeonLoot",
         "dungeons",
         "equipment",
         "equipmentSets",

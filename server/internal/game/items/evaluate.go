@@ -17,6 +17,7 @@ type Evaluation struct {
 	RequiredLevel int64
 	Slot          string             // the slot where the item does best ("" = cannot be equipped)
 	SlotEmpty     bool               // nothing in this slot
+	Replaced      []string           // names of the items the candidate would replace in Slot
 	Delta         map[string]float64 // difference against what is equipped in this slot (positive = gain)
 	Score         float64            // weighted difference (when weights exist), and without weights: item level difference + DPS
 	Weighted      bool               // Score was computed from stat weights
@@ -51,6 +52,10 @@ func (b Buyer) Evaluate(it Item, w Weights) Evaluation {
 		if score > best {
 			best = score
 			e.Slot, e.Delta, e.Score, e.SlotEmpty = c.Slot, c.Delta, score, c.Empty()
+			e.Replaced = e.Replaced[:0]
+			for _, w := range c.Replaced {
+				e.Replaced = append(e.Replaced, w.nameLabel())
+			}
 		}
 	}
 	e.Weighted = len(w) > 0
