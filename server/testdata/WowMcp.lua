@@ -1,5 +1,7 @@
 
 WowMcpDB = {
+["beasts"] = {
+},
 ["characters"] = {
 ["Piekasz"] = {
 ["achievements"] = {
@@ -203,7 +205,7 @@ WowMcpDB = {
 },
 ["actionBars"] = {
 },
-["addonVersion"] = "0.21.0",
+["addonVersion"] = "0.22.0",
 ["auctions"] = {
 ["capturedAt"] = 1794760000,
 ["lastSearchPartial"] = {
@@ -387,8 +389,10 @@ WowMcpDB = {
 ["size"] = 10,
 }, -- [3]
 },
+["beasts"] = {
+},
 ["character"] = {
-["addonVersion"] = "0.21.0",
+["addonVersion"] = "0.22.0",
 ["bindLocation"] = "Auberdine",
 ["class"] = "Hunter",
 ["classToken"] = "HUNTER",
@@ -1019,18 +1023,18 @@ WowMcpDB = {
 }, -- [2]
 {
 ["ms"] = 2.5,
-["name"] = "currencies",
+["name"] = "equipmentSets",
 }, -- [3]
 {
 ["ms"] = 2.5,
-["name"] = "group",
+["name"] = "guide",
 }, -- [4]
 {
 ["ms"] = 2.5,
 ["name"] = "pet",
 }, -- [5]
 },
-["totalMs"] = 76,
+["totalMs"] = 77.5,
 },
 ["titles"] = {
 ["current"] = "the Patient",

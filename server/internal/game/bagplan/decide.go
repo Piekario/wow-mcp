@@ -52,6 +52,7 @@ type context struct {
 	rangedKind string // "Arrow", "Bullet" or "" when unknown
 	hasPet     bool
 	diet       []string
+	petEats    map[string]bool // item name -> the game client's verdict whether the pet can eat it (addon 0.22.0)
 }
 
 // decide picks the action for an item: the first matching rule wins.
@@ -75,12 +76,18 @@ func (c *context) decide(st Stack) Suggestion {
 	if why, ok := c.reagents[strings.ToLower(st.Name)]; ok {
 		return keep("material for a known recipe: " + why)
 	}
+	if c.petEats[st.Name] {
+		return keep("food your pet can eat (the game client says so)")
+	}
 	for _, tool := range professionTools {
 		if tool.matches(it, st.Name) && c.hasSkill(tool.skill) {
 			return keep("profession tool: " + professions.EnglishNames[tool.skill])
 		}
 	}
 	if it.Is(itemkind.ClassConsumable) {
+		if eats, checked := c.petEats[st.Name]; checked && !eats && it.IsFood() {
+			return keep("food for you; the game client says your pet does not eat it")
+		}
 		if it.IsFood() && c.hasPet {
 			return keep(fmt.Sprintf("food: yours or your pet's (diet: %s; the server has no food table, so it does not decide by name)", dietText(c.diet)))
 		}

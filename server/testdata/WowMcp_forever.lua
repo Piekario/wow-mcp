@@ -1,5 +1,50 @@
 
 WowMcpDB = {
+["beasts"] = {
+[2033] = {
+["family"] = "Cat",
+["level"] = 12,
+["loreLines"] = {
+"Elder Nightsaber", -- [1]
+"Level 12 Beast", -- [2]
+"Health: 450", -- [3]
+"Diet: Meat, Fish", -- [4]
+"Abilities: Claw (Rank 2), Prowl 1", -- [5]
+},
+["mapId"] = 1453,
+["name"] = "Elder Nightsaber",
+["npcId"] = 2033,
+["seenAt"] = 1794759000,
+["source"] = "beastLore",
+["x"] = 67.9,
+["y"] = 15.4,
+["zone"] = "Stormwind City",
+},
+[2034] = {
+["abilities"] = {
+{
+["id"] = 16827,
+["name"] = "Claw",
+["rank"] = "Rank 1",
+}, -- [1]
+{
+["id"] = 24451,
+["name"] = "Prowl",
+["rank"] = "Rank 1",
+}, -- [2]
+},
+["family"] = "Cat",
+["level"] = 13,
+["mapId"] = 1453,
+["name"] = "Nightsaber Stalker",
+["npcId"] = 2034,
+["seenAt"] = 1794759522,
+["source"] = "tamed",
+["x"] = 67.9,
+["y"] = 15.4,
+["zone"] = "Stormwind City",
+},
+},
 ["characters"] = {
 ["Piekasz"] = {
 ["achievements"] = {
@@ -273,7 +318,7 @@ WowMcpDB = {
 ["slot"] = 13,
 }, -- [3]
 },
-["addonVersion"] = "0.21.0",
+["addonVersion"] = "0.22.0",
 ["auctions"] = {
 ["capturedAt"] = 1794760000,
 ["lastVisitAt"] = 1794760000,
@@ -516,7 +561,7 @@ WowMcpDB = {
 },
 ["bags"] = {
 {
-["free"] = 12,
+["free"] = 11,
 ["index"] = 0,
 ["items"] = {
 {
@@ -598,12 +643,28 @@ WowMcpDB = {
 },
 ["type"] = "Weapon",
 }, -- [4]
+{
+["bindType"] = 0,
+["classID"] = 7,
+["count"] = 4,
+["id"] = 2672,
+["isBound"] = false,
+["itemLevel"] = 5,
+["name"] = "Stringy Wolf Meat",
+["quality"] = 1,
+["requiredLevel"] = 1,
+["sellPrice"] = 4,
+["slot"] = 5,
+["subType"] = "Meat",
+["subclassID"] = 8,
+["type"] = "Trade Goods",
+}, -- [5]
 },
 ["name"] = "Backpack",
 ["size"] = 16,
 }, -- [1]
 {
-["free"] = 5,
+["free"] = 2,
 ["index"] = 1,
 ["items"] = {
 {
@@ -622,6 +683,54 @@ WowMcpDB = {
 ["subclassID"] = 5,
 ["type"] = "Trade Goods",
 }, -- [1]
+{
+["bindType"] = 0,
+["classID"] = 7,
+["count"] = 8,
+["id"] = 2672,
+["isBound"] = false,
+["itemLevel"] = 5,
+["name"] = "Stringy Wolf Meat",
+["quality"] = 1,
+["requiredLevel"] = 1,
+["sellPrice"] = 4,
+["slot"] = 3,
+["subType"] = "Meat",
+["subclassID"] = 8,
+["type"] = "Trade Goods",
+}, -- [2]
+{
+["bindType"] = 0,
+["classID"] = 0,
+["count"] = 5,
+["id"] = 2287,
+["isBound"] = false,
+["itemLevel"] = 5,
+["name"] = "Haunch of Meat",
+["quality"] = 1,
+["requiredLevel"] = 1,
+["sellPrice"] = 4,
+["slot"] = 4,
+["subType"] = "Food & Drink",
+["subclassID"] = 5,
+["type"] = "Consumable",
+}, -- [3]
+{
+["bindType"] = 0,
+["classID"] = 0,
+["count"] = 3,
+["id"] = 1645,
+["isBound"] = false,
+["itemLevel"] = 5,
+["name"] = "Moonberry Juice",
+["quality"] = 1,
+["requiredLevel"] = 1,
+["sellPrice"] = 4,
+["slot"] = 5,
+["subType"] = "Food & Drink",
+["subclassID"] = 5,
+["type"] = "Consumable",
+}, -- [4]
 },
 ["name"] = "Small Brown Pouch",
 ["size"] = 6,
@@ -679,6 +788,51 @@ WowMcpDB = {
 }, -- [1]
 },
 },
+["beasts"] = {
+{
+["abilities"] = {
+{
+["id"] = 16827,
+["name"] = "Claw",
+["rank"] = "Rank 1",
+}, -- [1]
+{
+["id"] = 24451,
+["name"] = "Prowl",
+["rank"] = "Rank 1",
+}, -- [2]
+},
+["family"] = "Cat",
+["level"] = 13,
+["mapId"] = 1453,
+["name"] = "Nightsaber Stalker",
+["npcId"] = 2034,
+["seenAt"] = 1794759522,
+["source"] = "tamed",
+["x"] = 67.9,
+["y"] = 15.4,
+["zone"] = "Stormwind City",
+}, -- [1]
+{
+["family"] = "Cat",
+["level"] = 12,
+["loreLines"] = {
+"Elder Nightsaber", -- [1]
+"Level 12 Beast", -- [2]
+"Health: 450", -- [3]
+"Diet: Meat, Fish", -- [4]
+"Abilities: Claw (Rank 2), Prowl 1", -- [5]
+},
+["mapId"] = 1453,
+["name"] = "Elder Nightsaber",
+["npcId"] = 2033,
+["seenAt"] = 1794759000,
+["source"] = "beastLore",
+["x"] = 67.9,
+["y"] = 15.4,
+["zone"] = "Stormwind City",
+}, -- [2]
+},
 ["buyback"] = {
 ["capturedAt"] = 1794760000,
 ["items"] = {
@@ -700,7 +854,7 @@ WowMcpDB = {
 ["npc"] = "Einris Brightspear",
 },
 ["character"] = {
-["addonVersion"] = "0.21.0",
+["addonVersion"] = "0.22.0",
 ["bindLocation"] = "Auberdine",
 ["class"] = "Hunter",
 ["classToken"] = "HUNTER",
@@ -2066,6 +2220,29 @@ true, -- [1]
 ["slot"] = 5,
 }, -- [3]
 },
+["bagFood"] = {
+["checkedWith"] = "itemID",
+["items"] = {
+{
+["canEat"] = true,
+["count"] = 12,
+["id"] = 2672,
+["name"] = "Stringy Wolf Meat",
+}, -- [1]
+{
+["canEat"] = true,
+["count"] = 5,
+["id"] = 2287,
+["name"] = "Haunch of Meat",
+}, -- [2]
+{
+["canEat"] = false,
+["count"] = 3,
+["id"] = 1645,
+["name"] = "Moonberry Juice",
+}, -- [3]
+},
+},
 ["damagePercent"] = 125,
 ["dead"] = false,
 ["exists"] = true,
@@ -2087,6 +2264,19 @@ true, -- [1]
 ["Blizzard_EncounterJournal"] = {
 ["frame"] = true,
 },
+},
+["beastLore"] = {
+["hasAura"] = true,
+["lines"] = {
+"Elder Nightsaber", -- [1]
+"Level 12 Beast", -- [2]
+"Health: 450", -- [3]
+"Diet: Meat, Fish", -- [4]
+"Abilities: Claw (Rank 2), Prowl 1", -- [5]
+},
+["name"] = "Elder Nightsaber",
+["npcId"] = 2033,
+["target"] = true,
 },
 ["capturedAt"] = 1794760000,
 ["eventCandidates"] = {
@@ -2122,6 +2312,7 @@ true, -- [1]
 ["MERCHANT_SHOW"] = true,
 ["MERCHANT_UPDATE"] = true,
 ["OWNED_AUCTIONS_UPDATED"] = true,
+["PET_BAR_UPDATE"] = true,
 ["PET_STABLE_SHOW"] = true,
 ["PET_STABLE_UPDATE"] = true,
 ["PLAYER_CAMPING"] = true,
@@ -2133,11 +2324,13 @@ true, -- [1]
 ["PLAYER_LOGOUT"] = true,
 ["PLAYER_MONEY"] = true,
 ["PLAYER_QUITING"] = true,
+["PLAYER_TARGET_CHANGED"] = true,
 ["PLAYER_XP_UPDATE"] = true,
 ["QUEST_ACCEPTED"] = true,
 ["QUEST_COMPLETE"] = true,
 ["QUEST_DETAIL"] = true,
 ["QUEST_TURNED_IN"] = true,
+["SPELLS_CHANGED"] = true,
 ["SPELL_DATA_LOAD_RESULT"] = true,
 ["TAXIMAP_OPENED"] = true,
 ["TIME_PLAYED_MSG"] = true,
@@ -2146,6 +2339,11 @@ true, -- [1]
 ["TRADE_SKILL_UPDATE"] = false,
 ["TRAINER_SHOW"] = true,
 ["TRAINER_UPDATE"] = true,
+["UNIT_AURA"] = true,
+["UNIT_PET"] = true,
+["UNIT_SPELLCAST_CHANNEL_START"] = true,
+["UNIT_SPELLCAST_START"] = true,
+["UPDATE_MOUSEOVER_UNIT"] = true,
 ["ZONE_CHANGED_NEW_AREA"] = true,
 },
 ["globals"] = {
@@ -2334,7 +2532,8 @@ true, -- [1]
 "GetLootMethod", -- [1]
 },
 ["C_PetInfo"] = {
-"GetPetHappiness", -- [1]
+"CanPetEatItem", -- [1]
+"GetPetHappiness", -- [2]
 },
 ["C_QuestLog"] = {
 "GetAllCompletedQuestIDs", -- [1]
@@ -2388,6 +2587,7 @@ true, -- [1]
 "GetMerchantItem", -- [6]
 "GetQuestItem", -- [7]
 "GetSpellByID", -- [8]
+"GetUnit", -- [9]
 },
 ["C_TradeSkillUI"] = {
 "GetAllRecipeIDs", -- [1]
@@ -2419,6 +2619,65 @@ true, -- [1]
 ["TooltipDataProcessor"] = {
 "AddTooltipPostCall", -- [1]
 },
+},
+["petFood"] = {
+["calls"] = {
+{
+["count"] = 1,
+["form"] = "itemID",
+["itemID"] = 2589,
+["ok"] = true,
+["results"] = {
+{
+["type"] = "boolean",
+["value"] = false,
+}, -- [1]
+},
+}, -- [1]
+{
+["error"] = "[string \"<python>\"]:41: Usage: C_PetInfo.CanPetEatItem(itemID)",
+["form"] = "itemLink",
+["itemID"] = 2589,
+["ok"] = false,
+}, -- [2]
+{
+["count"] = 1,
+["form"] = "itemID",
+["itemID"] = 6948,
+["ok"] = true,
+["results"] = {
+{
+["type"] = "boolean",
+["value"] = false,
+}, -- [1]
+},
+}, -- [3]
+{
+["error"] = "[string \"<python>\"]:41: Usage: C_PetInfo.CanPetEatItem(itemID)",
+["form"] = "itemLink",
+["itemID"] = 6948,
+["ok"] = false,
+}, -- [4]
+{
+["count"] = 1,
+["form"] = "itemID",
+["itemID"] = 2318,
+["ok"] = true,
+["results"] = {
+{
+["type"] = "boolean",
+["value"] = false,
+}, -- [1]
+},
+}, -- [5]
+{
+["error"] = "[string \"<python>\"]:41: Usage: C_PetInfo.CanPetEatItem(itemID)",
+["form"] = "itemLink",
+["itemID"] = 2318,
+["ok"] = false,
+}, -- [6]
+},
+["exists"] = true,
 },
 },
 ["professions"] = {
@@ -3572,26 +3831,26 @@ true, -- [1]
 ["slowest"] = {
 {
 ["ms"] = 2.5,
-["name"] = "auras",
+["name"] = "beasts",
 }, -- [1]
 {
 ["ms"] = 2.5,
-["name"] = "bags",
+["name"] = "character",
 }, -- [2]
 {
 ["ms"] = 2.5,
-["name"] = "equipmentSets",
+["name"] = "equipment",
 }, -- [3]
 {
 ["ms"] = 2.5,
-["name"] = "guide",
+["name"] = "equipmentSets",
 }, -- [4]
 {
 ["ms"] = 2.5,
-["name"] = "macros",
+["name"] = "guide",
 }, -- [5]
 },
-["totalMs"] = 77.5,
+["totalMs"] = 80.5,
 },
 ["titles"] = {
 ["current"] = "the Patient",

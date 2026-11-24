@@ -3,7 +3,7 @@
 ## Notes: Saves character state to SavedVariables, from where a local MCP server reads it. Read-only, no automation.
 ## Author: Piekasz (GitHub: Piekario)
 ## X-License: GPL-3.0-or-later, author attribution must be kept (see NOTICE)
-## Version: 0.21.0
+## Version: 0.22.0
 ## OptionalDeps: QuestieDB, Questie, Guidelime, TomTom
 ## SavedVariables: WowMcpDB
 
@@ -15,16 +15,19 @@ QuestDb.lua
 QuestZones.lua
 Waypoints.lua
 Items.lua
+PetFood.lua
 AuctionItems.lua
 EncounterJournal.lua
 QuestRewards.lua
 TalentGrid.lua
 TraitTree.lua
 Store.lua
+Beasts.lua
 Events.lua
 Timing.lua
 LogoutGuard.lua
 Snapshot.lua
+BeastLore.lua
 Periods.lua
 LegacyDiscovery.lua
 AchievementCategories.lua
@@ -38,6 +41,7 @@ Sections\Talents.lua
 Sections\Legacy.lua
 Sections\Professions.lua
 Sections\Pet.lua
+Sections\Beasts.lua
 Sections\ActionBars.lua
 Sections\Reputation.lua
 Sections\Macros.lua
@@ -78,6 +82,9 @@ Sections\EventLog.lua
 Sections\Note.lua
 Sections\DungeonLoot.lua
 Sections\Lookups.lua
+
+# Beasts the player tames (Hunter), recorded into Beasts.lua; reads the pet spellbook of Sections\Pet.lua.
+BeastTaming.lua
 
 # Lookups typed by the player (/mcp item, /mcp spell).
 LookupItem.lua

@@ -4,7 +4,7 @@
 --- content[0] ---
 {
   "status": "ok",
-  "summary": "12 checks: 12 ok, 0 warnings, 0 failures (server 0.21.0, expected addon 0.21.0)",
+  "summary": "12 checks: 12 ok, 0 warnings, 0 failures (server 0.22.0, expected addon 0.22.0)",
   "nextStep": "Nothing to fix. If an answer still looks wrong, ask for wow_status (alerts) and the section in question (wow_section).",
   "checks": [
     {
@@ -28,7 +28,7 @@
     {
       "check": "addon version",
       "status": "ok",
-      "detail": "Addon 0.21.0, the server expects 0.21.0.",
+      "detail": "Addon 0.22.0, the server expects 0.22.0.",
       "fix": ""
     },
     {
@@ -40,7 +40,7 @@
     {
       "check": "dump speed",
       "status": "ok",
-      "detail": "Collecting the dump took 77.5 ms.",
+      "detail": "Collecting the dump took 80.5 ms.",
       "fix": ""
     },
     {

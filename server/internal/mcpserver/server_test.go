@@ -192,7 +192,7 @@ func TestServerEndToEnd(t *testing.T) {
 	for name, wants := range map[string][]string{
 		"before_logout": {"bindLocation", "Auberdine", "classic rule, approximate", "myAuctions"},
 		"first_run":     {"windows", `"captured": true`, "/mcp reload", "expectedAddonVersion"},
-		"pet_care":      {"Growl Rank 3", `"exists": true`, "foodNote"},
+		"pet_care":      {"Growl Rank 3", `"exists": true`, `"feedings": 17`, "whereToTame"},
 	} {
 		res, err := cs.GetPrompt(ctx, &mcp.GetPromptParams{Name: name})
 		if err != nil {

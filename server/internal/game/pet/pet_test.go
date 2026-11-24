@@ -30,13 +30,14 @@ func TestTrainingPointsAndFood(t *testing.T) {
 	p["foodTypes"] = []any{"Meat", "Fish"}
 	fixtures.WantAll(t, "points", fixtures.JSON(t, View(s)), `"trainingPoints":{"free":7,"spent":13,"total":20}`, `"foodTypes":["Meat","Fish"]`)
 
-	if len(FoodInBags(s)) != 0 || FoodInBags(s) == nil {
-		t.Error("the fixture has no food in the Food subtype")
+	// Food & Drink by item subtype: the cooked meat and the juice, not the raw meat (Trade Goods).
+	if food := FoodInBags(s); len(food) != 2 || snapshot.AsMap(food[0])["name"] != "Haunch of Meat" {
+		t.Errorf("fixture food: %v", food)
 	}
 	bag := snapshot.AsMap(snapshot.AsList(s["bags"])[0])
 	bag["items"] = append(snapshot.AsList(bag["items"]), map[string]any{"name": "Tough Jerky", "id": int64(117), "count": int64(8), "subType": "Food & Drink"})
 	food := FoodInBags(s)
-	if len(food) != 1 || snapshot.AsMap(food[0])["name"] != "Tough Jerky" || snapshot.AsMap(food[0])["count"] != int64(8) {
+	if len(food) != 3 || snapshot.AsMap(food[0])["name"] != "Tough Jerky" || snapshot.AsMap(food[0])["count"] != int64(8) {
 		t.Errorf("food: %v", food)
 	}
 }

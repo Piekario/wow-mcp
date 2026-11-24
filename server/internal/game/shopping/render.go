@@ -195,7 +195,10 @@ func (p *PetFoodPlan) render() map[string]any {
 	if p.FoodTypes != nil {
 		out["foodTypes"] = p.FoodTypes
 	}
-	if p.InBags == 0 {
+	switch {
+	case p.Checked.Known:
+		out["bagFood"] = p.Checked.Render()
+	case p.InBags == 0:
 		out["note"] = "there is no food in the bags that can be given to the pet (subtype Food); a hungry pet loses happiness"
 	}
 	if len(p.Offers) > 0 {

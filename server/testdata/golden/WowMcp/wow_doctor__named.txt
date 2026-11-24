@@ -4,7 +4,7 @@
 --- content[0] ---
 {
   "status": "warn",
-  "summary": "12 checks: 10 ok, 2 warnings, 0 failures (server 0.21.0, expected addon 0.21.0)",
+  "summary": "12 checks: 10 ok, 2 warnings, 0 failures (server 0.22.0, expected addon 0.22.0)",
   "nextStep": "Turn a section back on with /mcp on \u003csection\u003e and type /mcp reload.",
   "checks": [
     {
@@ -28,7 +28,7 @@
     {
       "check": "addon version",
       "status": "ok",
-      "detail": "Addon 0.21.0, the server expects 0.21.0.",
+      "detail": "Addon 0.22.0, the server expects 0.22.0.",
       "fix": ""
     },
     {
@@ -40,7 +40,7 @@
     {
       "check": "dump speed",
       "status": "ok",
-      "detail": "Collecting the dump took 76 ms.",
+      "detail": "Collecting the dump took 77.5 ms.",
       "fix": ""
     },
     {

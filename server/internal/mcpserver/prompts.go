@@ -123,7 +123,7 @@ var prompts = []prompt{
 	{
 		name:        "pet_care",
 		title:       "Pet care",
-		description: "The state of a Hunter's pet: happiness, loyalty, training points, diet versus food in the bags, abilities, Beast Training (missing ranks, point plan) and a comparison with the stable. Only useful when the snapshot has a pet section; otherwise it says what is missing.",
+		description: "The state of a Hunter's pet: happiness, loyalty, training points, which bag food it can eat and for how many feedings, abilities, Beast Training (missing ranks, point plan), where to tame beasts with ranks the Hunter lacks (from beasts this account observed) and a comparison with the stable. Only useful when the snapshot has a pet section; otherwise it says what is missing.",
 		build:       petCare,
 	},
 	{
@@ -485,25 +485,42 @@ func firstTime(s *service, who string, snap snapshot.Snapshot) (string, map[stri
 
 func petCare(s *service, who string, snap snapshot.Snapshot) (string, map[string]any) {
 	data := map[string]any{"pet": pet.View(snap)}
-	snapshot.Merge(data, pet.Review(snap, s.Freshness)) // rankReview, trainingPlan, stable
+	review := pet.Review(snap, s.Freshness) // rankReview, trainingPlan, bagFood, whereToTame, stable
+	delete(review, "bagFood")
+	snapshot.Merge(data, review)
 	if !pet.Exists(snap) {
 		return "The player asks about the pet, but the data does not show one (pet.note explains why). Say so plainly: one of the reasons " +
 			"from pet.note, without guessing which is the true one; suggest what to check (whether the character has a pet and whether it is summoned, " +
-			"then /mcp reload). Do not invent the pet's state.", data
+			"then /mcp reload). Do not invent the pet's state. If there is whereToTame, its note or ranks still apply to a Hunter.", data
 	}
 	data["class"] = snap.Character()["class"]
-	data["foodInBags"] = pet.FoodInBags(snap)
-	data["foodNote"] = pet.FoodNote
+	food := petFoodGuidance(snap, data)
 	if snap.Map("recipes")["Beast Training"] != nil {
 		data["beastTraining"] = professions.Recipes(snap, professions.RecipeQuery{Profession: "Beast Training"}, s.Freshness)
 	}
 	return "Assess the pet's state and say what to improve. Check happiness (happiness) and loyalty, how many training points are left " +
 		"(trainingPoints; if they are not in the data, say the addon did not save them) and whether the pet has auto-cast enabled where it is useful (autoCast). " +
-		"Compare the diet (foodTypes) with the food in the bags (foodInBags) and say how many feedings it will last, honestly noting " +
-		"that you match food to diet by name. If there is beastTraining, point out the ranks to buy with the free points. " +
+		food + " If there is beastTraining, point out the ranks to buy with the free points. " +
 		"From rankReview give the ranks the Hunter knows that the pet lacks (learnable), and the ranks to buy from the trainer (notLearnedByHunter); from trainingPlan, what fits into the free points; " +
+		"from whereToTame, which observed beasts have ranks the Hunter does not know (hunterKnows = no first), with their zone, level and coordinates, saying plainly that " +
+		"these come only from beasts this account tamed or examined with Beast Lore in Forever (whereToTame.source); when it has no ranks, relay its note on how to collect them " +
+		"and do not name beasts or zones from memory; " +
 		"from stable compare the stabled pets with the active one (level, family), remembering that there is no data on their abilities. When a field says data is missing, say which window to open in game. " +
 		"Do not give numbers that are not in the data.", data
+}
+
+// petFoodGuidance puts the bag food into data and returns the matching instruction: the client's verdict when the dump
+// has it (bagFood), otherwise food by item subtype (foodInBags) matched to the diet by name.
+func petFoodGuidance(snap snapshot.Snapshot, data map[string]any) string {
+	if check := pet.CheckFood(snap); check.Known {
+		data["bagFood"] = check.Render()
+		return "The game client itself said which bag food this pet can eat (bagFood.edible, bagFood.refused): give how many feedings it lasts (bagFood.feedings) " +
+			"and which food it refuses; do not second-guess the client's verdict."
+	}
+	data["foodInBags"] = pet.FoodInBags(snap)
+	data["foodNote"] = pet.FoodNote
+	return "Compare the diet (foodTypes) with the food in the bags (foodInBags) and say how many feedings it will last, honestly noting " +
+		"that you match food to diet by name."
 }
 
 const weekDays = 7

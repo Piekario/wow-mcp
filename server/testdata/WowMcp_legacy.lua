@@ -1,10 +1,12 @@
 
 WowMcpDB = {
+["beasts"] = {
+},
 ["characters"] = {
 ["Piekasz"] = {
 ["actionBars"] = {
 },
-["addonVersion"] = "0.21.0",
+["addonVersion"] = "0.22.0",
 ["auras"] = {
 },
 ["bags"] = {
@@ -25,8 +27,10 @@ WowMcpDB = {
 ["size"] = 16,
 }, -- [1]
 },
+["beasts"] = {
+},
 ["character"] = {
-["addonVersion"] = "0.21.0",
+["addonVersion"] = "0.22.0",
 ["bindLocation"] = "Auberdine",
 ["class"] = "Hunter",
 ["classToken"] = "HUNTER",

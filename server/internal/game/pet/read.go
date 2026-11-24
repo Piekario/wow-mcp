@@ -157,3 +157,82 @@ func readStable(s snapshot.Snapshot) (Stable, bool) {
 	}
 	return st, true
 }
+
+// readFoodCheck reads pet.bagFood (addon 0.22.0): the client's answer to C_PetInfo.CanPetEatItem for bag items.
+// known is false when the dump has no bagFood.
+func readFoodCheck(s snapshot.Snapshot) (items []FoodItem, checkedWith string, known bool) {
+	m := snapshot.AsMap(s.Map("pet")["bagFood"])
+	if m == nil {
+		return nil, "", false
+	}
+	checkedWith, _ = m["checkedWith"].(string)
+	for _, raw := range snapshot.AsList(m["items"]) {
+		e := snapshot.AsMap(raw)
+		canEat, ok := e["canEat"].(bool)
+		if !ok {
+			continue
+		}
+		it := FoodItem{CanEat: canEat}
+		it.ID, _ = snapshot.AsInt(e["id"])
+		it.Name, _ = e["name"].(string)
+		it.Count, _ = snapshot.AsInt(e["count"])
+		items = append(items, it)
+	}
+	return items, checkedWith, true
+}
+
+// readBeasts reads the beasts section (addon 0.22.0); present is false when the dump has none.
+func readBeasts(s snapshot.Snapshot) (beasts []Observation, present bool) {
+	raw, present := s["beasts"]
+	for _, entry := range snapshot.AsList(raw) {
+		m := snapshot.AsMap(entry)
+		npcID, ok := snapshot.AsInt(m["npcId"])
+		if !ok {
+			continue
+		}
+		b := Observation{NpcID: npcID}
+		b.Name, _ = m["name"].(string)
+		b.Family, _ = m["family"].(string)
+		b.Zone, _ = m["zone"].(string)
+		b.Source, _ = m["source"].(string)
+		b.Level, b.HasLevel = snapshot.AsInt(m["level"])
+		b.MapID, b.HasMap = snapshot.AsInt(m["mapId"])
+		x, okX := snapshot.AsFloat(m["x"])
+		y, okY := snapshot.AsFloat(m["y"])
+		b.X, b.Y, b.HasPos = x, y, okX && okY
+		b.SeenAt, _ = snapshot.AsInt(m["seenAt"])
+		b.Tamed = readTamedAbilities(m["abilities"])
+		for _, line := range snapshot.AsList(m["loreLines"]) {
+			if text, ok := line.(string); ok {
+				b.LoreLines = append(b.LoreLines, text)
+			}
+		}
+		beasts = append(beasts, b)
+	}
+	return beasts, present
+}
+
+func readTamedAbilities(raw any) []ObservedAbility {
+	var out []ObservedAbility
+	for _, entry := range snapshot.AsList(raw) {
+		m := snapshot.AsMap(entry)
+		name, _ := m["name"].(string)
+		if name == "" {
+			continue
+		}
+		rankText, _ := m["rank"].(string)
+		out = append(out, ObservedAbility{Name: name, Rank: RankNumber(rankText), RankText: rankText})
+	}
+	return out
+}
+
+// readSpellRanks lists the rank texts of the character's spells ("Rank 3"), written by the client in its language.
+func readSpellRanks(s snapshot.Snapshot) []string {
+	var out []string
+	for _, raw := range s.List("spells") {
+		if rank, ok := snapshot.AsMap(raw)["rank"].(string); ok && rank != "" {
+			out = append(out, rank)
+		}
+	}
+	return out
+}

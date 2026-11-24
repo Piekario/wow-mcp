@@ -14,7 +14,7 @@ import (
 )
 
 // ExpectedVersion is the addon version that collects every section this server uses.
-const ExpectedVersion = "0.21.0"
+const ExpectedVersion = "0.22.0"
 
 // SectionTiming is how long the addon took over one section. Name is kept as the dump has it.
 type SectionTiming struct {

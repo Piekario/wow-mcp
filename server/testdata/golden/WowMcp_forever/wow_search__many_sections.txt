@@ -119,7 +119,7 @@
       "truncated": false
     },
     {
-      "count": 8,
+      "count": 12,
       "hits": [
         {
           "label": "Backpack",
@@ -172,6 +172,16 @@
           "summary": "count 1, Weapon, Dagger"
         },
         {
+          "label": "Stringy Wolf Meat",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Backpack",
+            "Stringy Wolf Meat"
+          ],
+          "summary": "count 4, Trade Goods, Meat"
+        },
+        {
           "label": "Small Brown Pouch",
           "matchedIn": "name",
           "path": [
@@ -190,6 +200,37 @@
           "summary": "count 5, Trade Goods, Cloth"
         },
         {
+          "label": "Stringy Wolf Meat",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Small Brown Pouch",
+            "Stringy Wolf Meat"
+          ],
+          "summary": "count 8, Trade Goods, Meat"
+        },
+        {
+          "label": "Haunch of Meat",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Small Brown Pouch",
+            "Haunch of Meat"
+          ],
+          "summary": "count 5, Consumable, Food \u0026 Drink"
+        },
+        {
+          "label": "Moonberry Juice",
+          "matchedIn": "type",
+          "matchedText": "Consumable",
+          "path": [
+            "bags",
+            "Small Brown Pouch",
+            "Moonberry Juice"
+          ],
+          "summary": "count 3, Consumable, Food \u0026 Drink"
+        },
+        {
           "label": "Sharp Arrow",
           "matchedIn": "name",
           "path": [
@@ -201,7 +242,7 @@
         }
       ],
       "section": "bags",
-      "shown": 8,
+      "shown": 12,
       "truncated": false
     },
     {
@@ -1144,6 +1185,6 @@
     "character": "Piekasz",
     "dumpedAt": "2026-11-15 16:50:00"
   },
-  "totalHits": 101,
+  "totalHits": 105,
   "truncated": true
 }

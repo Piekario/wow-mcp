@@ -6,8 +6,8 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
 --- content[1] ---
 {
   "bagSlots": {
-    "free": 26,
-    "freeAfterPlan": 30,
+    "free": 22,
+    "freeAfterPlan": 26,
     "total": 32
   },
   "howDecided": "Rule order: quest items, ammo for the equipped weapon, materials for known recipes and profession tools, consumables, auction offer (price after the cut with a 20% margin over the vendor), possible upgrades, then selling grey and ordinary items, while trade materials and better quality go to the bank.",
@@ -59,6 +59,30 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
       "reason": "profession tool: Skinning",
       "slots": 1,
       "vendorValue": "16c"
+    },
+    {
+      "action": "keep",
+      "count": 12,
+      "name": "Stringy Wolf Meat",
+      "reason": "food your pet can eat (the game client says so)",
+      "slots": 2,
+      "vendorValue": "48c"
+    },
+    {
+      "action": "keep",
+      "count": 5,
+      "name": "Haunch of Meat",
+      "reason": "food your pet can eat (the game client says so)",
+      "slots": 1,
+      "vendorValue": "20c"
+    },
+    {
+      "action": "keep",
+      "count": 3,
+      "name": "Moonberry Juice",
+      "reason": "food for you; the game client says your pet does not eat it",
+      "slots": 1,
+      "vendorValue": "12c"
     }
   ],
   "limits": "The server cannot see what your other characters need, nor does it know every recipe (only those from opened profession windows, wow_recipes). Bound items are known from the dump (isBound, bindType) and are never suggested for the auction house. The plan has no destroy or discard action; nothing is sold or removed, you make the decisions in game.",
@@ -78,8 +102,8 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
       "slots": 4
     },
     "keep": {
-      "items": 2,
-      "slots": 2
+      "items": 5,
+      "slots": 6
     }
   }
 }

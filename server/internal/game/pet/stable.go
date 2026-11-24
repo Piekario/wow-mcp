@@ -89,23 +89,34 @@ func reviewStable(stable Stable, present bool, active Pet) StableReview {
 	return r
 }
 
-// Checkup is what the pet description adds to its state: ability ranks, the training points plan and the stable.
-// Ranks and Plan are filled only for a summoned pet; Stable only when HasStable.
+// Checkup is what the pet description adds to its state: ability ranks, the training points plan, the food in the
+// bags, where to tame missing ranks and the stable. Ranks, Plan and Food are filled only for a summoned pet; Taming
+// when HasTaming; Stable only when HasStable.
 type Checkup struct {
-	Pet       Pet
-	Ranks     RankReview
-	Plan      TrainingPlan
-	Stable    StableReview
-	HasStable bool
+	Pet        Pet
+	Ranks      RankReview
+	Plan       TrainingPlan
+	Food       FoodCheck
+	FoodByType []FoodStack // only when the client's verdict is not in the dump
+	Taming     WhereToTame
+	HasTaming  bool
+	Stable     StableReview
+	HasStable  bool
 }
 
 func Examine(s snapshot.Snapshot) Checkup {
 	c := Checkup{Pet: readPet(s)}
+	lessons := readLessons(s)
 	if c.Pet.Summoned {
-		lessons := readLessons(s)
 		c.Ranks = reviewRanks(c.Pet, lessons, readTrainerServices(s))
 		c.Plan = planTraining(c.Pet, lessons)
+		c.Food = CheckFood(s)
+		if !c.Food.Known {
+			c.FoodByType = readBagFood(s)
+		}
 	}
+	c.Taming = planTaming(s, c.Pet, lessons)
+	c.HasTaming = c.Taming.HasSection || c.Pet.Summoned
 	stable, present := readStable(s)
 	c.HasStable = present || c.Pet.Summoned
 	if c.HasStable {

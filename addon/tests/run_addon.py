@@ -1054,6 +1054,105 @@ C_GameRules.SetLegacyChallengeTracked = function() legacyActionCalls[#legacyActi
 # documentation. Nobody has confirmed yet which of these the real Forever client has, so every mode except the legacy
 # client gets them; the legacy client has none and proves that the sections stay absent. In the Forever modes these
 # functions wrap the Legacy category mocks above, which keep their results. Names, IDs, dates and values are invented.
+# Addon 0.22.0: pet food and beasts (Forever modes). C_PetInfo.CanPetEatItem is in the real client (probe of addon
+# 0.7.0) but its argument is not confirmed: "forever" answers for an item ID, "dede" (petFoodByLink) only for an item
+# link, so both forms reach a fixture. Raw meat is Trade Goods (7/8), cooked food and drink Food & Drink (0/5); the cat
+# eats meat and refuses the juice. mockUnits overrides the unit functions for the target, the mouseover and the pet
+# while the test tames a beast or examines one with Beast Lore.
+PET_TAMING_STUBS = r"""
+petFoodData = {
+    [2672] = { name = "Stringy Wolf Meat", type = "Trade Goods", subType = "Meat", classID = 7, subclassID = 8, canEat = true },
+    [2287] = { name = "Haunch of Meat", type = "Consumable", subType = "Food & Drink", classID = 0, subclassID = 5, canEat = true },
+    [1645] = { name = "Moonberry Juice", type = "Consumable", subType = "Food & Drink", classID = 0, subclassID = 5, canEat = false },
+}
+local function foodLink(id) return "|cffffffff|Hitem:" .. id .. ":0|h[" .. petFoodData[id].name .. "]|h|r" end
+local foodSlots = {
+    [0] = { [5] = { itemID = 2672, stackCount = 4, quality = 1, isBound = false, hyperlink = foodLink(2672) } },
+    [1] = {
+        [3] = { itemID = 2672, stackCount = 8, quality = 1, isBound = false, hyperlink = foodLink(2672) },
+        [4] = { itemID = 2287, stackCount = 5, quality = 1, isBound = false, hyperlink = foodLink(2287) },
+        [5] = { itemID = 1645, stackCount = 3, quality = 1, isBound = false, hyperlink = foodLink(1645) },
+    },
+}
+local slotInfo = C_Container.GetContainerItemInfo
+C_Container.GetContainerItemInfo = function(bag, slot)
+    if foodSlots[bag] and foodSlots[bag][slot] then return foodSlots[bag][slot] end
+    return slotInfo(bag, slot)
+end
+local itemInfo, instantInfo = C_Item.GetItemInfo, GetItemInfoInstant
+C_Item.GetItemInfo = function(link)
+    local id = tonumber(tostring(link):match("item:(%d+)")) or link
+    local d = petFoodData[id]
+    if d then return d.name, foodLink(id), 1, 5, 1, d.type, d.subType, 20, "INVTYPE_NON_EQUIP_IGNORE", 134, 4, d.classID, d.subclassID, 0 end
+    return itemInfo(link)
+end
+function GetItemInfoInstant(link)
+    local id = ahItemId(link)
+    local d = petFoodData[id]
+    if d then return id, d.type, d.subType, "INVTYPE_NON_EQUIP_IGNORE", 134, d.classID, d.subclassID end
+    return instantInfo(link)
+end
+C_Item.GetItemInfoInstant = GetItemInfoInstant
+C_PetInfo.CanPetEatItem = function(item)
+    local id = item
+    if petFoodByLink then
+        if type(item) ~= "string" then error("Usage: C_PetInfo.CanPetEatItem(itemLink)") end
+        id = ahItemId(item)
+    elseif type(item) ~= "number" then
+        error("Usage: C_PetInfo.CanPetEatItem(itemID)")
+    end
+    local d = petFoodData[id]
+    return d ~= nil and d.canEat or false
+end
+
+mockUnits = {}
+local function unitField(field, fallback)
+    return function(unit, ...)
+        local u = mockUnits[unit]
+        if u and u[field] ~= nil then return u[field] end
+        if fallback then return fallback(unit, ...) end
+    end
+end
+UnitGUID = unitField("guid", UnitGUID)
+UnitName = unitField("name", UnitName)
+UnitLevel = unitField("level", UnitLevel)
+UnitCreatureFamily = unitField("family", UnitCreatureFamily)
+local unitExists = UnitExists
+function UnitExists(unit) if mockUnits[unit] then return true end return unitExists(unit) end
+local auraByIndex = C_UnitAuras.GetAuraDataByIndex
+C_UnitAuras.GetAuraDataByIndex = function(unit, index, filter)
+    local u = mockUnits[unit]
+    if u then
+        if u.lore and filter == "HARMFUL" and index == 1 then return { name = "Beast Lore", spellId = 1462 } end
+        return nil
+    end
+    return auraByIndex(unit, index, filter)
+end
+if petFoodByLink then
+    C_UnitAuras.GetUnitAuraBySpellID = function(unit, spellID)
+        local u = mockUnits[unit]
+        if u and u.lore and spellID == 1462 then return { name = "Beast Lore", spellId = 1462 } end
+    end
+end
+C_TooltipInfo.GetUnit = function(unit)
+    local u = mockUnits[unit]
+    if not (u and u.tooltip) then return nil end
+    local lines = {}
+    for i, text in ipairs(u.tooltip) do lines[i] = { leftText = text } end
+    return { lines = lines }
+end
+-- The pet spellbook right after taming (tamedPetSpells); the pet section reads the usual one.
+local hasPetSpells, bookItem = C_SpellBook.HasPetSpells, C_SpellBook.GetSpellBookItemInfo
+C_SpellBook.HasPetSpells = function()
+    if tamedPetSpells then return #tamedPetSpells, "PET" end
+    return hasPetSpells()
+end
+C_SpellBook.GetSpellBookItemInfo = function(i, bank)
+    if tamedPetSpells and bank == 1 then return tamedPetSpells[i] end
+    return bookItem(i, bank)
+end
+"""
+
 ACHIEVEMENT_STUBS = r"""
 local baseCategoryList, baseCategoryInfo = GetCategoryList, GetCategoryInfo
 local baseNumAchievements, baseAchievementInfo = GetCategoryNumAchievements, GetAchievementInfo
@@ -1612,6 +1711,8 @@ def load_addon(mode: str, before_addon: str = ""):
         runtime.execute(localize(mode, FOREVER_V4_STUBS))
         runtime.execute(QUEST_SOURCES_STUBS)
         runtime.execute(LEGACY_TREE_STUBS)
+        runtime.execute(f"petFoodByLink = {'true' if mode == 'dede' else 'false'}")
+        runtime.execute(PET_TAMING_STUBS)
     if mode != "legacy":
         runtime.execute(ACHIEVEMENT_STUBS)
         runtime.execute(COMPANION_STUBS if mode in FOREVER_MODES else JOURNAL_STUBS)
@@ -2865,6 +2966,101 @@ def check_dungeon_loot_targets() -> None:
     assert "No dungeon in the Encounter Journal matches" in "".join(g.chatlog.values())
 
 
+ELDER_NIGHTSABER = ('{ guid = "Creature-0-5827-0-12-2033-00004A1B2C", name = "Elder Nightsaber", level = 12, family = "Cat",'
+                    ' lore = true, tooltip = { "Elder Nightsaber", "Level 12 Beast", "Health: 450", "Diet: Meat, Fish",'
+                    ' "Abilities: Claw (Rank 2), Prowl 1" } }')
+
+
+def observe_beasts(g, on_event, runtime) -> None:
+    """Addon 0.22.0: Beast Lore on one beast, then taming another; both land in the account-wide store."""
+    g.clockNow = 1794759000
+    g.mockUnits.target = runtime.eval(ELDER_NIGHTSABER)
+    on_event(None, "PLAYER_TARGET_CHANGED")
+    on_event(None, "UNIT_AURA", "target")
+    g.mockUnits.target = runtime.eval('{ guid = "Creature-0-5827-0-12-2034-00004A1B2D", name = "Nightsaber Stalker", level = 13, family = "Cat" }')
+    g.clockNow = 1794759500
+    on_event(None, "UNIT_SPELLCAST_CHANNEL_START", "player", "Cast-3-5827-0-12-1515-0000ABCDEF", 1515)
+    # The pet that shows up first comes from another creature (an old pet called back): not the tamed beast.
+    g.mockUnits.pet = runtime.eval('{ guid = "Pet-0-5827-0-12-9999-0100000001" }')
+    on_event(None, "UNIT_PET", "player")
+    g.mockUnits.target = None
+    g.mockUnits.pet = runtime.eval('{ guid = "Pet-0-5827-0-12-2034-0100000002" }')
+    g.tamedPetSpells = runtime.eval('{ { spellID = 16827, name = "Claw", subName = "Rank 1", itemType = 1 },'
+                                    ' { spellID = 24451, name = "Prowl", subName = "Rank 1", itemType = 1 },'
+                                    ' { spellID = 0, name = "Attack", subName = "Pet Command", itemType = 3 } }')
+    g.clockNow += 22
+    on_event(None, "UNIT_PET", "player")
+    g.tamedPetSpells = None
+    g.mockUnits.pet = None
+    # The taming is recorded; later spellbook changes (lessons the Hunter teaches) must not touch it.
+    g.clockNow += 5
+    on_event(None, "SPELLS_CHANGED")
+    g.clockNow = 1794760000
+
+
+def check_beasts(snapshot, mode: str) -> None:
+    if mode not in FOREVER_MODES:
+        assert len(snapshot["beasts"]) == 0, "nothing tamed or examined in this mode"
+        return
+    beasts = [b for b in snapshot["beasts"].values()]
+    assert [(b["npcId"], b["source"], b["seenAt"]) for b in beasts] == [
+        (2034, "tamed", 1794759522), (2033, "beastLore", 1794759000)], [dict(b) for b in beasts]
+    tamed, lore = beasts
+    abilities = [(a["name"], a["rank"]) for a in tamed["abilities"].values()]
+    assert abilities == [("Claw", "Rank 1"), ("Prowl", "Rank 1")], abilities
+    assert tamed["name"] == "Nightsaber Stalker" and tamed["level"] == 13 and tamed["family"] == "Cat"
+    assert tamed["zone"] == "Stormwind City" and tamed["mapId"] is not None and tamed["loreLines"] is None, dict(tamed)
+    assert list(lore["loreLines"].values())[-1] == "Abilities: Claw (Rank 2), Prowl 1" and lore["abilities"] is None
+    probe = snapshot["probe"]
+    for event in ("UNIT_SPELLCAST_START", "UNIT_SPELLCAST_CHANNEL_START", "UNIT_PET", "PLAYER_TARGET_CHANGED", "UNIT_AURA"):
+        assert probe["events"][event] is True, event
+    calls = list(probe["petFood"]["calls"].values())
+    assert probe["petFood"]["exists"] is True and len(calls) == 6, [dict(c) for c in calls]
+    by_id, by_link = calls[0], calls[1]
+    assert (by_id["form"], by_link["form"]) == ("itemID", "itemLink")
+    working, failing = (by_id, by_link) if mode == "forever" else (by_link, by_id)
+    assert working["ok"] is True and working["count"] == 1 and working["results"][1]["type"] == "boolean", dict(working)
+    assert failing["ok"] is False and "Usage" in failing["error"], dict(failing)
+    if mode == "forever":
+        lore_probe = probe["beastLore"]
+        assert lore_probe["hasAura"] is True and lore_probe["npcId"] == 2033 and len(lore_probe["lines"]) == 5, dict(lore_probe)
+    else:
+        # The target is the inspected player: no creature, no aura, no lines.
+        lore_probe = probe["beastLore"]
+        assert lore_probe["hasAura"] is False and lore_probe["npcId"] is None and lore_probe["lines"] is None, dict(lore_probe)
+
+
+def check_pet_food(snapshot, mode: str) -> None:
+    food = snapshot["pet"]["bagFood"]
+    if mode not in FOREVER_MODES:
+        assert food is None, "no CanPetEatItem in this client: nothing is saved"
+        return
+    assert food["checkedWith"] == ("itemID" if mode == "forever" else "itemLink"), dict(food)
+    items = [(i["id"], i["count"], i["canEat"]) for i in food["items"].values()]
+    # Two stacks of meat add up; bread, cloth and leather (Trade Goods the cat refuses) are left out.
+    assert items == [(2672, 12, True), (2287, 5, True), (1645, 3, False)], items
+
+
+def check_beast_store_edges() -> None:
+    """The store keeps at most 300 beasts (oldest dropped), only Hunters record, and a CanPetEatItem that never answers
+    with a boolean saves no bagFood."""
+    runtime, g, addon_ns = load_addon("forever")
+    on_event = event_dispatcher(g)
+    on_event(None, "PLAYER_LOGIN")
+    g.C_PetInfo.CanPetEatItem = runtime.eval("function() return nil end")
+    assert addon_ns.PetFood.check() is None
+    for i in range(305):
+        g.clockNow = 1794700000 + i
+        addon_ns.Beasts.record(runtime.eval(f'{{ npcId = {5000 + i}, name = "Boar {i}" }}'), "beastLore", runtime.eval("{}"))
+    store = g.WowMcpDB["beasts"]
+    assert len(list(store.keys())) == 300 and store[5000] is None and store[5004] is None and store[5005] is not None
+    g.UnitClass = runtime.eval('function() return "Mage", "MAGE", 8 end')
+    g.mockUnits.target = runtime.eval(ELDER_NIGHTSABER.replace("2033", "2099"))
+    on_event(None, "PLAYER_TARGET_CHANGED")
+    assert store[2099] is None, "only Hunters record beasts"
+    assert addon_ns.Snapshot.dump("manual")[0]["beasts"] is None, "a non-Hunter dump has no beasts section"
+
+
 def main() -> int:
     if len(sys.argv) < 2 or (sys.argv[1] != "lifecycle" and len(sys.argv) < 3):
         print("usage: run_addon.py modern|legacy|forever|dede <file.lua> or run_addon.py lifecycle")
@@ -2953,7 +3149,9 @@ def main() -> int:
         for query in ("deep ocean, vast sea", "947", "Murkdeep", "No Such Quest", "947"):
             g.SlashCmdList["WOWMCP"]("quest " + query)
         run_lookups(g, on_event, mode)
+        observe_beasts(g, on_event, runtime)
         if mode == "forever":
+            g.mockUnits.target = runtime.eval(ELDER_NIGHTSABER)
             read_dungeon_loot(g, on_event)
     elif mode == "modern":
         for event in ("AUCTION_HOUSE_SHOW", "AUCTION_ITEM_LIST_UPDATE", "AUCTION_OWNED_LIST_UPDATE"):
@@ -2964,6 +3162,8 @@ def main() -> int:
         g.SlashCmdList["WOWMCP"]("loot deadmines")
     g.SlashCmdList["WOWMCP"]("probe" if mode in FOREVER_MODES else "reload")
     g.SlashCmdList["WOWMCP"]("status")
+    if mode in FOREVER_MODES:
+        g.mockUnits.target = None
 
     for line in g.chatlog.values():
         print("chat:", line)
@@ -3257,6 +3457,9 @@ def main() -> int:
     check_quest_sources(snapshot, g, mode)
     check_lookups(snapshot, g, mode)
     check_achievement_sections(snapshot, mode)
+    if mode != "legacy":
+        check_pet_food(snapshot, mode)
+        check_beasts(snapshot, mode)
 
     dump = g.SerializeSavedVariable("WowMcpDB", g.WowMcpDB)
     assert "INVTYPE_NON_EQUIP_IGNORE" not in dump, "equipLoc = INVTYPE_NON_EQUIP_IGNORE should not reach the dump"
@@ -3272,6 +3475,7 @@ def main() -> int:
         check_legacy_scan_only_when_needed()
         check_realmless_key()
         check_dungeon_loot_targets()
+        check_beast_store_edges()
         check_real_lifecycle()
         print("lifecycle from the real game: OK")
     return 0

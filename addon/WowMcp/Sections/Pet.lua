@@ -2,11 +2,14 @@
 -- Copyright (C) 2026 Piekasz (GitHub: Piekario). Author attribution must be kept: see NOTICE.
 
 -- Section pet: the character's pet (happiness, loyalty, training points,
--- action bar and spellbook).
+-- action bar, spellbook and which bag items it can eat, see PetFood.lua).
 
 local _, ns = ...
 local plain, plainFields = ns.Compat.plain, ns.Compat.plainFields
 local callFirst, firstValue = ns.Compat.callFirst, ns.Compat.firstValue
+
+local Pet = {}
+ns.Pet = Pet
 
 -- Happiness. Forever: C_PetInfo.GetPetHappiness(); older clients: GetPetHappiness().
 -- Classically: 1 = unhappy, 2 = content, 3 = happy, then % damage.
@@ -88,19 +91,22 @@ local function addActionBar(pet)
     end
 end
 
--- The pet's spellbook: everything it has learned, with ranks.
-local function addAbilities(pet)
-    if not (C_SpellBook and C_SpellBook.HasPetSpells and C_SpellBook.GetSpellBookItemInfo) then return end
+-- The pet's spellbook: everything it has learned, with ranks; nil when the client has no pet spellbook API.
+-- Also read by BeastTaming.lua at the moment a beast is tamed.
+function Pet.spellbook()
+    if not (C_SpellBook and C_SpellBook.HasPetSpells and C_SpellBook.GetSpellBookItemInfo) then return nil end
     local okCount, count = pcall(C_SpellBook.HasPetSpells)
     local bank = Enum and Enum.SpellBookSpellBank and Enum.SpellBookSpellBank.Pet or 1
-    if not (okCount and type(count) == "number") then return end
-    pet.abilities = {}
+    count = okCount and plain(count)
+    if type(count) ~= "number" then return nil end
+    local abilities = {}
     for i = 1, count do
         local ok, info = pcall(C_SpellBook.GetSpellBookItemInfo, i, bank)
         if ok and type(info) == "table" and info.name then
-            pet.abilities[#pet.abilities + 1] = ns.Spellbook.entryFromItemInfo(info)
+            abilities[#abilities + 1] = ns.Spellbook.entryFromItemInfo(info)
         end
     end
+    return abilities
 end
 
 local function collectPet()
@@ -120,7 +126,8 @@ local function collectPet()
     addExperience(pet)
     addFoodTypes(pet)
     addActionBar(pet)
-    addAbilities(pet)
+    pet.abilities = Pet.spellbook()
+    pet.bagFood = ns.PetFood.check()
     return pet
 end
 

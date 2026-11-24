@@ -3,7 +3,53 @@
 # isError: false
 --- content[0] ---
 {
-  "note": "There is no ammo, food, bandages, potions or reagents in the bags (types Projectile, Consumable and Reagent). Open the bags in game and run /mcp reload.",
+  "categories": [
+    {
+      "category": "food",
+      "items": [
+        {
+          "inBags": 5,
+          "name": "Haunch of Meat",
+          "total": 5
+        },
+        {
+          "inBags": 3,
+          "name": "Moonberry Juice",
+          "total": 3
+        }
+      ],
+      "label": "Food and water"
+    }
+  ],
+  "consumption": {
+    "note": "dump history is disabled (the server was started with --history-dir \"\")"
+  },
+  "note": "Stock (total) is the bags plus what you wear (ammo); inBank is the state from the last bank visit and is not included in hoursLeft.",
+  "petFood": {
+    "checkedWith": "itemID",
+    "edible": [
+      {
+        "count": 12,
+        "id": 2672,
+        "name": "Stringy Wolf Meat"
+      },
+      {
+        "count": 5,
+        "id": 2287,
+        "name": "Haunch of Meat"
+      }
+    ],
+    "feedings": 17,
+    "foodTypes": null,
+    "refused": [
+      {
+        "count": 3,
+        "id": 1645,
+        "name": "Moonberry Juice"
+      }
+    ],
+    "source": "the game client itself answered, for each food item in the bags, whether this pet can eat it (C_PetInfo.CanPetEatItem); feedings counts one item per Feed Pet. Vendor food was not checked."
+  },
   "snapshot": {
     "ageMinutes": 30,
     "character": "Piekasz",

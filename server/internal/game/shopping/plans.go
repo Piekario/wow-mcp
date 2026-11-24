@@ -118,10 +118,12 @@ type FoodOffer struct {
 	Stack int64
 }
 
-// PetFoodPlan is the pet food stock and what vendors offer.
+// PetFoodPlan is the pet food stock and what vendors offer. Checked: the stock is the client's verdict (feedings of
+// food the pet can eat); otherwise it is all food from bags by item subtype.
 type PetFoodPlan struct {
 	FoodTypes any
 	InBags    int64
+	Checked   pet.FoodCheck
 	Offers    []FoodOffer
 }
 
@@ -131,7 +133,12 @@ func planPetFood(s snapshot.Snapshot) *PetFoodPlan {
 	if !p.Summoned {
 		return nil
 	}
-	return &PetFoodPlan{FoodTypes: p.Shown.FoodTypes, InBags: pet.BagFoodCount(s), Offers: readVendorFood(s)}
+	plan := &PetFoodPlan{FoodTypes: p.Shown.FoodTypes, Checked: pet.CheckFood(s), Offers: readVendorFood(s)}
+	plan.InBags = plan.Checked.Feedings
+	if !plan.Checked.Known {
+		plan.InBags = pet.BagFoodCount(s)
+	}
+	return plan
 }
 
 // ConsumableLine is an item about to run out and what buying it for the planned hours takes.

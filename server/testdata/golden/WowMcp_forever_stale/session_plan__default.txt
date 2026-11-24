@@ -13,11 +13,11 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
 ```json
 {
   "bagSpace": {
-    "freeSlots": 26,
+    "freeSlots": 22,
     "totalSlots": 32
   },
   "character": {
-    "addonVersion": "0.21.0",
+    "addonVersion": "0.22.0",
     "bindLocation": "Auberdine",
     "class": "Hunter",
     "classToken": "HUNTER",
@@ -198,7 +198,7 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
       "total": 812
     },
     "bags": {
-      "freeSlots": 26,
+      "freeSlots": 22,
       "gainedSlotsPerHour": 0,
       "hoursUntilFull": "no data",
       "note": "used bag slots did not grow in the measured stretch of history",

@@ -76,7 +76,7 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
   },
   "bags": [
     {
-      "free": 12,
+      "free": 11,
       "index": 0,
       "items": [
         {
@@ -157,13 +157,29 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
             "2 - 5 Damage | Speed 1.60"
           ],
           "type": "Weapon"
+        },
+        {
+          "bindType": 0,
+          "classID": 7,
+          "count": 4,
+          "id": 2672,
+          "isBound": false,
+          "itemLevel": 5,
+          "name": "Stringy Wolf Meat",
+          "quality": 1,
+          "requiredLevel": 1,
+          "sellPrice": 4,
+          "slot": 5,
+          "subType": "Meat",
+          "subclassID": 8,
+          "type": "Trade Goods"
         }
       ],
       "name": "Backpack",
       "size": 16
     },
     {
-      "free": 5,
+      "free": 2,
       "index": 1,
       "items": [
         {
@@ -181,6 +197,54 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
           "subType": "Cloth",
           "subclassID": 5,
           "type": "Trade Goods"
+        },
+        {
+          "bindType": 0,
+          "classID": 7,
+          "count": 8,
+          "id": 2672,
+          "isBound": false,
+          "itemLevel": 5,
+          "name": "Stringy Wolf Meat",
+          "quality": 1,
+          "requiredLevel": 1,
+          "sellPrice": 4,
+          "slot": 3,
+          "subType": "Meat",
+          "subclassID": 8,
+          "type": "Trade Goods"
+        },
+        {
+          "bindType": 0,
+          "classID": 0,
+          "count": 5,
+          "id": 2287,
+          "isBound": false,
+          "itemLevel": 5,
+          "name": "Haunch of Meat",
+          "quality": 1,
+          "requiredLevel": 1,
+          "sellPrice": 4,
+          "slot": 4,
+          "subType": "Food \u0026 Drink",
+          "subclassID": 5,
+          "type": "Consumable"
+        },
+        {
+          "bindType": 0,
+          "classID": 0,
+          "count": 3,
+          "id": 1645,
+          "isBound": false,
+          "itemLevel": 5,
+          "name": "Moonberry Juice",
+          "quality": 1,
+          "requiredLevel": 1,
+          "sellPrice": 4,
+          "slot": 5,
+          "subType": "Food \u0026 Drink",
+          "subclassID": 5,
+          "type": "Consumable"
         }
       ],
       "name": "Small Brown Pouch",

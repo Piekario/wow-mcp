@@ -42,11 +42,7 @@ func (r Report) Render() map[string]any {
 		out["lowStockNote"] = "lasts less than an hour of play at the measured rate"
 	}
 	if r.PetFood != nil {
-		out["petFood"] = map[string]any{
-			"foodTypes":  r.PetFood.FoodTypes,
-			"foodInBags": pet.RenderFood(r.PetFood.InBags),
-			"note":       pet.FoodNote,
-		}
+		out["petFood"] = r.PetFood.render()
 	}
 	out["note"] = "Stock (total) is the bags plus what you wear (ammo); inBank is the state from the last bank visit and is not included in hoursLeft."
 	return out
@@ -69,4 +65,14 @@ func (l Line) render() map[string]any {
 		}
 	}
 	return e
+}
+
+// render is the client's verdict on the bag food when the dump has it, otherwise food by item subtype with FoodNote.
+func (f *PetFood) render() map[string]any {
+	if f.Checked.Known {
+		out := f.Checked.Render()
+		out["foodTypes"] = f.FoodTypes
+		return out
+	}
+	return map[string]any{"foodTypes": f.FoodTypes, "foodInBags": pet.RenderFood(f.InBags), "note": pet.FoodNote}
 }

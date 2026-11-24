@@ -3,7 +3,9 @@
 
 -- Section probe (diagnostics, only via /mcp probe): list of client API functions
 -- in selected namespaces and the registration result of the addon's events (events).
--- Used to find out what a function is called in this client and whether it knows a given event.
+-- Used to find out what a function is called in this client and whether it knows a given event. Since 0.22.0 also
+-- the raw answers of C_PetInfo.CanPetEatItem for a few bag items (petFood) and the Beast Lore tooltip of the target
+-- (beastLore); the taming and Beast Lore events are in events, since the addon registers them.
 
 local _, ns = ...
 
@@ -94,6 +96,10 @@ local function collectProbe()
     local probe = { capturedAt = time(), namespaces = {}, globals = {}, events = ns.Events.registrationResults() }
     probe.eventCandidates = candidateEvents()
     probe.addons = addonStates()
+    local okFood, petFood = pcall(ns.PetFood.probe)
+    probe.petFood = okFood and petFood or nil
+    local okLore, beastLore = pcall(ns.BeastLore.probeTarget)
+    probe.beastLore = okLore and beastLore or nil
     for _, namespace in ipairs(NAMESPACES) do
         local object = _G[namespace]
         if type(object) == "table" then

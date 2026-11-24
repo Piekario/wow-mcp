@@ -5,7 +5,7 @@
 {
   "characters": [
     {
-      "addonUpdate": "Dump from addon 0.7.0; the server supports 0.21.0 (currencies, cooldowns, recipes, mail, played time, panel, note, deaths, dump timings, quest rewards, loot, stable, multiple vendors and trainers, XP by source, buyback list, equipment sets, PvP, friends and guild, zone and dungeon IDs, weapon speed, quest locations and guide steps). Copy the new addon into AddOns and run /reload.",
+      "addonUpdate": "Dump from addon 0.7.0; the server supports 0.22.0 (currencies, cooldowns, recipes, mail, played time, panel, note, deaths, dump timings, quest rewards, loot, stable, multiple vendors and trainers, XP by source, buyback list, equipment sets, PvP, friends and guild, zone and dungeon IDs, weapon speed, quest locations and guide steps). Copy the new addon into AddOns and run /reload.",
       "addonVersion": "0.7.0",
       "ageMinutes": 30,
       "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
@@ -42,12 +42,12 @@
       ]
     }
   ],
-  "expectedAddonVersion": "0.21.0",
+  "expectedAddonVersion": "0.22.0",
   "file": "<FILE>",
   "fileModified": "2026-11-15 22:43:06",
   "goalsFile": "<GOALS>",
   "historyDir": "<HISTORY>",
   "howToRefresh": "In game type /mcp reload or click Save on the WowMcp panel. Sections trainer, vendor, buyback, bank, flightPaths, recipes, mail, auctions, stable, questOffer, questTurnIn, friends, guild, inspect are saved when the character opens: class or profession trainer window (the addon remembers up to 10 latest in the trainers field); vendor window (preferably one that repairs; up to 10 latest in the vendors field); vendor window after selling something (buyback list; the client loses it on logout); bank window; flight map at a flight master; each profession window (and Beast Training for a Hunter); mailbox; auction house: search for items and open the Auctions tab; stable window (Stable Master); quest window at an NPC, before you accept it; quest turn-in window at an NPC (with the reward choice); social window with the friends list (the addon does not request the list from the server itself); guild window (only when the character is in a guild; the addon does not request the list from the server itself); Inspect window on another player; then /mcp reload.",
   "lastCharacter": "Piekasz-CAMWOW EU4 Realm 7 PvE",
-  "serverVersion": "0.21.0"
+  "serverVersion": "0.22.0"
 }

@@ -16,7 +16,8 @@ local HELP = {
     "/mcp note <text> - note for the assistant in the dump (e.g. what you plan today); bare /mcp note removes it",
     "/mcp quest <id or name> - where a quest starts and ends, from the Questie database you have installed; the answer also goes into the dump."
         .. " With TomTom installed, click a coordinate to set a waypoint",
-    "/mcp item <id, item link or exact name> - reads the item's description from the game and saves it for the assistant (the client knows items it has seen; an ID is always tried)",
+    "/mcp item <id, item link or exact name> - reads the item's description from the game and saves it for the assistant"
+        .. " (the client knows items it has seen; an ID is always tried)",
     "/mcp spell <id, spell link or name> - reads the spell's description, cast time, cost and range and saves it for the assistant",
     "/mcp off <section> - stop collecting this section; bare /mcp off lists disabled sections and all section names",
     "/mcp on <section> - collect the section again",
@@ -26,12 +27,14 @@ local HELP = {
     "/mcp options - open the WowMcp page in the game's options (the same switches as the commands above)",
     "/mcp loot [dungeon] - read what the bosses of a dungeon drop from the Encounter Journal (default: the dungeon you are in,"
         .. " or the dungeons for your level); the journal's selection is put back. Then /mcp reload",
-    "/mcp probe - diagnostics: list of client API functions (spells, items, maps, achievements...), the events the client accepted"
-        .. " and the client's Legacy API names",
+    "/mcp probe - diagnostics: list of client API functions (spells, items, maps, achievements...), the events the client accepted,"
+        .. " the client's Legacy API names, what the client answers when asked whether the pet can eat a few bag items,"
+        .. " and the tooltip of your target when it carries Beast Lore",
     "Windows saved automatically when opened: trainer and vendor (last 10), bank, flights, professions, mail,"
         .. " auction house (search results), Inspect, stable, NPC quest (offer and turn-in),"
         .. " buyback list (at the vendor), friends and guild (from client memory once the window is open; the addon requests nothing from the server)",
     "Deaths, your own loot and experience (kills, quests) since the last save are recorded automatically."
+        .. " A Hunter also records the beasts they tame or examine with Beast Lore (shared by all Hunters on the account)."
         .. " The panel highlights Save after new window data, but never saves by itself.",
 }
 

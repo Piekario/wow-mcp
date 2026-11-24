@@ -106,7 +106,8 @@ func (g Group) IsAmmo() bool { return g.category == ammo }
 // PetFood is the food in bags next to the pet's diet.
 type PetFood struct {
 	FoodTypes any
-	InBags    []pet.FoodStack
+	Checked   pet.FoodCheck   // the client's verdict on the bag food (addon 0.22.0)
+	InBags    []pet.FoodStack // food by item subtype, only when the verdict is not in the dump
 }
 
 // Report is the stocks of consumable items by category and their consumption from history. WindowErr says why
@@ -162,7 +163,10 @@ func Inspect(name string, s snapshot.Snapshot, tr progress.Tracker) Report {
 		r.WindowErr = measureErr
 	}
 	if p := pet.Inspect(s); p.Summoned {
-		r.PetFood = &PetFood{FoodTypes: p.Shown.FoodTypes, InBags: pet.BagFood(s)}
+		r.PetFood = &PetFood{FoodTypes: p.Shown.FoodTypes, Checked: pet.CheckFood(s)}
+		if !r.PetFood.Checked.Known {
+			r.PetFood.InBags = pet.BagFood(s)
+		}
 	}
 	return r
 }

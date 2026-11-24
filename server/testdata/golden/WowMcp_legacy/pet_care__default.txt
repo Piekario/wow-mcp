@@ -1,8 +1,8 @@
 # prompt pet_care variant=default
 # args: {}
-# description: The state of a Hunter's pet: happiness, loyalty, training points, diet versus food in the bags, abilities, Beast Training (missing ranks, point plan) and a comparison with the stable. Only useful when the snapshot has a pet section; otherwise it says what is missing.
+# description: The state of a Hunter's pet: happiness, loyalty, training points, which bag food it can eat and for how many feedings, abilities, Beast Training (missing ranks, point plan), where to tame beasts with ranks the Hunter lacks (from beasts this account observed) and a comparison with the stable. Only useful when the snapshot has a pet section; otherwise it says what is missing.
 --- message[0] role=user ---
-Assess the pet's state and say what to improve. Check happiness (happiness) and loyalty, how many training points are left (trainingPoints; if they are not in the data, say the addon did not save them) and whether the pet has auto-cast enabled where it is useful (autoCast). Compare the diet (foodTypes) with the food in the bags (foodInBags) and say how many feedings it will last, honestly noting that you match food to diet by name. If there is beastTraining, point out the ranks to buy with the free points. From rankReview give the ranks the Hunter knows that the pet lacks (learnable), and the ranks to buy from the trainer (notLearnedByHunter); from trainingPlan, what fits into the free points; from stable compare the stabled pets with the active one (level, family), remembering that there is no data on their abilities. When a field says data is missing, say which window to open in game. Do not give numbers that are not in the data.
+Assess the pet's state and say what to improve. Check happiness (happiness) and loyalty, how many training points are left (trainingPoints; if they are not in the data, say the addon did not save them) and whether the pet has auto-cast enabled where it is useful (autoCast). Compare the diet (foodTypes) with the food in the bags (foodInBags) and say how many feedings it will last, honestly noting that you match food to diet by name. If there is beastTraining, point out the ranks to buy with the free points. From rankReview give the ranks the Hunter knows that the pet lacks (learnable), and the ranks to buy from the trainer (notLearnedByHunter); from trainingPlan, what fits into the free points; from whereToTame, which observed beasts have ranks the Hunter does not know (hunterKnows = no first), with their zone, level and coordinates, saying plainly that these come only from beasts this account tamed or examined with Beast Lore in Forever (whereToTame.source); when it has no ranks, relay its note on how to collect them and do not name beasts or zones from memory; from stable compare the stabled pets with the active one (level, family), remembering that there is no data on their abilities. When a field says data is missing, say which window to open in game. Do not give numbers that are not in the data.
 
 Answer in the language the user writes in; keep the names of spells, items, quests and places in English, as they appear in the game. Rely on the data below; if something is missing from it, say which window the player should open in game and then type /mcp reload. You only advise: do not propose macros or addons that play for the player.
 
@@ -50,6 +50,10 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
   "trainingPlan": {
     "freePoints": 17,
     "learnableNote": "no data: open the Beast Training window in game and run /mcp reload, then I will compute the lesson costs"
+  },
+  "whereToTame": {
+    "note": "no beasts observed yet. To collect them: in game, as a Hunter, cast Beast Lore on beasts (the addon saves their tooltip when you target them or hover over them while they carry it) or tame one (the addon saves the new pet's abilities at that moment), then /mcp reload",
+    "source": "only beasts the Hunters of this account tamed (the new pet's abilities at the moment of taming) or examined with Beast Lore in Forever (tooltip lines read while the beast carried Beast Lore; the Forever format is not confirmed, so they are read tolerantly). The server has no table of its own: a rank not listed here may exist on beasts nobody observed."
   }
 }
 ```

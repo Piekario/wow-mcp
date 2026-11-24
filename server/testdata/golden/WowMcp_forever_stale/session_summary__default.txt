@@ -72,7 +72,7 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
     "to": "2026-11-15 16:26"
   },
   "character": {
-    "addonVersion": "0.21.0",
+    "addonVersion": "0.22.0",
     "bindLocation": "Auberdine",
     "class": "Hunter",
     "classToken": "HUNTER",

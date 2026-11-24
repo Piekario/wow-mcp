@@ -19,7 +19,7 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
           "Aspect of the Hawk"
         ],
         "dumpedAt": "2026-11-15 16:50:00",
-        "freeBagSlots": 26,
+        "freeBagSlots": 22,
         "level": 20,
         "mail": {
           "expiringSoon": [

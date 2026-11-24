@@ -3,6 +3,30 @@
 # isError: false
 --- content[0] ---
 {
+  "bagFood": {
+    "checkedWith": "itemID",
+    "edible": [
+      {
+        "count": 12,
+        "id": 2672,
+        "name": "Stringy Wolf Meat"
+      },
+      {
+        "count": 5,
+        "id": 2287,
+        "name": "Haunch of Meat"
+      }
+    ],
+    "feedings": 17,
+    "refused": [
+      {
+        "count": 3,
+        "id": 1645,
+        "name": "Moonberry Juice"
+      }
+    ],
+    "source": "the game client itself answered, for each food item in the bags, whether this pet can eat it (C_PetInfo.CanPetEatItem); feedings counts one item per Feed Pet. Vendor food was not checked."
+  },
   "pet": {
     "abilities": [
       {
@@ -34,6 +58,29 @@
         "slot": 5
       }
     ],
+    "bagFood": {
+      "checkedWith": "itemID",
+      "items": [
+        {
+          "canEat": true,
+          "count": 12,
+          "id": 2672,
+          "name": "Stringy Wolf Meat"
+        },
+        {
+          "canEat": true,
+          "count": 5,
+          "id": 2287,
+          "name": "Haunch of Meat"
+        },
+        {
+          "canEat": false,
+          "count": 3,
+          "id": 1645,
+          "name": "Moonberry Juice"
+        }
+      ]
+    },
     "damagePercent": 125,
     "dead": false,
     "exists": true,
@@ -83,5 +130,87 @@
   "trainingPlan": {
     "learnableNote": "no data: open the Beast Training window in game and run /mcp reload, then I will compute the lesson costs",
     "note": "the addon did not save the pet's training points (trainingPointsFree); I do not know how many are free"
+  },
+  "whereToTame": {
+    "hunterKnowsNote": "unknown which ranks the Hunter knows: open the Beast Training window in game and run /mcp reload",
+    "observedBeasts": 2,
+    "order": "ranks the Hunter does not know first, then those not known to be known, then known ones; beasts most recently seen first",
+    "ranks": [
+      {
+        "ability": "Claw",
+        "beasts": [
+          {
+            "family": "Cat",
+            "level": 13,
+            "mapId": 1453,
+            "name": "Nightsaber Stalker",
+            "npcId": 2034,
+            "seenAt": "2026-11-15 16:18",
+            "source": "tamed",
+            "x": 67.9,
+            "y": 15.4,
+            "zone": "Stormwind City"
+          }
+        ],
+        "hunterKnows": "unknown",
+        "petHas": true,
+        "rank": 1
+      },
+      {
+        "ability": "Claw",
+        "beasts": [
+          {
+            "family": "Cat",
+            "level": 12,
+            "loreLine": "Abilities: Claw (Rank 2), Prowl 1",
+            "mapId": 1453,
+            "name": "Elder Nightsaber",
+            "npcId": 2033,
+            "seenAt": "2026-11-15 16:10",
+            "source": "beastLore",
+            "x": 67.9,
+            "y": 15.4,
+            "zone": "Stormwind City"
+          }
+        ],
+        "hunterKnows": "unknown",
+        "petHas": true,
+        "rank": 2
+      },
+      {
+        "ability": "Prowl",
+        "beasts": [
+          {
+            "family": "Cat",
+            "level": 13,
+            "mapId": 1453,
+            "name": "Nightsaber Stalker",
+            "npcId": 2034,
+            "seenAt": "2026-11-15 16:18",
+            "source": "tamed",
+            "x": 67.9,
+            "y": 15.4,
+            "zone": "Stormwind City"
+          },
+          {
+            "family": "Cat",
+            "level": 12,
+            "loreLine": "Abilities: Claw (Rank 2), Prowl 1",
+            "mapId": 1453,
+            "name": "Elder Nightsaber",
+            "npcId": 2033,
+            "seenAt": "2026-11-15 16:10",
+            "source": "beastLore",
+            "x": 67.9,
+            "y": 15.4,
+            "zone": "Stormwind City"
+          }
+        ],
+        "hunterKnows": "unknown",
+        "petHas": false,
+        "rank": 1
+      }
+    ],
+    "source": "only beasts the Hunters of this account tamed (the new pet's abilities at the moment of taming) or examined with Beast Lore in Forever (tooltip lines read while the beast carried Beast Lore; the Forever format is not confirmed, so they are read tolerantly). The server has no table of its own: a rank not listed here may exist on beasts nobody observed."
   }
 }

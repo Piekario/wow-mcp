@@ -88,6 +88,12 @@ func readContext(s snapshot.Snapshot, fresh snapshot.Freshness) *context {
 	for _, d := range snapshot.AsList(s.Map("pet")["foodTypes"]) {
 		c.diet = append(c.diet, fmt.Sprint(d))
 	}
+	c.petEats = map[string]bool{}
+	if food := pet.CheckFood(s); c.hasPet && food.Known {
+		for _, f := range append(food.Edible, food.Refused...) {
+			c.petEats[f.Name] = f.CanEat
+		}
+	}
 	verdicts, _ := leftovers.Assess(s)
 	for _, v := range verdicts {
 		if v.Keep {
