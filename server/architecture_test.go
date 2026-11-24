@@ -83,6 +83,32 @@ func TestArchitectureDomainImports(t *testing.T) {
 	}
 }
 
+// TestArchitectureAnonymizerIsPure: the package that prepares a dump for sharing only transforms data. It cannot
+// open a file or a connection, so a dump never leaves the machine through it.
+func TestArchitectureAnonymizerIsPure(t *testing.T) {
+	for _, f := range productionFiles(t, "internal/sharedump") {
+		for _, spec := range f.ast.Imports {
+			path, _ := strconv.Unquote(spec.Path.Value)
+			if forbiddenDomainImports[path] != "" {
+				t.Errorf("%s imports %q: no %s in the anonymizer", f.path, path, forbiddenDomainImports[path])
+			}
+		}
+	}
+}
+
+// TestArchitectureNoNetwork: the server reads local files and talks MCP over stdio; none of its own packages may
+// open a network connection.
+func TestArchitectureNoNetwork(t *testing.T) {
+	for _, f := range productionFiles(t, ".") {
+		for _, spec := range f.ast.Imports {
+			path, _ := strconv.Unquote(spec.Path.Value)
+			if path == "net" || (strings.HasPrefix(path, "net/") && path != "net/url") {
+				t.Errorf("%s imports %q: the server makes no network connections", f.path, path)
+			}
+		}
+	}
+}
+
 func isUntypedMap(n ast.Node) bool {
 	m, ok := n.(*ast.MapType)
 	if !ok {

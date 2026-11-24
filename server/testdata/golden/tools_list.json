@@ -633,7 +633,7 @@
       "readOnlyHint": false,
       "title": "Add or remove a goal"
     },
-    "description": "Adds a player goal (type: level, gold, reputation, profession, spell, item; with target, name, faction, standing, item, note, character) or removes one (remove = ID from wow_goals). This is the ONLY tool that writes anything, and it writes only the server's goals file (goals.json next to the snapshot history); it changes nothing in the game or in the game directory. Examples: type=level target=25; type=gold target=10 (gold); type=reputation faction=Darnassus standing=Revered; type=profession name=Mining target=150; type=spell name=Aimed Shot; type=item item=Linen Cloth target=40.",
+    "description": "Adds a player goal (type: level, gold, reputation, profession, spell, item; with target, name, faction, standing, item, note, character) or removes one (remove = ID from wow_goals). It writes only the server's goals file (goals.json next to the snapshot history); it changes nothing in the game or in the game directory. Examples: type=level target=25; type=gold target=10 (gold); type=reputation faction=Darnassus standing=Revered; type=profession name=Mining target=150; type=spell name=Aimed Shot; type=item item=Linen Cloth target=40.",
     "inputSchema": {
       "additionalProperties": false,
       "properties": {
@@ -1281,6 +1281,27 @@
       "type": "object"
     },
     "name": "wow_session_rating"
+  },
+  {
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": false,
+      "title": "Share an anonymized dump"
+    },
+    "description": "Writes an anonymized copy of the character's latest dump to a file in the server's own directory, so the player can share it with the wow-mcp project and help it support their class, client version and language. Names of the character, realm, guild, guild members, friends, group members and mail senders are replaced or removed, together with the note, macro bodies and mail subjects; class, race, level, client version, language, all game data and the /mcp probe result stay. NOTHING is sent anywhere: the server makes no network connection. The answer gives the file path, what was removed and kept, and the address of the issue form the player can attach the file to after reading it. Call it only when the player asks to share or export a dump; it changes nothing in the game or in the game directory.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_share_dump"
   },
   {
     "annotations": {

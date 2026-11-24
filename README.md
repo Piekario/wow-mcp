@@ -29,7 +29,8 @@ character: quests, bags, gear, talents, professions, reputation, auctions, progr
 Everything is read-only. The addon uses the official API and clicks nothing in the game; it never automates gameplay.
 The server opens one text file from the `WTF` directory (`WowMcp.lua` in SavedVariables) and does not touch the game
 process, its memory, network traffic or pixels. The server writes only in its own directory (never in the game directory):
-the dump history with its long history database (`history.db`), an optional log and the goals file, which is changed by a single tool, `wow_goal_set`.
+the dump history with its long history database (`history.db`), an optional log, the goals file (changed only by `wow_goal_set`) and, only when you ask for one, an anonymized copy of a dump
+to share (`wow_share_dump`). It makes no network connections and uploads nothing.
 What the addon and the server do, and what they will never do, is described in [docs/TOS_COMPLIANCE.md](docs/TOS_COMPLIANCE.md).
 That document is a description by the project author, not an approval from Blizzard and not legal advice.
 
@@ -220,6 +221,7 @@ After login (and after every `/reload`) the addon asks the game for play time, l
 |---|---|
 | `wow_status` | server and addon versions, file path, list of characters, data age, the player's note, disabled sections and `alerts` (expiring mail and auctions, damaged gear, full bags, slow dump, addon errors) |
 | `wow_doctor` | one diagnostic report: ordered checks (dump file, account, age, addon version, section errors, windows never opened, client language, history) with a fix for each and the next step |
+| `wow_share_dump` | writes an anonymized copy of the dump to a local file (names of the character, realm, guild, friends, group and mail senders replaced or removed; note, macros and mail subjects removed) that you can read and attach to an issue yourself; nothing is uploaded, see [docs/SHARING_DUMPS.md](docs/SHARING_DUMPS.md) |
 | `wow_character` | level, class, gold, XP, zone and coordinates, `resting`, Hearthstone location (`bindLocation`), professions, talents, note, deaths and PvP (`pvp`: honor, kills, rank) |
 | `wow_quests` | the quest log with objective progress |
 | `wow_bags` | bags, free slots, items |
@@ -260,7 +262,7 @@ After login (and after every `/reload`) the addon asks the game for play time, l
 | `wow_quest_rewards` | an evaluation of choice rewards for quests against your gear (a quest being turned in or offered by an NPC at the top, then the log): slot, differences, score, vendor value, `best` with a justification; `quest` (name or ID), `weights`. Repeated reward lists across several quests get `suspect` and no recommendation |
 | `wow_shopping_list` | what to buy before leaving town: trainer (from all remembered ones), repair, ammo, pet food (with the bag food the game client says the pet can eat), running-low materials, who sells it and for how much, a budget in priority order; `returnToTown` says when to return to town; `hours` |
 | `wow_goals` | the player's goals from `goals.json`: current state, how much is missing, percent and an ETA from the `wow_progress` rate |
-| `wow_goal_set` | adds or removes a goal (`level`, `gold`, `reputation`, `profession`, `spell`, `item`); **the only tool that writes**, and only to the server's goals file |
+| `wow_goal_set` | adds or removes a goal (`level`, `gold`, `reputation`, `profession`, `spell`, `item`); writes only to the server's goals file |
 | `wow_timeline` | a character timeline from the dump history: level-ups, new abilities, gear changes, quests turned in, deaths, profession thresholds; `kind`, `days`, `limit`. An event has the time of the first dump in which it is visible; level-ups and turned-in quests found in the addon's event log have their exact time (`exact`) and reach back before the kept dumps |
 | `wow_buffs` | active buffs and debuffs and missing standing class buffs (e.g. Aspect, Arcane Intellect; matched by the spell names the client gives, so it works in any game language with addon 0.22.0, and a wrong spell ID is reported as `groupIdMismatches`); time remaining from `expiresAt` (addon 0.7.0 records `expiresAt` and `duration`) |
 | `wow_flights` | known flight points matched against the zones where you have quests (zone from the flight point's `zone` field from addon 0.7.0, and for older dumps guessed from the name) |
@@ -346,7 +348,7 @@ When a dump is more than 2 hours old, every tool starts its response with a `WAR
 
 ### Goals and stat weights
 
-`wow_goal_set` saves goals in the `goals.json` file (by default next to the history directory, or the one given by `--goals-file`). This is the server's only write besides the history and the log; the server never writes in the game directory. Gold in the file is copper. Example:
+`wow_goal_set` saves goals in the `goals.json` file (by default next to the history directory, or the one given by `--goals-file`). Besides the history, the log and a dump you ask it to share, this is the server's only write; the server never writes in the game directory. Gold in the file is copper. Example:
 
 ```json
 {"version":1,"goals":[
@@ -378,6 +380,8 @@ The optional `weights.json` file (next to the goals file) sets stat weights for 
 | `--max-response-kb` | 48 | answers larger than this become a shortened envelope with a hint how to narrow the request; 0 = no cap |
 | `--account` (`WOW_ACCOUNT`) | newest dump | pins the account folder under `WTF/Account` when there are several |
 | `--client` (`WOW_CLIENT`) | newest dump | pins the client folder (`_forever_`, `_classic_`, ...) inside the game directory |
+| `--share-dir` | `shared` next to the history | where anonymized dumps are written (`wow_share_dump`, `--share-dump`); a path in the game directory is rejected |
+| `--share-dump` | | writes an anonymized copy of the latest dump, prints what was removed and exits; `--share-character <name>` picks the character. See [docs/SHARING_DUMPS.md](docs/SHARING_DUMPS.md) |
 | `--check` | | checks the dump file and exits |
 | `--version` | | prints the version and exits |
 
@@ -431,6 +435,9 @@ python3 addon/tests/run_addon.py forever server/testdata/WowMcp_forever.lua
 - **Have an idea?** [Suggest a feature](https://github.com/Piekario/wow-mcp/issues/new?template=feature_request.yml): a short form, no technical knowledge needed. Vote with a 👍 on
   [existing suggestions](https://github.com/Piekario/wow-mcp/issues?q=is%3Aissue+label%3Aenhancement); the most wanted ones are picked up first.
 - **Bugs:** [Issues](https://github.com/Piekario/wow-mcp/issues/new/choose) (please include `wow_doctor` output and `/mcp status`).
+- **Play another class, faction or language?** [Share an anonymized dump](https://github.com/Piekario/wow-mcp/issues/new?template=share_dump.yml):
+  ask your assistant to "share an anonymized dump of my character", read the file it writes and attach it. It becomes test data, so your
+  class is checked on every change. What is removed and kept: [docs/SHARING_DUMPS.md](docs/SHARING_DUMPS.md).
 - **Contributing code, docs or tests:** see [CONTRIBUTING.md](CONTRIBUTING.md). Fork, branch, `make test`, pull request; CI must pass on Linux,
   macOS and Windows. Reports from game clients other than WoW: Forever (`/mcp probe` output) are especially welcome.
 - **Security problems:** report privately, see [SECURITY.md](SECURITY.md).
@@ -482,8 +489,8 @@ has no case). A new addon section is a file in `Sections/`, a registry call and 
 
 1. The addon only reads state through the official API.
 2. No actions in the game without a player click.
-3. The server reads only the file written by the game; it writes only the history, log and goals file (through `wow_goal_set`) in its own directory, never in the game directory.
-4. Zero contact with the game process, its memory and network traffic.
+3. The server reads only the file written by the game; it writes only the history, log, goals file (through `wow_goal_set`) and anonymized dumps you ask for (`wow_share_dump`) in its own directory, never in the game directory.
+4. Zero contact with the game process, its memory and network traffic. The server opens no network connection; sharing a dump is a file you attach yourself.
 
 ## What the addon dumps (v0.10.0)
 

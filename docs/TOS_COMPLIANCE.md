@@ -61,40 +61,6 @@ and compare them with the code. The project is intended for personal use on your
   at startup.
 - The goals file is changed by a single tool, `wow_goal_set`, and only at the player's request (atomic write: temporary file and rename).
   The server only reads the optional `weights.json` next to it; the player writes it themselves.
-- The newer tools (`wow_quest_rewards`, `wow_shopping_list`, `wow_journal`, `wow_bag_plan`, `wow_goals`, `wow_quest_route`, `wow_social`, `wow_quest_lookup`, `wow_guide`, `wow_zone_progress`) only calculate from the dump
-  data: they buy nothing, choose no rewards and send nothing to the game. Recommendations are text for the player, and assumptions are
-  described as assumptions in the responses.
-- It exposes data locally through MCP (stdio) to your MCP client started by the player. It does not connect to any service itself.
-
-## What the project will never do
-
-This is the "Rejected" list from `ROADMAP.md`:
-
-- automatic saving after events (auto `/reload` after a trainer window, a button after leveling up),
-- automatic selling, repairing, accepting and turning in quests, buying from trainers, that is, any action in the game without a
-  player click,
-- automatic searching or listing in the auction house, and scanning the whole auction house,
-- queries about other players without a click (automatic Inspect, `/who`),
-- reading the game process memory, network traffic or screen pixels, overlays on the game window,
-- fetching data from external services through the server,
-- built-in "popular builds" of talents from Classic (the Forever trees are different).
-
-## How to verify it
-
-The code is open. The addon has about 4900 lines of Lua in `addon/WowMcp/`, the server is in `server/`. A few hints:
-
-```
-# functions that would be an action in the game: there should be none except ReloadUI
-grep -rnE "CastSpell|UseAction|UseContainerItem|PickupContainerItem|SendChatMessage|TargetUnit|BuyMerchantItem|SellCursorItem|AcceptQuest|CompleteQuest|PlaceAuctionBid|StartAuction|InspectUnit|NotifyInspect|RunMacro|ClickButton|SecureActionButton" addon/
-grep -rn "ReloadUI" addon/                                    # only Commands.lua and Panel.lua
-grep -rn "SendAddonMessage\|C_ChatInfo" addon/                # no communication between players
-grep -rnE "ShowFriends|GuildRoster\(|SendWho" addon/WowMcp   # only comments in Friends.lua and Guild.lua: the addon does not request friends or guild lists
-grep -rnE "Request[A-Z]|Query|Send[A-Z]" addon/WowMcp     # nothing besides RequestTimePlayed (Played.lua), C_Spell.RequestLoadSpellData (Talents.lua) and C_Item.RequestLoadItemDataByID (AuctionItems.lua); in Probe.lua it is only a name pattern
-
-# server: files and network
-grep -rn "os.Create\|os.OpenFile\|os.WriteFile\|os.MkdirAll" server --include=*.go     # only internal/storage (history, log, goals file)
-grep -rn "net/http\|net.Dial" server --include=*.go                                      # no network connections
-```
-
-The server's writes are in `internal/storage` (history, log and goals file), and the game directory boundary is enforced by `storage.RequireOutside`, which is covered by
-tests. These commands are hints for your own verification, not proof: read the results with care.
+- `wow_share_dump` (and `--share-dump`) writes an anonymized copy of a dump into `--share-dir` (by default `shared` next to
+  the history), only at the player's request. Nothing is uploaded: the player reads the file and attaches it to an issue
+  themselves. See [SHARING_DUMPS.md](SHARING_DUMPS.md).

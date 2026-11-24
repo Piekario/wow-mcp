@@ -1,0 +1,6263 @@
+{
+ "about": "An anonymized WowMcp dump shared to help wow-mcp support more classes, clients and languages. Read it before you publish it.",
+ "character": {
+  "addonVersion": "0.11.0",
+  "class": "HUNTER",
+  "clientBuild": "70938",
+  "clientVersion": "1.60.1",
+  "faction": "Alliance",
+  "level": 23,
+  "locale": "enUS",
+  "race": "NightElf"
+ },
+ "format": "wow-mcp-shared-dump",
+ "formatVersion": 1,
+ "report": {
+  "fieldsDropped": 0,
+  "namesFoundInText": 1,
+  "replacedWithAliases": {
+   "guilds": 0,
+   "macrosAndEquipmentSets": 1,
+   "mailSendersAndAuctionOwners": 0,
+   "pets": 0,
+   "players": 1
+  },
+  "sections": [
+   "actionBars",
+   "auctions",
+   "auras",
+   "bags",
+   "buyback",
+   "character",
+   "completedQuests",
+   "cooldowns",
+   "currencies",
+   "deaths",
+   "dungeons",
+   "equipment",
+   "equipmentSets",
+   "flightPaths",
+   "guild",
+   "loot",
+   "macros",
+   "mail",
+   "pet",
+   "played",
+   "professions",
+   "pvp",
+   "questOffer",
+   "questTurnIn",
+   "quests",
+   "reputation",
+   "spells",
+   "stats",
+   "talents",
+   "trainer",
+   "trainers",
+   "vendor",
+   "vendors",
+   "xpGains"
+  ],
+  "textsRemoved": 1,
+  "tooltipTagsRemoved": 0
+ },
+ "serverVersion": "0.20.0",
+ "snapshot": {
+  "actionBars": [
+   {
+    "bar": 1,
+    "button": 1,
+    "id": 1130,
+    "key": "1",
+    "kind": "spell",
+    "name": "Hunter's Mark",
+    "slot": 1
+   },
+   {
+    "bar": 1,
+    "button": 2,
+    "id": 19434,
+    "key": "2",
+    "kind": "spell",
+    "name": "Aimed Shot",
+    "slot": 2
+   },
+   {
+    "bar": 1,
+    "button": 3,
+    "id": 13550,
+    "key": "3",
+    "kind": "spell",
+    "name": "Serpent Sting",
+    "slot": 3
+   },
+   {
+    "bar": 1,
+    "button": 4,
+    "id": 14282,
+    "key": "4",
+    "kind": "spell",
+    "name": "Arcane Shot",
+    "slot": 4
+   },
+   {
+    "bar": 1,
+    "button": 5,
+    "id": 2643,
+    "key": "5",
+    "kind": "spell",
+    "name": "Multi-Shot",
+    "slot": 5
+   },
+   {
+    "bar": 1,
+    "button": 6,
+    "id": 3111,
+    "key": "6",
+    "kind": "spell",
+    "name": "Mend Pet",
+    "slot": 6
+   },
+   {
+    "bar": 1,
+    "button": 7,
+    "id": 5116,
+    "key": "7",
+    "kind": "spell",
+    "name": "Concussive Shot",
+    "slot": 7
+   },
+   {
+    "bar": 1,
+    "button": 8,
+    "id": 2974,
+    "key": "8",
+    "kind": "spell",
+    "name": "Wing Clip",
+    "slot": 8
+   },
+   {
+    "bar": 1,
+    "button": 9,
+    "id": 14261,
+    "key": "9",
+    "kind": "spell",
+    "name": "Raptor Strike",
+    "slot": 9
+   },
+   {
+    "bar": 1,
+    "button": 10,
+    "id": 1499,
+    "key": "0",
+    "kind": "spell",
+    "name": "Freezing Trap",
+    "slot": 10
+   },
+   {
+    "bar": 1,
+    "button": 11,
+    "id": 159,
+    "key": "-",
+    "kind": "item",
+    "name": "Refreshing Spring Water",
+    "slot": 11
+   },
+   {
+    "bar": 1,
+    "button": 12,
+    "id": 117,
+    "key": "=",
+    "kind": "item",
+    "name": "Tough Jerky",
+    "slot": 12
+   },
+   {
+    "bar": 5,
+    "button": 6,
+    "id": 7620,
+    "kind": "spell",
+    "name": "Fishing",
+    "slot": 54
+   },
+   {
+    "bar": 5,
+    "button": 7,
+    "id": 1278067,
+    "kind": "spell",
+    "name": "Bait and Tackle",
+    "slot": 55
+   },
+   {
+    "bar": 5,
+    "button": 8,
+    "id": 1515,
+    "kind": "spell",
+    "name": "Tame Beast",
+    "slot": 56
+   },
+   {
+    "bar": 5,
+    "button": 9,
+    "id": 0,
+    "kind": "spell",
+    "slot": 57
+   },
+   {
+    "bar": 5,
+    "button": 10,
+    "id": 0,
+    "kind": "spell",
+    "slot": 58
+   },
+   {
+    "bar": 5,
+    "button": 11,
+    "id": 883,
+    "kind": "spell",
+    "name": "Call Pet",
+    "slot": 59
+   },
+   {
+    "bar": 5,
+    "button": 12,
+    "id": 1494,
+    "kind": "spell",
+    "name": "Track Beasts",
+    "slot": 60
+   },
+   {
+    "bar": 6,
+    "button": 1,
+    "id": 13795,
+    "kind": "spell",
+    "name": "Immolation Trap",
+    "slot": 61
+   },
+   {
+    "bar": 6,
+    "button": 2,
+    "id": 13165,
+    "kind": "spell",
+    "name": "Aspect of the Hawk",
+    "slot": 62
+   },
+   {
+    "bar": 6,
+    "button": 3,
+    "id": 5118,
+    "kind": "spell",
+    "name": "Aspect of the Cheetah",
+    "slot": 63
+   },
+   {
+    "bar": 6,
+    "button": 4,
+    "id": 982,
+    "kind": "spell",
+    "name": "Revive Pet",
+    "slot": 64
+   },
+   {
+    "bar": 6,
+    "button": 5,
+    "id": 883,
+    "kind": "spell",
+    "name": "Call Pet",
+    "slot": 65
+   },
+   {
+    "bar": 6,
+    "button": 6,
+    "id": 6991,
+    "kind": "spell",
+    "name": "Feed Pet",
+    "slot": 66
+   },
+   {
+    "bar": 6,
+    "button": 11,
+    "id": 14917,
+    "kind": "spell",
+    "name": "Growl",
+    "slot": 71
+   },
+   {
+    "bar": 6,
+    "button": 12,
+    "id": 858,
+    "kind": "item",
+    "name": "Lesser Healing Potion",
+    "slot": 72
+   }
+  ],
+  "addonVersion": "0.11.0",
+  "auctions": {
+   "capturedAt": 1794840511,
+   "lastVisitAt": 1794840502,
+   "npc": "Auctioneer Fitch",
+   "owned": [],
+   "ownedAt": 1794840503,
+   "prices": {
+    "Bronze Tube": {
+     "id": 4371,
+     "listings": 24,
+     "minBuyout": 495,
+     "name": "Bronze Tube",
+     "quantity": 648,
+     "seen": [
+      {
+       "at": 1794840511,
+       "minBuyout": 495
+      }
+     ],
+     "seenAt": 1794840511,
+     "source": "commodity"
+    }
+   }
+  },
+  "auras": [
+   {
+    "icon": 132242,
+    "id": 5118,
+    "name": "Aspect of the Cheetah"
+   },
+   {
+    "duration": 3600,
+    "expiresAt": 1794841157,
+    "icon": 135932,
+    "id": 1460,
+    "name": "Arcane Intellect"
+   },
+   {
+    "duration": 3600,
+    "expiresAt": 1794844038,
+    "icon": 135763,
+    "id": 460939,
+    "name": "Might of Stormwind"
+   }
+  ],
+  "bags": [
+   {
+    "free": 0,
+    "index": 0,
+    "items": [
+     {
+      "bindType": 1,
+      "classID": 15,
+      "count": 1,
+      "id": 6948,
+      "isBound": true,
+      "itemLevel": 1,
+      "name": "Hearthstone",
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 0,
+      "slot": 1,
+      "subType": "Junk",
+      "subclassID": 0,
+      "type": "Miscellaneous"
+     },
+     {
+      "bindType": 0,
+      "classID": 0,
+      "count": 2,
+      "id": 3012,
+      "isBound": false,
+      "itemLevel": 20,
+      "name": "Scroll of Agility",
+      "quality": 1,
+      "requiredLevel": 10,
+      "sellPrice": 50,
+      "slot": 2,
+      "subType": "Scrolls",
+      "subclassID": 4,
+      "type": "Consumable"
+     },
+     {
+      "bindType": 0,
+      "classID": 0,
+      "count": 1,
+      "id": 1180,
+      "isBound": false,
+      "itemLevel": 15,
+      "name": "Scroll of Stamina",
+      "quality": 1,
+      "requiredLevel": 5,
+      "sellPrice": 37,
+      "slot": 3,
+      "subType": "Scrolls",
+      "subclassID": 4,
+      "type": "Consumable"
+     },
+     {
+      "bindType": 0,
+      "classID": 0,
+      "count": 1,
+      "id": 211786,
+      "isBound": false,
+      "itemLevel": 10,
+      "name": "Scroll: CHAP BALK WELLES",
+      "quality": 1,
+      "requiredLevel": 1,
+      "sellPrice": 15,
+      "slot": 4,
+      "subType": "Scrolls",
+      "subclassID": 4,
+      "type": "Consumable"
+     },
+     {
+      "bindType": 0,
+      "classID": 0,
+      "count": 4,
+      "id": 3220,
+      "isBound": false,
+      "itemLevel": 15,
+      "name": "Blood Sausage",
+      "quality": 1,
+      "requiredLevel": 5,
+      "sellPrice": 40,
+      "slot": 5,
+      "subType": "Food & Drink",
+      "subclassID": 5,
+      "type": "Consumable"
+     },
+     {
+      "bindType": 0,
+      "classID": 0,
+      "count": 11,
+      "id": 414,
+      "isBound": false,
+      "itemLevel": 15,
+      "name": "Dalaran Sharp",
+      "quality": 1,
+      "requiredLevel": 5,
+      "sellPrice": 6,
+      "slot": 6,
+      "subType": "Food & Drink",
+      "subclassID": 5,
+      "type": "Consumable"
+     },
+     {
+      "bindType": 0,
+      "classID": 0,
+      "count": 10,
+      "id": 159,
+      "isBound": false,
+      "itemLevel": 5,
+      "name": "Refreshing Spring Water",
+      "quality": 1,
+      "requiredLevel": 1,
+      "sellPrice": 1,
+      "slot": 7,
+      "subType": "Food & Drink",
+      "subclassID": 5,
+      "type": "Consumable"
+     },
+     {
+      "bindType": 0,
+      "classID": 0,
+      "count": 5,
+      "id": 117,
+      "isBound": false,
+      "itemLevel": 5,
+      "name": "Tough Jerky",
+      "quality": 1,
+      "requiredLevel": 1,
+      "sellPrice": 1,
+      "slot": 8,
+      "subType": "Food & Drink",
+      "subclassID": 5,
+      "type": "Consumable"
+     },
+     {
+      "bindType": 0,
+      "classID": 0,
+      "count": 7,
+      "id": 279960,
+      "isBound": false,
+      "itemLevel": 4,
+      "name": "Lodestone",
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 0,
+      "slot": 9,
+      "subType": "Other",
+      "subclassID": 8,
+      "type": "Consumable"
+     },
+     {
+      "bindType": 0,
+      "classID": 0,
+      "count": 1,
+      "id": 279276,
+      "isBound": false,
+      "itemLevel": 1,
+      "name": "Mathystral Amulet Fragment",
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 0,
+      "slot": 10,
+      "subType": "Other",
+      "subclassID": 8,
+      "type": "Consumable"
+     },
+     {
+      "bindType": 1,
+      "classID": 5,
+      "count": 1,
+      "id": 208860,
+      "isBound": true,
+      "itemLevel": 10,
+      "name": "Rumi of Gnomeregan: The Collected Works",
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 0,
+      "slot": 11,
+      "subType": "Reagent",
+      "subclassID": 0,
+      "type": "Reagent"
+     },
+     {
+      "bindType": 1,
+      "classID": 2,
+      "count": 1,
+      "damageMax": 21,
+      "damageMin": 13,
+      "dps": 5.7,
+      "equipLoc": "INVTYPE_2HWEAPON",
+      "id": 12225,
+      "isBound": true,
+      "itemLevel": 10,
+      "name": "Blump Family Fishing Pole",
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 187,
+      "slot": 12,
+      "speed": 3,
+      "statTokens": {
+       "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 5.7,
+       "ITEM_MOD_FISHING_SHORT": 3
+      },
+      "stats": {
+       "Fishing Skill": 3,
+       "damage per second": 5.7
+      },
+      "subType": "Fishing Pole",
+      "subclassID": 20,
+      "tooltip": [
+       "Blump Family Fishing Pole",
+       "Soulbound",
+       "Two-Hand | Fishing Pole",
+       "13 - 21 Damage | Speed 3.00",
+       "(5.7 damage per second)",
+       "Equip: Increased Fishing +3.",
+       "Durability 25 / 25",
+       "Requires Fishing (1)"
+      ],
+      "type": "Weapon"
+     },
+     {
+      "bindType": 0,
+      "classID": 2,
+      "count": 1,
+      "damageMax": 3,
+      "damageMin": 1,
+      "dps": 1.3,
+      "equipLoc": "INVTYPE_WEAPON",
+      "id": 7005,
+      "isBound": false,
+      "itemLevel": 4,
+      "name": "Skinning Knife",
+      "quality": 1,
+      "requiredLevel": 1,
+      "sellPrice": 2,
+      "slot": 13,
+      "speed": 1.6,
+      "statTokens": {
+       "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 1.3
+      },
+      "stats": {
+       "damage per second": 1.3
+      },
+      "subType": "Miscellaneous",
+      "subclassID": 14,
+      "tooltip": [
+       "Skinning Knife",
+       "One-Hand",
+       "1 - 3 Damage | Speed 1.60",
+       "(1.2 damage per second)",
+       "Durability 20 / 20"
+      ],
+      "type": "Weapon"
+     },
+     {
+      "bindType": 0,
+      "classID": 2,
+      "count": 1,
+      "damageMax": 4,
+      "damageMin": 2,
+      "dps": 1.5,
+      "equipLoc": "INVTYPE_WEAPONMAINHAND",
+      "id": 2901,
+      "isBound": false,
+      "itemLevel": 4,
+      "name": "Mining Pick",
+      "quality": 1,
+      "requiredLevel": 1,
+      "sellPrice": 2,
+      "slot": 14,
+      "speed": 2,
+      "statTokens": {
+       "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 1.5
+      },
+      "stats": {
+       "damage per second": 1.5
+      },
+      "subType": "Miscellaneous",
+      "subclassID": 14,
+      "tooltip": [
+       "Mining Pick",
+       "Main Hand",
+       "2 - 4 Damage | Speed 2.00",
+       "(1.5 damage per second)",
+       "Durability 20 / 20",
+       "\"Miners need a mining pick for digging.\""
+      ],
+      "type": "Weapon"
+     },
+     {
+      "bindType": 0,
+      "classID": 7,
+      "count": 20,
+      "id": 2592,
+      "isBound": false,
+      "itemLevel": 15,
+      "name": "Wool Cloth",
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 33,
+      "slot": 15,
+      "subType": "Cloth",
+      "subclassID": 5,
+      "type": "Trade Goods"
+     },
+     {
+      "bindType": 0,
+      "classID": 7,
+      "count": 6,
+      "id": 2592,
+      "isBound": false,
+      "itemLevel": 15,
+      "name": "Wool Cloth",
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 33,
+      "slot": 16,
+      "subType": "Cloth",
+      "subclassID": 5,
+      "type": "Trade Goods"
+     },
+     {
+      "bindType": 0,
+      "classID": 7,
+      "count": 11,
+      "id": 2589,
+      "isBound": false,
+      "itemLevel": 5,
+      "name": "Linen Cloth",
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 13,
+      "slot": 17,
+      "subType": "Cloth",
+      "subclassID": 5,
+      "type": "Trade Goods"
+     },
+     {
+      "bindType": 0,
+      "classID": 7,
+      "count": 3,
+      "id": 6289,
+      "isBound": false,
+      "itemLevel": 15,
+      "name": "Raw Longjaw Mud Snapper",
+      "quality": 1,
+      "requiredLevel": 5,
+      "sellPrice": 1,
+      "slot": 18,
+      "subType": "Cooking",
+      "subclassID": 8,
+      "type": "Trade Goods"
+     },
+     {
+      "bindType": 0,
+      "classID": 7,
+      "count": 10,
+      "id": 5503,
+      "isBound": false,
+      "itemLevel": 14,
+      "name": "Clam Meat",
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 16,
+      "slot": 19,
+      "subType": "Cooking",
+      "subclassID": 8,
+      "type": "Trade Goods"
+     },
+     {
+      "bindType": 0,
+      "classID": 7,
+      "count": 1,
+      "id": 730,
+      "isBound": false,
+      "itemLevel": 11,
+      "name": "Murloc Eye",
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 16,
+      "slot": 20,
+      "subType": "Cooking",
+      "subclassID": 8,
+      "type": "Trade Goods"
+     }
+    ],
+    "name": "Backpack",
+    "size": 20
+   },
+   {
+    "free": 5,
+    "index": 1,
+    "items": [
+     {
+      "bindType": 0,
+      "classID": 6,
+      "count": 178,
+      "equipLoc": "INVTYPE_AMMO",
+      "id": 2515,
+      "isBound": false,
+      "itemLevel": 15,
+      "name": "Sharp Arrow",
+      "quality": 1,
+      "requiredLevel": 10,
+      "sellPrice": 0,
+      "slot": 1,
+      "statTokens": {
+       "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 1.2
+      },
+      "stats": {
+       "damage per second": 1.2
+      },
+      "subType": "Arrow",
+      "subclassID": 2,
+      "type": "Projectile"
+     },
+     {
+      "bindType": 0,
+      "classID": 6,
+      "count": 200,
+      "equipLoc": "INVTYPE_AMMO",
+      "id": 2515,
+      "isBound": false,
+      "itemLevel": 15,
+      "name": "Sharp Arrow",
+      "quality": 1,
+      "requiredLevel": 10,
+      "sellPrice": 0,
+      "slot": 2,
+      "statTokens": {
+       "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 1.2
+      },
+      "stats": {
+       "damage per second": 1.2
+      },
+      "subType": "Arrow",
+      "subclassID": 2,
+      "type": "Projectile"
+     },
+     {
+      "bindType": 0,
+      "classID": 6,
+      "count": 200,
+      "equipLoc": "INVTYPE_AMMO",
+      "id": 2515,
+      "isBound": false,
+      "itemLevel": 15,
+      "name": "Sharp Arrow",
+      "quality": 1,
+      "requiredLevel": 10,
+      "sellPrice": 0,
+      "slot": 3,
+      "statTokens": {
+       "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 1.2
+      },
+      "stats": {
+       "damage per second": 1.2
+      },
+      "subType": "Arrow",
+      "subclassID": 2,
+      "type": "Projectile"
+     },
+     {
+      "bindType": 0,
+      "classID": 6,
+      "count": 200,
+      "equipLoc": "INVTYPE_AMMO",
+      "id": 2515,
+      "isBound": false,
+      "itemLevel": 15,
+      "name": "Sharp Arrow",
+      "quality": 1,
+      "requiredLevel": 10,
+      "sellPrice": 0,
+      "slot": 4,
+      "statTokens": {
+       "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 1.2
+      },
+      "stats": {
+       "damage per second": 1.2
+      },
+      "subType": "Arrow",
+      "subclassID": 2,
+      "type": "Projectile"
+     },
+     {
+      "bindType": 0,
+      "classID": 6,
+      "count": 178,
+      "equipLoc": "INVTYPE_AMMO",
+      "id": 2515,
+      "isBound": false,
+      "itemLevel": 15,
+      "name": "Sharp Arrow",
+      "quality": 1,
+      "requiredLevel": 10,
+      "sellPrice": 0,
+      "slot": 5,
+      "statTokens": {
+       "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 1.2
+      },
+      "stats": {
+       "damage per second": 1.2
+      },
+      "subType": "Arrow",
+      "subclassID": 2,
+      "type": "Projectile"
+     }
+    ],
+    "name": "Medium Quiver",
+    "size": 10
+   },
+   {
+    "free": 0,
+    "index": 2,
+    "items": [
+     {
+      "bindType": 0,
+      "classID": 9,
+      "count": 1,
+      "id": 252774,
+      "isBound": false,
+      "itemLevel": 20,
+      "name": "Pattern: Totemic Leather Armor",
+      "quality": 3,
+      "requiredLevel": 0,
+      "sellPrice": 350,
+      "slot": 1,
+      "subType": "Leatherworking",
+      "subclassID": 1,
+      "type": "Recipe"
+     },
+     {
+      "bindType": 0,
+      "classID": 9,
+      "count": 1,
+      "id": 7288,
+      "isBound": false,
+      "itemLevel": 11,
+      "name": "Pattern: Rugged Leather Pants",
+      "quality": 2,
+      "requiredLevel": 0,
+      "sellPrice": 125,
+      "slot": 2,
+      "subType": "Leatherworking",
+      "subclassID": 1,
+      "type": "Recipe"
+     },
+     {
+      "bindType": 1,
+      "classID": 12,
+      "count": 1,
+      "id": 5352,
+      "isBound": true,
+      "itemLevel": 20,
+      "name": "Book: The Powers Below",
+      "quality": 1,
+      "questID": 968,
+      "requiredLevel": 10,
+      "sellPrice": 0,
+      "slot": 3,
+      "subType": "Quest",
+      "subclassID": 0,
+      "type": "Quest"
+     },
+     {
+      "bindType": 4,
+      "classID": 12,
+      "count": 1,
+      "id": 251522,
+      "isBound": true,
+      "isQuestItem": true,
+      "itemLevel": 1,
+      "name": "Blood-Stained Letter",
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 0,
+      "slot": 4,
+      "subType": "Quest",
+      "subclassID": 0,
+      "type": "Quest"
+     },
+     {
+      "bindType": 4,
+      "classID": 12,
+      "count": 1,
+      "id": 1083,
+      "isBound": true,
+      "isQuestItem": true,
+      "itemLevel": 1,
+      "name": "Glyph of Azora",
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 0,
+      "slot": 5,
+      "subType": "Quest",
+      "subclassID": 0,
+      "type": "Quest"
+     },
+     {
+      "bindType": 4,
+      "classID": 12,
+      "count": 1,
+      "id": 281243,
+      "isBound": true,
+      "isQuestItem": true,
+      "itemLevel": 1,
+      "name": "Hollee's Note",
+      "quality": 1,
+      "requiredLevel": 1,
+      "sellPrice": 0,
+      "slot": 6,
+      "subType": "Quest",
+      "subclassID": 0,
+      "type": "Quest"
+     },
+     {
+      "bindType": 4,
+      "classID": 12,
+      "count": 1,
+      "id": 5534,
+      "isBound": true,
+      "isQuestItem": true,
+      "itemLevel": 1,
+      "name": "Parker's Lunch",
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 0,
+      "slot": 7,
+      "subType": "Quest",
+      "subclassID": 0,
+      "type": "Quest"
+     },
+     {
+      "bindType": 1,
+      "classID": 15,
+      "count": 1,
+      "id": 248765,
+      "isBound": true,
+      "itemLevel": 1,
+      "name": "Sealed Apprentice Crate",
+      "quality": 1,
+      "requiredLevel": 1,
+      "sellPrice": 0,
+      "slot": 8,
+      "subType": "Junk",
+      "subclassID": 0,
+      "type": "Miscellaneous"
+     }
+    ],
+    "name": "Brown Leather Satchel",
+    "size": 8
+   },
+   {
+    "free": 8,
+    "index": 3,
+    "items": [],
+    "name": "Brown Leather Satchel",
+    "size": 8
+   },
+   {
+    "free": 8,
+    "index": 4,
+    "items": [],
+    "name": "Brown Leather Satchel",
+    "size": 8
+   },
+   {
+    "free": 0,
+    "index": 5,
+    "items": [
+     {
+      "bindType": 0,
+      "classID": 0,
+      "count": 1,
+      "id": 248685,
+      "isBound": false,
+      "itemLevel": 1,
+      "name": "Waylaid Crate: Apprentice Curiosities",
+      "quality": 1,
+      "requiredLevel": 10,
+      "sellPrice": 0,
+      "slot": 1,
+      "subType": "Other",
+      "subclassID": 8,
+      "type": "Consumable"
+     },
+     {
+      "bindType": 0,
+      "classID": 7,
+      "count": 1,
+      "id": 4361,
+      "isBound": false,
+      "itemLevel": 10,
+      "name": "Copper Tube",
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 120,
+      "slot": 2,
+      "subType": "Parts",
+      "subclassID": 1,
+      "type": "Trade Goods"
+     },
+     {
+      "bindType": 0,
+      "classID": 7,
+      "count": 6,
+      "id": 2836,
+      "isBound": false,
+      "itemLevel": 15,
+      "name": "Coarse Stone",
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 15,
+      "slot": 3,
+      "subType": "Metal & Stone",
+      "subclassID": 7,
+      "type": "Trade Goods"
+     },
+     {
+      "bindType": 0,
+      "classID": 7,
+      "count": 3,
+      "id": 2770,
+      "isBound": false,
+      "itemLevel": 10,
+      "name": "Copper Ore",
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 5,
+      "slot": 4,
+      "subType": "Metal & Stone",
+      "subclassID": 7,
+      "type": "Trade Goods"
+     },
+     {
+      "bindType": 0,
+      "classID": 7,
+      "count": 19,
+      "id": 2835,
+      "isBound": false,
+      "itemLevel": 5,
+      "name": "Rough Stone",
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 2,
+      "slot": 5,
+      "subType": "Metal & Stone",
+      "subclassID": 7,
+      "type": "Trade Goods"
+     },
+     {
+      "bindType": 0,
+      "classID": 7,
+      "count": 3,
+      "id": 2318,
+      "isBound": false,
+      "itemLevel": 10,
+      "name": "Light Leather",
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 15,
+      "slot": 6,
+      "subType": "Leather",
+      "subclassID": 6,
+      "type": "Trade Goods"
+     }
+    ],
+    "name": "Shipwright's Satchel",
+    "size": 6
+   }
+  ],
+  "buyback": {
+   "capturedAt": 1794839734,
+   "items": [],
+   "npc": "Billibub Cogspinner"
+  },
+  "character": {
+   "addonVersion": "0.11.0",
+   "bindLocation": "Auberdine",
+   "class": "Hunter",
+   "classToken": "HUNTER",
+   "clientBuild": "70938",
+   "clientInterface": 16001,
+   "clientVersion": "1.60.1",
+   "faction": "Alliance",
+   "level": 23,
+   "locale": "enUS",
+   "mapID": 1453,
+   "maxQuests": 40,
+   "moneyCopper": 28701,
+   "name": "Player",
+   "questGreenRange": 5,
+   "race": "Night Elf",
+   "raceToken": "NightElf",
+   "restedXp": 1926,
+   "resting": true,
+   "subZone": "Trade District",
+   "x": 61.1,
+   "xp": 4967,
+   "xpMax": 29400,
+   "y": 69.9,
+   "zone": "Stormwind City"
+  },
+  "completedQuests": [
+   65,
+   118,
+   119,
+   120,
+   121,
+   132,
+   135,
+   141,
+   142,
+   155,
+   166,
+   214,
+   224,
+   244,
+   257,
+   267,
+   298,
+   301,
+   307,
+   314,
+   373,
+   385,
+   416,
+   418,
+   436,
+   456,
+   457,
+   458,
+   459,
+   475,
+   476,
+   483,
+   487,
+   488,
+   489,
+   490,
+   729,
+   731,
+   741,
+   916,
+   917,
+   918,
+   919,
+   920,
+   921,
+   922,
+   928,
+   929,
+   932,
+   937,
+   940,
+   944,
+   947,
+   948,
+   949,
+   950,
+   951,
+   952,
+   953,
+   954,
+   955,
+   956,
+   957,
+   958,
+   963,
+   965,
+   982,
+   983,
+   984,
+   985,
+   997,
+   1001,
+   1002,
+   1003,
+   1141,
+   1338,
+   1339,
+   2039,
+   2040,
+   2041,
+   2118,
+   2138,
+   2139,
+   2159,
+   2178,
+   2438,
+   2459,
+   2519,
+   2541,
+   2561,
+   3117,
+   3519,
+   3521,
+   3522,
+   3524,
+   4161,
+   4495,
+   4681,
+   4722,
+   4723,
+   4728,
+   4730,
+   4731,
+   4732,
+   4733,
+   4740,
+   4761,
+   4762,
+   4763,
+   4811,
+   4812,
+   4813,
+   6063,
+   6101,
+   6102,
+   6103,
+   6341,
+   6342,
+   6343,
+   6344,
+   6661,
+   86614,
+   86758,
+   87288,
+   92415,
+   94013,
+   95065,
+   95189,
+   95195,
+   95204,
+   95250,
+   95998,
+   96046,
+   96047,
+   96056,
+   96101,
+   96604,
+   96605,
+   96606,
+   96607,
+   96608,
+   96626,
+   96627,
+   96628,
+   96629,
+   96630,
+   96634,
+   96638,
+   96646,
+   96652,
+   96655,
+   96656,
+   96658,
+   96659,
+   96661,
+   97220,
+   97222,
+   97903,
+   97907,
+   97908,
+   97914,
+   97919,
+   97923,
+   97924,
+   97926,
+   97931,
+   97935,
+   97936,
+   97942,
+   97948,
+   97949,
+   97955,
+   97959,
+   97960,
+   97965,
+   97970,
+   97971,
+   97977,
+   97979,
+   98025,
+   98042,
+   98067,
+   98247,
+   98248,
+   98289,
+   98391,
+   98392,
+   98398,
+   98403,
+   99046,
+   99047,
+   99050,
+   99073,
+   99582
+  ],
+  "cooldowns": [],
+  "currencies": [
+   {
+    "group": "Professions & Tradeskills",
+    "id": 3402,
+    "name": "Merchant's Favor",
+    "quantity": 55
+   }
+  ],
+  "deaths": {
+   "count": 2,
+   "recent": [
+    {
+     "at": 1794783314,
+     "level": 22,
+     "subZone": "The Deadmines",
+     "zone": "The Deadmines"
+    },
+    {
+     "at": 1794783315,
+     "level": 22,
+     "subZone": "The Deadmines",
+     "zone": "The Deadmines"
+    }
+   ]
+  },
+  "dumpedAt": 1794840582,
+  "dumpedAtText": "2026-11-16 15:49:42",
+  "dungeons": {
+   "activities": [
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 1986,
+     "maxLevelSuggestion": 47,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 40,
+     "name": "Krol'dok Stronghold"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 1984,
+     "maxLevelSuggestion": 20,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 13,
+     "name": "Hall of Thanes"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 1983,
+     "maxLevelSuggestion": 35,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 28,
+     "name": "City of Dalaran"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 1982,
+     "maxLevelSuggestion": 22,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 15,
+     "name": "Ruins of Lordaeron"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 1981,
+     "maxLevelSuggestion": 33,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 26,
+     "name": "Excavation Site: Wetlands"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 1980,
+     "maxLevelSuggestion": 55,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 48,
+     "name": "Alcaz Prison"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 1979,
+     "maxLevelSuggestion": 60,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 55,
+     "name": "Blackmaw Hold"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 1978,
+     "maxLevelSuggestion": 60,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 58,
+     "name": "The Shaper's Terrace"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 1603,
+     "maxLevelSuggestion": 60,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 58,
+     "name": "Stratholme (Service Gate)"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 837,
+     "maxLevelSuggestion": 60,
+     "maxPlayers": 10,
+     "minLevel": 0,
+     "minLevelSuggestion": 59,
+     "name": "Upper Blackrock Spire"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 829,
+     "maxLevelSuggestion": 41,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 33,
+     "name": "Scarlet Monastery - Library"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 828,
+     "maxLevelSuggestion": 46,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 38,
+     "name": "Scarlet Monastery - Cathedral"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 827,
+     "maxLevelSuggestion": 44,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 36,
+     "name": "Scarlet Monastery - Armory"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 816,
+     "maxLevelSuggestion": 60,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 58,
+     "name": "Stratholme (Main Gate)"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 815,
+     "maxLevelSuggestion": 60,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 56,
+     "name": "Dire Maul (North)"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 1985,
+     "maxLevelSuggestion": 42,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 35,
+     "name": "The Drowned City"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 814,
+     "maxLevelSuggestion": 60,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 56,
+     "name": "Dire Maul (West)"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 796,
+     "maxLevelSuggestion": 24,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 15,
+     "name": "Wailing Caverns"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 811,
+     "maxLevelSuggestion": 60,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 52,
+     "name": "Blackrock Depths"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 810,
+     "maxLevelSuggestion": 60,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 50,
+     "name": "Sunken Temple"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 809,
+     "maxLevelSuggestion": 55,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 46,
+     "name": "Maraudon"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 808,
+     "maxLevelSuggestion": 54,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 44,
+     "name": "Zul'Farrak"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 807,
+     "maxLevelSuggestion": 51,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 41,
+     "name": "Uldaman"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 806,
+     "maxLevelSuggestion": 46,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 37,
+     "name": "Razorfen Downs"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 805,
+     "maxLevelSuggestion": 38,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 30,
+     "name": "Scarlet Monastery - Graveyard"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 804,
+     "maxLevelSuggestion": 38,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 29,
+     "name": "Razorfen Kraul"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 803,
+     "maxLevelSuggestion": 38,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 29,
+     "name": "Gnomeregan"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 802,
+     "maxLevelSuggestion": 32,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 24,
+     "name": "Stormwind Stockades"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 801,
+     "maxLevelSuggestion": 32,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 24,
+     "name": "Blackfathom Deeps"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 800,
+     "maxLevelSuggestion": 30,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 20,
+     "name": "Shadowfang Keep"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 799,
+     "maxLevelSuggestion": 26,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 17,
+     "name": "Deadmines"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 797,
+     "maxLevelSuggestion": 60,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 58,
+     "name": "Scholomance"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 812,
+     "maxLevelSuggestion": 60,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 55,
+     "name": "Lower Blackrock Spire"
+    },
+    {
+     "category": "Dungeons",
+     "categoryID": 2,
+     "groupID": 285,
+     "id": 813,
+     "maxLevelSuggestion": 60,
+     "maxPlayers": 5,
+     "minLevel": 0,
+     "minLevelSuggestion": 54,
+     "name": "Dire Maul (East)"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 1989,
+     "maxLevelSuggestion": 54,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 33,
+     "name": "Riverglades"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 872,
+     "maxLevelSuggestion": 24,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 8,
+     "name": "Silverpine Forest"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 871,
+     "maxLevelSuggestion": 14,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 1,
+     "name": "Tirisfal Glades"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 870,
+     "maxLevelSuggestion": 63,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 53,
+     "name": "Eastern Plaguelands"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 869,
+     "maxLevelSuggestion": 60,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 48,
+     "name": "Western Plaguelands"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 868,
+     "maxLevelSuggestion": 54,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 38,
+     "name": "Hinterlands"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 867,
+     "maxLevelSuggestion": 34,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 18,
+     "name": "Hillsbrad Foothills"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 866,
+     "maxLevelSuggestion": 44,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 28,
+     "name": "Arathi Highlands"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 865,
+     "maxLevelSuggestion": 50,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 33,
+     "name": "Badlands"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 864,
+     "maxLevelSuggestion": 60,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 43,
+     "name": "Searing Gorge"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 863,
+     "maxLevelSuggestion": 60,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 48,
+     "name": "Burning Steppes"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 862,
+     "maxLevelSuggestion": 30,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 13,
+     "name": "Redridge Mountains"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 861,
+     "maxLevelSuggestion": 50,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 33,
+     "name": "Swamp of Sorrows"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 860,
+     "maxLevelSuggestion": 60,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 43,
+     "name": "Blasted Lands"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 859,
+     "maxLevelSuggestion": 50,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 28,
+     "name": "Stranglethorn Vale"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 858,
+     "maxLevelSuggestion": 34,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 18,
+     "name": "Wetlands"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 857,
+     "maxLevelSuggestion": 24,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 8,
+     "name": "Loch Modan"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 856,
+     "maxLevelSuggestion": 14,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 1,
+     "name": "Dun Morogh"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 873,
+     "maxLevelSuggestion": 44,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 28,
+     "name": "Alterac Mountains"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 855,
+     "maxLevelSuggestion": 34,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 18,
+     "name": "Duskwood"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 296,
+     "id": 874,
+     "maxLevelSuggestion": 14,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 1,
+     "name": "Durotar"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 296,
+     "id": 1991,
+     "maxLevelSuggestion": 60,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 55,
+     "name": "Mount Hyjal"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 296,
+     "id": 890,
+     "maxLevelSuggestion": 63,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 53,
+     "name": "Winterspring"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 296,
+     "id": 889,
+     "maxLevelSuggestion": 60,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 43,
+     "name": "Azshara"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 296,
+     "id": 888,
+     "maxLevelSuggestion": 60,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 46,
+     "name": "Felwood"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 296,
+     "id": 887,
+     "maxLevelSuggestion": 34,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 18,
+     "name": "Ashenvale"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 296,
+     "id": 886,
+     "maxLevelSuggestion": 24,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 8,
+     "name": "Darkshore"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 296,
+     "id": 885,
+     "maxLevelSuggestion": 14,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 1,
+     "name": "Teldrassil"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 296,
+     "id": 884,
+     "maxLevelSuggestion": 60,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 53,
+     "name": "Silithus"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 296,
+     "id": 883,
+     "maxLevelSuggestion": 60,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 45,
+     "name": "Un'Goro Crater"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 296,
+     "id": 882,
+     "maxLevelSuggestion": 54,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 38,
+     "name": "Tanaris"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 296,
+     "id": 881,
+     "maxLevelSuggestion": 50,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 33,
+     "name": "Dustwallow Marsh"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 296,
+     "id": 880,
+     "maxLevelSuggestion": 54,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 38,
+     "name": "Feralas"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 296,
+     "id": 879,
+     "maxLevelSuggestion": 44,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 28,
+     "name": "Desolace"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 296,
+     "id": 878,
+     "maxLevelSuggestion": 40,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 23,
+     "name": "Thousand Needles"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 296,
+     "id": 877,
+     "maxLevelSuggestion": 32,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 13,
+     "name": "Stonetalon Mountains"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 296,
+     "id": 876,
+     "maxLevelSuggestion": 30,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 8,
+     "name": "The Barrens"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 296,
+     "id": 875,
+     "maxLevelSuggestion": 14,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 1,
+     "name": "Mulgore"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 853,
+     "maxLevelSuggestion": 14,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 1,
+     "name": "Elwynn Forest"
+    },
+    {
+     "category": "Quests & Zones",
+     "categoryID": 116,
+     "groupID": 295,
+     "id": 854,
+     "maxLevelSuggestion": 24,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 8,
+     "name": "Westfall"
+    },
+    {
+     "category": "Battlegrounds",
+     "categoryID": 118,
+     "groupID": 300,
+     "id": 920,
+     "maxLevelSuggestion": 29,
+     "maxPlayers": 10,
+     "minLevel": 0,
+     "minLevelSuggestion": 20,
+     "name": "Warsong Gulch"
+    },
+    {
+     "category": "Battlegrounds",
+     "categoryID": 118,
+     "groupID": 300,
+     "id": 926,
+     "maxLevelSuggestion": 29,
+     "maxPlayers": 15,
+     "minLevel": 0,
+     "minLevelSuggestion": 20,
+     "name": "Arathi Basin"
+    },
+    {
+     "category": "Custom",
+     "categoryID": 120,
+     "groupID": 0,
+     "id": 1064,
+     "maxLevelSuggestion": 0,
+     "maxPlayers": 0,
+     "minLevel": 0,
+     "minLevelSuggestion": 0,
+     "name": "Custom"
+    }
+   ]
+  },
+  "equipment": [
+   {
+    "bindType": 0,
+    "classID": 4,
+    "durability": 40,
+    "durabilityMax": 40,
+    "equipLoc": "INVTYPE_SHOULDER",
+    "id": 1793,
+    "itemLevel": 20,
+    "name": "Patched Leather Shoulderpads",
+    "quality": 0,
+    "requiredLevel": 15,
+    "sellPrice": 207,
+    "slot": "shoulder",
+    "statTokens": {
+     "RESISTANCE0_NAME": 52
+    },
+    "stats": {
+     "Armor": 52
+    },
+    "subType": "Leather",
+    "subclassID": 2,
+    "tooltip": [
+     "Patched Leather Shoulderpads",
+     "Shoulder | Leather",
+     "52 Armor",
+     "Durability 40 / 40",
+     "Requires Level 15"
+    ],
+    "type": "Armor"
+   },
+   {
+    "bindType": 0,
+    "classID": 4,
+    "equipLoc": "INVTYPE_BODY",
+    "id": 148,
+    "itemLevel": 1,
+    "name": "Rugged Trapper's Shirt",
+    "quality": 1,
+    "requiredLevel": 0,
+    "sellPrice": 1,
+    "slot": "shirt",
+    "subType": "Miscellaneous",
+    "subclassID": 0,
+    "tooltip": [
+     "Rugged Trapper's Shirt",
+     "Shirt"
+    ],
+    "type": "Armor"
+   },
+   {
+    "bindType": 1,
+    "classID": 4,
+    "durability": 90,
+    "durabilityMax": 90,
+    "equipLoc": "INVTYPE_CHEST",
+    "id": 2041,
+    "itemLevel": 24,
+    "name": "Tunic of Westfall",
+    "quality": 3,
+    "requiredLevel": 0,
+    "sellPrice": 1441,
+    "slot": "chest",
+    "statTokens": {
+     "ITEM_MOD_AGILITY_SHORT": 11,
+     "ITEM_MOD_STAMINA_SHORT": 5,
+     "RESISTANCE0_NAME": 92
+    },
+    "stats": {
+     "Agility": 11,
+     "Armor": 92,
+     "Stamina": 5
+    },
+    "subType": "Leather",
+    "subclassID": 2,
+    "tooltip": [
+     "Tunic of Westfall",
+     "Soulbound",
+     "Chest | Leather",
+     "92 Armor",
+     "+11 Agility",
+     "+5 Stamina",
+     "Durability 90 / 90"
+    ],
+    "type": "Armor"
+   },
+   {
+    "bindType": 1,
+    "classID": 4,
+    "durability": 20,
+    "durabilityMax": 20,
+    "equipLoc": "INVTYPE_WAIST",
+    "id": 11936,
+    "itemLevel": 20,
+    "name": "Relic Hunter Belt",
+    "quality": 2,
+    "requiredLevel": 0,
+    "sellPrice": 284,
+    "slot": "waist",
+    "statTokens": {
+     "ITEM_MOD_INTELLECT_SHORT": 4,
+     "ITEM_MOD_SPIRIT_SHORT": 2,
+     "ITEM_MOD_STRENGTH_SHORT": 2,
+     "RESISTANCE0_NAME": 19
+    },
+    "stats": {
+     "Armor": 19,
+     "Intellect": 4,
+     "Spirit": 2,
+     "Strength": 2
+    },
+    "subType": "Cloth",
+    "subclassID": 1,
+    "tooltip": [
+     "Relic Hunter Belt",
+     "Soulbound",
+     "Waist | Cloth",
+     "19 Armor",
+     "+2 Strength",
+     "+4 Intellect",
+     "+2 Spirit",
+     "Durability 20 / 20"
+    ],
+    "type": "Armor"
+   },
+   {
+    "bindType": 1,
+    "classID": 4,
+    "durability": 60,
+    "durabilityMax": 60,
+    "equipLoc": "INVTYPE_LEGS",
+    "id": 279868,
+    "itemLevel": 24,
+    "name": "Duty Bound Leggings",
+    "quality": 2,
+    "requiredLevel": 1,
+    "sellPrice": 1156,
+    "slot": "legs",
+    "statTokens": {
+     "ITEM_MOD_AGILITY_SHORT": 6,
+     "ITEM_MOD_INTELLECT_SHORT": 4,
+     "RESISTANCE0_NAME": 73
+    },
+    "stats": {
+     "Agility": 6,
+     "Armor": 73,
+     "Intellect": 4
+    },
+    "subType": "Leather",
+    "subclassID": 2,
+    "tooltip": [
+     "Duty Bound Leggings",
+     "Soulbound",
+     "Legs | Leather",
+     "73 Armor",
+     "+6 Agility",
+     "+4 Intellect",
+     "Durability 60 / 60"
+    ],
+    "type": "Armor"
+   },
+   {
+    "bindType": 2,
+    "classID": 4,
+    "durability": 35,
+    "durabilityMax": 35,
+    "equipLoc": "INVTYPE_FEET",
+    "id": 4788,
+    "itemLevel": 20,
+    "name": "Agile Boots",
+    "quality": 2,
+    "requiredLevel": 15,
+    "sellPrice": 526,
+    "slot": "feet",
+    "statTokens": {
+     "ITEM_MOD_AGILITY_SHORT": 5,
+     "RESISTANCE0_NAME": 53
+    },
+    "stats": {
+     "Agility": 5,
+     "Armor": 53
+    },
+    "subType": "Leather",
+    "subclassID": 2,
+    "tooltip": [
+     "Agile Boots",
+     "Soulbound",
+     "Feet | Leather",
+     "53 Armor",
+     "+5 Agility",
+     "Durability 35 / 35",
+     "Requires Level 15"
+    ],
+    "type": "Armor"
+   },
+   {
+    "bindType": 1,
+    "classID": 4,
+    "durability": 25,
+    "durabilityMax": 25,
+    "equipLoc": "INVTYPE_WRIST",
+    "id": 270015,
+    "itemLevel": 22,
+    "name": "Bravo's Armbands",
+    "quality": 2,
+    "requiredLevel": 0,
+    "sellPrice": 462,
+    "slot": "wrist",
+    "statTokens": {
+     "ITEM_MOD_AGILITY_SHORT": 3,
+     "ITEM_MOD_STRENGTH_SHORT": 3,
+     "RESISTANCE0_NAME": 35
+    },
+    "stats": {
+     "Agility": 3,
+     "Armor": 35,
+     "Strength": 3
+    },
+    "subType": "Leather",
+    "subclassID": 2,
+    "tooltip": [
+     "Bravo's Armbands",
+     "Soulbound",
+     "Wrist | Leather",
+     "35 Armor",
+     "+3 Strength",
+     "+3 Agility",
+     "Durability 25 / 25"
+    ],
+    "type": "Armor"
+   },
+   {
+    "bindType": 2,
+    "classID": 4,
+    "durability": 25,
+    "durabilityMax": 25,
+    "equipLoc": "INVTYPE_HAND",
+    "id": 6586,
+    "itemLevel": 23,
+    "name": "Scouting Gloves of Power",
+    "quality": 2,
+    "requiredLevel": 18,
+    "sellPrice": 505,
+    "slot": "hands",
+    "statTokens": {
+     "ITEM_MOD_ATTACK_POWER_SHORT": 12,
+     "RESISTANCE0_NAME": 51
+    },
+    "stats": {
+     "Armor": 51,
+     "Attack Power": 12
+    },
+    "subType": "Leather",
+    "subclassID": 2,
+    "tooltip": [
+     "Scouting Gloves of Power",
+     "Soulbound",
+     "Hands | Leather",
+     "51 Armor",
+     "Equip: +12 Attack Power.",
+     "Durability 25 / 25",
+     "Requires Level 18"
+    ],
+    "type": "Armor"
+   },
+   {
+    "bindType": 1,
+    "classID": 4,
+    "equipLoc": "INVTYPE_FINGER",
+    "id": 279867,
+    "itemLevel": 23,
+    "name": "Slain Baron's Signet",
+    "quality": 2,
+    "requiredLevel": 1,
+    "sellPrice": 815,
+    "slot": "finger1",
+    "statTokens": {
+     "ITEM_MOD_DEFENSE_SKILL_RATING_SHORT": 1,
+     "ITEM_MOD_STAMINA_SHORT": 3
+    },
+    "stats": {
+     "Defense": 1,
+     "Stamina": 3
+    },
+    "subType": "Miscellaneous",
+    "subclassID": 0,
+    "tooltip": [
+     "Slain Baron's Signet",
+     "Soulbound",
+     "Finger",
+     "+3 Stamina",
+     "Equip: Increased Defense +1."
+    ],
+    "type": "Armor"
+   },
+   {
+    "bindType": 2,
+    "classID": 4,
+    "equipLoc": "INVTYPE_CLOAK",
+    "id": 9786,
+    "itemLevel": 16,
+    "name": "Raider's Cloak of Agility",
+    "quality": 2,
+    "requiredLevel": 11,
+    "sellPrice": 234,
+    "slot": "back",
+    "statTokens": {
+     "ITEM_MOD_AGILITY_SHORT": 2,
+     "RESISTANCE0_NAME": 15
+    },
+    "stats": {
+     "Agility": 2,
+     "Armor": 15
+    },
+    "subType": "Cloth",
+    "subclassID": 1,
+    "tooltip": [
+     "Raider's Cloak of Agility",
+     "Soulbound",
+     "Back",
+     "15 Armor",
+     "+2 Agility",
+     "Requires Level 11"
+    ],
+    "type": "Armor"
+   },
+   {
+    "bindType": 1,
+    "classID": 2,
+    "damageMax": 46,
+    "damageMin": 24,
+    "dps": 15.2,
+    "durability": 75,
+    "durabilityMax": 75,
+    "equipLoc": "INVTYPE_WEAPON",
+    "id": 1937,
+    "itemLevel": 23,
+    "name": "Buzz Saw",
+    "quality": 3,
+    "requiredLevel": 18,
+    "sellPrice": 2551,
+    "slot": "mainHand",
+    "speed": 2.3,
+    "statTokens": {
+     "ITEM_MOD_AGILITY_SHORT": 3,
+     "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 15.2,
+     "ITEM_MOD_STAMINA_SHORT": 3
+    },
+    "stats": {
+     "Agility": 3,
+     "Stamina": 3,
+     "damage per second": 15.2
+    },
+    "subType": "One-Handed Swords",
+    "subclassID": 7,
+    "tooltip": [
+     "Buzz Saw",
+     "Soulbound",
+     "One-Hand | Sword",
+     "24 - 46 Damage | Speed 2.30",
+     "(15.2 damage per second)",
+     "+3 Agility",
+     "+3 Stamina",
+     "Durability 75 / 75",
+     "Requires Level 18"
+    ],
+    "type": "Weapon"
+   },
+   {
+    "bindType": 1,
+    "classID": 2,
+    "damageMax": 32,
+    "damageMin": 17,
+    "dps": 14.4,
+    "durability": 70,
+    "durabilityMax": 70,
+    "equipLoc": "INVTYPE_WEAPON",
+    "id": 5192,
+    "itemLevel": 22,
+    "name": "Thief's Blade",
+    "quality": 3,
+    "requiredLevel": 17,
+    "sellPrice": 2258,
+    "slot": "offHand",
+    "speed": 1.7,
+    "statTokens": {
+     "ITEM_MOD_AGILITY_SHORT": 4,
+     "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 14.4
+    },
+    "stats": {
+     "Agility": 4,
+     "damage per second": 14.4
+    },
+    "subType": "One-Handed Swords",
+    "subclassID": 7,
+    "tooltip": [
+     "Thief's Blade",
+     "Soulbound",
+     "Unique-Equipped",
+     "One-Hand | Sword",
+     "17 - 32 Damage | Speed 1.70",
+     "(14.4 damage per second)",
+     "+4 Agility",
+     "Equip: Increases the chance your Pick Pocket and Distract abilities are successful by 1%",
+     "Durability 70 / 70",
+     "Requires Level 17"
+    ],
+    "type": "Weapon"
+   },
+   {
+    "bindType": 2,
+    "classID": 2,
+    "damageMax": 18,
+    "damageMin": 9,
+    "dps": 7.9,
+    "durability": 50,
+    "durabilityMax": 50,
+    "equipLoc": "INVTYPE_RANGED",
+    "id": 4576,
+    "itemLevel": 21,
+    "name": "Light Bow",
+    "quality": 2,
+    "requiredLevel": 16,
+    "sellPrice": 1184,
+    "slot": "ranged",
+    "speed": 1.7,
+    "statTokens": {
+     "ITEM_MOD_AGILITY_SHORT": 2,
+     "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 7.9
+    },
+    "stats": {
+     "Agility": 2,
+     "damage per second": 7.9
+    },
+    "subType": "Bows",
+    "subclassID": 2,
+    "tooltip": [
+     "Light Bow",
+     "Soulbound",
+     "Ranged | Bow",
+     "9 - 18 Damage | Speed 1.70",
+     "(7.9 damage per second)",
+     "+2 Agility",
+     "Enchanted: Scope (+1 Damage)",
+     "Durability 50 / 50",
+     "Requires Level 16"
+    ],
+    "type": "Weapon"
+   }
+  ],
+  "equipmentSets": [],
+  "errors": [],
+  "flightPaths": {
+   "capturedAt": 1794788635,
+   "nodes": [
+    {
+     "name": "Sentinel Hill, Westfall",
+     "state": "current",
+     "zone": "Eastern Kingdoms"
+    },
+    {
+     "name": "Lakeshire, Redridge",
+     "state": "reachable",
+     "zone": "Eastern Kingdoms"
+    },
+    {
+     "name": "Ironforge, Dun Morogh",
+     "state": "reachable",
+     "zone": "Eastern Kingdoms"
+    },
+    {
+     "name": "Menethil Harbor, Wetlands",
+     "state": "unreachable",
+     "zone": "Eastern Kingdoms"
+    },
+    {
+     "name": "Thelsamar, Loch Modan",
+     "state": "reachable",
+     "zone": "Eastern Kingdoms"
+    },
+    {
+     "name": "Darkshire, Duskwood",
+     "state": "unreachable",
+     "zone": "Eastern Kingdoms"
+    },
+    {
+     "name": "Southshore, Hillsbrad",
+     "state": "reachable",
+     "zone": "Eastern Kingdoms"
+    },
+    {
+     "name": "Refuge Pointe, Arathi",
+     "state": "unreachable",
+     "zone": "Eastern Kingdoms"
+    },
+    {
+     "name": "Booty Bay, Stranglethorn",
+     "state": "unreachable",
+     "zone": "Eastern Kingdoms"
+    },
+    {
+     "name": "Aerie Peak, The Hinterlands",
+     "state": "unreachable",
+     "zone": "Eastern Kingdoms"
+    },
+    {
+     "name": "Nethergarde Keep, Blasted Lands",
+     "state": "unreachable",
+     "zone": "Eastern Kingdoms"
+    },
+    {
+     "name": "Chillwind Camp, Western Plaguelands",
+     "state": "unreachable",
+     "zone": "Eastern Kingdoms"
+    },
+    {
+     "name": "Light's Hope Chapel, Eastern Plaguelands",
+     "state": "unreachable",
+     "zone": "Eastern Kingdoms"
+    },
+    {
+     "name": "Morgan's Vigil, Burning Steppes",
+     "state": "unreachable",
+     "zone": "Eastern Kingdoms"
+    },
+    {
+     "name": "Thorium Point, Searing Gorge",
+     "state": "unreachable",
+     "zone": "Eastern Kingdoms"
+    },
+    {
+     "name": "zzOLDRiverglades, Farholde Keep",
+     "state": "unreachable",
+     "zone": "Eastern Kingdoms"
+    },
+    {
+     "name": "Farholde Keep, Riverglades",
+     "state": "unreachable",
+     "zone": "Eastern Kingdoms"
+    },
+    {
+     "name": "Stormwind, Elwynn",
+     "state": "reachable",
+     "zone": "Eastern Kingdoms"
+    }
+   ],
+   "npc": "Thor"
+  },
+  "guild": {
+   "capturedAt": 1794839645,
+   "inGuild": false
+  },
+  "loot": {
+   "items": [],
+   "messagesParsed": 0,
+   "messagesSecret": 0,
+   "messagesSeen": 0,
+   "since": 1794840572
+  },
+  "macros": [
+   {
+    "body": "[removed]",
+    "name": "Macro 1",
+    "scope": "account"
+   }
+  ],
+  "mail": {
+   "capturedAt": 1794773135,
+   "messages": [],
+   "totalOnServer": 0
+  },
+  "pet": {
+   "abilities": [
+    {
+     "icon": 132277,
+     "id": 100663298,
+     "name": "Aggressive",
+     "petAction": true,
+     "rank": "Pet Stance"
+    },
+    {
+     "icon": 136096,
+     "id": 24493,
+     "name": "Arcane Resistance",
+     "passive": true,
+     "petAction": true,
+     "rank": "Rank 1"
+    },
+    {
+     "icon": 524348,
+     "id": 100663299,
+     "name": "Assist",
+     "petAction": true,
+     "rank": "Pet Stance"
+    },
+    {
+     "icon": 132152,
+     "id": 117440514,
+     "name": "Attack",
+     "petAction": true,
+     "rank": "Pet Command"
+    },
+    {
+     "icon": 132118,
+     "id": 1742,
+     "name": "Cower",
+     "petAction": true,
+     "rank": "Rank 1"
+    },
+    {
+     "icon": 132110,
+     "id": 100663300,
+     "name": "Defensive",
+     "petAction": true,
+     "rank": "Pet Stance"
+    },
+    {
+     "icon": 132150,
+     "id": 1263107,
+     "name": "Faster Attack V",
+     "passive": true,
+     "petAction": true
+    },
+    {
+     "icon": 135806,
+     "id": 23992,
+     "name": "Fire Resistance",
+     "passive": true,
+     "petAction": true,
+     "rank": "Rank 1"
+    },
+    {
+     "icon": 132328,
+     "id": 117440513,
+     "name": "Follow",
+     "petAction": true,
+     "rank": "Pet Command"
+    },
+    {
+     "icon": 135850,
+     "id": 24446,
+     "name": "Frost Resistance",
+     "passive": true,
+     "petAction": true,
+     "rank": "Rank 1"
+    },
+    {
+     "icon": 136112,
+     "id": 4189,
+     "name": "Great Stamina",
+     "passive": true,
+     "petAction": true,
+     "rank": "Rank 3"
+    },
+    {
+     "icon": 132270,
+     "id": 14917,
+     "name": "Growl",
+     "petAction": true,
+     "rank": "Rank 3"
+    },
+    {
+     "icon": 457329,
+     "id": 117440516,
+     "name": "Move To",
+     "petAction": true,
+     "rank": "Pet Command"
+    },
+    {
+     "icon": 136094,
+     "id": 24550,
+     "name": "Natural Armor",
+     "passive": true,
+     "petAction": true,
+     "rank": "Rank 3"
+    },
+    {
+     "icon": 136085,
+     "id": 24492,
+     "name": "Nature Resistance",
+     "passive": true,
+     "petAction": true,
+     "rank": "Rank 1"
+    },
+    {
+     "icon": 132311,
+     "id": 100663296,
+     "name": "Passive",
+     "petAction": true,
+     "rank": "Pet Stance"
+    },
+    {
+     "icon": 136121,
+     "id": 24488,
+     "name": "Shadow Resistance",
+     "passive": true,
+     "petAction": true,
+     "rank": "Rank 1"
+    },
+    {
+     "icon": 136106,
+     "id": 117440512,
+     "name": "Stay",
+     "petAction": true,
+     "rank": "Pet Command"
+    }
+   ],
+   "actionBar": [
+    {
+     "name": "Attack",
+     "slot": 1
+    },
+    {
+     "active": true,
+     "name": "Follow",
+     "slot": 2
+    },
+    {
+     "name": "Move To",
+     "slot": 3
+    },
+    {
+     "autoCast": true,
+     "id": 1742,
+     "name": "Cower",
+     "slot": 4
+    },
+    {
+     "autoCast": true,
+     "id": 14917,
+     "name": "Growl",
+     "slot": 5
+    },
+    {
+     "active": true,
+     "name": "Assist",
+     "slot": 8
+    },
+    {
+     "name": "Defensive",
+     "slot": 9
+    },
+    {
+     "name": "Passive",
+     "slot": 10
+    }
+   ],
+   "damagePercent": 125,
+   "dead": false,
+   "exists": true,
+   "family": "Cat",
+   "foodTypes": [
+    "Meat",
+    "Fish"
+   ],
+   "happiness": 3,
+   "healthMax": 1052,
+   "level": 22,
+   "loyalty": "Best Friend",
+   "loyaltyRate": 20,
+   "name": "Cat",
+   "trainingPointsFree": 52,
+   "trainingPointsSpent": 58,
+   "trainingPointsTotal": 110,
+   "xp": 414,
+   "xpMax": 6825
+  },
+  "played": {
+   "levelSeconds": 1312,
+   "totalSeconds": 115220
+  },
+  "professions": [
+   {
+    "maxRank": 150,
+    "name": "Mining",
+    "rank": 62,
+    "skillID": 186
+   },
+   {
+    "maxRank": 75,
+    "name": "Skinning",
+    "rank": 75,
+    "skillID": 393
+   },
+   {
+    "maxRank": 75,
+    "name": "First Aid",
+    "rank": 37,
+    "skillID": 129
+   },
+   {
+    "maxRank": 75,
+    "name": "Fishing",
+    "rank": 21,
+    "skillID": 356
+   },
+   {
+    "maxRank": 75,
+    "name": "Cooking",
+    "rank": 13,
+    "skillID": 185
+   },
+   {
+    "group": "weapon",
+    "maxRank": 115,
+    "name": "Swords",
+    "rank": 92,
+    "skillID": 43
+   },
+   {
+    "group": "weapon",
+    "maxRank": 115,
+    "name": "Two-Handed Swords",
+    "rank": 28,
+    "skillID": 55
+   },
+   {
+    "group": "weapon",
+    "maxRank": 115,
+    "name": "Daggers",
+    "rank": 98,
+    "skillID": 173
+   },
+   {
+    "group": "weapon",
+    "maxRank": 115,
+    "name": "Bows",
+    "rank": 111,
+    "skillID": 45
+   },
+   {
+    "group": "weapon",
+    "maxRank": 115,
+    "name": "Unarmed",
+    "rank": 9,
+    "skillID": 162
+   },
+   {
+    "group": "weapon",
+    "maxRank": 115,
+    "name": "Defense",
+    "rank": 101,
+    "skillID": 95
+   }
+  ],
+  "pvp": {
+   "dishonorableKills": 0,
+   "honor": 0,
+   "honorLevel": 1,
+   "honorMax": 5500,
+   "honorableKills": 0
+  },
+  "questOffer": {
+   "capturedAt": 1794788879,
+   "id": 2928,
+   "npc": "Shoni the Shilent",
+   "rewards": {
+    "choices": [
+     {
+      "count": 1,
+      "equipLoc": "INVTYPE_WEAPONOFFHAND",
+      "id": 9608,
+      "itemLevel": 32,
+      "name": "Shoni's Disarming Tool",
+      "quality": 2,
+      "requiredLevel": 0,
+      "sellPrice": 5435,
+      "stats": {
+       "Spirit": 4,
+       "damage per second": 16.6
+      },
+      "subType": "One-Handed Axes",
+      "tooltip": [
+       "Shoni's Disarming Tool",
+       "Binds when picked up",
+       "Off Hand | Axe",
+       "22 - 41 Damage | Speed 1.90",
+       "(16.6 damage per second)",
+       "+4 Spirit"
+      ],
+      "type": "Weapon",
+      "usable": false
+     },
+     {
+      "count": 1,
+      "equipLoc": "INVTYPE_HAND",
+      "id": 9609,
+      "itemLevel": 32,
+      "name": "Shilly Mitts",
+      "quality": 2,
+      "requiredLevel": 0,
+      "sellPrice": 1087,
+      "stats": {
+       "Armor": 68,
+       "Spell Power": 5,
+       "Spirit": 6
+      },
+      "subType": "Cloth",
+      "tooltip": [
+       "Shilly Mitts",
+       "Binds when picked up",
+       "Hands | Cloth",
+       "28 Armor",
+       "+6 Spirit",
+       "+40 Armor",
+       "Equip: Increases damage and healing done by magical spells and effects by up to 5."
+      ],
+      "type": "Armor"
+     },
+     {
+      "count": 1,
+      "equipLoc": "INVTYPE_HAND",
+      "id": 270045,
+      "itemLevel": 32,
+      "name": "Operator's Gloves",
+      "quality": 2,
+      "requiredLevel": 0,
+      "sellPrice": 1423,
+      "stats": {
+       "Armor": 60,
+       "Spirit": 4,
+       "Stamina": 4,
+       "Strength": 6
+      },
+      "subType": "Leather",
+      "tooltip": [
+       "Operator's Gloves",
+       "Binds when picked up",
+       "Hands | Leather",
+       "60 Armor",
+       "+6 Strength",
+       "+4 Stamina",
+       "+4 Spirit"
+      ],
+      "type": "Armor"
+     }
+    ],
+    "xp": 4400
+   },
+   "text": "Bring twenty-four Robo-mechanical Guts to Shoni in Stormwind.",
+   "title": "Gyrodrillmatic Excavationators"
+  },
+  "questTurnIn": {
+   "capturedAt": 1794788873,
+   "id": 2040,
+   "npc": "Shoni the Shilent",
+   "rewards": {
+    "choices": [
+     {
+      "count": 1,
+      "equipLoc": "INVTYPE_HAND",
+      "id": 7606,
+      "itemLevel": 22,
+      "name": "Polar Gauntlets",
+      "quality": 2,
+      "requiredLevel": 0,
+      "sellPrice": 564,
+      "stats": {
+       "Armor": 109,
+       "Spirit": 2,
+       "Strength": 4
+      },
+      "subType": "Mail",
+      "tooltip": [
+       "Polar Gauntlets",
+       "Binds when picked up",
+       "Hands | Mail",
+       "109 Armor",
+       "+4 Strength",
+       "+2 Spirit"
+      ],
+      "type": "Armor",
+      "usable": false
+     },
+     {
+      "count": 1,
+      "equipLoc": "INVTYPE_RANGEDRIGHT",
+      "id": 7607,
+      "itemLevel": 22,
+      "name": "Sable Wand",
+      "quality": 2,
+      "requiredLevel": 0,
+      "sellPrice": 1411,
+      "stats": {
+       "Spirit": 2,
+       "damage per second": 16.9
+      },
+      "subType": "Wands",
+      "tooltip": [
+       "Sable Wand",
+       "Binds when picked up",
+       "Ranged | Wand",
+       "21 - 40 Shadow Damage | Speed 1.80",
+       "(16.9 damage per second)",
+       "+2 Spirit"
+      ],
+      "type": "Weapon",
+      "usable": false
+     },
+     {
+      "count": 1,
+      "equipLoc": "INVTYPE_WRIST",
+      "id": 270015,
+      "itemLevel": 22,
+      "name": "Bravo's Armbands",
+      "quality": 2,
+      "requiredLevel": 0,
+      "sellPrice": 462,
+      "stats": {
+       "Agility": 3,
+       "Armor": 35,
+       "Strength": 3
+      },
+      "subType": "Leather",
+      "tooltip": [
+       "Bravo's Armbands",
+       "Binds when picked up",
+       "Wrist | Leather",
+       "35 Armor",
+       "+3 Strength",
+       "+3 Agility"
+      ],
+      "type": "Armor"
+     },
+     {
+      "count": 1,
+      "equipLoc": "INVTYPE_LEGS",
+      "id": 270016,
+      "itemLevel": 22,
+      "name": "Dreamer's Leggings",
+      "quality": 2,
+      "requiredLevel": 0,
+      "sellPrice": 921,
+      "stats": {
+       "Armor": 71,
+       "Intellect": 6,
+       "Spell Power": 2
+      },
+      "subType": "Leather",
+      "tooltip": [
+       "Dreamer's Leggings",
+       "Binds when picked up",
+       "Legs | Leather",
+       "71 Armor",
+       "+6 Intellect",
+       "Equip: Increases damage and healing done by magical spells and effects by up to 2."
+      ],
+      "type": "Armor"
+     }
+    ],
+    "xp": 3700
+   },
+   "text": "Well done, Player. Thanks to you, Gnomeregan is one step closer to its day of liberation!",
+   "title": "Underground Assault"
+  },
+  "quests": [
+   {
+    "complete": false,
+    "id": 1138,
+    "level": 17,
+    "objectives": [
+     {
+      "done": false,
+      "have": 0,
+      "need": 6,
+      "text": "0/6 Fine Crab Chunks"
+     }
+    ],
+    "rewards": {
+     "choices": [
+      {
+       "bindType": 1,
+       "classID": 4,
+       "count": 1,
+       "equipLoc": "INVTYPE_HAND",
+       "id": 15405,
+       "itemLevel": 17,
+       "name": "Shucking Gloves",
+       "quality": 2,
+       "requiredLevel": 0,
+       "sellPrice": 245,
+       "statTokens": {
+        "ITEM_MOD_INTELLECT_SHORT": 2,
+        "ITEM_MOD_STAMINA_SHORT": 2,
+        "RESISTANCE0_NAME": 45
+       },
+       "stats": {
+        "Armor": 45,
+        "Intellect": 2,
+        "Stamina": 2
+       },
+       "subType": "Leather",
+       "subclassID": 2,
+       "tooltip": [
+        "Shucking Gloves",
+        "Binds when picked up",
+        "Hands | Leather",
+        "45 Armor",
+        "+2 Stamina",
+        "+2 Intellect",
+        "You haven't collected this appearance"
+       ],
+       "type": "Armor"
+      },
+      {
+       "bindType": 1,
+       "classID": 4,
+       "count": 1,
+       "equipLoc": "INVTYPE_FEET",
+       "id": 15406,
+       "itemLevel": 17,
+       "name": "Crustacean Boots",
+       "quality": 2,
+       "requiredLevel": 0,
+       "sellPrice": 402,
+       "statTokens": {
+        "ITEM_MOD_STAMINA_SHORT": 3,
+        "RESISTANCE0_NAME": 109
+       },
+       "stats": {
+        "Armor": 109,
+        "Stamina": 3
+       },
+       "subType": "Mail",
+       "subclassID": 3,
+       "tooltip": [
+        "Crustacean Boots",
+        "Binds when picked up",
+        "Feet | Mail",
+        "109 Armor",
+        "+3 Stamina",
+        "You haven't collected this appearance"
+       ],
+       "type": "Armor",
+       "usable": false
+      }
+     ],
+     "xp": 1000
+    },
+    "title": "Fruit of the Sea",
+    "zone": "Darkshore",
+    "zoneMapID": 1439
+   },
+   {
+    "complete": true,
+    "id": 968,
+    "level": 18,
+    "objectives": [
+     {
+      "done": true,
+      "have": 1,
+      "need": 1,
+      "text": "Bring the Book: The Powers Below to Gerrig Bonegrip in the Forlorn Cavern, Ironforge."
+     }
+    ],
+    "rewards": {
+     "xp": 1700
+    },
+    "title": "The Powers Below",
+    "zone": "Darkshore",
+    "zoneMapID": 1439
+   },
+   {
+    "complete": false,
+    "id": 966,
+    "level": 18,
+    "objectives": [
+     {
+      "done": false,
+      "have": 0,
+      "need": 4,
+      "text": "0/4 Worn Parchment"
+     }
+    ],
+    "rewards": {
+     "money": 1000,
+     "xp": 1350
+    },
+    "title": "The Tower of Althalaxx",
+    "zone": "Darkshore",
+    "zoneMapID": 1439
+   },
+   {
+    "complete": false,
+    "id": 986,
+    "level": 20,
+    "objectives": [
+     {
+      "done": false,
+      "have": 0,
+      "need": 5,
+      "text": "0/5 Fine Moonstalker Pelt"
+     }
+    ],
+    "rewards": {
+     "xp": 1550
+    },
+    "title": "A Lost Master",
+    "zone": "Darkshore",
+    "zoneMapID": 1439
+   },
+   {
+    "complete": false,
+    "id": 95212,
+    "level": 10,
+    "objectives": [
+     {
+      "done": false,
+      "have": 0,
+      "need": 6,
+      "text": "0/6 Pristine Leopard Pelt"
+     }
+    ],
+    "rewards": {
+     "xp": 320
+    },
+    "title": "Never Saddle on Quality",
+    "zone": "Dun Morogh",
+    "zoneMapID": 1426
+   },
+   {
+    "complete": true,
+    "id": 95161,
+    "level": 22,
+    "objectives": [
+     {
+      "done": true,
+      "have": 1,
+      "need": 1,
+      "text": "Deliver the Blood-Stained Letter to Avette Fellwood in Duskwood."
+     }
+    ],
+    "rewards": {
+     "choices": [
+      {
+       "bindType": 1,
+       "classID": 4,
+       "count": 1,
+       "equipLoc": "INVTYPE_NECK",
+       "id": 279870,
+       "itemLevel": 24,
+       "name": "Tarnished Locket",
+       "quality": 2,
+       "requiredLevel": 1,
+       "sellPrice": 932,
+       "statTokens": {
+        "ITEM_MOD_STAMINA_SHORT": 6,
+        "ITEM_MOD_STRENGTH_SHORT": -3
+       },
+       "stats": {
+        "Stamina": 6,
+        "Strength": -3
+       },
+       "subType": "Miscellaneous",
+       "subclassID": 0,
+       "tooltip": [
+        "Tarnished Locket",
+        "Binds when picked up",
+        "Neck",
+        "-3 Strength",
+        "+6 Stamina",
+        "\"Some memories are best forgotten.\""
+       ],
+       "type": "Armor"
+      }
+     ],
+     "xp": 180
+    },
+    "title": "Remember That I Love You",
+    "zone": "Duskwood",
+    "zoneMapID": 1431
+   },
+   {
+    "complete": false,
+    "id": 2038,
+    "level": 15,
+    "objectives": [
+     {
+      "done": false,
+      "have": 0,
+      "need": 1,
+      "text": "0/1 Bingles' Wrench"
+     },
+     {
+      "done": false,
+      "have": 0,
+      "need": 1,
+      "text": "0/1 Bingles' Screwdriver"
+     },
+     {
+      "done": false,
+      "have": 0,
+      "need": 1,
+      "text": "0/1 Bingles' Hammer"
+     },
+     {
+      "done": false,
+      "have": 0,
+      "need": 1,
+      "text": "0/1 Bingles' Blastencapper"
+     }
+    ],
+    "rewards": {
+     "items": [
+      {
+       "bindType": 1,
+       "classID": 4,
+       "count": 1,
+       "equipLoc": "INVTYPE_HAND",
+       "id": 12522,
+       "itemLevel": 15,
+       "name": "Bingles' Flying Gloves",
+       "quality": 2,
+       "requiredLevel": 0,
+       "sellPrice": 182,
+       "statTokens": {
+        "ITEM_MOD_AGILITY_SHORT": 2,
+        "ITEM_MOD_INTELLECT_SHORT": 2,
+        "RESISTANCE0_NAME": 43
+       },
+       "stats": {
+        "Agility": 2,
+        "Armor": 43,
+        "Intellect": 2
+       },
+       "subType": "Leather",
+       "subclassID": 2,
+       "tooltip": [
+        "Bingles' Flying Gloves",
+        "Binds when picked up",
+        "Hands | Leather",
+        "43 Armor",
+        "+2 Agility",
+        "+2 Intellect",
+        "You haven't collected this appearance"
+       ],
+       "type": "Armor"
+      }
+     ],
+     "money": 700,
+     "xp": 525
+    },
+    "title": "Bingles' Missing Supplies",
+    "zone": "Loch Modan",
+    "zoneMapID": 1432
+   },
+   {
+    "complete": true,
+    "id": 129,
+    "level": 15,
+    "objectives": [
+     {
+      "done": true,
+      "have": 1,
+      "need": 1,
+      "text": "Bring Parker's lunch to Guard Parker.  He patrols the road leading to Darkshire."
+     }
+    ],
+    "rewards": {
+     "xp": 270
+    },
+    "title": "A Free Lunch",
+    "zone": "Redridge Mountains",
+    "zoneMapID": 1433
+   },
+   {
+    "complete": false,
+    "id": 116,
+    "level": 15,
+    "objectives": [
+     {
+      "done": false,
+      "have": 0,
+      "need": 1,
+      "text": "0/1 Keg of Thunderbrew"
+     },
+     {
+      "done": false,
+      "have": 0,
+      "need": 1,
+      "text": "0/1 Cask of Merlot"
+     },
+     {
+      "done": false,
+      "have": 0,
+      "need": 1,
+      "text": "0/1 Bottle of Moonshine"
+     },
+     {
+      "done": false,
+      "have": 0,
+      "need": 1,
+      "text": "0/1 Skin of Sweet Rum"
+     }
+    ],
+    "rewards": {
+     "items": [
+      {
+       "bindType": 1,
+       "classID": 4,
+       "count": 1,
+       "equipLoc": "INVTYPE_CLOAK",
+       "id": 1270,
+       "itemLevel": 15,
+       "name": "Finely Woven Cloak",
+       "quality": 2,
+       "requiredLevel": 0,
+       "sellPrice": 213,
+       "statTokens": {
+        "ITEM_MOD_SPIRIT_SHORT": 2,
+        "RESISTANCE0_NAME": 14
+       },
+       "stats": {
+        "Armor": 14,
+        "Spirit": 2
+       },
+       "subType": "Cloth",
+       "subclassID": 1,
+       "tooltip": [
+        "Finely Woven Cloak",
+        "Binds when picked up",
+        "Back",
+        "14 Armor",
+        "+2 Spirit",
+        "You haven't collected this appearance"
+       ],
+       "type": "Armor"
+      },
+      {
+       "bindType": 1,
+       "classID": 15,
+       "count": 1,
+       "id": 10456,
+       "itemLevel": 15,
+       "name": "A Bulging Coin Purse",
+       "quality": 1,
+       "requiredLevel": 0,
+       "sellPrice": 0,
+       "subType": "Junk",
+       "subclassID": 0,
+       "type": "Miscellaneous"
+      }
+     ],
+     "xp": 525
+    },
+    "title": "Dry Times",
+    "zone": "Redridge Mountains",
+    "zoneMapID": 1433
+   },
+   {
+    "complete": false,
+    "id": 246,
+    "level": 17,
+    "objectives": [
+     {
+      "done": false,
+      "have": 0,
+      "need": 10,
+      "text": "0/10 Redridge Mongrel slain"
+     },
+     {
+      "done": false,
+      "have": 0,
+      "need": 6,
+      "text": "0/6 Redridge Poacher slain"
+     }
+    ],
+    "rewards": {
+     "money": 700,
+     "xp": 750
+    },
+    "title": "Assessing the Threat",
+    "zone": "Redridge Mountains",
+    "zoneMapID": 1433
+   },
+   {
+    "complete": false,
+    "id": 98407,
+    "level": 17,
+    "objectives": [
+     {
+      "done": false,
+      "have": 0,
+      "need": 5,
+      "text": "0/5 Spiked Collar"
+     }
+    ],
+    "rewards": {
+     "xp": 750
+    },
+    "title": "Show of Force",
+    "zone": "Redridge Mountains",
+    "zoneMapID": 1433
+   },
+   {
+    "complete": false,
+    "id": 150,
+    "level": 20,
+    "objectives": [
+     {
+      "done": false,
+      "have": 0,
+      "need": 8,
+      "text": "0/8 Murloc Fin"
+     }
+    ],
+    "rewards": {
+     "items": [
+      {
+       "bindType": 1,
+       "classID": 2,
+       "count": 1,
+       "damageMax": 19,
+       "damageMin": 9,
+       "dps": 7.4,
+       "equipLoc": "INVTYPE_RANGEDRIGHT",
+       "id": 3567,
+       "itemLevel": 19,
+       "name": "Dwarven Fishing Pole",
+       "quality": 2,
+       "requiredLevel": 0,
+       "sellPrice": 922,
+       "speed": 1.9,
+       "statTokens": {
+        "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 7.4,
+        "ITEM_MOD_STRENGTH_SHORT": 2
+       },
+       "stats": {
+        "Strength": 2,
+        "damage per second": 7.4
+       },
+       "subType": "Guns",
+       "subclassID": 3,
+       "tooltip": [
+        "Dwarven Fishing Pole",
+        "Binds when picked up",
+        "Ranged | Gun",
+        "9 - 19 Damage | Speed 1.90",
+        "(7.4 damage per second)",
+        "+2 Strength",
+        "\"Dwarves aren't known for their subtlety.\"",
+        "You haven't collected this appearance"
+       ],
+       "type": "Weapon",
+       "usable": false
+      }
+     ],
+     "xp": 1550
+    },
+    "title": "Murloc Poachers",
+    "zone": "Redridge Mountains",
+    "zoneMapID": 1433
+   },
+   {
+    "complete": true,
+    "id": 94,
+    "level": 21,
+    "objectives": [
+     {
+      "done": true,
+      "have": 1,
+      "need": 1,
+      "text": "Take the Glyph of Azora to the Lion Statue near the Tower of Ilgalar in Redridge."
+     }
+    ],
+    "rewards": {
+     "xp": 1250
+    },
+    "title": "A Watchful Eye",
+    "zone": "Redridge Mountains",
+    "zoneMapID": 1433
+   },
+   {
+    "complete": false,
+    "id": 127,
+    "level": 21,
+    "objectives": [
+     {
+      "done": false,
+      "have": 0,
+      "need": 10,
+      "text": "0/10 Spotted Sunfish"
+     }
+    ],
+    "rewards": {
+     "items": [
+      {
+       "bindType": 0,
+       "classID": 0,
+       "count": 1,
+       "id": 3663,
+       "itemLevel": 10,
+       "name": "Murloc Fin Soup",
+       "quality": 1,
+       "requiredLevel": 1,
+       "sellPrice": 125,
+       "subType": "Food & Drink",
+       "subclassID": 5,
+       "type": "Consumable"
+      },
+      {
+       "bindType": 0,
+       "classID": 9,
+       "count": 1,
+       "id": 3680,
+       "itemLevel": 25,
+       "name": "Recipe: Murloc Fin Soup",
+       "quality": 1,
+       "requiredLevel": 0,
+       "sellPrice": 400,
+       "subType": "Cooking",
+       "subclassID": 5,
+       "type": "Recipe",
+       "usable": false
+      },
+      {
+       "bindType": 1,
+       "classID": 0,
+       "count": 5,
+       "id": 1322,
+       "itemLevel": 21,
+       "name": "Fishliver Oil",
+       "quality": 1,
+       "requiredLevel": 0,
+       "sellPrice": 68,
+       "subType": "Other",
+       "subclassID": 8,
+       "type": "Consumable"
+      }
+     ],
+     "money": 1000,
+     "xp": 1250
+    },
+    "title": "Selling Fish",
+    "zone": "Redridge Mountains",
+    "zoneMapID": 1433
+   },
+   {
+    "complete": false,
+    "id": 91,
+    "level": 23,
+    "objectives": [
+     {
+      "done": false,
+      "have": 0,
+      "need": 10,
+      "text": "0/10 Shadowhide Pendant"
+     }
+    ],
+    "rewards": {
+     "money": 1500,
+     "xp": 1850
+    },
+    "title": "Solomon's Law",
+    "zone": "Redridge Mountains",
+    "zoneMapID": 1433
+   },
+   {
+    "complete": false,
+    "id": 180,
+    "level": 26,
+    "objectives": [
+     {
+      "done": false,
+      "have": 0,
+      "need": 1,
+      "text": "0/1 Fangore's Paw"
+     }
+    ],
+    "rewards": {
+     "money": 4000,
+     "xp": 2650
+    },
+    "title": "WANTED: Lieutenant Fangore",
+    "zone": "Redridge Mountains",
+    "zoneMapID": 1433
+   },
+   {
+    "complete": false,
+    "id": 399,
+    "level": 15,
+    "objectives": [
+     {
+      "done": false,
+      "have": 0,
+      "need": 1,
+      "text": "0/1 A Simple Compass"
+     }
+    ],
+    "rewards": {
+     "money": 700,
+     "xp": 525
+    },
+    "title": "Humble Beginnings",
+    "zone": "Stormwind City",
+    "zoneMapID": 1453
+   },
+   {
+    "complete": false,
+    "id": 168,
+    "level": 18,
+    "objectives": [
+     {
+      "done": false,
+      "have": 0,
+      "need": 4,
+      "text": "0/4 Miners' Union Card"
+     }
+    ],
+    "rewards": {
+     "choices": [
+      {
+       "bindType": 1,
+       "classID": 4,
+       "count": 1,
+       "equipLoc": "INVTYPE_FEET",
+       "id": 2037,
+       "itemLevel": 18,
+       "name": "Tunneler's Boots",
+       "quality": 2,
+       "requiredLevel": 0,
+       "sellPrice": 469,
+       "statTokens": {
+        "ITEM_MOD_SPIRIT_SHORT": 2,
+        "ITEM_MOD_STAMINA_SHORT": 3,
+        "RESISTANCE0_NAME": 111
+       },
+       "stats": {
+        "Armor": 111,
+        "Spirit": 2,
+        "Stamina": 3
+       },
+       "subType": "Mail",
+       "subclassID": 3,
+       "tooltip": [
+        "Tunneler's Boots",
+        "Binds when picked up",
+        "Feet | Mail",
+        "111 Armor",
+        "+3 Stamina",
+        "+2 Spirit",
+        "You haven't collected this appearance"
+       ],
+       "type": "Armor",
+       "usable": false
+      },
+      {
+       "bindType": 1,
+       "classID": 4,
+       "count": 1,
+       "equipLoc": "INVTYPE_HAND",
+       "id": 2036,
+       "itemLevel": 18,
+       "name": "Dusty Mining Gloves",
+       "quality": 2,
+       "requiredLevel": 0,
+       "sellPrice": 258,
+       "statTokens": {
+        "ITEM_MOD_AGILITY_SHORT": 2,
+        "ITEM_MOD_STRENGTH_SHORT": 3,
+        "RESISTANCE0_NAME": 46
+       },
+       "stats": {
+        "Agility": 2,
+        "Armor": 46,
+        "Strength": 3
+       },
+       "subType": "Leather",
+       "subclassID": 2,
+       "tooltip": [
+        "Dusty Mining Gloves",
+        "Binds when picked up",
+        "Hands | Leather",
+        "46 Armor",
+        "+3 Strength",
+        "+2 Agility",
+        "You haven't collected this appearance"
+       ],
+       "type": "Armor"
+      },
+      {
+       "bindType": 1,
+       "classID": 4,
+       "count": 1,
+       "equipLoc": "INVTYPE_WAIST",
+       "id": 270007,
+       "itemLevel": 18,
+       "name": "Worn Miner's Waistcord",
+       "quality": 2,
+       "requiredLevel": 0,
+       "sellPrice": 281,
+       "statTokens": {
+        "ITEM_MOD_INTELLECT_SHORT": 3,
+        "ITEM_MOD_STAMINA_SHORT": 2,
+        "RESISTANCE0_NAME": 18
+       },
+       "stats": {
+        "Armor": 18,
+        "Intellect": 3,
+        "Stamina": 2
+       },
+       "subType": "Cloth",
+       "subclassID": 1,
+       "tooltip": [
+        "Worn Miner's Waistcord",
+        "Binds when picked up",
+        "Waist | Cloth",
+        "18 Armor",
+        "+2 Stamina",
+        "+3 Intellect",
+        "You haven't collected this appearance"
+       ],
+       "type": "Armor"
+      }
+     ],
+     "xp": 1350
+    },
+    "title": "Collecting Memories",
+    "zone": "The Deadmines"
+   },
+   {
+    "complete": false,
+    "id": 167,
+    "level": 20,
+    "objectives": [
+     {
+      "done": false,
+      "have": 0,
+      "need": 1,
+      "text": "0/1 Thistlenettle's Badge"
+     }
+    ],
+    "rewards": {
+     "choices": [
+      {
+       "bindType": 1,
+       "classID": 2,
+       "count": 1,
+       "damageMax": 55,
+       "damageMin": 36,
+       "dps": 13,
+       "equipLoc": "INVTYPE_2HWEAPON",
+       "id": 1893,
+       "itemLevel": 20,
+       "name": "Miner's Revenge",
+       "quality": 2,
+       "requiredLevel": 0,
+       "sellPrice": 1775,
+       "speed": 3.5,
+       "statTokens": {
+        "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 13,
+        "ITEM_MOD_SPIRIT_SHORT": 6
+       },
+       "stats": {
+        "Spirit": 6,
+        "damage per second": 13
+       },
+       "subType": "Two-Handed Axes",
+       "subclassID": 1,
+       "tooltip": [
+        "Miner's Revenge",
+        "Binds when picked up",
+        "Two-Hand | Axe",
+        "36 - 55 Damage | Speed 3.50",
+        "(13.0 damage per second)",
+        "+6 Spirit",
+        "You haven't collected this appearance"
+       ],
+       "type": "Weapon",
+       "usable": false
+      },
+      {
+       "bindType": 1,
+       "classID": 4,
+       "count": 1,
+       "equipLoc": "INVTYPE_HAND",
+       "id": 270012,
+       "itemLevel": 20,
+       "name": "Miner's Workgloves",
+       "quality": 2,
+       "requiredLevel": 0,
+       "sellPrice": 275,
+       "statTokens": {
+        "ITEM_MOD_STAMINA_SHORT": 5,
+        "RESISTANCE0_NAME": 21
+       },
+       "stats": {
+        "Armor": 21,
+        "Stamina": 5
+       },
+       "subType": "Cloth",
+       "subclassID": 1,
+       "tooltip": [
+        "Miner's Workgloves",
+        "Binds when picked up",
+        "Hands | Cloth",
+        "21 Armor",
+        "+5 Stamina",
+        "You haven't collected this appearance"
+       ],
+       "type": "Armor"
+      },
+      {
+       "bindType": 1,
+       "classID": 4,
+       "count": 1,
+       "equipLoc": "INVTYPE_FEET",
+       "id": 270013,
+       "itemLevel": 20,
+       "name": "Miner's Workboots",
+       "quality": 2,
+       "requiredLevel": 0,
+       "sellPrice": 547,
+       "statTokens": {
+        "ITEM_MOD_SPIRIT_SHORT": 5,
+        "RESISTANCE0_NAME": 53
+       },
+       "stats": {
+        "Armor": 53,
+        "Spirit": 5
+       },
+       "subType": "Leather",
+       "subclassID": 2,
+       "tooltip": [
+        "Miner's Workboots",
+        "Binds when picked up",
+        "Feet | Leather",
+        "53 Armor",
+        "+5 Spirit",
+        "You haven't collected this appearance"
+       ],
+       "type": "Armor"
+      }
+     ],
+     "xp": 1550
+    },
+    "title": "Oh Brother...",
+    "zone": "The Deadmines"
+   },
+   {
+    "complete": false,
+    "id": 12,
+    "level": 12,
+    "objectives": [
+     {
+      "done": false,
+      "have": 0,
+      "need": 15,
+      "text": "0/15 Defias Trapper slain"
+     },
+     {
+      "done": false,
+      "have": 2,
+      "need": 15,
+      "text": "2/15 Defias Smuggler slain"
+     }
+    ],
+    "rewards": {
+     "money": 500,
+     "xp": 460
+    },
+    "title": "The People's Militia",
+    "zone": "Westfall",
+    "zoneMapID": 1436
+   },
+   {
+    "complete": false,
+    "id": 117,
+    "level": 15,
+    "objectives": [
+     {
+      "done": false,
+      "have": 0,
+      "need": 5,
+      "text": "0/5 Hops"
+     }
+    ],
+    "rewards": {
+     "items": [
+      {
+       "bindType": 1,
+       "classID": 0,
+       "count": 1,
+       "id": 1262,
+       "itemLevel": 15,
+       "name": "Keg of Thunderbrew",
+       "quality": 1,
+       "requiredLevel": 0,
+       "sellPrice": 111,
+       "subType": "Other",
+       "subclassID": 8,
+       "type": "Consumable"
+      }
+     ]
+    },
+    "title": "Thunderbrew",
+    "zone": "Westfall",
+    "zoneMapID": 1436
+   },
+   {
+    "complete": true,
+    "id": 98461,
+    "level": 21,
+    "objectives": [
+     {
+      "done": true,
+      "have": 1,
+      "need": 1,
+      "text": "Deliver Hollee's Note to Tarrel Rockweaver near Menethil Harbor in the Wetlands."
+     }
+    ],
+    "rewards": {
+     "money": 125,
+     "xp": 170
+    },
+    "title": "Unrequited Love",
+    "zone": "Wetlands",
+    "zoneMapID": 1437
+   }
+  ],
+  "reason": "logout",
+  "reputation": [
+   {
+    "ceiling": 21000,
+    "floor": 9000,
+    "name": "Darnassus",
+    "standing": "Honored",
+    "value": 12010
+   },
+   {
+    "ceiling": 9000,
+    "floor": 3000,
+    "name": "Gnomeregan Exiles",
+    "standing": "Friendly",
+    "value": 5345
+   },
+   {
+    "ceiling": 9000,
+    "floor": 3000,
+    "name": "Ironforge",
+    "standing": "Friendly",
+    "value": 5995
+   },
+   {
+    "ceiling": 9000,
+    "floor": 3000,
+    "name": "Stormwind",
+    "standing": "Friendly",
+    "value": 5595
+   },
+   {
+    "ceiling": 3000,
+    "floor": 0,
+    "name": "Azeroth Commerce Authority",
+    "standing": "Neutral",
+    "value": 2000
+   }
+  ],
+  "spells": [
+   {
+    "icon": 135325,
+    "id": 6603,
+    "name": "Attack",
+    "tab": "General"
+   },
+   {
+    "icon": 132162,
+    "id": 5149,
+    "name": "Beast Training",
+    "tab": "General"
+   },
+   {
+    "icon": 136057,
+    "id": 1259799,
+    "name": "Elune's Light",
+    "rank": "Racial",
+    "selfBuff": true,
+    "tab": "General"
+   },
+   {
+    "icon": 132089,
+    "id": 20580,
+    "name": "Shadowmeld",
+    "rank": "Racial",
+    "selfBuff": true,
+    "tab": "General"
+   },
+   {
+    "icon": 132740,
+    "id": 1293712,
+    "name": "Armor Proficiency",
+    "passive": true,
+    "tab": "General"
+   },
+   {
+    "icon": 136047,
+    "id": 81,
+    "name": "Dodge",
+    "passive": true,
+    "rank": "Passive",
+    "tab": "General"
+   },
+   {
+    "icon": 132147,
+    "id": 674,
+    "name": "Dual Wield",
+    "passive": true,
+    "rank": "Passive",
+    "tab": "General"
+   },
+   {
+    "icon": 134331,
+    "id": 1293657,
+    "name": "Languages",
+    "passive": true,
+    "tab": "General"
+   },
+   {
+    "icon": 132269,
+    "id": 3127,
+    "name": "Parry",
+    "passive": true,
+    "rank": "Passive",
+    "tab": "General"
+   },
+   {
+    "icon": 132279,
+    "id": 20582,
+    "name": "Quickness",
+    "passive": true,
+    "rank": "Racial Passive",
+    "tab": "General"
+   },
+   {
+    "icon": 136116,
+    "id": 20585,
+    "name": "Wisp Spirit",
+    "passive": true,
+    "rank": "Racial Passive",
+    "tab": "General"
+   },
+   {
+    "icon": 236172,
+    "id": 253,
+    "name": "Aspect",
+    "tab": "Beast Mastery"
+   },
+   {
+    "icon": 132242,
+    "id": 5118,
+    "name": "Aspect of the Cheetah",
+    "selfBuff": true,
+    "tab": "Beast Mastery"
+   },
+   {
+    "icon": 136076,
+    "id": 13165,
+    "name": "Aspect of the Hawk",
+    "rank": "Rank 1",
+    "selfBuff": true,
+    "tab": "Beast Mastery"
+   },
+   {
+    "icon": 136076,
+    "id": 14318,
+    "name": "Aspect of the Hawk",
+    "rank": "Rank 2",
+    "selfBuff": true,
+    "tab": "Beast Mastery"
+   },
+   {
+    "icon": 132159,
+    "id": 13163,
+    "name": "Aspect of the Monkey",
+    "selfBuff": true,
+    "tab": "Beast Mastery"
+   },
+   {
+    "icon": 132185,
+    "id": 883,
+    "name": "Call Cat",
+    "tab": "Beast Mastery"
+   },
+   {
+    "icon": 136095,
+    "id": 2641,
+    "name": "Dismiss Pet",
+    "tab": "Beast Mastery"
+   },
+   {
+    "icon": 132172,
+    "id": 6197,
+    "name": "Eagle Eye",
+    "selfBuff": true,
+    "tab": "Beast Mastery"
+   },
+   {
+    "icon": 132165,
+    "id": 6991,
+    "name": "Feed Pet",
+    "tab": "Beast Mastery"
+   },
+   {
+    "icon": 132179,
+    "id": 136,
+    "name": "Mend Pet",
+    "rank": "Rank 1",
+    "tab": "Beast Mastery"
+   },
+   {
+    "icon": 132179,
+    "id": 3111,
+    "name": "Mend Pet",
+    "rank": "Rank 2",
+    "tab": "Beast Mastery"
+   },
+   {
+    "icon": 132164,
+    "id": 267,
+    "name": "Pet Utilities",
+    "tab": "Beast Mastery"
+   },
+   {
+    "icon": 132163,
+    "id": 982,
+    "name": "Revive Pet",
+    "tab": "Beast Mastery"
+   },
+   {
+    "icon": 132164,
+    "id": 1515,
+    "name": "Tame Beast",
+    "tab": "Beast Mastery"
+   },
+   {
+    "icon": 132294,
+    "id": 781,
+    "name": "Disengage",
+    "rank": "Rank 1",
+    "tab": "Survival"
+   },
+   {
+    "icon": 135834,
+    "id": 1499,
+    "name": "Freezing Trap",
+    "rank": "Rank 1",
+    "tab": "Survival"
+   },
+   {
+    "icon": 135813,
+    "id": 13795,
+    "name": "Immolation Trap",
+    "rank": "Rank 1",
+    "tab": "Survival"
+   },
+   {
+    "icon": 132223,
+    "id": 2973,
+    "name": "Raptor Strike",
+    "rank": "Rank 1",
+    "tab": "Survival"
+   },
+   {
+    "icon": 132223,
+    "id": 14260,
+    "name": "Raptor Strike",
+    "rank": "Rank 2",
+    "tab": "Survival"
+   },
+   {
+    "icon": 132223,
+    "id": 14261,
+    "name": "Raptor Strike",
+    "rank": "Rank 3",
+    "tab": "Survival"
+   },
+   {
+    "icon": 132328,
+    "id": 1494,
+    "name": "Track Beasts",
+    "selfBuff": true,
+    "tab": "Survival"
+   },
+   {
+    "icon": 132328,
+    "id": 268,
+    "name": "Tracking",
+    "tab": "Survival"
+   },
+   {
+    "icon": 132309,
+    "id": 2974,
+    "name": "Wing Clip",
+    "rank": "Rank 1",
+    "tab": "Survival"
+   },
+   {
+    "icon": 135130,
+    "id": 19434,
+    "name": "Aimed Shot",
+    "rank": "Rank 1",
+    "tab": "Marksmanship"
+   },
+   {
+    "icon": 132218,
+    "id": 3044,
+    "name": "Arcane Shot",
+    "rank": "Rank 1",
+    "tab": "Marksmanship"
+   },
+   {
+    "icon": 132218,
+    "id": 14281,
+    "name": "Arcane Shot",
+    "rank": "Rank 2",
+    "tab": "Marksmanship"
+   },
+   {
+    "icon": 132218,
+    "id": 14282,
+    "name": "Arcane Shot",
+    "rank": "Rank 3",
+    "tab": "Marksmanship"
+   },
+   {
+    "icon": 135495,
+    "id": 75,
+    "name": "Auto Shot",
+    "tab": "Marksmanship"
+   },
+   {
+    "icon": 135860,
+    "id": 5116,
+    "name": "Concussive Shot",
+    "tab": "Marksmanship"
+   },
+   {
+    "icon": 132212,
+    "id": 1130,
+    "name": "Hunter's Mark",
+    "rank": "Rank 1",
+    "tab": "Marksmanship"
+   },
+   {
+    "icon": 132212,
+    "id": 14323,
+    "name": "Hunter's Mark",
+    "rank": "Rank 2",
+    "tab": "Marksmanship"
+   },
+   {
+    "icon": 132330,
+    "id": 2643,
+    "name": "Multi-Shot",
+    "tab": "Marksmanship"
+   },
+   {
+    "icon": 132169,
+    "id": 3043,
+    "name": "Scorpid Sting",
+    "tab": "Marksmanship"
+   },
+   {
+    "icon": 132204,
+    "id": 1978,
+    "name": "Serpent Sting",
+    "rank": "Rank 1",
+    "tab": "Marksmanship"
+   },
+   {
+    "icon": 132204,
+    "id": 13549,
+    "name": "Serpent Sting",
+    "rank": "Rank 2",
+    "tab": "Marksmanship"
+   },
+   {
+    "icon": 132204,
+    "id": 13550,
+    "name": "Serpent Sting",
+    "rank": "Rank 3",
+    "tab": "Marksmanship"
+   }
+  ],
+  "stats": {
+   "agility": 92,
+   "armor": 574,
+   "attackPower": 162,
+   "critChance": 4.3,
+   "dodgeChance": 10.9,
+   "healthMax": 885,
+   "intellect": 47,
+   "manaMax": 966,
+   "meleeDamageMax": 74.1,
+   "meleeDamageMin": 51.6,
+   "meleeSpeed": 2,
+   "parryChance": 4.5,
+   "rangedAttackPower": 222,
+   "rangedCritChance": 5.1,
+   "rangedDamageMax": 52.9,
+   "rangedDamageMin": 43.7,
+   "rangedSpeed": 1.3,
+   "spirit": 37,
+   "stamina": 51,
+   "strength": 32
+  },
+  "talents": {
+   "nodes": [
+    {
+     "available": true,
+     "canPurchase": false,
+     "column": 2,
+     "description": "While Aspect of the Hawk is active, Auto Shot has a 10% chance of increasing ranged attack speed by 30% for 12 sec. While Aspect of the Beast is active, all melee auto attacks have a 10% chance of increasing melee attack speed by 30% for 12 sec.",
+     "maxRank": 5,
+     "name": "Deadly Aspects",
+     "posX": 1620,
+     "posY": 2130,
+     "rank": 5,
+     "row": 1,
+     "spellID": 19552,
+     "tree": "Beast Mastery"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 2,
+     "description": "Send your pet into a rage causing 50% additional damage for 18 sec.  While enraged, the beast does not feel pity or remorse or fear and it cannot be stopped unless killed.",
+     "maxRank": 1,
+     "name": "Bestial Wrath",
+     "posX": 1620,
+     "posY": 5730,
+     "rank": 0,
+     "row": 7,
+     "spellID": 19574,
+     "tree": "Beast Mastery"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 3,
+     "description": "Gives your pet a 20% chance to gain a 30% attack speed increase for 8 sec after dealing a critical strike.",
+     "maxRank": 5,
+     "name": "Frenzy",
+     "posX": 2220,
+     "posY": 5130,
+     "rank": 0,
+     "row": 6,
+     "spellID": 19621,
+     "tree": "Beast Mastery"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 4,
+     "description": "Increases the Focus regeneration of your pets by 100% and allows 50% of your Mana regeneration to continue while casting.",
+     "maxRank": 2,
+     "name": "Bestial Discipline",
+     "posX": 2820,
+     "posY": 4530,
+     "rank": 0,
+     "row": 5,
+     "spellID": 19590,
+     "tree": "Beast Mastery"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 2,
+     "description": "Command your pet to Stun the target for 3 sec on its next successful attack, which also gains 100% increased critical strike chance. Generates high threat.",
+     "maxRank": 1,
+     "name": "Intimidation",
+     "posX": 1620,
+     "posY": 4530,
+     "rank": 0,
+     "row": 5,
+     "spellID": 19577,
+     "tree": "Beast Mastery"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 1,
+     "description": "While your pet is active, you and your pet will regenerate 1% of total health every 5 sec.",
+     "maxRank": 2,
+     "name": "Spirit Bond",
+     "posX": 1020,
+     "posY": 4530,
+     "rank": 0,
+     "row": 5,
+     "spellID": 19578,
+     "tree": "Beast Mastery"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 4,
+     "description": "Command a hawk to dive-bomb your targeted enemy, dealing 46 Physical damage and continuing its assault for 18 sec. Only 2 hawks can be active at once. Summon Hawk shares its cooldown with Arcane Shot.",
+     "maxRank": 1,
+     "name": "Summon Hawk",
+     "posX": 2820,
+     "posY": 3930,
+     "rank": 0,
+     "row": 4,
+     "spellID": 1293241,
+     "tree": "Beast Mastery"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 3,
+     "description": "Increases the critical strike chance of your pets and hawks by 16%.",
+     "maxRank": 5,
+     "name": "Ferocity",
+     "posX": 2220,
+     "posY": 3930,
+     "rank": 0,
+     "row": 4,
+     "spellID": 19598,
+     "tree": "Beast Mastery"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 1,
+     "description": "Gives your Mend Pet spell a 50% chance of cleansing 1 Curse, Disease, Magic, or Poison effect from your pet each time it heals and reduces the Mana cost by 20%.",
+     "maxRank": 2,
+     "name": "Improved Mend Pet",
+     "posX": 1020,
+     "posY": 3930,
+     "rank": 0,
+     "row": 4,
+     "spellID": 19572,
+     "tree": "Beast Mastery"
+    },
+    {
+     "available": true,
+     "canPurchase": true,
+     "column": 3,
+     "description": "Increases the damage done by your pets and hawks by 20%.",
+     "maxRank": 5,
+     "name": "Unleashed Fury",
+     "posX": 2220,
+     "posY": 3330,
+     "rank": 1,
+     "row": 3,
+     "spellID": 19616,
+     "tree": "Beast Mastery"
+    },
+    {
+     "available": true,
+     "canPurchase": false,
+     "column": 2,
+     "description": "Increases the movement speed of your pets by 30%.",
+     "maxRank": 1,
+     "name": "Bestial Swiftness",
+     "posX": 1620,
+     "posY": 3330,
+     "rank": 1,
+     "row": 3,
+     "spellID": 19596,
+     "tree": "Beast Mastery"
+    },
+    {
+     "available": true,
+     "canPurchase": false,
+     "column": 3,
+     "description": "Revive Pet's casting time is reduced by 6 sec, mana cost is reduced by 40%, and increases the health your pet returns with by an additional 30%.",
+     "maxRank": 2,
+     "name": "Improved Revive Pet",
+     "posX": 2220,
+     "posY": 2730,
+     "rank": 2,
+     "row": 2,
+     "spellID": 24443,
+     "tree": "Beast Mastery"
+    },
+    {
+     "available": true,
+     "canPurchase": false,
+     "column": 1,
+     "description": "Increases the speed bonus of your Aspect of the Cheetah and Aspect of the Pack by 6%.",
+     "maxRank": 2,
+     "name": "Pathfinding",
+     "posX": 1020,
+     "posY": 3330,
+     "rank": 2,
+     "row": 3,
+     "spellID": 19559,
+     "tree": "Beast Mastery"
+    },
+    {
+     "available": true,
+     "canPurchase": true,
+     "column": 2,
+     "description": "Increases the Dodge bonus of your Aspect of the Monkey by 4%. Additionally, your pet gains 50% of the effect of your Aspect of the Monkey ability.",
+     "maxRank": 3,
+     "name": "Improved Aspect of the Monkey",
+     "posX": 1620,
+     "posY": 2730,
+     "rank": 0,
+     "row": 2,
+     "spellID": 19549,
+     "tree": "Beast Mastery"
+    },
+    {
+     "available": true,
+     "canPurchase": false,
+     "column": 1,
+     "description": "Increases all damage you and your pet deal by 2% while your pet is active.",
+     "maxRank": 2,
+     "name": "Focused Fire",
+     "posX": 1020,
+     "posY": 2730,
+     "rank": 2,
+     "row": 2,
+     "spellID": 1223755,
+     "tree": "Beast Mastery"
+    },
+    {
+     "available": true,
+     "canPurchase": true,
+     "column": 3,
+     "description": "Increases the Health and Armor of your pets by 15%.",
+     "maxRank": 5,
+     "name": "Endurance Training",
+     "posX": 2220,
+     "posY": 2130,
+     "rank": 1,
+     "row": 1,
+     "spellID": 19583,
+     "tree": "Beast Mastery"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 4,
+     "description": "A powerful kick that deals 100% melee weapon damage and increases movement speed by 30% for 3 sec.",
+     "maxRank": 1,
+     "name": "Strider Kick",
+     "posX": 10880,
+     "posY": 4530,
+     "rank": 0,
+     "row": 5,
+     "spellID": 1317257,
+     "tree": "Survival"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 3,
+     "description": "Increases your Agility by 15%.",
+     "maxRank": 5,
+     "name": "Lightning Reflexes",
+     "posX": 102800,
+     "posY": 5740,
+     "rank": 0,
+     "row": 7,
+     "spellID": 19168,
+     "tree": "Survival"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 1,
+     "description": "Reduces the Mana cost of your Trap and melee abilities by 60%, and grants your melee and ranged ability Critical Strikes a 100% chance to allow 50% of your Mana Regeneration to continue while casting for 30 sec.",
+     "maxRank": 2,
+     "name": "Resourcefulness",
+     "posX": 9080,
+     "posY": 4530,
+     "rank": 0,
+     "row": 5,
+     "spellID": 440529,
+     "tree": "Survival"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 2,
+     "description": "Your Mongoose Bite also causes the target to Bleed for damage equal to 40% of the damage done by Mongoose Bite over 21 sec",
+     "maxRank": 1,
+     "name": "Lacerating Strikes",
+     "posX": 9680,
+     "posY": 5730,
+     "rank": 0,
+     "row": 7,
+     "spellID": 1310533,
+     "tree": "Survival"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 2,
+     "description": "Grants your melee and ranged attacks against enemies afflicted by Hunter's Mark a 10% chance to allow an activation of Mongoose Bite. Lasts 10 sec.",
+     "maxRank": 2,
+     "name": "Expose Prey",
+     "posX": 9680,
+     "posY": 4530,
+     "rank": 0,
+     "row": 5,
+     "spellID": 1310532,
+     "tree": "Survival"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 3,
+     "description": "When activated, increases your Dodge and Parry chance by 25% for 10 sec.",
+     "maxRank": 1,
+     "name": "Deterrence",
+     "posX": 10280,
+     "posY": 3330,
+     "rank": 0,
+     "row": 3,
+     "spellID": 19263,
+     "tree": "Survival"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 2,
+     "description": "Increases your hit chance by 3% and reduces the duration of movement impairing effects on you by 30%.",
+     "maxRank": 3,
+     "name": "Surefooted",
+     "posX": 9680,
+     "posY": 3330,
+     "rank": 0,
+     "row": 3,
+     "spellID": 19290,
+     "tree": "Survival"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 1,
+     "description": "Increases your chance to hit with your Trap and Feign Death abilities by 17%.",
+     "maxRank": 2,
+     "name": "Survival Tactics",
+     "posX": 9080,
+     "posY": 3930,
+     "rank": 0,
+     "row": 4,
+     "spellID": 19376,
+     "tree": "Survival"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 3,
+     "description": "A strike that becomes active after parrying an opponent's attack. This attack deals 50% weapon damage plus 13.3 and immobilizes the target for 5 sec. Counterattack cannot be blocked, dodged, or parried.",
+     "maxRank": 1,
+     "name": "Counterattack",
+     "posX": 10280,
+     "posY": 3930,
+     "rank": 0,
+     "row": 4,
+     "spellID": 19306,
+     "tree": "Survival"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 4,
+     "description": "Gives your Wing Clip ability a 20% chance to immobilize the target for 5 sec.",
+     "maxRank": 3,
+     "name": "Improved Wing Clip",
+     "posX": 10880,
+     "posY": 2730,
+     "rank": 0,
+     "row": 2,
+     "spellID": 19228,
+     "tree": "Survival"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 1,
+     "description": "Increases the duration of Freezing and Frost trap effects by 30% and the damage of Immolation and Explosive trap effects by 30%.",
+     "maxRank": 2,
+     "name": "Clever Traps",
+     "posX": 9080,
+     "posY": 3330,
+     "rank": 0,
+     "row": 3,
+     "spellID": 19239,
+     "tree": "Survival"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 3,
+     "description": "Increases your total Health by 10%.",
+     "maxRank": 5,
+     "name": "Survivalist",
+     "posX": 10280,
+     "posY": 2730,
+     "rank": 0,
+     "row": 2,
+     "spellID": 19255,
+     "tree": "Survival"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 2,
+     "description": "Increases the critical strike chance of all your melee abilities by 20%.",
+     "maxRank": 2,
+     "name": "Savage Strikes",
+     "posX": 9680,
+     "posY": 2730,
+     "rank": 0,
+     "row": 2,
+     "spellID": 19159,
+     "tree": "Survival"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 1,
+     "description": "When your traps are triggered, all affected targets are Entrapped, preventing them from moving for 5 sec.",
+     "maxRank": 5,
+     "name": "Entrapment",
+     "posX": 9080,
+     "posY": 2730,
+     "rank": 0,
+     "row": 2,
+     "spellID": 19184,
+     "tree": "Survival"
+    },
+    {
+     "available": true,
+     "canPurchase": true,
+     "column": 3,
+     "description": "Increases your Parry chance by 5%.",
+     "maxRank": 5,
+     "name": "Deflection",
+     "posX": 10280,
+     "posY": 2130,
+     "rank": 0,
+     "row": 1,
+     "spellID": 19295,
+     "tree": "Survival"
+    },
+    {
+     "available": true,
+     "canPurchase": true,
+     "column": 2,
+     "description": "While tracking Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids, or Undead, all damage you deal to the tracked creature type is increased by 5%.",
+     "maxRank": 5,
+     "name": "Improved Tracking",
+     "posX": 9680,
+     "posY": 2130,
+     "rank": 0,
+     "row": 1,
+     "spellID": 24293,
+     "tree": "Survival"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 2,
+     "description": "A long-range shot that deals ranged damage plus 326 and increases the range of your next 3 Shots by 10 yards for 10 sec.",
+     "maxRank": 1,
+     "name": "Sniper Shot",
+     "posX": 5620,
+     "posY": 5730,
+     "rank": 0,
+     "row": 7,
+     "spellID": 1310687,
+     "tree": "Marksmanship"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 3,
+     "description": "Increases the damage you deal with ranged weapons by 5%.",
+     "maxRank": 5,
+     "name": "Ranged Weapon Specialization",
+     "posX": 6220,
+     "posY": 5130,
+     "rank": 0,
+     "row": 6,
+     "spellID": 19507,
+     "tree": "Marksmanship"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 1,
+     "description": "Afflicting a target with Serpent Sting allows 50% of your Mana Regeneration to continue while casting for 15 sec, increased to 100% when Rapid Killing is consumed.",
+     "maxRank": 2,
+     "name": "Rapid Recuperation",
+     "posX": 5020,
+     "posY": 4530,
+     "rank": 0,
+     "row": 5,
+     "spellID": 1223987,
+     "tree": "Marksmanship"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 4,
+     "description": "A short-range shot that deals 50% weapon damage and disorients the target for 4 sec.  Any damage caused will remove the effect.  Turns off your attack when used.",
+     "maxRank": 1,
+     "name": "Scatter Shot",
+     "posX": 6820,
+     "posY": 4530,
+     "rank": 0,
+     "row": 5,
+     "spellID": 19503,
+     "tree": "Marksmanship"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 3,
+     "description": "Increases the damage done by your Multi-Shot, Aimed Shot, and Volley abilities by 15%.",
+     "maxRank": 3,
+     "name": "Barrage",
+     "posX": 6220,
+     "posY": 4530,
+     "rank": 0,
+     "row": 5,
+     "spellID": 19461,
+     "tree": "Marksmanship"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 3,
+     "description": "Increases the critical strike damage bonus on all ranged abilities by 30%.",
+     "maxRank": 5,
+     "name": "Mortal Shots",
+     "posX": 6220,
+     "posY": 3930,
+     "rank": 0,
+     "row": 4,
+     "spellID": 19485,
+     "tree": "Marksmanship"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 4,
+     "description": "Increases the damage done by your Serpent Sting by 10%.",
+     "maxRank": 5,
+     "name": "Improved Serpent Sting",
+     "posX": 6820,
+     "posY": 39300,
+     "rank": 0,
+     "row": 4,
+     "spellID": 19464,
+     "tree": "Marksmanship"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 2,
+     "description": "Increases the Ranged Attack Power of party or raid members within 45 yds by 20.",
+     "maxRank": 1,
+     "name": "Trueshot Aura",
+     "posX": 5620,
+     "posY": 3930,
+     "rank": 0,
+     "row": 4,
+     "spellID": 1299346,
+     "tree": "Marksmanship"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 1,
+     "description": "Reduces the cooldown on your Rapid Fire ability by 2 min. In addition, when you kill a non-trivial enemy or it dies while afflicted by your Serpent Sting, you gain Rapid Killing, increasing the damage of your next Shot ability within 20 sec by 20%.",
+     "maxRank": 2,
+     "name": "Rapid Killing",
+     "posX": 5020,
+     "posY": 3330,
+     "rank": 0,
+     "row": 3,
+     "spellID": 415405,
+     "tree": "Marksmanship"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 2,
+     "description": "Reduces the cooldown of your Arcane Shot by 1.5 sec. Does not affect the cooldown of abilities which share a cooldown with Arcane Shot.",
+     "maxRank": 5,
+     "name": "Improved Arcane Shot",
+     "posX": 5620,
+     "posY": 3330,
+     "rank": 0,
+     "row": 3,
+     "spellID": 19454,
+     "tree": "Marksmanship"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 4,
+     "description": "You deal 20% increased damage with all attacks while you do not have an active pet.",
+     "maxRank": 1,
+     "name": "Lone Wolf",
+     "posX": 6820,
+     "posY": 3330,
+     "rank": 0,
+     "row": 3,
+     "spellID": 415370,
+     "tree": "Marksmanship"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 3,
+     "description": "Increases your Attack Power by 100% of your Intellect.",
+     "maxRank": 5,
+     "name": "Careful Aim",
+     "posX": 6220,
+     "posY": 2730,
+     "rank": 0,
+     "row": 2,
+     "spellID": 1223984,
+     "tree": "Marksmanship"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 2,
+     "description": "Reduces the Mana cost of your Shots, Stings, and melee abilities by 15%.",
+     "maxRank": 5,
+     "name": "Efficiency",
+     "posX": 5620,
+     "posY": 2730,
+     "rank": 0,
+     "row": 2,
+     "spellID": 19416,
+     "tree": "Marksmanship"
+    },
+    {
+     "available": true,
+     "canPurchase": true,
+     "column": 3,
+     "description": "Increases your critical strike chance with all attacks by 1%.",
+     "maxRank": 5,
+     "name": "Lethal Attacks",
+     "posX": 6220,
+     "posY": 2130,
+     "rank": 0,
+     "row": 1,
+     "spellID": 19426,
+     "tree": "Marksmanship"
+    },
+    {
+     "available": true,
+     "canPurchase": true,
+     "column": 2,
+     "description": "Gives your Concussive Shot a 0% chance to stun the target for 3 sec.",
+     "maxRank": 5,
+     "name": "Improved Concussive Shot",
+     "posX": 5620,
+     "posY": 2130,
+     "rank": 0,
+     "row": 1,
+     "spellID": 19407,
+     "tree": "Marksmanship"
+    },
+    {
+     "available": true,
+     "canPurchase": true,
+     "column": 1,
+     "description": "Increases the range of your ranged weapons by 6 yards.",
+     "maxRank": 3,
+     "name": "Hawk Eye",
+     "posX": 5020,
+     "posY": 2130,
+     "rank": 0,
+     "row": 1,
+     "spellID": 19498,
+     "tree": "Marksmanship"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 3,
+     "description": "Increases your Agility by 15%.",
+     "maxRank": 5,
+     "name": "Lightning Reflexes",
+     "posX": 10280,
+     "posY": 5130,
+     "rank": 0,
+     "row": 6,
+     "spellID": 19168,
+     "tree": "Survival"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 3,
+     "description": "Reduces the cooldown of your Trap and Deterrence abilities by 40%.",
+     "maxRank": 2,
+     "name": "Survivalist's Discipline",
+     "posX": 10280,
+     "posY": 4530,
+     "rank": 0,
+     "row": 5,
+     "spellID": 1310496,
+     "tree": "Survival"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 2,
+     "description": "Increases your melee ability critical strike damage by 30% and your Off Hand weapon damage by 50%.",
+     "maxRank": 5,
+     "name": "Predator's Edge",
+     "posX": 9680,
+     "posY": 3930,
+     "rank": 0,
+     "row": 4,
+     "spellID": 1310627,
+     "tree": "Survival"
+    },
+    {
+     "available": false,
+     "canPurchase": false,
+     "column": 1,
+     "description": "Increases the damage of your Serpent Sting ability by 20%, reduces the cooldown of your Viper Sting ability by 6 sec, and increases the duration of your Scorpid Sting ability by 45 sec.",
+     "maxRank": 3,
+     "name": "Improved Stings",
+     "posX": 5020,
+     "posY": 2730,
+     "rank": 0,
+     "row": 2,
+     "spellID": 1310661,
+     "tree": "Marksmanship"
+    }
+   ],
+   "points": [
+    {
+     "maxRank": 5,
+     "name": "Deadly Aspects",
+     "rank": 5,
+     "tree": "Beast Mastery"
+    },
+    {
+     "maxRank": 5,
+     "name": "Unleashed Fury",
+     "rank": 1,
+     "tree": "Beast Mastery"
+    },
+    {
+     "maxRank": 1,
+     "name": "Bestial Swiftness",
+     "rank": 1,
+     "tree": "Beast Mastery"
+    },
+    {
+     "maxRank": 2,
+     "name": "Improved Revive Pet",
+     "rank": 2,
+     "tree": "Beast Mastery"
+    },
+    {
+     "maxRank": 2,
+     "name": "Pathfinding",
+     "rank": 2,
+     "tree": "Beast Mastery"
+    },
+    {
+     "maxRank": 2,
+     "name": "Focused Fire",
+     "rank": 2,
+     "tree": "Beast Mastery"
+    },
+    {
+     "maxRank": 5,
+     "name": "Endurance Training",
+     "rank": 1,
+     "tree": "Beast Mastery"
+    }
+   ],
+   "source": "traits",
+   "spent": 14,
+   "trees": [
+    {
+     "name": "Beast Mastery",
+     "points": 14
+    },
+    {
+     "name": "Marksmanship",
+     "points": 0
+    },
+    {
+     "name": "Survival",
+     "points": 0
+    }
+   ],
+   "unspent": 0
+  },
+  "timings": {
+   "slowest": [
+    {
+     "ms": 5.7,
+     "name": "quests"
+    },
+    {
+     "ms": 4.6,
+     "name": "equipment"
+    },
+    {
+     "ms": 4.3,
+     "name": "bags"
+    },
+    {
+     "ms": 3.6,
+     "name": "completedQuests"
+    },
+    {
+     "ms": 3,
+     "name": "talents"
+    }
+   ],
+   "totalMs": 26.1
+  },
+  "trainer": {
+   "capturedAt": 1794789025,
+   "npc": "Sprite Jumpsprocket",
+   "services": [
+    {
+     "category": "available",
+     "costCopper": 10,
+     "levelRequired": 1,
+     "name": "Apprentice Engineer"
+    }
+   ]
+  },
+  "trainers": {
+   "Einris Brightspear": {
+    "capturedAt": 1794788966,
+    "npc": "Einris Brightspear",
+    "services": [
+     {
+      "category": "available",
+      "costCopper": 400,
+      "levelRequired": 10,
+      "name": "Track Humanoids"
+     },
+     {
+      "category": "available",
+      "costCopper": 600,
+      "levelRequired": 12,
+      "name": "Distracting Shot",
+      "rank": "Rank 1"
+     },
+     {
+      "category": "available",
+      "costCopper": 1200,
+      "levelRequired": 14,
+      "name": "Eyes of the Beast"
+     },
+     {
+      "category": "available",
+      "costCopper": 1200,
+      "levelRequired": 14,
+      "name": "Scare Beast",
+      "rank": "Rank 1"
+     },
+     {
+      "category": "available",
+      "costCopper": 1500,
+      "levelRequired": 16,
+      "name": "Mongoose Bite",
+      "rank": "Rank 1"
+     },
+     {
+      "category": "available",
+      "costCopper": 1600,
+      "levelRequired": 18,
+      "name": "Track Undead"
+     }
+    ]
+   },
+   "Karrina Mekenda": {
+    "capturedAt": 1794788935,
+    "npc": "Karrina Mekenda",
+    "services": [
+     {
+      "category": "unavailable",
+      "costCopper": 1400,
+      "levelRequired": 24,
+      "name": "Great Stamina"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 1400,
+      "levelRequired": 24,
+      "name": "Natural Armor"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 1600,
+      "levelRequired": 30,
+      "name": "Arcane Resistance"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 1600,
+      "levelRequired": 30,
+      "name": "Fire Resistance"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 1600,
+      "levelRequired": 30,
+      "name": "Frost Resistance"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 1600,
+      "levelRequired": 30,
+      "name": "Great Stamina"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 1600,
+      "levelRequired": 30,
+      "name": "Growl"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 1600,
+      "levelRequired": 30,
+      "name": "Natural Armor"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 1600,
+      "levelRequired": 30,
+      "name": "Nature Resistance"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 1600,
+      "levelRequired": 30,
+      "name": "Shadow Resistance"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 2800,
+      "levelRequired": 36,
+      "name": "Great Stamina"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 2800,
+      "levelRequired": 36,
+      "name": "Natural Armor"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 3600,
+      "levelRequired": 40,
+      "name": "Arcane Resistance"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 3600,
+      "levelRequired": 40,
+      "name": "Fire Resistance"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 3600,
+      "levelRequired": 40,
+      "name": "Frost Resistance"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 3600,
+      "levelRequired": 40,
+      "name": "Growl"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 3600,
+      "levelRequired": 40,
+      "name": "Nature Resistance"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 3600,
+      "levelRequired": 40,
+      "name": "Shadow Resistance"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 4800,
+      "levelRequired": 42,
+      "name": "Great Stamina"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 4800,
+      "levelRequired": 42,
+      "name": "Natural Armor"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 6400,
+      "levelRequired": 48,
+      "name": "Great Stamina"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 6400,
+      "levelRequired": 48,
+      "name": "Natural Armor"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 7200,
+      "levelRequired": 50,
+      "name": "Arcane Resistance"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 7200,
+      "levelRequired": 50,
+      "name": "Fire Resistance"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 7200,
+      "levelRequired": 50,
+      "name": "Frost Resistance"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 7200,
+      "levelRequired": 50,
+      "name": "Growl"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 7200,
+      "levelRequired": 50,
+      "name": "Nature Resistance"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 7200,
+      "levelRequired": 50,
+      "name": "Shadow Resistance"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 8400,
+      "levelRequired": 54,
+      "name": "Great Stamina"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 8400,
+      "levelRequired": 54,
+      "name": "Natural Armor"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 10000,
+      "levelRequired": 60,
+      "name": "Great Stamina"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 10000,
+      "levelRequired": 60,
+      "name": "Growl"
+     },
+     {
+      "category": "unavailable",
+      "costCopper": 10000,
+      "levelRequired": 60,
+      "name": "Natural Armor"
+     }
+    ]
+   },
+   "Sprite Jumpsprocket": {
+    "capturedAt": 1794789025,
+    "npc": "Sprite Jumpsprocket",
+    "services": [
+     {
+      "category": "available",
+      "costCopper": 10,
+      "levelRequired": 1,
+      "name": "Apprentice Engineer"
+     }
+    ]
+   }
+  },
+  "vendor": {
+   "canRepair": false,
+   "capturedAt": 1794839734,
+   "items": [
+    {
+     "bindType": 0,
+     "classID": 2,
+     "damageMax": 2,
+     "damageMin": 1,
+     "dps": 0.8,
+     "equipLoc": "INVTYPE_WEAPONMAINHAND",
+     "id": 5956,
+     "index": 1,
+     "itemLevel": 1,
+     "name": "Blacksmith Hammer",
+     "priceCopper": 18,
+     "quality": 1,
+     "requiredLevel": 1,
+     "sellPrice": 3,
+     "speed": 2,
+     "stack": 1,
+     "statTokens": {
+      "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 0.8
+     },
+     "stats": {
+      "damage per second": 0.8
+     },
+     "subType": "Miscellaneous",
+     "subclassID": 14,
+     "tooltip": [
+      "Blacksmith Hammer",
+      "Main Hand",
+      "1 - 2 Damage | Speed 2.00",
+      "(0.7 damage per second)"
+     ],
+     "type": "Weapon"
+    },
+    {
+     "bindType": 0,
+     "classID": 2,
+     "damageMax": 4,
+     "damageMin": 2,
+     "dps": 1.5,
+     "equipLoc": "INVTYPE_WEAPONMAINHAND",
+     "id": 2901,
+     "index": 2,
+     "itemLevel": 4,
+     "name": "Mining Pick",
+     "priceCopper": 10,
+     "quality": 1,
+     "requiredLevel": 1,
+     "sellPrice": 2,
+     "speed": 2,
+     "stack": 1,
+     "statTokens": {
+      "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 1.5
+     },
+     "stats": {
+      "damage per second": 1.5
+     },
+     "subType": "Miscellaneous",
+     "subclassID": 14,
+     "tooltip": [
+      "Mining Pick",
+      "Main Hand",
+      "2 - 4 Damage | Speed 2.00",
+      "(1.5 damage per second)",
+      "\"Miners need a mining pick for digging.\""
+     ],
+     "type": "Weapon"
+    },
+    {
+     "bindType": 0,
+     "classID": 7,
+     "id": 4399,
+     "index": 3,
+     "itemLevel": 10,
+     "name": "Wooden Stock",
+     "priceCopper": 200,
+     "quality": 1,
+     "requiredLevel": 0,
+     "sellPrice": 50,
+     "stack": 1,
+     "subType": "Parts",
+     "subclassID": 1,
+     "type": "Trade Goods"
+    },
+    {
+     "bindType": 0,
+     "classID": 7,
+     "id": 4400,
+     "index": 4,
+     "itemLevel": 25,
+     "name": "Heavy Stock",
+     "priceCopper": 2000,
+     "quality": 1,
+     "requiredLevel": 0,
+     "sellPrice": 500,
+     "stack": 1,
+     "subType": "Parts",
+     "subclassID": 1,
+     "type": "Trade Goods"
+    },
+    {
+     "bindType": 0,
+     "classID": 7,
+     "id": 2880,
+     "index": 5,
+     "itemLevel": 5,
+     "name": "Weak Flux",
+     "priceCopper": 100,
+     "quality": 1,
+     "requiredLevel": 0,
+     "sellPrice": 25,
+     "stack": 1,
+     "subType": "Other",
+     "subclassID": 11,
+     "type": "Trade Goods"
+    },
+    {
+     "bindType": 0,
+     "classID": 7,
+     "id": 3466,
+     "index": 6,
+     "itemLevel": 25,
+     "name": "Strong Flux",
+     "priceCopper": 2000,
+     "quality": 1,
+     "requiredLevel": 0,
+     "sellPrice": 500,
+     "stack": 1,
+     "subType": "Other",
+     "subclassID": 11,
+     "type": "Trade Goods"
+    },
+    {
+     "bindType": 0,
+     "classID": 7,
+     "id": 10648,
+     "index": 7,
+     "itemLevel": 40,
+     "name": "Blank Parchment",
+     "priceCopper": 500,
+     "quality": 1,
+     "requiredLevel": 0,
+     "sellPrice": 125,
+     "stack": 1,
+     "subType": "Other",
+     "subclassID": 11,
+     "type": "Trade Goods"
+    },
+    {
+     "bindType": 0,
+     "classID": 7,
+     "id": 10647,
+     "index": 8,
+     "itemLevel": 50,
+     "name": "Engineer's Ink",
+     "priceCopper": 2000,
+     "quality": 1,
+     "requiredLevel": 0,
+     "sellPrice": 500,
+     "stack": 1,
+     "subType": "Parts",
+     "subclassID": 1,
+     "type": "Trade Goods"
+    },
+    {
+     "bindType": 0,
+     "classID": 7,
+     "id": 4357,
+     "index": 9,
+     "itemLevel": 5,
+     "limitedStock": 4,
+     "name": "Rough Blasting Powder",
+     "priceCopper": 16,
+     "quality": 1,
+     "requiredLevel": 0,
+     "sellPrice": 4,
+     "stack": 1,
+     "subType": "Parts",
+     "subclassID": 1,
+     "type": "Trade Goods"
+    },
+    {
+     "bindType": 0,
+     "classID": 7,
+     "id": 4364,
+     "index": 10,
+     "itemLevel": 15,
+     "limitedStock": 2,
+     "name": "Coarse Blasting Powder",
+     "priceCopper": 48,
+     "quality": 1,
+     "requiredLevel": 0,
+     "sellPrice": 12,
+     "stack": 1,
+     "subType": "Parts",
+     "subclassID": 1,
+     "type": "Trade Goods"
+    }
+   ],
+   "npc": "Billibub Cogspinner"
+  },
+  "vendors": {
+   "Billibub Cogspinner": {
+    "canRepair": false,
+    "capturedAt": 1794839734,
+    "items": [
+     {
+      "bindType": 0,
+      "classID": 2,
+      "damageMax": 2,
+      "damageMin": 1,
+      "dps": 0.8,
+      "equipLoc": "INVTYPE_WEAPONMAINHAND",
+      "id": 5956,
+      "index": 1,
+      "itemLevel": 1,
+      "name": "Blacksmith Hammer",
+      "priceCopper": 18,
+      "quality": 1,
+      "requiredLevel": 1,
+      "sellPrice": 3,
+      "speed": 2,
+      "stack": 1,
+      "statTokens": {
+       "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 0.8
+      },
+      "stats": {
+       "damage per second": 0.8
+      },
+      "subType": "Miscellaneous",
+      "subclassID": 14,
+      "tooltip": [
+       "Blacksmith Hammer",
+       "Main Hand",
+       "1 - 2 Damage | Speed 2.00",
+       "(0.7 damage per second)"
+      ],
+      "type": "Weapon"
+     },
+     {
+      "bindType": 0,
+      "classID": 2,
+      "damageMax": 4,
+      "damageMin": 2,
+      "dps": 1.5,
+      "equipLoc": "INVTYPE_WEAPONMAINHAND",
+      "id": 2901,
+      "index": 2,
+      "itemLevel": 4,
+      "name": "Mining Pick",
+      "priceCopper": 10,
+      "quality": 1,
+      "requiredLevel": 1,
+      "sellPrice": 2,
+      "speed": 2,
+      "stack": 1,
+      "statTokens": {
+       "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 1.5
+      },
+      "stats": {
+       "damage per second": 1.5
+      },
+      "subType": "Miscellaneous",
+      "subclassID": 14,
+      "tooltip": [
+       "Mining Pick",
+       "Main Hand",
+       "2 - 4 Damage | Speed 2.00",
+       "(1.5 damage per second)",
+       "\"Miners need a mining pick for digging.\""
+      ],
+      "type": "Weapon"
+     },
+     {
+      "bindType": 0,
+      "classID": 7,
+      "id": 4399,
+      "index": 3,
+      "itemLevel": 10,
+      "name": "Wooden Stock",
+      "priceCopper": 200,
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 50,
+      "stack": 1,
+      "subType": "Parts",
+      "subclassID": 1,
+      "type": "Trade Goods"
+     },
+     {
+      "bindType": 0,
+      "classID": 7,
+      "id": 4400,
+      "index": 4,
+      "itemLevel": 25,
+      "name": "Heavy Stock",
+      "priceCopper": 2000,
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 500,
+      "stack": 1,
+      "subType": "Parts",
+      "subclassID": 1,
+      "type": "Trade Goods"
+     },
+     {
+      "bindType": 0,
+      "classID": 7,
+      "id": 2880,
+      "index": 5,
+      "itemLevel": 5,
+      "name": "Weak Flux",
+      "priceCopper": 100,
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 25,
+      "stack": 1,
+      "subType": "Other",
+      "subclassID": 11,
+      "type": "Trade Goods"
+     },
+     {
+      "bindType": 0,
+      "classID": 7,
+      "id": 3466,
+      "index": 6,
+      "itemLevel": 25,
+      "name": "Strong Flux",
+      "priceCopper": 2000,
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 500,
+      "stack": 1,
+      "subType": "Other",
+      "subclassID": 11,
+      "type": "Trade Goods"
+     },
+     {
+      "bindType": 0,
+      "classID": 7,
+      "id": 10648,
+      "index": 7,
+      "itemLevel": 40,
+      "name": "Blank Parchment",
+      "priceCopper": 500,
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 125,
+      "stack": 1,
+      "subType": "Other",
+      "subclassID": 11,
+      "type": "Trade Goods"
+     },
+     {
+      "bindType": 0,
+      "classID": 7,
+      "id": 10647,
+      "index": 8,
+      "itemLevel": 50,
+      "name": "Engineer's Ink",
+      "priceCopper": 2000,
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 500,
+      "stack": 1,
+      "subType": "Parts",
+      "subclassID": 1,
+      "type": "Trade Goods"
+     },
+     {
+      "bindType": 0,
+      "classID": 7,
+      "id": 4357,
+      "index": 9,
+      "itemLevel": 5,
+      "limitedStock": 4,
+      "name": "Rough Blasting Powder",
+      "priceCopper": 16,
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 4,
+      "stack": 1,
+      "subType": "Parts",
+      "subclassID": 1,
+      "type": "Trade Goods"
+     },
+     {
+      "bindType": 0,
+      "classID": 7,
+      "id": 4364,
+      "index": 10,
+      "itemLevel": 15,
+      "limitedStock": 2,
+      "name": "Coarse Blasting Powder",
+      "priceCopper": 48,
+      "quality": 1,
+      "requiredLevel": 0,
+      "sellPrice": 12,
+      "stack": 1,
+      "subType": "Parts",
+      "subclassID": 1,
+      "type": "Trade Goods"
+     }
+    ],
+    "npc": "Billibub Cogspinner"
+   },
+   "Kaita Deepforge": {
+    "canRepair": true,
+    "capturedAt": 1794788916,
+    "items": [
+     {
+      "equipLoc": "INVTYPE_WEAPONMAINHAND",
+      "id": 2901,
+      "index": 1,
+      "itemLevel": 4,
+      "name": "Mining Pick",
+      "priceCopper": 10,
+      "requiredLevel": 1,
+      "sellPrice": 2,
+      "stack": 1,
+      "stats": {
+       "damage per second": 1.5
+      },
+      "subType": "Miscellaneous",
+      "tooltip": [
+       "Mining Pick",
+       "Main Hand",
+       "2 - 4 Damage | Speed 2.00",
+       "(1.5 damage per second)",
+       "\"Miners need a mining pick for digging.\""
+      ],
+      "type": "Weapon"
+     },
+     {
+      "equipLoc": "INVTYPE_WEAPONMAINHAND",
+      "id": 5956,
+      "index": 2,
+      "itemLevel": 1,
+      "name": "Blacksmith Hammer",
+      "priceCopper": 18,
+      "requiredLevel": 1,
+      "sellPrice": 3,
+      "stack": 1,
+      "stats": {
+       "damage per second": 0.8
+      },
+      "subType": "Miscellaneous",
+      "tooltip": [
+       "Blacksmith Hammer",
+       "Main Hand",
+       "1 - 2 Damage | Speed 2.00",
+       "(0.7 damage per second)"
+      ],
+      "type": "Weapon"
+     },
+     {
+      "id": 2880,
+      "index": 3,
+      "itemLevel": 5,
+      "name": "Weak Flux",
+      "priceCopper": 100,
+      "requiredLevel": 0,
+      "sellPrice": 25,
+      "stack": 1,
+      "subType": "Other",
+      "type": "Trade Goods"
+     },
+     {
+      "id": 3466,
+      "index": 4,
+      "itemLevel": 25,
+      "name": "Strong Flux",
+      "priceCopper": 2000,
+      "requiredLevel": 0,
+      "sellPrice": 500,
+      "stack": 1,
+      "subType": "Other",
+      "type": "Trade Goods"
+     },
+     {
+      "id": 3857,
+      "index": 5,
+      "itemLevel": 30,
+      "name": "Coal",
+      "priceCopper": 500,
+      "requiredLevel": 0,
+      "sellPrice": 125,
+      "stack": 1,
+      "subType": "Metal & Stone",
+      "type": "Trade Goods"
+     },
+     {
+      "id": 18567,
+      "index": 6,
+      "itemLevel": 60,
+      "name": "Elemental Flux",
+      "priceCopper": 150000,
+      "requiredLevel": 0,
+      "sellPrice": 37500,
+      "stack": 1,
+      "subType": "Metal & Stone",
+      "type": "Trade Goods"
+     },
+     {
+      "id": 12162,
+      "index": 7,
+      "itemLevel": 32,
+      "name": "Plans: Hardened Iron Shortsword",
+      "priceCopper": 3000,
+      "requiredLevel": 0,
+      "sellPrice": 750,
+      "stack": 1,
+      "subType": "Blacksmithing",
+      "type": "Recipe",
+      "usable": false
+     }
+    ],
+    "npc": "Kaita Deepforge",
+    "repairCostCopper": 0
+   }
+  },
+  "xpGains": {
+   "barXp": 0,
+   "kills": {
+    "count": 0,
+    "xp": 0
+   },
+   "messagesParsed": 0,
+   "messagesSecret": 0,
+   "messagesSeen": 0,
+   "other": {
+    "count": 0,
+    "xp": 0
+   },
+   "quests": {
+    "count": 0,
+    "xp": 0
+   },
+   "since": 1794840572,
+   "total": 0
+  }
+ }
+}

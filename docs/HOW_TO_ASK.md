@@ -76,48 +76,4 @@ one optionally takes a character name.
 | `wow_journal` | "Describe my recent sessions." · "Give me a session journal in Markdown to paste." (with loot and records) |
 | `wow_goals` | "How are my goals going and when will I reach them?" |
 | `wow_goal_set` | "Add a goal: level 25." · "Goal: 10 gold." · "Remove goal g2." (writes only the server's goals file) |
-| `wow_changes` | "What changed since the last dump?" · "What loot did I get since the last save?" · "Summarize the whole session today (last 4 hours)." · "How much honor did I earn since the last dump?" |
-| `wow_rested` | "How much rested XP do I have and when will it be full if I log out in an inn?" |
-| `wow_reputation` | "How much do I need to reach Honored with Darnassus?" |
-| `wow_spells` | "Which abilities do I already know?" |
-| `wow_legacy` | "Where should I spend my Legacy Points?" · "Which Legacy challenges are still open?" |
-| `wow_achievements` | "How many achievement points do I have?" · "Which achievements am I closest to finishing, and what is missing?" · "When did I earn my exploration achievements?" (`view: timeline`, `category: Exploration`) |
-| `wow_statistics` | "How many times have I died in total?" · "How much gold have I looted?" |
-| `wow_collections` | "Which titles do I have and which one is shown?" · "Which mounts and companion pets does this character know?" |
-| `wow_talents` | "What can I spend a talent point on right now?" · "Show the talent descriptions from the Beast Mastery tree." |
-| `wow_recipes` | "What can I craft right now to level up Leatherworking?" · "What is missing for this recipe?" |
-| `wow_cooldowns` | "Does any alt have a profession cooldown ready?" |
-| `session_summary` | "What did the last session give me: XP, gold, quests?" |
-| `before_logout` | "What should I do before I log out?" (inn, mail, auctions, repair, bags) |
-| `profession_progress` | "What is the cheapest way to level a profession from what I have?" |
-| `talent_planning` | "Where should I spend the next points and what build should I aim for?" |
-
-## Pet
-
-| Tool or prompt | Example questions |
-|---|---|
-| `wow_buffs` | "What buffs do I have and am I missing any?" (time remaining is shown when the dump comes from addon 0.7.0, which records `expiresAt`) |
-| `wow_flights` | "In which quest zones do I not yet have a flight point?" |
-| `wow_quest_route` | "In what order should I visit the zones with my quests?" · "Where do I have the most quests to turn in?" (a suggestion based on counts, not the shortest route) |
-| `wow_pet` | "What level is my pet and how many free training points does it have?" · "Is my pet happy?" · "Which ranks am I missing and what fits in the free points?" · "Which stabled pet is better than the active one?" |
-| `pet_care` | "Take care of my pet: loyalty, food from my bags, Beast Training." |
-| `wow_ammo` | "How many hours will my arrows last and how many should I buy for 3 hours of play?" |
-
-## Group and dungeons
-
-| Tool or prompt | Example questions |
-|---|---|
-| `wow_group` | "Who is missing from the group: tank, healer?" · "Show the gear of the player I inspected." (after clicking Inspect) |
-| `wow_dungeons` | "Which dungeons fit my level?" · "Which quests can I do in Deadmines?" |
-| `wow_dungeon_loot` | "What could I get from Deadmines?" · "Which boss in Wailing Caverns drops a better belt for me?" (first type `/mcp loot deadmines` in the game, then `/mcp reload`) |
-| `dungeon_finder` | "Where should I go for a dungeon and how should I prepare?" |
-| `wow_social` | "Which of my friends are online now?" · "Who from the guild is online and in which zone?" · "Show the whole guild, including offline members." · "Which classes and levels are online in my guild?" · "Who from the guild or my friends could I group with now?" (`groupCandidates`, `levelRange`, default 5; roles are what a class can do, not what the player picks) (first open the social or guild window in the game and do `/mcp reload`; the addon does not ask the game server for these lists on its own) |
-
-## Diagnostics
-
-| Tool or prompt | Example questions |
-|---|---|
-| `wow_section` | "Show the `probe` section." · "What do I have on my action bars?" · "Show `completedQuests`, I want to check prerequisite quests." |
-| `wow_status` | "Did the addon report any section errors?" · "How long does a dump take and which sections are disabled?" |
-
-You can set a note for the assistant in the game: `/mcp note I want Deadmines today`. `session_plan` treats it as the session goal, and `before_logout` reminds you about it.
+| `wow_share_dump` | "Share an anonymized dump of my character." · "Prepare a dump of my Priest for the wow-mcp project." (writes a local file with names and personal text removed; you read it and attach it to an issue yourself) |

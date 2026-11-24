@@ -46,12 +46,12 @@ func (disabledGoals) errOff() error {
 	return fmt.Errorf("goals are disabled: the server has no goals file set (--goals-file)")
 }
 
-// goalSetTool is the only tool that writes: it adds or removes a goal in the server's goals file.
+// goalSetTool adds or removes a goal in the server's goals file.
 func (s *service) goalSetTool() tool {
 	return tool{
 		name: "wow_goal_set", title: "Add or remove a goal", writes: true, args: argNames[goalArgs](),
 		description: "Adds a player goal (type: level, gold, reputation, profession, spell, item; with target, name, faction, standing, item, note, character) or removes one (remove = ID from wow_goals). " +
-			"This is the ONLY tool that writes anything, and it writes only the server's goals file (goals.json next to the snapshot history); it changes nothing in the game or in the game directory. " +
+			"It writes only the server's goals file (goals.json next to the snapshot history); it changes nothing in the game or in the game directory. " +
 			"Examples: type=level target=25; type=gold target=10 (gold); type=reputation faction=Darnassus standing=Revered; type=profession name=Mining target=150; type=spell name=Aimed Shot; type=item item=Linen Cloth target=40.",
 		add: func(server *mcp.Server, def *mcp.Tool) {
 			mcp.AddTool(server, def, func(ctx context.Context, req *mcp.CallToolRequest, a goalArgs) (*mcp.CallToolResult, any, error) {

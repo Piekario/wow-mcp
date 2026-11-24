@@ -51,3 +51,10 @@ func ownFileWriter(title string) *mcp.ToolAnnotations {
 	closedWorld, destructive := false, true // remove deletes a goal from the goals file
 	return &mcp.ToolAnnotations{Title: title, ReadOnlyHint: false, DestructiveHint: &destructive, OpenWorldHint: &closedWorld}
 }
+
+// ownFileAdder marks a tool that only adds a file to the server's own directory: nothing is removed, and a
+// repeated call writes the same file again.
+func ownFileAdder(title string) *mcp.ToolAnnotations {
+	closedWorld, destructive := false, false
+	return &mcp.ToolAnnotations{Title: title, ReadOnlyHint: false, DestructiveHint: &destructive, IdempotentHint: true, OpenWorldHint: &closedWorld}
+}

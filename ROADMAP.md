@@ -217,27 +217,4 @@ only `WowMcp.lua` and writes only in its own directory. Ideas that would break t
 | 121 | ✅ Compare auction house gear with the equipped gear | Price entries carry item details from the client cache only (no request, no tooltip); `wow_auctions` gives `vsEquipped`, `canAfford`, `levelOk` and the `type`, `affordable`, `usable`, `equippable` filters like `wow_vendor`. Found when the player asked which bow to buy. Done in addon 0.13.0, server 0.14.0 (not yet run in the real client). | M | 🟡 |
 | 122 | ✅ Quest locations and guide steps | Where a quest starts and ends, from the quest database installed in the game (QuestieDB) instead of memory or quest text, and the next steps of the player's Guidelime guide (TUGs). Done in addon 0.14.0, server 0.15.0: sections `questDb`, `guide`, `questLookups`, `/mcp quest`, tools `wow_quest_lookup`, `wow_guide`. | M | 🔴 |
 | 123 | ✅ Legacy perks and challenges | The Forever Legacy system (Legacy Points, the Professions / Adventure / Resourcefulness perk trees, Legacy challenges) so advice on Legacy Points needs no screenshots. The client API is undocumented, so the addon reads every non-class `C_Traits` config, the Legacy achievement category and records the client's Legacy API names (`discovery`). Done in addon 0.15.0, server 0.16.0: section `legacy`, tool `wow_legacy` (not yet run in the real client). | M | 🔴 |
-| 126 | ✅ Item and spell lookup | The real in-game description of any item or spell instead of a guess from another game version. The server cannot ask the game, so the player types `/mcp item <id, link or name>` or `/mcp spell <id, link or name>`: the addon reads the client (name, tooltip text, stats, rank, cast time, cost, range), handles items the client has not cached yet, and keeps the last 30 answers. `wow_lookup` searches them and everything else the dump already knows by name or ID, says where each hit came from, and tells the assistant what to ask the player when nothing is found. Done in addon 0.21.0, server 0.21.0 (not yet run in the real client): section `lookups`, tool `wow_lookup`. | M | 🟡 |
-| 127 | ✅ Guild overview and group candidates | "Who in my guild is online, which classes and levels, and with whom could I group?" Done in `wow_social`: roster `summary`, `groupCandidates` by tank-, healer- or damage-capable class (`levelRange`), guild `note` and `offlineDays` in the `guild` section, `classToken` in `guild` and `friends`. Done in the addon and the server (not yet run in the real client). | M | ⚪ |
-| 128 | ✅ PvP history | Honor and honorable kills in the long history (`history.db` schema 4, nullable columns, older databases migrate in place), shown as `honor`, `honorableKills`, `honorLevel` in `wow_changes` and `honorGained`, `honorableKills` per session and overall in `wow_progress`, only when the dump has `pvp`. Done in the server (not yet run in the real client). | M | ⚪ |
-| 129 | ✅ Zone quest progress | How many of a zone's quests the character has done, which are in the log and which are left (with quest givers), and which quest chains stopped half way, from the quest database installed in the game (QuestieDB) and the completed quest list; quests for another faction, race or class are left out. Done in addon 0.21.0, server 0.21.0 (not yet run in the real client): section `zoneQuests`, tool `wow_zone_progress`. | M | 🟡 |
-| 130 | ✅ Dungeon loot upgrades | Which items a dungeon's bosses drop that would be upgrades for the character, read from the game's Encounter Journal when the player types `/mcp loot [dungeon]` (never on a dump; the journal's selection and filters are put back) and compared with the equipped gear by the `wow_compare_item` rule, after a class armor and weapon check. The server has no drop tables. Done in addon 0.21.0, server 0.21.0 (not yet run in the real client): section `dungeonLoot`, tool `wow_dungeon_loot`, `/mcp probe` lists `EJ_*` and the `Blizzard_EncounterJournal` state. Not yet run in the real client: the `EJ_*` names are assumptions until a probe confirms them. | M | 🟡 |
-
----
-
-## Dependencies
-
-- 48 required 16, 72 required 23, 79 required 18 (all done); 69 requires 24.
-- 74–76 require 73. 77 uses the same history as `wow_progress`.
-- 9, 10, 11, 12 extend the installer from item 2.
-- 85 and 100 are best done after the results from items 3–6.
-
-## Rejected (they break the project's principles)
-
-- Automatic saving after events (`/mcp auto on`, auto `/reload` after a trainer window, a button after leveling up). Rejected earlier by the owner.
-- Automatic selling of junk, repair, accepting and turning in quests, buying from trainers: actions in the game without a player click.
-- Automatic searching or listing at the auction house, scanning the whole auction house.
-- Queries about other players without a click (automatic Inspect, `/who`).
-- Reading the game process memory, network traffic or screen pixels; overlays on the game window.
-- Fetching data from external services (e.g. item databases) through the server: the server reads only the dump file.
-- Built-in "popular builds" of talents from Classic: the Forever trees are different.
+| 131 | ✅ Share an anonymized dump | Only a Hunter and a Warlock were checked in the real game. `wow_share_dump` and `wow-mcp --share-dump` write an anonymized copy of a dump (names replaced, personal text removed, unknown sections left out) that the player reads and attaches to the "Share a dump from your class" issue form; nothing is uploaded. Accepted dumps go to `server/testdata/shared/` and every tool is run on them. | M | 🟠 |
