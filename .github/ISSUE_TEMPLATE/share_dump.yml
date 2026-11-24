@@ -9,6 +9,9 @@ body:
         every dump from another class, faction, language or client becomes test data that each change is checked against.
 
 
+        **Two ways, use either or both.** The full anonymized dump (best) or the short client report from the game (`/mcp share`).
+
+
         **How to make the file:** ask your assistant to *"share an anonymized dump of my character"* (the `wow_share_dump`
         tool), or run `wow-mcp --share-dump` in a terminal. It writes a `.json` file on your own disk and sends nothing
         anywhere. Names of your character, realm, guild, friends, group and mail senders are replaced or removed, together
@@ -22,9 +25,17 @@ body:
     id: file
     attributes:
       label: The anonymized dump
-      description: Drag the `wow-mcp-dump-....json` file here (zip it if it is larger than 25 MB). Please do not paste its contents.
-    validations:
-      required: true
+      description: >
+        Drag the `wow-mcp-dump-....json` file here (zip it if it is larger than 25 MB). Please do not paste its contents.
+        No server at hand? Leave this empty and paste the client report below.
+  - type: textarea
+    id: report
+    attributes:
+      label: Client report from the game
+      description: >
+        Type `/mcp share` in game, press Ctrl+C in the window and paste here. A few lines about the client and the
+        last dump (class, race, level, client build, language, section sizes, addon errors); it holds no names.
+      render: text
   - type: dropdown
     id: client
     attributes:

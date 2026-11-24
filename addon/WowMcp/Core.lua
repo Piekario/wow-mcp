@@ -19,6 +19,7 @@
 --   /mcp item     <id, link or name>: the item's description from the game, saved for the assistant
 --   /mcp spell    <id, link or name>: the spell's description, cast time, cost and range, saved for the assistant
 --   /mcp loot     [dungeon]: what a dungeon's bosses drop, read from the Encounter Journal on request
+--   /mcp share    window with a short client report to copy into an issue; /mcp share off|on: the chat reminder
 --   /mcp ahtip    on|off: auction house price in the item tooltip
 --   /mcp minimap on|off: minimap button (left click shows the panel)
 --   /mcp compact on|off: one-line panel
@@ -28,11 +29,11 @@
 -- only when the player clicks. The addon never saves anything on its own.
 --
 -- File layout (load order in WowMcp.toc, dependencies only point down the list):
---   Core, Compat, Maps, QuestDb, Items, QuestRewards, TalentGrid, TraitTree, Store, Events, Timing,
+--   Core, Compat, Maps, QuestDb, ChatLinks, Items, QuestRewards, TalentGrid, TraitTree, Store, Events, Timing,
 --   LogoutGuard, Snapshot, Periods, LegacyDiscovery - shared foundations
 --   Sections/*                                    - one file per dump section;
 --                                                   each registers itself in Snapshot
---   Panel, AuctionTooltip, WowMcp (lifecycle), Commands - player UI
+--   Panel, AuctionTooltip, Share* (report, window, reminder), WowMcp (lifecycle), Commands - player UI
 --
 -- The Forever client (Interface 16001) uses the new API (C_QuestLog, C_Container,
 -- C_SpellBook, C_Traits). Each section also tries the older function names and

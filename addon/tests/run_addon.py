@@ -2106,12 +2106,12 @@ def check_options_page() -> None:
     general = len(addon_ns.Options.generalSwitches())
     section_switches = addon_ns.Options.sectionSwitches()
     sections = [section_switches[i]["label"] for i in range(1, len(section_switches) + 1)]
-    assert general == 4 and len(boxes) == general + len(sections) and "macros" in sections and "character" not in sections
+    assert general == 5 and len(boxes) == general + len(sections) and "macros" in sections and "character" not in sections
     assert [i for i, b in enumerate(boxes) if b.checked is not True] == [1], "all on by default except the compact panel"
-    minimap, compact, ahtip, played = boxes[0], boxes[1], boxes[2], boxes[3]
+    minimap, compact, ahtip, played, share = boxes[0], boxes[1], boxes[2], boxes[3], boxes[4]
     settings = g.WowMcpDB["settings"]
     for box, name, off_value in ((minimap, "minimap", False), (compact, "compact", None),
-                                 (ahtip, "ahTooltip", False), (played, "played", False)):
+                                 (ahtip, "ahTooltip", False), (played, "played", False), (share, "shareReminder", False)):
         box.checked = False
         box.scripts["OnClick"](box)
         assert settings[name] == off_value, (name, settings[name])
@@ -2119,7 +2119,7 @@ def check_options_page() -> None:
     g.SlashCmdList["WOWMCP"]("compact off")
     g.SlashCmdList["WOWMCP"]("minimap on")
     frame.scripts["OnShow"](frame)  # the page follows what /mcp changed meanwhile
-    assert minimap.checked is True and compact.checked is False and played.checked is False
+    assert minimap.checked is True and compact.checked is False and played.checked is False and share.checked is False
     macros = boxes[general + sections.index("macros")]
     macros.checked = False
     macros.scripts["OnClick"](macros)
@@ -2877,6 +2877,99 @@ def check_waypoint_links() -> None:
     g.SlashCmdList["WOWMCP"]("quest 947")
     chat = [str(line) for line in g.chatlog.values()]
     assert not any("|H" in line or "install TomTom" in line for line in chat), chat
+
+
+TIMER_STUB = """
+timers = {}
+C_Timer = { After = function(seconds, fn) timers[#timers + 1] = { seconds = seconds, fn = fn } end }
+"""
+
+
+def check_sharing() -> None:
+    """The sharing window and its reminder: a report without names, a rare chat line, and an off switch."""
+    # A first login has no dump: nothing is asked, and no setting is written.
+    runtime, g, addon_ns = load_addon("forever", before_addon=TIMER_STUB)
+    on_event = event_dispatcher(g)
+    on_event(None, "PLAYER_LOGIN")
+    assert len(g.timers) == 1 and g.timers[1].seconds >= 30, "the reminder waits until the login messages are over"
+    before = len(g.chatlog)
+    g.timers[1].fn()
+    assert len(g.chatlog) == before and g.WowMcpDB["settings"]["share"] is None, "no dump yet: no reminder"
+
+    # With a dump: one line with a link; clicking it opens the window with the report.
+    runtime.execute("function GetNumMacros() error('bad Piekasz value') end")
+    g.SlashCmdList["WOWMCP"]("probe")
+    g.reloaded = False
+    g.timers[1].fn()
+    line = last_chat(g)
+    assert "|Hwowmcp:share:open|h[Click here to open the export window]|h" in line and "/mcp share off" in line, line
+    share = g.WowMcpDB["settings"]["share"]
+    assert share["asked"]["HUNTER|70938|enUS"] == 1 and share["remindedAt"] == g.clockNow, dict(share)
+    asked = len(g.chatlog)
+    g.timers[1].fn()
+    assert len(g.chatlog) == asked, "asked once, not again the same month"
+    assert not [f for f in g.frames.values() if f.frameName == "WowMcpShareWindow"], "the reminder opens nothing"
+    assert g.linkHandlers["wowmcp"]("wowmcp:share:open", "[Click here]") == 2
+    window = [f for f in g.frames.values() if f.frameName == "WowMcpShareWindow"][0]
+    assert window.shown is True
+    report = str(window.reportBox.fixedText)
+    for expected in ("WowMcp client report, format 1", "client: 1.60.1 build 70938, interface 16001, locale enUS",
+                     "character: HUNTER, NightElf, Alliance, level 20", "sections (", "quests=", "errors: 1",
+                     "bad Player value", "events the client rejected: ", "probe: ", "C_Item="):
+        assert expected in report, (expected, report)
+    for personal in ("Piekasz", "Tankadin", "Night Watch", "Healbot", "Linen Cloth", "dungeon buddy"):
+        assert personal not in report, (personal, report)
+    assert len(report) < 6000, len(report)
+    assert str(window.addressBox.fixedText).startswith("https://github.com/Piekario/wow-mcp/issues/new")
+    # The boxes are for copying: typed text is put back.
+    window.reportBox.scripts["OnTextChanged"](window.reportBox, True)
+    assert str(window.reportBox.label) == report
+    # Opened once for this class, client and language: never asked for it again, however much time passes.
+    assert share["opened"]["HUNTER|70938|enUS"] is not None
+    g.clockNow = g.clockNow + 400 * 24 * 3600
+    g.timers[1].fn()
+    assert len(g.chatlog) == asked
+    assert len(g.forbiddenCalls) == 0 and not g.reloaded
+
+    due = addon_ns.ShareReminder.due
+    day = 24 * 3600
+    state = runtime.eval('{ remindedAt = 1000, asked = { ["MAGE|1|enUS"] = 2, ["PRIEST|1|enUS"] = 3 }, opened = { ["ROGUE|1|enUS"] = 5 } }')
+    assert due(None, "MAGE|1|enUS", 1794760000, True) is True, "never asked"
+    assert due(state, "MAGE|1|enUS", 1000 + 29 * day, True) is False, "not twice in a month"
+    assert due(state, "MAGE|1|enUS", 1000 + 30 * day, True) is True
+    assert due(state, "PRIEST|1|enUS", 1000 + 300 * day, True) is False, "three asks at most"
+    assert due(state, "ROGUE|1|enUS", 1000 + 300 * day, True) is False, "the window was opened for it"
+    assert due(state, "MAGE|1|enUS", 1000 + 300 * day, False) is False, "turned off"
+    assert due(state, None, 1000 + 300 * day, True) is False, "no dump"
+
+    # /mcp share off: no reminder even when one is due; /mcp share still opens the window; on restores it.
+    runtime, g, addon_ns = load_addon("forever", before_addon=TIMER_STUB)
+    on_event = event_dispatcher(g)
+    on_event(None, "PLAYER_LOGIN")
+    g.SlashCmdList["WOWMCP"]("")
+    g.SlashCmdList["WOWMCP"]("share off")
+    assert g.WowMcpDB["settings"]["shareReminder"] is False
+    before = len(g.chatlog)
+    g.timers[1].fn()
+    assert len(g.chatlog) == before
+    g.SlashCmdList["WOWMCP"]("share")
+    window = [f for f in g.frames.values() if f.frameName == "WowMcpShareWindow"][0]
+    assert window.shown is True and "probe: none" in str(window.reportBox.fixedText)
+    g.SlashCmdList["WOWMCP"]("share on")
+    assert g.WowMcpDB["settings"]["shareReminder"] is None
+    # "Do not remind me" on the window is the same switch.
+    window.quietButton.scripts["OnClick"](window.quietButton)
+    assert g.WowMcpDB["settings"]["shareReminder"] is False and window.shown is False
+
+    # A client without the link API gets the command in words; one without timers gets no reminder at all.
+    runtime, g, addon_ns = load_addon("forever", before_addon=TIMER_STUB + "LinkUtil = nil")
+    event_dispatcher(g)(None, "PLAYER_LOGIN")
+    g.SlashCmdList["WOWMCP"]("")
+    g.timers[1].fn()
+    assert "Type /mcp share to open the export window" in last_chat(g) and "|H" not in last_chat(g), last_chat(g)
+    runtime, g, addon_ns = load_addon("forever")
+    event_dispatcher(g)(None, "PLAYER_LOGIN")
+    assert addon_ns.ShareReminder.schedule() is False
 
 
 def check_secret_group_range() -> None:
@@ -3654,6 +3747,7 @@ def main() -> int:
         check_unnamed_profession_window()
         check_battle_net_friends()
         check_waypoint_links()
+        check_sharing()
         check_secret_group_range()
         check_passed_guide_steps()
         check_legacy_scan_only_when_needed()
