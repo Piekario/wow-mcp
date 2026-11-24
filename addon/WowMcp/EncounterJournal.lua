@@ -79,30 +79,22 @@ local function isInInstance()
 end
 EJ.isInInstance = isInInstance
 
-local JOURNAL_ADDON = "Blizzard_EncounterJournal"
-
 -- True when the journal's addon is loadable but not loaded yet, so the journal has no data to give.
 function EJ.notLoadedYet()
-    local loaded = callFirst({ "C_AddOns.IsAddOnLoaded", "IsAddOnLoaded" }, JOURNAL_ADDON)
+    local loaded = callFirst({ "C_AddOns.IsAddOnLoaded", "IsAddOnLoaded" }, "Blizzard_EncounterJournal")
     if not loaded or plain(loaded[1]) ~= false then return false end
-    local loadable = callFirst({ "C_AddOns.IsAddOnLoadable", "IsAddOnLoadable" }, JOURNAL_ADDON)
+    local loadable = callFirst({ "C_AddOns.IsAddOnLoadable", "IsAddOnLoadable" }, "Blizzard_EncounterJournal")
     return not loadable or plain(loadable[1]) ~= false
 end
 
 -- Loads the game's own journal module, as opening the journal window does; the EJ_* functions list nothing before it.
+-- Returns false and the client's reason when the client refuses: WoW: Forever answers WRONG_GAME_TYPE although
+-- IsAddOnLoadable says the module is loadable.
 function EJ.loadJournal()
-    local loaded, path = callFirst({ "C_AddOns.LoadAddOn", "LoadAddOn" }, JOURNAL_ADDON)
-    local loadable = callFirst({ "C_AddOns.IsAddOnLoadable", "IsAddOnLoadable" }, JOURNAL_ADDON)
-    local exists = callFirst({ "C_AddOns.DoesAddOnExist" }, JOURNAL_ADDON)
-    EJ.lastLoad = {
-        calledWith = path,
-        loaded = loaded and plain(loaded[1]),
-        reason = loaded and plain(loaded[2]),
-        loadable = loadable and plain(loadable[1]),
-        loadableReason = loadable and plain(loadable[2]),
-        exists = exists and plain(exists[1]),
-    }
-    return loaded ~= nil and plain(loaded[1]) ~= false and not EJ.notLoadedYet()
+    local loaded = callFirst({ "C_AddOns.LoadAddOn", "LoadAddOn" }, "Blizzard_EncounterJournal")
+    if loaded and plain(loaded[1]) ~= false and not EJ.notLoadedYet() then return true end
+    local reason = loaded and plain(loaded[2])
+    return false, type(reason) == "string" and reason ~= "" and reason or "unknown"
 end
 
 -- The journal instance of the dungeon the character is in, or nil outside an instance.
