@@ -66,7 +66,7 @@ const instructions = "The tools read World of Warcraft: Forever character state 
 	"wow_reputation, wow_pet (also missing ranks, training point plan and stable), wow_quests; " +
 	"windows from the last visit: wow_trainer and wow_vendor (optionally npc: up to 10 remembered), wow_bank, wow_mail, wow_auctions, wow_recipes; " +
 	"shopping and quests: wow_shopping_list (trainer, repairs, ammo, food, who sells it, when to return to town), wow_quest_rewards (which quest reward to pick); " +
-	"planning and comparisons: wow_quest_plan, wow_dungeons, wow_group, wow_compare_item, wow_cooldowns; " +
+	"planning and comparisons: wow_quest_plan, wow_dungeons, wow_dungeon_loot (which items of a dungeon read with /mcp loot would be upgrades; never guess drop tables), wow_group, wow_compare_item, wow_cooldowns; " +
 	"progress: wow_changes (what changed since the previous snapshot), wow_progress (XP and gold pace, time to level, deaths in the session), " +
 	"wow_gold_history, wow_rested, wow_ammo, wow_reagents (stocks of ammo, food, bandages, potions and their consumption), " +
 	"wow_journal (session journal and records, optionally Markdown), wow_timeline (timeline: level-ups, skills, gear, quests, deaths), wow_session_rating (pace of the last session versus the median); " +

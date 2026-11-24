@@ -36,6 +36,7 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
     "cooldowns",
     "currencies",
     "deaths",
+    "dungeonLoot",
     "dungeons",
     "equipment",
     "equipmentSets",

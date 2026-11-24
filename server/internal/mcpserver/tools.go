@@ -22,6 +22,7 @@ import (
 	"wowmcp/internal/game/character"
 	"wowmcp/internal/game/compare"
 	"wowmcp/internal/game/cooldowns"
+	"wowmcp/internal/game/dungeonloot"
 	"wowmcp/internal/game/dungeons"
 	"wowmcp/internal/game/export"
 	"wowmcp/internal/game/flights"
@@ -339,6 +340,13 @@ func (s *service) questingTools() []tool {
 			func(a dungeons.Query) string { return a.Character },
 			func(_ string, snap snapshot.Snapshot, q dungeons.Query) (map[string]any, error) {
 				return dungeons.View(snap, q, fresh), nil
+			}),
+
+		characterTool(s, "wow_dungeon_loot", "Dungeon loot upgrades",
+			"Which items from a dungeon would be upgrades for the character, grouped by dungeon and boss, with the stat differences against the equipped item in that slot (the same comparison as wow_compare_item; a weights.json file adds stat weights). Items the class cannot use (armor or weapon type, by the classic rules) are left out and counted in skipped. The drop lists come only from the game's Encounter Journal, read by the addon when the player types /mcp loot <dungeon> (then /mcp reload); without that the answer says what to type, and the server never guesses drop tables. dungeon: a name fragment; slot: e.g. head, finger, mainHand; upgradesOnly=false lists every item with its verdict."+freshness,
+			func(a dungeonloot.Query) string { return a.Character },
+			func(name string, snap snapshot.Snapshot, q dungeonloot.Query) (map[string]any, error) {
+				return dungeonloot.View(snap, q, items.Scoring{Store: s.Weights, Key: name})
 			}),
 
 		characterTool(s, "wow_group", "Group and raid",

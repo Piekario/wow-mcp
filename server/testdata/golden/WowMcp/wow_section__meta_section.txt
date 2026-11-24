@@ -2,4 +2,4 @@
 # args: {"section":"dumpedAt"}
 # isError: true
 --- content[0] ---
-no section "dumpedAt" in the snapshot of character Piekasz. Available: actionBars, auctions, auras, bags, character, dungeons, equipment, equipmentSets, eventLog, friends, group, guild, legacy, loot, pet, played, professions, pvp, quests, reputation, spells, stable, stats, talents, trainer, trainers, xpGains. The trainer, vendor, bank and flightPaths sections appear after opening the matching window in game and running /mcp reload
+no section "dumpedAt" in the snapshot of character Piekasz. Available: actionBars, auctions, auras, bags, character, dungeonLoot, dungeons, equipment, equipmentSets, eventLog, friends, group, guild, legacy, loot, pet, played, professions, pvp, quests, reputation, spells, stable, stats, talents, trainer, trainers, xpGains. The trainer, vendor, bank and flightPaths sections appear after opening the matching window in game and running /mcp reload

@@ -23,6 +23,7 @@
         "auras",
         "bags",
         "character",
+        "dungeonLoot",
         "dungeons",
         "equipment",
         "equipmentSets",

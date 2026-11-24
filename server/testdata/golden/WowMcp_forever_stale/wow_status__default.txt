@@ -42,6 +42,7 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
         "cooldowns",
         "currencies",
         "deaths",
+        "dungeonLoot",
         "dungeons",
         "equipment",
         "equipmentSets",

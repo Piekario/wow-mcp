@@ -104,6 +104,7 @@ one optionally takes a character name.
 |---|---|
 | `wow_group` | "Who is missing from the group: tank, healer?" · "Show the gear of the player I inspected." (after clicking Inspect) |
 | `wow_dungeons` | "Which dungeons fit my level?" · "Which quests can I do in Deadmines?" |
+| `wow_dungeon_loot` | "What could I get from Deadmines?" · "Which boss in Wailing Caverns drops a better belt for me?" (first type `/mcp loot deadmines` in the game, then `/mcp reload`) |
 | `dungeon_finder` | "Where should I go for a dungeon and how should I prepare?" |
 | `wow_social` | "Which of my friends are online now?" · "Who from the guild is online and in which zone?" · "Show the whole guild, including offline members." (first open the social or guild window in the game and do `/mcp reload`; the addon does not ask the game server for these lists on its own) |
 

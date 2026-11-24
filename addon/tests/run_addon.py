@@ -1104,6 +1104,116 @@ GuidelimeDataChar = {
 }
 """
 
+# Dungeon loot (unreleased): the Encounter Journal as mainline clients have it (EJ_* globals and
+# C_EncounterJournal.GetLootInfoByIndex). The real Forever client was only probed for C_EncounterJournal, so these
+# names are an assumption. The player's journal window shows Wailing Caverns with a class and a slot filter; a read must
+# see every item and put all of that back. Wailing Caverns lists loot only per boss (the per-encounter fallback).
+EJ_STUBS = r"""
+ejState = { instance = 240, encounter = 2, classID = 3, specID = 0, slot = 5 }
+ejChanges = 0
+EncounterJournal = { instanceID = 240, encounterID = 2 }
+local function item(id, name, encounterID, quality, slot, info, stats, cached)
+    return { id = id, name = name, encounterID = encounterID, quality = quality, slot = slot, info = info, stats = stats, cached = cached }
+end
+-- info: itemLevel, requiredLevel, type, subType, equipLoc, classID, subclassID
+ejLoot = {
+    [63] = {
+        item(5196, "Smite's Reaver", 91, 3, "One-Hand", { 21, 16, "Weapon", "Axe", "INVTYPE_WEAPON", 2, 0 },
+             { ITEM_MOD_DAMAGE_PER_SECOND_SHORT = 10.9, ITEM_MOD_STRENGTH_SHORT = 4 }, true),
+        item(5193, "Cape of the Brotherhood", 92, 3, "Back", { 24, 19, "Armor", "Cloth", "INVTYPE_CLOAK", 4, 1 },
+             { ITEM_MOD_AGILITY_SHORT = 3, ITEM_MOD_STAMINA_SHORT = 1 }, true),
+        item(5199, "Smelting Pants", 92, 3, "Legs", { 22, 17, "Armor", "Leather", "INVTYPE_LEGS", 4, 2 },
+             { ITEM_MOD_STAMINA_SHORT = 5 }, true),
+        item(5195, "Gold-flecked Gloves", 93, 2, "Hands", { 23, 18, "Armor", "Mail", "INVTYPE_HAND", 4, 3 },
+             { ITEM_MOD_INTELLECT_SHORT = 3 }, true),
+        item(5198, "Cookie's Stirring Rod", 93, 3, "Ranged", { 22, 17, "Weapon", "Wand", "INVTYPE_RANGEDRIGHT", 2, 19 },
+             { ITEM_MOD_DAMAGE_PER_SECOND_SHORT = 14.1 }, true),
+        item(5191, "Cruel Barb", 95, 3, "One-Hand", { 24, 19, "Weapon", "Sword", "INVTYPE_WEAPON", 2, 7 },
+             { ITEM_MOD_DAMAGE_PER_SECOND_SHORT = 12.4, ITEM_MOD_STRENGTH_SHORT = 6 }, false),
+        item(5201, "Emberstone Staff", 95, 3, "Two-Hand", { 24, 19, "Weapon", "Staff", "INVTYPE_2HWEAPON", 2, 10 },
+             { ITEM_MOD_DAMAGE_PER_SECOND_SHORT = 15.3, ITEM_MOD_STAMINA_SHORT = 7 }, false),
+        item(1937, "Buzz Saw", 90, 2, "One-Hand", { 15, 10, "Weapon", "Dagger", "INVTYPE_WEAPON", 2, 15 },
+             { ITEM_MOD_DAMAGE_PER_SECOND_SHORT = 7.1 }, true),
+    },
+    [240] = {
+        item(6460, "Cobrahn's Grasp", 2, 3, "Waist", { 22, 17, "Armor", "Leather", "INVTYPE_WAIST", 4, 2 },
+             { ITEM_MOD_AGILITY_SHORT = 4, ITEM_MOD_STAMINA_SHORT = 2 }, true),
+        item(6631, "Living Root", 3, 3, "Two-Hand", { 23, 18, "Weapon", "Staff", "INVTYPE_2HWEAPON", 2, 10 },
+             { ITEM_MOD_DAMAGE_PER_SECOND_SHORT = 11.5 }, true),
+    },
+}
+ejEncounters = {
+    [63] = { { "Rhahk'Zor", 89 }, { "Sneed's Shredder", 91 }, { "Gilnid", 92 }, { "Mr. Smite", 93 }, { "Edwin VanCleef", 95 } },
+    [240] = { { "Lady Anacondra", 1 }, { "Lord Cobrahn", 2 }, { "Lord Pythas", 3 } },
+}
+ejInstances = { { 63, "The Deadmines", 36 }, { 240, "Wailing Caverns", 43 }, { 227, "Blackfathom Deeps", 48 } }
+ejByID = {}
+for _, list in pairs(ejLoot) do for _, it in ipairs(list) do ejByID[it.id] = it end end
+
+function EJ_GetInstanceByIndex(index, isRaid)
+    if isRaid then
+        if index == 1 then return 741, "Molten Core", "", 0, 0, 0, 0, 232, "", true, 409 end
+        return nil
+    end
+    local i = ejInstances[index]
+    if i then return i[1], i[2], "", 0, 0, 0, 0, 0, "", false, i[3] end
+end
+function EJ_SelectInstance(id) ejChanges = ejChanges + 1 ejState.instance, ejState.encounter = id, nil end
+function EJ_SelectEncounter(id) ejChanges = ejChanges + 1 ejState.encounter = id end
+function EJ_GetEncounterInfoByIndex(index, instanceID)
+    local e = (ejEncounters[instanceID or ejState.instance] or {})[index]
+    if e then return e[1], "", e[2], 0, "", instanceID, 0, 0 end
+end
+function EJ_GetLootFilter() return ejState.classID, ejState.specID end
+function EJ_SetLootFilter(classID, specID) ejState.classID, ejState.specID = classID, specID end
+function EJ_ResetLootFilter() ejState.classID, ejState.specID = 0, 0 end
+local function visibleLoot()
+    local out = {}
+    if ejState.slot ~= nil or ejState.classID ~= 0 then return out end -- a filter hides most loot; a read must clear it
+    for _, it in ipairs(ejLoot[ejState.instance] or {}) do
+        -- Wailing Caverns lists loot only when a boss is selected.
+        if ejState.instance == 240 and ejState.encounter == it.encounterID then out[#out + 1] = it
+        elseif ejState.instance ~= 240 and (ejState.encounter == nil or ejState.encounter == it.encounterID) then out[#out + 1] = it end
+    end
+    return out
+end
+function EJ_GetNumLoot() return #visibleLoot() end
+C_EncounterJournal = {
+    GetLootInfoByIndex = function(index)
+        local it = visibleLoot()[index]
+        if not it then return nil end
+        return { itemID = it.id, encounterID = it.encounterID, name = it.cached and it.name or nil, itemQuality = it.quality,
+                 slot = it.slot, armorType = it.info[4], link = "|cff0070dd|Hitem:" .. it.id .. "::::::::20:::::|h[" .. it.name .. "]|h|r" }
+    end,
+    GetSlotFilter = function() return ejState.slot end,
+    SetSlotFilter = function(slot) ejState.slot = slot end,
+    ResetSlotFilter = function() ejState.slot = nil end,
+    GetInstanceForGameMap = function(mapID) if mapID == 1581 then return 63 end end,
+}
+inInstance = false
+function IsInInstance() return inInstance, inInstance and "party" or "none" end
+local baseInfo, baseStats = C_Item.GetItemInfo, C_Item.GetItemStats
+C_Item.GetItemInfo = function(link)
+    local it = ejByID[tonumber(tostring(link):match("item:(%d+)"))]
+    if not it then return baseInfo(link) end
+    if not it.cached then return nil end
+    local i = it.info
+    return it.name, link, it.quality, i[1], i[2], i[3], i[4], 1, i[5], 135, 1000, i[6], i[7], 1
+end
+C_Item.GetItemStats = function(link)
+    local it = ejByID[tonumber(tostring(link):match("item:(%d+)"))]
+    if not it then return baseStats(link) end
+    if not it.cached then return nil end
+    return it.stats
+end
+local baseTooltip = C_TooltipInfo.GetItemByID
+C_TooltipInfo.GetItemByID = function(id)
+    local it = ejByID[id]
+    if not it then return baseTooltip(id) end
+    if it.cached then return { lines = { { leftText = it.name }, { leftText = it.slot, rightText = it.info[4] } } } end
+end
+"""
+
 # Registered after the addon loads, as guide addons do (they depend on Guidelime and load later).
 MOCK_GUIDES = r"""
 Guidelime.registerGuide([[
@@ -1294,6 +1404,8 @@ def load_addon(mode: str, before_addon: str = ""):
         runtime.execute(localize(mode, FOREVER_V4_STUBS))
         runtime.execute(QUEST_SOURCES_STUBS)
         runtime.execute(LEGACY_TREE_STUBS)
+    if mode == "forever":
+        runtime.execute(EJ_STUBS)
     if before_addon:
         runtime.execute(before_addon)
     # The client passes every addon file the same arguments: the addon name and a shared table.
@@ -2333,6 +2445,87 @@ def check_quest_sources_absent() -> None:
     assert guide["textUnavailable"] and guide["registeredGuides"] == 2 and guide["next"] is None, dict(guide)
 
 
+def read_dungeon_loot(g, on_event) -> None:
+    """/mcp loot in the forever flow: usage without a name (no saved dungeon list yet), then two dungeons."""
+    g.SlashCmdList["WOWMCP"]("loot")
+    assert g.ejChanges == 0 and "Usage: /mcp loot" in last_chat(g), last_chat(g)
+    g.SlashCmdList["WOWMCP"]("loot deadmines")
+    assert any("2 items are still loading" in line for line in g.chatlog.values())
+    g.SlashCmdList["WOWMCP"]("loot WAILING")
+    # Restored: the window's instance and boss, the class filter and the slot filter.
+    state = g.ejState
+    assert (state.instance, state.encounter, state.classID, state.specID, state.slot) == (240, 2, 3, 0, 5), dict(state)
+    # The staff arrives from the server, the sword never does: the retries stop and say how many are missing.
+    g.ejByID[5201].cached = True
+    for _ in range(8):
+        on_event(None, "GET_ITEM_INFO_RECEIVED", 5201, True)
+    lines = list(g.chatlog.values())
+    assert sum("1 items are still loading" in line for line in lines) == 1, lines[-5:]
+
+
+def check_dungeon_loot(snapshot, g, mode: str) -> None:
+    """The dungeonLoot section: read on request in forever, a reason without the API (modern), absent otherwise."""
+    loot = snapshot["dungeonLoot"]
+    if mode == "modern":
+        assert loot["unavailable"] == "no EJ_GetInstanceByIndex in this client" and loot["instances"] is None, dict(loot)
+        return
+    if mode != "forever":
+        assert loot is None, "without /mcp loot there is no dungeonLoot section"
+        return
+    instances = list(loot["instances"].values())
+    assert [i["name"] for i in instances] == ["Wailing Caverns", "The Deadmines"], [i["name"] for i in instances]
+    wc, dm = instances
+    assert wc["minLevel"] is None, "no saved dungeon list before the first dump, so no level range"
+    assert list(dm["encounters"].values())[0] == "Rhahk'Zor" and dm["journalInstanceID"] == 63 and dm["mapID"] == 36
+    items = {i["name"]: i for i in dm["items"].values()}
+    assert len(items) == 8, list(items)
+    reaver = items["Smite's Reaver"]
+    assert reaver["encounter"] == "Sneed's Shredder" and reaver["itemLevel"] == 21 and reaver["requiredLevel"] == 16, dict(reaver)
+    assert reaver["equipLoc"] == "INVTYPE_WEAPON" and reaver["classID"] == 2 and reaver["subclassID"] == 0
+    assert reaver["statTokens"]["ITEM_MOD_STRENGTH_SHORT"] == 4 and reaver["pending"] is None
+    assert items["Emberstone Staff"]["pending"] is None and items["Emberstone Staff"]["itemLevel"] == 24
+    assert items["Cruel Barb"]["pending"] is True and items["Cruel Barb"]["id"] == 5191
+    assert {i["encounter"] for i in wc["items"].values()} == {"Lord Cobrahn", "Lord Pythas"}, "per-boss fallback"
+
+
+def check_dungeon_loot_targets() -> None:
+    """A dump never reads the journal; /mcp loot without a name picks the instance the character is in, otherwise the
+    dungeons for its level; at most 8 dungeons and 40 items per dungeon are kept."""
+    runtime, g, _ = load_addon("forever")
+    on_event = event_dispatcher(g)
+    on_event(None, "PLAYER_LOGIN")
+    g.SlashCmdList["WOWMCP"]("reload")
+    assert g.ejChanges == 0, "a dump must not touch the Encounter Journal"
+    g.SlashCmdList["WOWMCP"]("loot")
+    saved = g.WowMcpDB["characters"]["Piekasz"]["dungeonLoot"]
+    # Level 20 fits The Deadmines (17-26) and Wailing Caverns (17-25), not Blackfathom Deeps (24-32) or a raid.
+    assert [i["name"] for i in saved["instances"].values()] == ["Wailing Caverns", "The Deadmines"], dict(saved)
+    assert saved["instances"][1]["minLevel"] == 17 and saved["instances"][1]["maxLevel"] == 25
+    assert saved["instances"][2]["minLevel"] == 17 and saved["instances"][2]["maxLevel"] == 26
+    runtime.execute("inInstance = true; C_Map.GetBestMapForUnit = function() return 1581 end")
+    g.SlashCmdList["WOWMCP"]("loot")
+    assert saved["instances"][1]["name"] == "The Deadmines" and len(saved["instances"]) == 2
+    runtime.execute("""
+        for n = 1, 10 do
+            local id = 900 + n
+            ejInstances[#ejInstances + 1] = { id, "Test Dungeon " .. n, 0 }
+            ejLoot[id] = {}
+            for k = 1, 45 do ejLoot[id][k] = { id = id * 100 + k, name = "Thing " .. k, encounterID = 1, quality = 1,
+                slot = "Neck", info = { 10, 1, "Armor", "Miscellaneous", "INVTYPE_NECK", 4, 0 }, stats = {}, cached = true } end
+            for _, it in ipairs(ejLoot[id]) do ejByID[it.id] = it end
+        end
+    """)
+    g.SlashCmdList["WOWMCP"]("loot test dungeon")
+    assert "at most 3 per command" in "".join(g.chatlog.values())
+    for n in range(4, 11):
+        g.SlashCmdList["WOWMCP"](f"loot test dungeon {n}")
+    names = [i["name"] for i in saved["instances"].values()]
+    assert len(names) == 8 and names[0] == "Test Dungeon 10", names
+    assert len(saved["instances"][1]["items"]) == 40 and saved["instances"][1]["truncated"] is True
+    g.SlashCmdList["WOWMCP"]("loot no such place")
+    assert "No dungeon in the Encounter Journal matches" in "".join(g.chatlog.values())
+
+
 def main() -> int:
     if len(sys.argv) < 2 or (sys.argv[1] != "lifecycle" and len(sys.argv) < 3):
         print("usage: run_addon.py modern|legacy|forever|dede <file.lua> or run_addon.py lifecycle")
@@ -2420,11 +2613,15 @@ def main() -> int:
         # Quest lookups by name (any letter case), by ID and with no match; the same query twice is stored once.
         for query in ("deep ocean, vast sea", "947", "Murkdeep", "No Such Quest", "947"):
             g.SlashCmdList["WOWMCP"]("quest " + query)
+        if mode == "forever":
+            read_dungeon_loot(g, on_event)
     elif mode == "modern":
         for event in ("AUCTION_HOUSE_SHOW", "AUCTION_ITEM_LIST_UPDATE", "AUCTION_OWNED_LIST_UPDATE"):
             on_event(None, event)
         # A disabled section does not reach the dump; in the other modes the macros stay.
         g.SlashCmdList["WOWMCP"]("off macros")
+        # No Encounter Journal API: the command only records why, and reads nothing.
+        g.SlashCmdList["WOWMCP"]("loot deadmines")
     g.SlashCmdList["WOWMCP"]("probe" if mode in FOREVER_MODES else "reload")
     g.SlashCmdList["WOWMCP"]("status")
 
@@ -2708,6 +2905,8 @@ def main() -> int:
     else:
         assert any(f.frameName == "WowMcpMinimapButton" for f in g.frames.values())
 
+    check_dungeon_loot(snapshot, g, mode)
+
     # Locale-independent identifiers next to the client's text.
     check_identifiers(snapshot, mode)
     check_numeric_ids(snapshot, mode, runtime, addon_ns)
@@ -2726,6 +2925,7 @@ def main() -> int:
         check_passed_guide_steps()
         check_legacy_scan_only_when_needed()
         check_realmless_key()
+        check_dungeon_loot_targets()
         check_real_lifecycle()
         print("lifecycle from the real game: OK")
     return 0

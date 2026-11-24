@@ -41,6 +41,7 @@ These sections are collected only after you open a window in the game. For each 
 | Auctions | open the auction house, search for any item | `wow_auctions` | whether prices are present; `source` = `list` (classic API) or `browse`/`commodity`/`item` (C_AuctionHouse) |
 | Dungeons | open the LFG window (group finder) | `wow_dungeons` | whether level ranges come from the client; if not, the server uses the classic table |
 | Talents | open the talents window | `wow_talents` | whether nodes have a `description` (text from `C_Spell.GetSpellDescription`) |
+| Dungeon loot | `/mcp loot deadmines` (or `/mcp loot` inside a dungeon) | `wow_dungeon_loot` | whether chat says what was read; if it says the client has no Encounter Journal for addons, do `/mcp probe` and check `probe.globals` (`EJ_*`) and `probe.addons` |
 | Legacy | open the Legacy window (Y) | `wow_legacy` | whether a perk tree with Professions / Adventure / Resourcefulness was found; if not, `discovery=true` shows the client's Legacy API names |
 
 Note what worked and what came back empty: the roadmap fix for each section is based on this. Also check whether `/mcp probe`

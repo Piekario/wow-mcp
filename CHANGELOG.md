@@ -7,6 +7,36 @@ errors, dump 18 ms), addon 0.7.0 with server 0.9.0 (2026-11-15, no section error
 between are part of 0.11.0 / 0.12.2 and were run with them. Addon 0.14.0 was run on 2026-11-22 (client build 71037, no section errors, dump 25.7 ms: `questDb` for 22 log quests, `guide` reading TUGs, `/mcp quest The Glowing Shard`). **Server 0.15.0 and the 0.12.0 / 0.13.0 addon changes (carried periods, flight zones, auction gear details) have not yet been checked in a real client**: their fixes are
 based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` result and golden response tests.
 
+## Unreleased
+
+Dungeon loot upgrades. **Not run in the real client yet**: the addon side was tested only against API mocks in
+`addon/tests/run_addon.py`. The real `/mcp probe` of 2026-11-15 lists `C_EncounterJournal` (including `GetLootInfoByIndex`
+and `GetInstanceForGameMap`), but nobody has checked whether Forever has the global `EJ_*` functions, so these names are
+assumptions taken from mainline clients: `EJ_GetInstanceByIndex`, `EJ_SelectInstance`, `EJ_GetEncounterInfoByIndex`,
+`EJ_SelectEncounter`, `EJ_GetNumLoot`, `EJ_GetLootFilter` / `EJ_SetLootFilter` / `EJ_ResetLootFilter`, the
+`EncounterJournal.instanceID` / `encounterID` frame fields, `C_EncounterJournal.GetSlotFilter` / `SetSlotFilter` /
+`ResetSlotFilter` (probed), the return order of `C_EncounterJournal.GetLootInfoByIndex` and the `EJ_LOOT_DATA_RECIEVED`
+event. When they are missing, `/mcp loot` says so and records only the reason.
+
+- **Added**
+  - `/mcp loot [dungeon]` reads from the Encounter Journal what the bosses of a dungeon drop, only when the player types
+    it and never on a dump. Without a name it reads the dungeon the character is in, otherwise the dungeons for the
+    character's level from the saved group finder ranges (at most 3 per command). The read selects instances and
+    bosses and resets the class and slot loot filters, then puts the journal window's selection and filters back; chat
+    says what was read. The addon does not load `Blizzard_EncounterJournal`. Items the client has not loaded yet are
+    marked `pending` and read again up to 5 times as their data arrives; chat says how many are still loading.
+  - Dump section `dungeonLoot` (carried over between dumps): up to 8 dungeons with name, journal and map IDs, level range
+    when known, boss names and up to 40 items each (ID, name, quality, boss, journal slot and armor text, item level,
+    required level, stats and tooltip from the same item helpers as bags and vendors). See `docs/DUMP_FORMAT.md`.
+  - `/mcp probe` also lists the global `EJ_*` functions, `IsInInstance`, `GetInstanceInfo`, `IsAddOnLoaded`,
+    `GetAddOnInfo`, the `C_AddOns` namespace and whether `Blizzard_EncounterJournal` is loaded, loadable and has its frame.
+  - Tool `wow_dungeon_loot` (`character`, `dungeon`, `slot`, `upgradesOnly`, default true): the saved dungeon items that
+    would be upgrades, grouped by dungeon and boss, with the stat differences against the equipped item from the same
+    rule as `wow_compare_item` and `wow_quest_rewards` (`items.Buyer.Evaluate`; a `weights.json` file adds stat weights).
+    Items the class cannot use are left out and counted under `skipped`, from a classic armor and weapon proficiency
+    table (`itemkind`, mail and plate from level 40); Forever may differ, and the answer says so. Without the section the
+    answer says what to type in the game and suggests `/mcp probe`; the server has no drop tables and never guesses them.
+
 ## 0.20.0 (2026-11-24)
 
 A long history and less `/mcp reload`, for the addon and the server. The server expects addon 0.20.0. This release also carries

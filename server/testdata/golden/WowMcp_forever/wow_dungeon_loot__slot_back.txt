@@ -1,0 +1,75 @@
+# tool wow_dungeon_loot variant=slot_back
+# args: {"slot":"cloak"}
+# isError: false
+--- content[0] ---
+{
+  "available": true,
+  "class": "Hunter",
+  "dungeons": [
+    {
+      "bosses": [
+        "Lady Anacondra",
+        "Lord Cobrahn",
+        "Lord Pythas"
+      ],
+      "drops": [],
+      "name": "Wailing Caverns",
+      "readAt": "2026-11-15 16:26"
+    },
+    {
+      "bosses": [
+        "Rhahk'Zor",
+        "Sneed's Shredder",
+        "Gilnid",
+        "Mr. Smite",
+        "Edwin VanCleef"
+      ],
+      "drops": [
+        {
+          "boss": "Gilnid",
+          "items": [
+            {
+              "delta": {
+                "Agility": 3,
+                "Item Level": 24,
+                "Stamina": 1
+              },
+              "id": 5193,
+              "itemLevel": 24,
+              "levelOk": true,
+              "name": "Cape of the Brotherhood",
+              "quality": "Rare",
+              "requiredLevel": 19,
+              "score": 24,
+              "slot": "back",
+              "slotEmpty": true,
+              "verdict": "upgrade"
+            }
+          ]
+        }
+      ],
+      "loadingNote": "The game had not loaded these items when the journal was read; type /mcp loot The Deadmines again, then /mcp reload.",
+      "name": "The Deadmines",
+      "readAt": "2026-11-15 16:26",
+      "skipped": {
+        "stillLoading": 1
+      },
+      "stillLoading": [
+        "Cruel Barb"
+      ]
+    }
+  ],
+  "level": 20,
+  "method": {
+    "basis": "item level and DPS",
+    "how": "score = change in item level plus DPS against the equipped item, as in wow_compare_item; a weights.json file adds stats"
+  },
+  "proficiencyNote": "Which armor and weapon types a class can use follows the classic game's rules (mail for hunters and shamans and plate for warriors and paladins from level 40); Forever may differ. A weapon type the class can use may still need training.",
+  "slot": "cloak",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "upgradesOnly": true
+}

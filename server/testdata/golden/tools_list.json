@@ -400,6 +400,41 @@
       "idempotentHint": true,
       "openWorldHint": false,
       "readOnlyHint": true,
+      "title": "Dungeon loot upgrades"
+    },
+    "description": "Which items from a dungeon would be upgrades for the character, grouped by dungeon and boss, with the stat differences against the equipped item in that slot (the same comparison as wow_compare_item; a weights.json file adds stat weights). Items the class cannot use (armor or weapon type, by the classic rules) are left out and counted in skipped. The drop lists come only from the game's Encounter Journal, read by the addon when the player types /mcp loot \u003cdungeon\u003e (then /mcp reload); without that the answer says what to type, and the server never guesses drop tables. dungeon: a name fragment; slot: e.g. head, finger, mainHand; upgradesOnly=false lists every item with its verdict. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = the most recently dumped character",
+          "type": "string"
+        },
+        "dungeon": {
+          "description": "fragment of a dungeon name; empty = every dungeon read with /mcp loot",
+          "type": "string"
+        },
+        "slot": {
+          "description": "only items for this equipment slot, e.g. head, chest, finger, trinket, mainHand, offHand, ranged; empty = all",
+          "type": "string"
+        },
+        "upgradesOnly": {
+          "description": "true (default) = only items that would be upgrades; false = every item with its verdict",
+          "type": [
+            "null",
+            "boolean"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_dungeon_loot"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
       "title": "Dungeons"
     },
     "description": "Dungeons matching the character's level (fitNow), those available in a few levels (soon) and, with all=true, the rest including raids. Each dungeon has its level range, entrance zone and the quests from the log that relate to it (with difficulty color and progress). Ranges come from the in-game group finder, and when the client does not provide them, from an approximate table for the classic version (the source field says which). lockouts are saved instance lockouts with the time until reset. name narrows it to one dungeon. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",

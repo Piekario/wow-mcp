@@ -22,6 +22,8 @@ local HELP = {
     "/mcp compact on|off - one-line panel: dump age and Save button (off by default)",
     "/mcp ahtip on|off - auction house price in the item tooltip (on by default)",
     "/mcp options - open the WowMcp page in the game's options (the same switches as the commands above)",
+    "/mcp loot [dungeon] - read what the bosses of a dungeon drop from the Encounter Journal (default: the dungeon you are in,"
+        .. " or the dungeons for your level); the journal's selection is put back. Then /mcp reload",
     "/mcp probe - diagnostics: list of client API functions (spells, items, maps, achievements...), the events the client accepted"
         .. " and the client's Legacy API names",
     "Windows saved automatically when opened: trainer and vendor (last 10), bank, flights, professions, mail,"
@@ -241,6 +243,7 @@ local COMMANDS = {
     compact = setCompactPanel,
     note = setNote,
     quest = lookUpQuest,
+    loot = function(rest) ns.DungeonLoot.run(rest) end,
     off = disableSection,
     on = enableSection,
     status = showStatus,

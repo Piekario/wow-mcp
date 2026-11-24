@@ -189,6 +189,7 @@ Logs go to stderr (and to `--log` if given), never to stdout.
 | `/mcp played on` / `off` | whether to ask the game for play time (`/played`) after login, from which the XP rate is computed |
 | `/mcp note <text>` | a note for the assistant in the dump, e.g. what you plan to do today; `/mcp note` alone removes it |
 | `/mcp quest <name or ID>` | where a quest starts, what it needs and where it ends, from the installed Questie database; with [TomTom](https://www.curseforge.com/wow/addons/tomtom) installed, click a coordinate to set a waypoint (TomTom is optional) |
+| `/mcp loot [dungeon]` | reads what the bosses of a dungeon drop from the game's Encounter Journal (without a name: the dungeon you are in, or the dungeons for your level) and keeps it in the dump for `wow_dungeon_loot`; only when you type it, and the journal window's selection is put back |
 | `/mcp off <section>` / `/mcp on <section>` | stop collecting a section (it disappears from the dump) or collect it again; `/mcp off` alone shows the disabled ones and all names |
 | `/mcp minimap on` / `off` | the minimap button (on by default): a left click shows or hides the panel, saves nothing; it can be dragged |
 | `/mcp options` | opens the WowMcp page in the game's options (Interface / AddOns) with the same switches as these commands: sections, minimap button, compact panel, AH tooltip, played time; changes settings only |
@@ -241,6 +242,7 @@ After login (and after every `/reload`) the addon asks the game for play time, l
 | `wow_auctions` | auction house prices saved during your searches, a trend from recent visits, your auctions, an assessment of what from your bags and bank is worth listing instead of selling, and for gear the comparison with what you wear (`vsEquipped`, `canAfford`, `levelOk`; filters `type`, `equippable`, `affordable`, `usable`) |
 | `wow_group` | party or raid composition: classes, roles, levels, who is offline or far away; for players inspected with the Inspect window, average item level and full gear (`player`) |
 | `wow_dungeons` | dungeons that fit your level, those a few levels ahead, quests from your log for each dungeon and instance lockouts |
+| `wow_dungeon_loot` | which items from a dungeon would be upgrades, grouped by dungeon and boss, with the stat differences against what you wear; items your class cannot use are left out (`dungeon`, `slot`, `upgradesOnly`). The drop lists come only from the game's Encounter Journal after `/mcp loot <dungeon>` and `/mcp reload` |
 | `wow_export` | a character summary to paste into Discord (Markdown), a forum (BBCode) or as plain text; `short`, `gold`, `english` |
 | `wow_search` | text search across the whole dump of one character (quests and their rewards, quest windows at NPCs, items, abilities, trainers and vendors, stable, loot, recipes, mail, auctions, macros, flights); hits grouped by section |
 | `wow_rested` | rested XP: how much there is, how many levels that is, whether it covers the rest of the level and when it will be full after logging out in an inn (Classic rules, approximate) |

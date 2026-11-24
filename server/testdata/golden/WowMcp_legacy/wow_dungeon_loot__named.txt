@@ -1,0 +1,14 @@
+# tool wow_dungeon_loot variant=named
+# args: {"character":"Piekasz"}
+# isError: false
+--- content[0] ---
+{
+  "available": false,
+  "howTo": "In game type /mcp loot \u003cdungeon name\u003e (for example /mcp loot deadmines; without a name it reads the dungeon you are in, or the dungeons for your level), then /mcp reload. The addon reads the Encounter Journal only when you ask.",
+  "note": "The dump has no dungeon loot yet. If /mcp loot says the client does not give addons the Encounter Journal, type /mcp probe so the probe section shows which journal functions the client has. The server has no drop tables of its own and does not guess them: dungeon loot comes only from the game's Encounter Journal.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

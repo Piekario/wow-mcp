@@ -15,6 +15,7 @@ QuestDb.lua
 Waypoints.lua
 Items.lua
 AuctionItems.lua
+EncounterJournal.lua
 QuestRewards.lua
 TalentGrid.lua
 TraitTree.lua
@@ -68,6 +69,7 @@ Sections\Loot.lua
 Sections\XpGains.lua
 Sections\EventLog.lua
 Sections\Note.lua
+Sections\DungeonLoot.lua
 
 # Player UI.
 Panel.lua

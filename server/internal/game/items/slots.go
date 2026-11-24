@@ -54,3 +54,8 @@ func (i Item) Equippable() bool { return len(i.Slots()) > 0 }
 
 // TwoHanded: such a weapon also removes the off-hand item.
 func (i Item) TwoHanded() bool { return i.EquipLoc == twoHandEquipLoc }
+
+// GearSlots are the equipment slots gear is compared in (names from the addon's EQUIPMENT_SLOTS), in the order of
+// the character sheet.
+var GearSlots = []string{"head", "neck", "shoulder", "back", "chest", "wrist", "hands", "waist", "legs", "feet",
+	"finger1", "finger2", "trinket1", "trinket2", "mainHand", "offHand", "ranged"}
