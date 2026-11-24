@@ -20,6 +20,8 @@ Found in the first real-client run (2026-11-24, build 71037): addon 0.21.0 ran w
 fixed here:
 
 - **Fixed**
+  - `wow_social` group candidates listed the character itself when the guild roster wrote its name with a realm after a space
+    ("Name Realm") instead of a dash. Both forms are now recognised.
   - Legacy challenges: the achievements that grant Legacy Points are in ordinary categories (Classes > Warlock, Tradeskills >
     Alchemy, Dungeons, ...), no category title contains "Legacy", and all achievements are worth 0 points. They are recognised by
     their reward text "Earn 1 Legacy Point." The addon now matches an achievement as a challenge when its category title mentions
@@ -37,9 +39,10 @@ fixed here:
     and boss selection back. Every `/mcp loot` now leaves `dungeonLoot.lastAttempt` (outcome `read`, `noMatch`, `readFailed` or
     `unavailable`, how many instances and tiers the journal offered, the first 40 names, whether the player was in an instance,
     the error), and the section exists even when nothing was read. `wow_dungeon_loot` shows the last attempt and `journalOffers`,
-    the dungeon names to type. When the journal offers nothing and `Blizzard_EncounterJournal` is loadable but not loaded, the
-    addon does not load it: it says in chat and in `lastAttempt.hint` that opening the Encounter Journal window once and typing
-    `/mcp loot` again may help.
+    the dungeon names to type. When the journal offers nothing because `Blizzard_EncounterJournal` is not loaded (the real client: 0 instances
+    until the journal window was opened once), `/mcp loot` loads that module itself (`C_AddOns.LoadAddOn`, the game's own UI
+    module, the same thing opening the journal window does), says so in chat and reads again. If the client cannot load it,
+    chat and `lastAttempt.hint` say to open the Encounter Journal window once.
   - Section order: `legacy` now follows `achievements` in the dump.
 
 Item and spell lookup, for the addon and the server. Not yet run in the real client: it is
@@ -143,7 +146,7 @@ event. When they are missing, `/mcp loot` says so and records only the reason.
     it and never on a dump. Without a name it reads the dungeon the character is in, otherwise the dungeons for the
     character's level from the saved group finder ranges (at most 3 per command). The read selects instances and
     bosses and resets the class and slot loot filters, then puts the journal window's selection and filters back; chat
-    says what was read. The addon does not load `Blizzard_EncounterJournal`. Items the client has not loaded yet are
+    says what was read. Items the client has not loaded yet are
     marked `pending` and read again up to 5 times as their data arrives; chat says how many are still loading.
   - Dump section `dungeonLoot` (carried over between dumps): up to 8 dungeons with name, journal and map IDs, level range
     when known, boss names and up to 40 items each (ID, name, quality, boss, journal slot and armor text, item level,

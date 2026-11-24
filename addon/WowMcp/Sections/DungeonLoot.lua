@@ -3,7 +3,8 @@
 
 -- Section dungeonLoot: what the bosses of a dungeon drop, read from the Encounter Journal only when the player
 -- types /mcp loot [dungeon]; never on a dump, because the read moves the journal window's selection (it is put
--- back). Without a name: the dungeon the character is in, otherwise the dungeons for the character's level (from
+-- back). When the journal lists nothing because its module is not loaded, the command loads that module (the
+-- game's own Blizzard_EncounterJournal, as opening the journal window does). Without a name: the dungeon the character is in, otherwise the dungeons for the character's level (from
 -- the saved dungeons section). Results pass through later dumps, newest first and bounded. Item details come from
 -- Items.describe; items the client has not loaded yet are marked pending and read again a few times as data arrives.
 -- Every /mcp loot leaves lastAttempt in the section (outcome, what the journal offered), so a dump says what happened.
@@ -214,7 +215,7 @@ local function reportUnavailable(missing, query)
         .. " lists what the client has. Type /mcp reload to save what was found.")
 end
 
--- The journal lists no dungeon at all. The addon never loads the journal's own addon; the player opens the window.
+-- The journal lists no dungeon at all, also after its module was loaded or when the client cannot load it.
 local function reportEmptyJournal(query, journal)
     local extra = {}
     local text = "The Encounter Journal lists no dungeons."
@@ -299,6 +300,10 @@ function DungeonLoot.run(rest)
         return
     end
     local instances, tiers = EJ.instances()
+    if #instances == 0 and EJ.notLoadedYet() and EJ.loadJournal() then
+        chat("Loaded the game's Encounter Journal module (Blizzard_EncounterJournal) to read it.")
+        instances, tiers = EJ.instances()
+    end
     local journal = { instances = instances, tiers = tiers }
     if #instances == 0 then
         reportEmptyJournal(query, journal)
