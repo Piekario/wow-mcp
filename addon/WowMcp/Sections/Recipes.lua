@@ -130,17 +130,32 @@ local function addModernDetails(recipe, id)
     end
 end
 
+local UNNAMED_PROFESSION = "Unnamed profession"
+
+local function nonEmptyText(value)
+    value = plain(value)
+    if type(value) == "string" and value ~= "" then return value end
+    return nil
+end
+
+-- Forever 1.60.1 (real client, 2026-11-23) opened a window with one recipe (Camp Chair) whose professionName was an
+-- empty string and whose skill levels were 0: the entry was saved under the key "". Such a window keeps its recipes
+-- under a fixed name, with the client's own fields beside it (windowInfo) so the missing name can be traced.
+local function professionName(info)
+    return nonEmptyText(info.professionName) or nonEmptyText(info.parentProfessionName) or UNNAMED_PROFESSION
+end
+
 -- Profession window in the new API (C_TradeSkillUI).
 local function collectModernRecipes()
     if not (C_TradeSkillUI and C_TradeSkillUI.GetAllRecipeIDs and C_TradeSkillUI.GetRecipeInfo) then return nil end
     local base = callFirst({ "C_TradeSkillUI.GetChildProfessionInfo", "C_TradeSkillUI.GetBaseProfessionInfo" })
     local info = base and type(base[1]) == "table" and base[1]
-    local name = info and (plain(info.professionName) or plain(info.parentProfessionName))
-    if not name then return nil end
+    if not info then return nil end
     local profession = {
-        name = name, rank = plain(info.skillLevel), maxRank = plain(info.maxSkillLevel),
+        name = professionName(info), rank = plain(info.skillLevel), maxRank = plain(info.maxSkillLevel),
         capturedAt = time(), recipes = {},
     }
+    if profession.name == UNNAMED_PROFESSION then profession.windowInfo = ns.Compat.plainFields(info) end
     local okIDs, ids = pcall(C_TradeSkillUI.GetAllRecipeIDs)
     for _, id in ipairs(okIDs and ids or {}) do
         local ok, r = pcall(C_TradeSkillUI.GetRecipeInfo, id)
@@ -168,6 +183,7 @@ local function captureRecipes(kind)
     if not ok or not profession then return end
     local current = ns.Snapshot.current()
     current.recipes = (type(current.recipes) == "table" and current.recipes) or {}
+    current.recipes[""] = nil -- left by addons up to 0.20.0, see professionName
     current.recipes[profession.name] = profession
     ns.Snapshot.windowCaptured("recipes")
 end
