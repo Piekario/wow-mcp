@@ -5,16 +5,21 @@
 -- in the auction window, and the player's own auctions. The addon searches and posts nothing;
 -- it only reads what the client has already shown. Prices accumulate between visits
 -- (the latest observation wins), and seen keeps several last minimums to judge the trend. A gear entry also has
--- the item details the client already holds (Items.addCachedDetails: never a request), so the server can compare it.
+-- the item's details and tooltip (AuctionItems), so the server can compare it. A random suffix makes its own entry.
 
 local _, ns = ...
 local plain, callFirst, firstValue = ns.Compat.plain, ns.Compat.callFirst, ns.Compat.firstValue
-local Items, pick = ns.Items, ns.Compat.pick
+local Items, AuctionItems, pick = ns.Items, ns.AuctionItems, ns.Compat.pick
 
 local AUCTION_MAX_ITEMS = 400
 local AUCTION_MAX_SEEN = 5
 local SAME_VISIT_SECONDS = 600
 local AUCTION_STATUS_SOLD = 1
+local BROWSE_RETRY_SECONDS = 0.5
+local BROWSE_MAX_RETRIES = 8
+
+-- Browse rows whose item data the client had not loaded yet are read again when the data arrives.
+local browse = { waiting = nil, scheduled = false, retries = 0 }
 
 local function auctionsSection()
     local current = ns.Snapshot.current()
@@ -45,18 +50,16 @@ local function recordSeenMinimum(entry, minBuyout, now)
     end
 end
 
--- Item details that stay on a price entry. Filled from the client's cache only (Items.addCachedDetails); a later
--- visit with uncached data keeps what an earlier one saved. The section is bounded (400 prices), so there is no tooltip text,
--- no localized stat labels (statTokens say the same) and details only for gear: details for every price would add about
--- 165 kB at the cap of 400, gear only about 135 kB (a cached weapon entry grows by about 340 bytes).
-local function addItemDetails(entry, itemID)
-    local details = {}
-    Items.addCachedDetails(details, itemID, true)
-    details.stats = nil
+-- Item details that stay on a price entry; a later visit with uncached data keeps what an earlier one saved.
+local function addItemDetails(entry, details)
+    if not details then
+        local _
+        _, details = AuctionItems.describeKey({ itemID = entry.id })
+    end
     for key, value in pairs(details) do entry[key] = value end
 end
 
--- Stores the results gathered from one screen: observations[name] = {id, unitBuyout, unitBid, quantity, listings}.
+-- Stores the results gathered from one screen: observations[name] = {id, unitBuyout, unitBid, quantity, listings, details}.
 local function storeAuctionPrices(observations, source)
     local auctions = auctionsSection()
     local now = time()
@@ -64,7 +67,7 @@ local function storeAuctionPrices(observations, source)
     for name, o in pairs(observations) do
         local entry = auctions.prices[name] or { name = name }
         entry.id = o.id or entry.id
-        pcall(addItemDetails, entry, entry.id)
+        pcall(addItemDetails, entry, o.details)
         entry.minBuyout = o.unitBuyout
         entry.minBid = o.unitBid
         entry.quantity = o.quantity
@@ -158,10 +161,10 @@ end
 
 -- Adds a browse result to the observation. Several item keys (e.g. different levels)
 -- may share a name: we take the lowest per-unit price and sum the quantities, as in observe.
-local function observeBrowseResult(observations, name, id, unitBuyout, quantity)
+local function observeBrowseResult(observations, name, id, unitBuyout, quantity, details)
     local o = observations[name]
     if not o then
-        observations[name] = { id = id, unitBuyout = unitBuyout, quantity = quantity, listings = nil }
+        observations[name] = { id = id, unitBuyout = unitBuyout, quantity = quantity, listings = nil, details = details }
         return
     end
     o.id = o.id or id
@@ -169,20 +172,59 @@ local function observeBrowseResult(observations, name, id, unitBuyout, quantity)
     if quantity then o.quantity = (o.quantity or 0) + quantity end
 end
 
--- Browse results (minimum per-unit price for each item).
-local function captureBrowseResults()
+local function browseRowID(key)
+    return tostring(plain(key.itemID)) .. ":" .. tostring(plain(key.itemLevel)) .. ":" .. tostring(plain(key.itemSuffix))
+end
+
+-- Browse results (minimum per-unit price for each item). only limits the read to the rows still waiting for item data,
+-- so a retry does not overwrite what the player has opened since.
+local function captureBrowseResults(only)
     local r = callFirst({ "C_AuctionHouse.GetBrowseResults" })
     if not r or type(r[1]) ~= "table" then return end
-    local observations = {}
+    local observations, waiting = {}, {}
     for _, result in ipairs(r[1]) do
         local key = type(result.itemKey) == "table" and result.itemKey or {}
-        local id = plain(key.itemID)
-        local name = itemNameByID(id)
-        if name then
-            observeBrowseResult(observations, name, id, plain(result.minPrice), plain(result.totalQuantity))
+        local row = browseRowID(key)
+        if not only or only[row] then
+            local name, details, complete = AuctionItems.describeKey(key)
+            if not complete then
+                waiting[row] = true
+                AuctionItems.requestData(key)
+            end
+            if name then
+                observeBrowseResult(observations, name, plain(key.itemID), plain(result.minPrice), plain(result.totalQuantity), details)
+            end
         end
     end
+    browse.waiting = next(waiting) and waiting or nil
     storeAuctionPrices(observations, "browse")
+end
+
+local function captureNewBrowseResults()
+    browse.retries = 0
+    captureBrowseResults()
+end
+
+local function captureAddedBrowseResults()
+    captureBrowseResults()
+end
+
+local function retryBrowse()
+    browse.scheduled = false
+    if not browse.waiting then return end
+    browse.retries = browse.retries + 1
+    pcall(captureBrowseResults, browse.waiting)
+end
+
+-- Item data arrives one item at a time, so one delayed read covers a whole page of rows.
+local function onItemDataLoaded()
+    if not browse.waiting or browse.scheduled or browse.retries >= BROWSE_MAX_RETRIES then return end
+    browse.scheduled = true
+    if C_Timer and C_Timer.After then
+        C_Timer.After(BROWSE_RETRY_SECONDS, retryBrowse)
+    else
+        retryBrowse()
+    end
 end
 
 -- Commodity details after clicking a result.
@@ -209,14 +251,20 @@ local function captureItemResults(itemKey)
     local n = firstValue({ "C_AuctionHouse.GetNumItemSearchResults" }, itemKey)
     if type(n) ~= "number" or n <= 0 then return end
     local id = plain(itemKey.itemID)
-    local name = itemNameByID(id)
-    if not name then return end
+    local keyName, keyDetails = AuctionItems.describeKey(itemKey)
     local observations = {}
     for index = 1, n do
         local r = callFirst({ "C_AuctionHouse.GetItemSearchResultInfo" }, itemKey, index)
         local info = r and r[1]
         if type(info) == "table" then
+            local link = plain(info.itemLink)
+            local name = Items.nameFromLink(link) or keyName
             observe(observations, name, id, plain(info.quantity) or 1, plain(info.buyoutAmount), plain(info.bidAmount))
+            local o = name and observations[name]
+            if o and not o.details then
+                local _
+                if link then _, o.details = AuctionItems.describeLink(link) else o.details = keyDetails end
+            end
         end
     end
     storeAuctionPrices(observations, "item")
@@ -281,8 +329,12 @@ ns.Snapshot.addWindowSection("auctions")
 ns.Events.on("AUCTION_HOUSE_SHOW", ns.Snapshot.whenEnabled("auctions", onAuctionHouseShow))
 ns.Events.on("AUCTION_ITEM_LIST_UPDATE", guarded(captureClassicAuctionList))
 ns.Events.on("AUCTION_OWNED_LIST_UPDATE", guarded(captureOwnedAuctions))
-ns.Events.on("AUCTION_HOUSE_BROWSE_RESULTS_UPDATED", guarded(captureBrowseResults))
-ns.Events.on("AUCTION_HOUSE_BROWSE_RESULTS_ADDED", guarded(captureBrowseResults))
+ns.Events.on("AUCTION_HOUSE_BROWSE_RESULTS_UPDATED", guarded(captureNewBrowseResults))
+ns.Events.on("AUCTION_HOUSE_BROWSE_RESULTS_ADDED", guarded(captureAddedBrowseResults))
 ns.Events.on("COMMODITY_SEARCH_RESULTS_UPDATED", guarded(captureCommodityResults))
 ns.Events.on("ITEM_SEARCH_RESULTS_UPDATED", guarded(captureItemResults))
 ns.Events.on("OWNED_AUCTIONS_UPDATED", guarded(captureOwnedAuctions))
+ns.Events.on("AUCTION_HOUSE_CLOSED", function() browse.waiting = nil end)
+for _, event in ipairs({ "GET_ITEM_INFO_RECEIVED", "ITEM_DATA_LOAD_RESULT", "ITEM_KEY_ITEM_INFO_RECEIVED" }) do
+    ns.Events.on(event, guarded(onItemDataLoaded))
+end

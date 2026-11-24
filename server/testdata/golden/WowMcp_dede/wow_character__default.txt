@@ -19,7 +19,7 @@
     }
   ],
   "character": {
-    "addonVersion": "0.19.1",
+    "addonVersion": "0.19.2",
     "bindLocation": "Auberdine",
     "class": "Jäger",
     "classToken": "HUNTER",

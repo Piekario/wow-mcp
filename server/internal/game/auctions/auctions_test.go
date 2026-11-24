@@ -92,8 +92,8 @@ func TestAuctionBowsVersusEquippedBow(t *testing.T) {
 	if best["canAfford"] != true || best["levelOk"] != true || best["requiredLevel"] != int64(14) || best["equipLoc"] != "INVTYPE_RANGEDRIGHT" {
 		t.Errorf("bow fields: %s", fixtures.JSON(t, best))
 	}
-	if _, has := best["tooltip"]; has {
-		t.Error("a price carries no tooltip")
+	if len(snapshot.AsList(best["tooltip"])) == 0 || best["statsNote"] != nil {
+		t.Errorf("the row's tooltip is passed on, with no base-stats note: %s", fixtures.JSON(t, best))
 	}
 	// The bow the client had not cached: the type and slot are known, the numbers are not, the price stays.
 	other := snapshot.AsMap(list[1])
@@ -104,12 +104,12 @@ func TestAuctionBowsVersusEquippedBow(t *testing.T) {
 		t.Error("the sort is announced")
 	}
 	// Non-gear prices (no details) are left out of the gear filters, with a note.
-	if note, _ := out["detailsNote"].(string); !strings.Contains(note, "have no item details") || !strings.Contains(note, "0.13.0") {
+	if note, _ := out["detailsNote"].(string); !strings.Contains(note, "have no item details") || !strings.Contains(note, "0.19.2") {
 		t.Errorf("detailsNote: %q", note)
 	}
 	// Without gear filters the other prices stay and the order is by name.
 	all := View(s, Query{}, fresh)
-	if all["count"] != 6 || all["detailsNote"] != nil {
+	if all["count"] != 9 || all["detailsNote"] != nil {
 		t.Errorf("all prices: count %v, note %v", all["count"], all["detailsNote"])
 	}
 }
@@ -135,8 +135,30 @@ func TestAuctionFilters(t *testing.T) {
 	if strings.Join(names, ",") != "Ranger's Shortbow" {
 		t.Errorf("usable: %v", names)
 	}
-	if v := View(s, Query{Type: "Armor"}, fresh); len(v["prices"].([]any)) != 0 {
-		t.Errorf("no armor: %s", fixtures.JSON(t, v["prices"]))
+}
+
+func TestAuctionRandomSuffixHasItsOwnStats(t *testing.T) {
+	v := View(fixtures.Forever(t), Query{Query: "Thallium Choker"}, fixtures.At(time.Hour))
+	stats := map[string]any{}
+	for _, raw := range v["prices"].([]any) {
+		row := snapshot.AsMap(raw)
+		stats[row["name"].(string)] = snapshot.AsMap(row["statTokens"])["ITEM_MOD_INTELLECT_SHORT"]
+		if len(snapshot.AsList(row["tooltip"])) == 0 || row["suffix"] == nil {
+			t.Errorf("suffix row without tooltip or suffix: %s", fixtures.JSON(t, row))
+		}
+	}
+	if len(stats) != 2 || stats["Thallium Choker of the Owl"] != int64(4) || stats["Thallium Choker of the Monkey"] != nil {
+		t.Errorf("each suffix keeps its own stats: %v", stats)
+	}
+}
+
+func TestAuctionPriceWithoutTooltipIsMarked(t *testing.T) {
+	s := fixtures.Forever(t)
+	prices := snapshot.AsMap(s.Map("auctions")["prices"])
+	delete(snapshot.AsMap(prices["Thallium Choker of the Owl"]), "tooltip")
+	v := View(s, Query{Query: "of the Owl"}, fixtures.At(time.Hour))
+	if row := snapshot.AsMap(v["prices"].([]any)[0]); row["statsNote"] == nil {
+		t.Errorf("an entry saved without its tooltip may show base stats only: %s", fixtures.JSON(t, row))
 	}
 }
 
@@ -176,7 +198,7 @@ func TestAnalyseJudgesSalesAndMissingDetails(t *testing.T) {
 		t.Errorf("auction total %d, gap %v", r.AuctionTotal, r.Gap)
 	}
 	gear := Analyse(fixtures.Forever(t), Query{Equippable: true}, fixtures.At(time.Hour))
-	if gear.Gap != DetailsPartial || gear.NoDetails == 0 || gear.Rows[0].Name != "Hornwood Recurve Bow" {
+	if gear.Gap != DetailsPartial || gear.NoDetails == 0 || gear.Rows[0].Name != "Tidal Charm" {
 		t.Errorf("gear filter: gap %v, %d without details, rows %d", gear.Gap, gear.NoDetails, len(gear.Rows))
 	}
 	if Analyse(snapshot.Snapshot{}, Query{}, fixtures.At(0)).Saved {

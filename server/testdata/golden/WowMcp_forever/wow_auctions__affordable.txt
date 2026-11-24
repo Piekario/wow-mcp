@@ -44,6 +44,9 @@
       },
       "subType": "Bows",
       "subclassID": 2,
+      "tooltip": [
+        "Hornwood Recurve Bow"
+      ],
       "type": "Weapon",
       "vsEquipped": {
         "delta": {

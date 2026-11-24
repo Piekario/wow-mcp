@@ -5,7 +5,7 @@
 {
   "assumptions": "Profit is computed from the lowest buyout price per unit minus the 5% auction house cut. The listing deposit is lost if the item does not sell and is not counted here. Bound (Soulbound) and quest items cannot be listed.",
   "count": 2,
-  "detailsNote": "3 saved prices have no item details and are left out of this answer (non-gear never has them; gear needs addon 0.13.0 and a browse with the item data cached). Item details (type, level, stats, DPS) are saved from addon 0.13.0, only for gear and only when the client already holds the item data. Update the addon, browse the auction house for the items again and type /mcp reload.",
+  "detailsNote": "3 saved prices have no item details and are left out of this answer (non-gear never has them; gear needs the item data loaded while the results were open). Item details (type, level, stats, tooltip) are saved for gear only, once the client has loaded the item data (addon 0.19.2 asks for it and reads the row again; each random suffix is its own entry). Update the addon, browse the auction house for the items again, wait a second and type /mcp reload.",
   "lastSearchPartial": "The last search had 120 results, and a page of 6 was saved. The lowest price may be on another page; sort the results by price.",
   "lastVisit": "30 min ago",
   "myAuctions": {
@@ -47,6 +47,7 @@
         "ITEM_MOD_AGILITY_SHORT": 3,
         "ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 9.7
       },
+      "statsNote": "Saved without the row's tooltip (addon before 0.19.2): if this is a random-suffix item (of the Eagle, of the Monkey...), the stats here are the base item's, without the suffix. Browse the auction house for it again and type /mcp reload.",
       "subType": "Bows",
       "subclassID": 2,
       "type": "Weapon",

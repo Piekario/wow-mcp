@@ -14,6 +14,24 @@ based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` 
     package (`funding`, shown by `npm fund`), two README badges, and one line in the README, `SUPPORT.md` and the npm README. Nothing in
     the addon or the server changes, and the game shows no donation message.
 
+## 0.19.2 (2026-11-24)
+
+Auction rows with their real stats, for the addon and the server. The server expects addon 0.19.2. Not yet run in a real client.
+
+- **Fixed**
+  - Auction gear with a random suffix ("of the Eagle", "of the Monkey") was saved under the base item's name with the base
+    item's stats, which for such items is no stats at all. A browse row is an item key (item, level, suffix): each suffix is
+    now its own `auctions.prices` entry, named as the auction window names it, with `suffix`, the suffix's `statTokens` and
+    the row's `tooltip` lines (so trinkets and other Equip / Use effects are visible too). A listing the player opens is
+    read from its own link.
+  - A browse row whose item data the client had not loaded yet was dropped (a whole trinket search could vanish) or kept
+    without level and stats. The addon now asks the client to load that item (`C_Item.RequestLoadItemDataByID`, an item
+    cache request, never an auction house query) and reads the waiting rows again when the data arrives, at most 8 times
+    per search. Wait a second after a search before `/mcp reload`.
+- **Changed**
+  - `wow_auctions` passes on `suffix`, `tooltip`, `speed`, `damageMin` and `damageMax`, and marks a gear price saved
+    without its tooltip (an older addon) with `statsNote`: its stats may be the base item's only.
+
 ## 0.19.1 (2026-11-23)
 
 Internal quality work after a design review, for the addon and the server. No tool, prompt or dump field changes, except the

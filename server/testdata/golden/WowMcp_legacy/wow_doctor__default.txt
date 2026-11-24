@@ -4,7 +4,7 @@
 --- content[0] ---
 {
   "status": "warn",
-  "summary": "12 checks: 11 ok, 1 warnings, 0 failures (server 0.19.1, expected addon 0.19.1)",
+  "summary": "12 checks: 11 ok, 1 warnings, 0 failures (server 0.19.2, expected addon 0.19.2)",
   "nextStep": "Open the windows you want answers about (vendor, trainer, bank, mailbox, auction house, professions...) once, then type /mcp reload.",
   "checks": [
     {
@@ -28,7 +28,7 @@
     {
       "check": "addon version",
       "status": "ok",
-      "detail": "Addon 0.19.1, the server expects 0.19.1.",
+      "detail": "Addon 0.19.2, the server expects 0.19.2.",
       "fix": ""
     },
     {

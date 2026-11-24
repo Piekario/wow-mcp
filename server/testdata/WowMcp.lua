@@ -4,7 +4,7 @@ WowMcpDB = {
 ["Piekasz"] = {
 ["actionBars"] = {
 },
-["addonVersion"] = "0.19.1",
+["addonVersion"] = "0.19.2",
 ["auctions"] = {
 ["capturedAt"] = 1794760000,
 ["lastSearchPartial"] = {
@@ -189,7 +189,7 @@ WowMcpDB = {
 }, -- [3]
 },
 ["character"] = {
-["addonVersion"] = "0.19.1",
+["addonVersion"] = "0.19.2",
 ["bindLocation"] = "Auberdine",
 ["class"] = "Hunter",
 ["classToken"] = "HUNTER",

@@ -20,6 +20,24 @@
       "section": "stable",
       "shown": 1,
       "truncated": false
+    },
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Thallium Choker of the Owl",
+          "matchedIn": "name",
+          "path": [
+            "auctions",
+            "Einris Brightspear",
+            "Thallium Choker of the Owl"
+          ],
+          "summary": "minBuyout 80s 1c, quantity 3"
+        }
+      ],
+      "section": "auctions",
+      "shown": 1,
+      "truncated": false
     }
   ],
   "note": "Bank, vendors, trainers, stable, quest windows, recipes, mail and auctions are the state from the last visits to those windows (check their age in the relevant tools); loot is the loot since the previous save.",
@@ -52,6 +70,6 @@
     "character": "Piekasz",
     "dumpedAt": "2026-11-15 16:50:00"
   },
-  "totalHits": 1,
+  "totalHits": 2,
   "truncated": false
 }

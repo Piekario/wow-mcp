@@ -11,8 +11,8 @@ import (
 	"wowmcp/internal/snapshot"
 )
 
-// detailKeys are the item details the addon saves with a price (0.13.0, from the client cache only).
-var detailKeys = []string{"type", "subType", "classID", "subclassID", "equipLoc", "itemLevel", "requiredLevel", "quality", "sellPrice", "bindType", "dps", "statTokens"}
+// detailKeys are the item details the addon saves with a gear price; suffix and tooltip since addon 0.19.2.
+var detailKeys = []string{"type", "subType", "classID", "subclassID", "equipLoc", "itemLevel", "requiredLevel", "quality", "sellPrice", "bindType", "suffix", "dps", "speed", "damageMin", "damageMax", "statTokens", "tooltip"}
 
 var passedKeys = []string{"id", "quantity", "listings", "source"}
 
@@ -55,6 +55,7 @@ func readPrice(key string, raw any) Price {
 	_, level := m["itemLevel"]
 	_, stats := m["statTokens"]
 	p.HasNumbers = level || stats
+	_, p.HasTooltip = m["tooltip"]
 	return p
 }
 

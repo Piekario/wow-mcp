@@ -595,7 +595,7 @@
       "truncated": false
     },
     {
-      "count": 4,
+      "count": 7,
       "hits": [
         {
           "label": "Curvewood Dagger",
@@ -636,10 +636,40 @@
             "Silk Thread"
           ],
           "summary": "minBuyout 40c, quantity 80"
+        },
+        {
+          "label": "Thallium Choker of the Monkey",
+          "matchedIn": "name",
+          "path": [
+            "auctions",
+            "Einris Brightspear",
+            "Thallium Choker of the Monkey"
+          ],
+          "summary": "minBuyout 94s 0c, quantity 1"
+        },
+        {
+          "label": "Thallium Choker of the Owl",
+          "matchedIn": "name",
+          "path": [
+            "auctions",
+            "Einris Brightspear",
+            "Thallium Choker of the Owl"
+          ],
+          "summary": "minBuyout 80s 1c, quantity 3"
+        },
+        {
+          "label": "Tidal Charm",
+          "matchedIn": "name",
+          "path": [
+            "auctions",
+            "Einris Brightspear",
+            "Tidal Charm"
+          ],
+          "summary": "minBuyout 5g 20s 0c, quantity 1"
         }
       ],
       "section": "auctions",
-      "shown": 4,
+      "shown": 7,
       "truncated": false
     },
     {
@@ -791,6 +821,6 @@
     "character": "Piekasz",
     "dumpedAt": "2026-11-15 16:50:00"
   },
-  "totalHits": 62,
+  "totalHits": 65,
   "truncated": false
 }

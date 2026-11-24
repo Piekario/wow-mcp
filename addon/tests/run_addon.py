@@ -757,7 +757,39 @@ end
 FOREVER_V4_STUBS = r"""
 GetNumAuctionItems, GetAuctionItemInfo = nil, nil
 local names = { [2318] = "Light Leather", [2589] = "Linen Cloth", [2770] = "Copper Ore", [5586] = "Curvewood Dagger", [2320] = "Coarse Thread", [2506] = "Hornwood Recurve Bow", [2507] = "Ranger's Shortbow", [2508] = "Silk Thread" }
-C_Item.GetItemNameByID = function(id) return names[id] end
+-- Auction rows as the modern window gives them: a random suffix is part of the item key and only the suffixed link has
+-- its stats; the trinket's data is not loaded until the addon asks for it, and the Ranger's Shortbow never loads.
+ahItemData[12020] = { cached = true, name = "Thallium Choker", quality = 2, itemLevel = 36, requiredLevel = 31, sellPrice = 3969, stats = {},
+                      type = "Armor", subType = "Miscellaneous", equipLoc = "INVTYPE_NECK", classID = 4, subclassID = 0 }
+ahItemData[1404] = { cached = false, name = "Tidal Charm", quality = 2, itemLevel = 45, requiredLevel = 40, sellPrice = 2500, stats = {},
+                      type = "Armor", subType = "Miscellaneous", equipLoc = "INVTYPE_TRINKET", classID = 4, subclassID = 0 }
+names[12020] = "Thallium Choker"
+local suffixes = {
+    [585] = { "of the Owl", "+4 Intellect", { ITEM_MOD_INTELLECT_SHORT = 4, ITEM_MOD_SPIRIT_SHORT = 4 } },
+    [600] = { "of the Monkey", "+4 Agility", { ITEM_MOD_AGILITY_SHORT = 4, ITEM_MOD_STAMINA_SHORT = 4 } },
+}
+local function linkSuffix(link) return suffixes[tonumber(tostring(link):match("item:%d+::::::(%d+)"))] end
+local baseItemStats = C_Item.GetItemStats
+C_Item.GetItemStats = function(link) local s = linkSuffix(link) if s then return s[3] end return baseItemStats(link) end
+C_Item.GetItemNameByID = function(id)
+    local d = ahItemData[id]
+    if id == 1404 then return d.cached and d.name or nil end
+    return names[id]
+end
+itemDataRequests, browseReads = {}, 0
+C_Item.RequestLoadItemDataByID = function(id)
+    itemDataRequests[#itemDataRequests + 1] = id
+    if id == 1404 then ahItemData[id].cached = true end
+end
+local function chokerLines(s) return { lines = { { leftText = "Thallium Choker " .. s[1] }, { leftText = "Neck" }, { leftText = s[2] } } } end
+C_TooltipInfo.GetItemKey = function(id, level, suffix)
+    local d = ahItemData[id]
+    if not (d and d.cached) then uncachedLookups[#uncachedLookups + 1] = "GetItemKey " .. tostring(id) return nil end
+    if id == 12020 and suffixes[suffix] then return chokerLines(suffixes[suffix]) end
+    if id == 1404 then return { lines = { { leftText = d.name }, { leftText = "Trinket" }, { leftText = "Use: Stuns the target for 3 sec." } } } end
+    return { lines = { { leftText = d.name } } }
+end
+C_TooltipInfo.GetHyperlink = function(link) local s = linkSuffix(link) if s then return chokerLines(s) end end
 -- Server requests and actions in the auction house: the addon must not call them (forbid records every call).
 C_AuctionHouse = {
     SendBrowseQuery = forbid("C_AuctionHouse.SendBrowseQuery"), SendSearchQuery = forbid("C_AuctionHouse.SendSearchQuery"),
@@ -765,7 +797,9 @@ C_AuctionHouse = {
     RefreshCommoditySearchResults = forbid("C_AuctionHouse.RefreshCommoditySearchResults"),
     RefreshItemSearchResults = forbid("C_AuctionHouse.RefreshItemSearchResults"),
     PlaceBid = forbid("C_AuctionHouse.PlaceBid"), PostItem = forbid("C_AuctionHouse.PostItem"),
+    GetItemKeyInfo = function(key) local name = C_Item.GetItemNameByID(key.itemID) if name then return { itemID = key.itemID, itemName = name } end end,
     GetBrowseResults = function()
+        browseReads = browseReads + 1
         -- Light Leather appears twice (different keys, the same name): minimum 25 and total quantity 150 must remain.
         return {
             { itemKey = { itemID = 2318, itemLevel = 5 }, minPrice = 30, totalQuantity = 10 },
@@ -774,6 +808,9 @@ C_AuctionHouse = {
             { itemKey = { itemID = 2506 }, minPrice = 4200, totalQuantity = 2 },
             { itemKey = { itemID = 2507 }, minPrice = 3100, totalQuantity = 1 },
             { itemKey = { itemID = 2508 }, minPrice = 40, totalQuantity = 80 },
+            { itemKey = { itemID = 12020, itemLevel = 36, itemSuffix = 585 }, minPrice = 8001, totalQuantity = 3 },
+            { itemKey = { itemID = 12020, itemLevel = 36, itemSuffix = 600 }, minPrice = 9500, totalQuantity = 2 },
+            { itemKey = { itemID = 1404, itemLevel = 45 }, minPrice = 52000, totalQuantity = 1 },
         }
     end,
     GetNumCommoditySearchResults = function(id) return id == 2589 and 2 or 0 end,
@@ -782,7 +819,10 @@ C_AuctionHouse = {
         return { itemID = 2589, quantity = 100, unitPrice = 15 }
     end,
     GetNumItemSearchResults = function(key) return 1 end,
-    GetItemSearchResultInfo = function(key, i) return { quantity = 1, buyoutAmount = 9000, bidAmount = 7000 } end,
+    GetItemSearchResultInfo = function(key, i)
+        if key.itemID == 12020 then return { quantity = 1, buyoutAmount = 9400, itemLink = "|cff1eff00|Hitem:12020::::::600:77|h[Thallium Choker of the Monkey]|h|r" } end
+        return { quantity = 1, buyoutAmount = 9000, bidAmount = 7000 }
+    end,
     GetNumOwnedAuctions = function() return 1 end,
     GetOwnedAuctionInfo = function(i)
         return { itemKey = { itemID = 2770 }, itemLink = "|cffffffff|Hitem:2770:0|h[Copper Ore]|h|r", status = 0, quantity = 10, buyoutAmount = 600, timeLeftSeconds = 7200 }
@@ -1352,7 +1392,10 @@ def check_auction_item_details(snapshot, g, mode: str) -> None:
     assert cached["id"] == 2506 and cached["equipLoc"] == "INVTYPE_RANGEDRIGHT" and cached["classID"] == 2 and cached["subclassID"] == 2, dict(cached)
     assert (cached["itemLevel"], cached["requiredLevel"], cached["quality"], cached["sellPrice"]) == (19, 14, 2, 1500), dict(cached)
     assert cached["dps"] == 9.7 and dict(cached["statTokens"]) == {"ITEM_MOD_DAMAGE_PER_SECOND_SHORT": 9.7, "ITEM_MOD_AGILITY_SHORT": 3}, dict(cached)
-    assert cached["tooltip"] is None, "no tooltip text on a price entry"
+    if mode in FOREVER_MODES:
+        check_auction_item_keys(prices, g)
+    else:
+        assert cached["tooltip"] is None, "the classic list has no item key to read a tooltip from"
     # Not cached: only the static fields of GetItemInfoInstant, the price stays, and no call that could query the server.
     assert uncached["id"] == 2507 and uncached["equipLoc"] == "INVTYPE_RANGEDRIGHT" and uncached["classID"] == 2, dict(uncached)
     for key in ("itemLevel", "requiredLevel", "stats", "statTokens", "dps", "sellPrice", "tooltip"):
@@ -1367,6 +1410,23 @@ def check_auction_item_details(snapshot, g, mode: str) -> None:
         assert thread[key] is None, (key, dict(thread))
     assert cached["stats"] is None, "localized stat labels are not stored on a price entry"
     assert len(g.uncachedLookups) == 0, dict(g.uncachedLookups)
+
+
+def check_auction_item_keys(prices, g) -> None:
+    """Addon 0.19.2: a random suffix is its own price entry with its own stats, and a row whose data loads later is kept."""
+    owl, monkey = prices["Thallium Choker of the Owl"], prices["Thallium Choker of the Monkey"]
+    assert prices["Thallium Choker"] is None, "the base item has none of the suffix stats"
+    assert owl["suffix"] == 585 and dict(owl["statTokens"]) == {"ITEM_MOD_INTELLECT_SHORT": 4, "ITEM_MOD_SPIRIT_SHORT": 4}, dict(owl)
+    assert list(owl["tooltip"].values()) == ["Thallium Choker of the Owl", "Neck", "+4 Intellect"] and owl["minBuyout"] == 8001, dict(owl)
+    # The listing the player opened: the price, stats and tooltip come from its own link.
+    assert monkey["source"] == "item" and monkey["minBuyout"] == 9400 and monkey["suffix"] == 600, dict(monkey)
+    assert dict(monkey["statTokens"]) == {"ITEM_MOD_AGILITY_SHORT": 4, "ITEM_MOD_STAMINA_SHORT": 4}, dict(monkey)
+    trinket = prices["Tidal Charm"]
+    assert trinket["equipLoc"] == "INVTYPE_TRINKET" and trinket["minBuyout"] == 52000 and trinket["requiredLevel"] == 40, dict(trinket)
+    assert list(trinket["tooltip"].values())[2].startswith("Use:"), dict(trinket["tooltip"])
+    assert list(prices["Hornwood Recurve Bow"]["tooltip"].values()) == ["Hornwood Recurve Bow"]
+    requested = set(g.itemDataRequests.values())
+    assert requested == {2507, 1404}, requested
 
 
 def check_identifiers(snapshot, mode: str) -> None:
@@ -2243,6 +2303,11 @@ def main() -> int:
             on_event(None, event)
         on_event(None, "COMMODITY_SEARCH_RESULTS_UPDATED", 2589)
         on_event(None, "ITEM_SEARCH_RESULTS_UPDATED", runtime.eval("{ itemID = 5586 }"))
+        # The trinket's data arrives after the browse; the Ranger's Shortbow never loads, and the retries stay bounded.
+        for _ in range(30):
+            on_event(None, "GET_ITEM_INFO_RECEIVED", 1404, True)
+        assert 2 <= g.browseReads <= 9, g.browseReads
+        on_event(None, "ITEM_SEARCH_RESULTS_UPDATED", runtime.eval("{ itemID = 12020, itemSuffix = 600 }"))
         on_event(None, "INSPECT_READY", "Player-1-TANK")
         # Death and note (letter case and spaces in the text stay).
         on_event(None, "PLAYER_DEAD")
