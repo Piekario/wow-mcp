@@ -260,7 +260,7 @@ local function namesOf(instances, from)
     return table.concat(names, ", ")
 end
 
-local function reportRead(targets, items, waiting, restored, failure)
+local function reportRead(targets, waiting, restored)
     if #targets > MAX_PER_COMMAND then
         chat("Not read this time (at most " .. MAX_PER_COMMAND .. " per command): " .. namesOf(targets, MAX_PER_COMMAND + 1)
             .. ". Type /mcp loot <name> for them.")
@@ -313,7 +313,7 @@ function DungeonLoot.run(rest)
     local items, waiting, restored, failure, reads = readTargets(targets, ranges)
     local outcome = ns.Compat.pick(reads == 0, "readFailed", "read")
     recordAttempt(outcome, query, journal, { itemsRead = items, error = failure })
-    reportRead(targets, items, waiting, restored, failure)
+    reportRead(targets, waiting, restored)
 end
 
 ns.Snapshot.addWindowSection(SECTION)
