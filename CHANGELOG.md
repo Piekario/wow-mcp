@@ -107,10 +107,13 @@ fixed here:
     and boss selection back. Every `/mcp loot` now leaves `dungeonLoot.lastAttempt` (outcome `read`, `noMatch`, `readFailed` or
     `unavailable`, how many instances and tiers the journal offered, the first 40 names, whether the player was in an instance,
     the error), and the section exists even when nothing was read. `wow_dungeon_loot` shows the last attempt and `journalOffers`,
-    the dungeon names to type. When the journal offers nothing because `Blizzard_EncounterJournal` is not loaded (the real client: 0 instances
-    until the journal window was opened once), `/mcp loot` loads that module itself (`C_AddOns.LoadAddOn`, the game's own UI
-    module, the same thing opening the journal window does), says so in chat and reads again. If the client cannot load it,
-    chat and `lastAttempt.hint` say to open the Encounter Journal window once.
+    the dungeon names to type. When the journal offers nothing because `Blizzard_EncounterJournal` is not loaded,
+    `/mcp loot` loads that module itself (`C_AddOns.LoadAddOn`, the game's own UI module, the same thing opening the journal
+    window does), says so in chat and reads again. **WoW: Forever has no Encounter Journal**: the real client (build 71037)
+    reports the module as loadable but refuses to load it (`WRONG_GAME_TYPE`), has no journal window, and the `EJ_*` functions
+    list nothing. There `/mcp loot` says so in chat and records `outcome = "unavailable"` with `loadRefused`, and
+    `wow_dungeon_loot` passes that on instead of asking the player to open a window. The feature stays for clients that
+    have a journal.
   - Section order: `legacy` now follows `achievements` in the dump.
 
 Item and spell lookup, for the addon and the server. Not yet run in the real client: it is

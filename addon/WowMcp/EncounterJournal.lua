@@ -88,9 +88,13 @@ function EJ.notLoadedYet()
 end
 
 -- Loads the game's own journal module, as opening the journal window does; the EJ_* functions list nothing before it.
+-- Returns false and the client's reason when the client refuses: WoW: Forever answers WRONG_GAME_TYPE although
+-- IsAddOnLoadable says the module is loadable.
 function EJ.loadJournal()
     local loaded = callFirst({ "C_AddOns.LoadAddOn", "LoadAddOn" }, "Blizzard_EncounterJournal")
-    return loaded ~= nil and plain(loaded[1]) ~= false and not EJ.notLoadedYet()
+    if loaded and plain(loaded[1]) ~= false and not EJ.notLoadedYet() then return true end
+    local reason = loaded and plain(loaded[2])
+    return false, type(reason) == "string" and reason ~= "" and reason or "unknown"
 end
 
 -- The journal instance of the dungeon the character is in, or nil outside an instance.
