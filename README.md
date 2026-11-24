@@ -29,7 +29,7 @@ character: quests, bags, gear, talents, professions, reputation, auctions, progr
 Everything is read-only. The addon uses the official API and clicks nothing in the game; it never automates gameplay.
 The server opens one text file from the `WTF` directory (`WowMcp.lua` in SavedVariables) and does not touch the game
 process, its memory, network traffic or pixels. The server writes only in its own directory (never in the game directory):
-the dump history, an optional log and the goals file, which is changed by a single tool, `wow_goal_set`.
+the dump history with its long history database (`history.db`), an optional log and the goals file, which is changed by a single tool, `wow_goal_set`.
 What the addon and the server do, and what they will never do, is described in [docs/TOS_COMPLIANCE.md](docs/TOS_COMPLIANCE.md).
 That document is a description by the project author, not an approval from Blizzard and not legal advice.
 
@@ -199,13 +199,13 @@ Logs go to stderr (and to `--log` if given), never to stdout.
 
 Alias: `/wmcp`. Deaths (the counter and recent places) are recorded by the addon on its own.
 
-State is also saved on every `/reload` and logout. The addon captures a trainer's offer at the moment the trainer window is opened (it remembers up to the 10 most recent trainers and vendors), so the order is: open the trainer, type `/mcp reload`, ask your assistant. The professions window (recipes) and the mailbox work the same way.
+State is also saved on every `/reload` and logout: the addon takes the dump when the logout timer starts, while the character is still loaded, so logging out leaves fresh data on disk without `/mcp reload`. The addon captures a trainer's offer at the moment the trainer window is opened (it remembers up to the 10 most recent trainers and vendors), so the order is: open the trainer, type `/mcp reload`, ask your assistant. The professions window (recipes) and the mailbox work the same way.
 
 ### In-game panel
 
 After login a small WowMcp panel appears in the upper right corner. It shows how many minutes ago the last dump was (green up to an hour, yellow up to two, then red), the number of free bag slots and section errors. Hovering over the panel shows the section errors. The **Save** button does exactly the same as `/mcp reload`; when a window (trainer, auctions and others) has produced new data, the button is highlighted. Next to the panel there is a minimap button (a left click shows or hides the panel, it never saves; `/mcp minimap off` hides it), and `/mcp compact on` collapses the panel to a single line. The panel can be moved with the mouse (the position is remembered) and closed with the X; `/mcp panel` brings it back.
 
-The panel works only on click: the highlight is a reminder, and the addon never saves or reloads anything on its own.
+The panel works only on click: the highlight is a reminder, and the addon never saves or reloads anything on its own. The same save is available on a key: the game's Key Bindings have a WowMcp section with "Save character state (dump and /reload)"; no key is bound by default.
 
 ### Play time
 
@@ -254,7 +254,7 @@ After login (and after every `/reload`) the addon asks the game for play time, l
 | `wow_shopping_list` | what to buy before leaving town: trainer (from all remembered ones), repair, ammo, pet food, running-low materials, who sells it and for how much, a budget in priority order; `returnToTown` says when to return to town; `hours` |
 | `wow_goals` | the player's goals from `goals.json`: current state, how much is missing, percent and an ETA from the `wow_progress` rate |
 | `wow_goal_set` | adds or removes a goal (`level`, `gold`, `reputation`, `profession`, `spell`, `item`); **the only tool that writes**, and only to the server's goals file |
-| `wow_timeline` | a character timeline from the dump history: level-ups, new abilities, gear changes, quests turned in, deaths, profession thresholds; `kind`, `days`, `limit`. An event has the time of the first dump in which it is visible |
+| `wow_timeline` | a character timeline from the dump history: level-ups, new abilities, gear changes, quests turned in, deaths, profession thresholds; `kind`, `days`, `limit`. An event has the time of the first dump in which it is visible; level-ups and turned-in quests found in the addon's event log have their exact time (`exact`) and reach back before the kept dumps |
 | `wow_buffs` | active buffs and debuffs and missing standing class buffs (e.g. Aspect, Arcane Intellect); time remaining from `expiresAt` (addon 0.7.0 records `expiresAt` and `duration`) |
 | `wow_flights` | known flight points matched against the zones where you have quests (zone from the flight point's `zone` field from addon 0.7.0, and for older dumps guessed from the name) |
 | `wow_session_rating` | the rate of the last session (XP, gold balance, quests per hour) against the median of earlier sessions |
@@ -327,7 +327,9 @@ SavedVariables are shared across the whole account, so the file contains a dump 
 
 ### Dump history
 
-The server remembers every dump it reads in the `history` directory next to the server binary (with `install.sh`: `~/.local/share/wow-mcp/history`; on Windows: `bin\history`) (one JSON file per dump, by default the 50 most recent per character; dumps older than 7 days are gzipped as `.json.gz`, and one character's directory has a 200 MB limit, see `--history-max-mb` and `--history-compress-days`). `wow_changes` computes differences from this history. A dump enters the history when the server reads it, that is, on the first question to the assistant after `/mcp reload`. Two `/mcp reload` with no question in between therefore give a single entry.
+The server remembers every dump it reads in the `history` directory next to the server binary (with `install.sh`: `~/.local/share/wow-mcp/history`; on Windows: `bin\history`) (one JSON file per dump, by default the 50 most recent per character; dumps older than 7 days are gzipped as `.json.gz`, and one character's directory has a 200 MB limit, see `--history-max-mb` and `--history-compress-days`). `wow_changes` computes differences from this history. A dump enters the history when the server reads it: on a question to the assistant, and while the server runs also within 5 seconds of every save (it watches the file's modification time). Saves made while the MCP client is closed are seen only as the last one.
+
+Next to the dumps the server keeps a long history in `history.db` (SQLite) in the same directory: one compact row per dump (level, XP, gold, play time, deaths, completed quests, zone), the addon's `eventLog` entries and the auction prices you saw, per realm. It is not limited to the 50 most recent dumps, so `wow_gold_history`, `wow_progress`, `wow_session_rating`, goal ETAs, `wow_timeline` and the price trend in `wow_auctions` reach further back. Several server processes may share the file.
 
 ### Stale data
 
