@@ -18,6 +18,7 @@ WowMcpDB
 ├── schema      number, schema version (currently 2)
 ├── last        string, key of the character from the last dump on the account
 ├── settings    addon settings (not character state)
+├── beasts      map: creature (NPC) ID → beast observed by the account's Hunters (since 0.22.0; see `beasts` below)
 └── characters  map: character key → dump (snapshot)
 ```
 
@@ -186,6 +187,38 @@ client's own name of each known profession skill line (`C_SkillInfo.GetSkillLine
 `foodTypes` (list of strings), `trainingPointsTotal/Spent/Free`, `abilities` (`{id, name, rank}`) and `actionBar`
 (`{slot, id, name, autoCast}`). Since ≤0.4.0.
 
+Since 0.22.0 `bagFood`: the client's own answer to `C_PetInfo.CanPetEatItem` for the distinct bag items that may be pet
+food (Consumable / Food & Drink, classID 0 / subclass 5, and Trade Goods, classID 7, because raw meat and fish are trade
+goods). `checkedWith` is the argument form the client answered with a boolean (`itemID`, tried first, or `itemLink`);
+`items` lists `{id, name, count, canEat}`, where `count` is the total over all stacks of the item, at most 40 items.
+Food & Drink the pet refuses is kept (`canEat = false`); Trade Goods it refuses (cloth, leather) are left out. The field is
+absent when the client has no `CanPetEatItem` or never answered with a boolean; `{items = {}}` without `checkedWith`
+means the client has the function but the bags hold no candidate. The signature of `CanPetEatItem` is not confirmed in
+Forever: `/mcp probe` records its raw answers (`probe.petFood`). The addon only asks; it never feeds the pet.
+
+### `beasts`: observed beasts (list, Hunters only, since 0.22.0)
+
+No game API says which beast has which ability rank, so the addon learns it from what a Hunter does and the server
+answers only from these observations (`whereToTame` in `wow_pet` and `pet_care`). The observations are kept
+account-wide in `WowMcpDB.beasts` (creature ID → entry, at most 300, the least recently seen dropped) and every Hunter's
+dump carries a copy as this list, most recently seen first; for other classes the section is absent. One entry per
+creature: `npcId` (from the unit GUID), `name`, `family` (`UnitCreatureFamily`), `level`, `zone` (`GetRealZoneText`),
+`mapId`, `x`, `y` (the player's map position in percent when the observation was made), `source` (`tamed` or
+`beastLore`, the latest), `seenAt` (Unix time), and the data of each source, which replaces that source's data of an
+earlier observation:
+
+- `abilities` (`{name, rank, id}`; `rank` is the spellbook subtext, e.g. `Rank 2`): the new pet's spellbook right after
+  taming, without stances and commands. The addon remembers the target when the player starts Tame Beast (spell ID
+  1515, `UNIT_SPELLCAST_START` or `UNIT_SPELLCAST_CHANNEL_START`) and records the pet that appears within 60 s
+  (`UNIT_PET`, `PET_BAR_UPDATE`, `SPELLS_CHANGED`) when the creature ID in the pet's GUID (`Pet-0-…-<npcID>-…`) is the
+  target's, or, when the pet GUID has another form, when the families match. Abilities are never read later, because an
+  older pet also has ranks its Hunter taught it.
+- `loreLines` (list of strings, at most 30): the raw lines of the unit tooltip (`C_TooltipInfo.GetUnit`) of the target or
+  the mouseover unit while it carries the Beast Lore aura (spell ID 1462; `PLAYER_TARGET_CHANGED`,
+  `UPDATE_MOUSEOVER_UNIT`, `UNIT_AURA` for the target). The Forever format is not confirmed, so the addon does not parse
+  them; the server reads ability ranks from them tolerantly (`Bite (Rank 3)`, `Bite Rank 3` with the rank word the client
+  uses elsewhere in the dump, or `Bite 3` for an ability name the dump already knows).
+
 ### `actionBars`, `macros`, `reputation`, `currencies`
 
 | Section | Fields | Since |
@@ -250,7 +283,7 @@ Each has `capturedAt` (Unix time the window was opened) and usually `npc`. The d
 | `questTurnIn` | quest turn-in (`QUEST_COMPLETE`) | as above; only the last window | 0.6.0 |
 | `questLookups` | the `/mcp quest <id or name>` command | list, newest first, up to 10: `query`, `at`, `quests` and `npcs` (entries as in `questDb`); a repeated query replaces its earlier answer; an answer with two empty lists = nothing found. Requires the quest database addon | 0.14.0 |
 | `lookups` | the `/mcp item <id, link or name>` and `/mcp spell <id, link or name>` commands | list, newest first, up to 30; the same item or spell asked again replaces its earlier entry. Every entry: `kind` (`item` or `spell`), `id`, `name`, `query` (as typed), `at` (Unix time). Item: `quality`, `itemLevel`, `requiredLevel`, `type`, `subType`, `classID`, `subclassID`, `bindType`, `equipLoc`, `sellPrice`, `stats`, `statTokens`, `tooltip` (the lines of the item tooltip), and for weapons `damageMin`, `damageMax`, `speed`, `dps`, as for bag items. Spell: `rank`, `description` (and `descriptionSource`: `api`, `trait` or `tooltip`; `descriptionMissing = true` when the client had not loaded it yet), `castTimeMs`, `minRange`, `maxRange` (yards), `costs` (list of `power`, `amount`), `tooltip`. An item the client has not cached is requested from the client cache and saved when `GET_ITEM_INFO_RECEIVED` arrives, a spell the same way with `SPELL_DATA_LOAD_RESULT`; an entry is never written without a name | 0.21.0 |
-| `probe` | only after `/mcp probe` | `namespaces` (name → list of API functions), `globals`, `events` (which events the client accepted), `capturedAt`; diagnostics, the server does not write it to the history. Since 0.21.0: `globals` also lists `EJ_*`, `IsInInstance`, `GetInstanceInfo`, `IsAddOnLoaded` and `GetAddOnInfo`, `namespaces` has `C_AddOns`, and `addons.Blizzard_EncounterJournal` says `loaded`, `loadable` and `frame` (whether the `EncounterJournal` frame exists); the probe loads nothing | ≤0.4.0 (`events` 0.5.0) |
+| `probe` | only after `/mcp probe` | `namespaces` (name → list of API functions), `globals`, `events` (which events the client accepted), `capturedAt`; diagnostics, the server does not write it to the history. Since 0.22.0: `petFood` (`exists` = whether `C_PetInfo.CanPetEatItem` exists, `calls` = for the first 3 bag items and each argument form `itemID` / `itemLink`: `itemID`, `form`, `ok`, `error` or `count` (number of return values) and `results` (up to 4 `{type, value}`; `value` only when plain)) and `beastLore` (`target`, `npcId`, `name`, `hasAura` and, when the target carries Beast Lore, its tooltip `lines`); `events` then also has the taming and Beast Lore events. Since 0.21.0: `globals` also lists `EJ_*`, `IsInInstance`, `GetInstanceInfo`, `IsAddOnLoaded` and `GetAddOnInfo`, `namespaces` has `C_AddOns`, and `addons.Blizzard_EncounterJournal` says `loaded`, `loadable` and `frame` (whether the `EncounterJournal` frame exists); the probe loads nothing | ≤0.4.0 (`events` 0.5.0) |
 | `dungeonLoot` | only after `/mcp loot [dungeon]` | What the bosses of a dungeon drop, read from the Encounter Journal when the player asks (never on a dump). `capturedAt`, `instances` (newest first, at most 8; a dungeon read again replaces its entry): `name`, `journalInstanceID`, `mapID` (the instance's map ID, return 11 of `EJ_GetInstanceByIndex`), `raid`, `minLevel` / `maxLevel` (from the saved `dungeons` section, matched by `mapID` or name; absent when unknown), `capturedAt`, `encounters` (boss names in journal order), `truncated` (`true` when the journal listed more than 40 items), `items` (at most 40): `id`, `name`, `quality`, `encounter` (the boss name), `encounterID`, `slotText` and `armorType` (the journal's own text, in the client's language), then the `Items.describe` fields (`itemLevel`, `requiredLevel`, `type`, `subType`, `classID`, `subclassID`, `equipLoc`, `bindType`, `sellPrice`, `stats`, `statTokens`, `tooltip` and the weapon numbers), and `pending = true` while the client had not loaded the item (no `itemLevel`; the addon reads such items again up to 5 times as `GET_ITEM_INFO_RECEIVED` arrives). Without the journal API the section is `{unavailable = "no <function> in this client", checkedAt}`. The read selects instances and bosses and resets the class and slot loot filters; the journal window's selection and filters are put back afterwards. Without `/mcp loot` the section is absent. Not yet run in a real client: the `EJ_*` names are taken from mainline clients | unreleased |
 
 ## 6. Sections saved live

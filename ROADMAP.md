@@ -32,7 +32,7 @@ only `WowMcp.lua` and writes only in its own directory. Ideas that would break t
 
 | # | Idea | Why now | Size |
 |---|---|---|---|
-| 69 | Food in bags (finish) | needs a diet table from the game or data in the dump | S |
+| 69, 70 | Check in the game the addon 0.22.0 pet data: `/mcp probe` with food in the bags (`probe.petFood`: which argument form of `C_PetInfo.CanPetEatItem` answers), Beast Lore on a targeted beast (`probe.beastLore`: the tooltip format), and one taming (`beasts`) | the signature, the events and the tooltip format are assumptions, checked only on mocks | S |
 
 ---
 
@@ -137,8 +137,8 @@ only `WowMcp.lua` and writes only in its own directory. Ideas that would break t
 | 66 | ✅ Prompt `zwierzak` (`pet_care`) | Pet state, happiness, loyalty, training points and what to improve. Done. | S | 🟡 |
 | 67 | ✅ Missing ranks | From the Beast Training window and the pet's abilities: which ranks it knows, which are missing at its level. Done: `wow_pet` shows `rankReview` (ranks from the Beast Training window that the pet does not have, and ranks from trainer offers that the Hunter does not know); only from dump data. | M | 🟡 |
 | 68 | ✅ Training points plan | What to spend the pet's training points on given its current abilities. Done: `trainingPlan` in `wow_pet` (free points versus the cost of trainings; an explicit ordering heuristic). | S | 🟡 |
-| 69 | ◐ Food in bags (partly) | Which food from bags fits the pet's diet and for how many feedings it lasts (requires 24). Partly: `pet_care` and `wow_shopping_list` show food from bags (by the item subtype `Food`) next to `foodTypes`, but the server has no table of which food is meat, fish, etc., so the matching is done by the reader, and feedings are not counted. It cannot be done better without a diet table from the game (or from data the dump does not carry yet). | S | 🟡 |
-| 70 | Where to tame | Which animal to tame to learn a missing rank. A Classic table marked `source: classic`, as with dungeons. | L | ⚪ |
+| 69 | ✅ Food in bags | Which food from bags fits the pet's diet and for how many feedings it lasts (requires 24). Done in addon 0.22.0, server 0.22.0 (not yet run in the real client): the addon asks the client itself, `C_PetInfo.CanPetEatItem`, for every bag item that may be food (`pet.bagFood`, the argument form that answered in `checkedWith`; no diet table), and `wow_pet`, `pet_care`, `wow_shopping_list`, `wow_reagents` and `wow_bag_plan` show the food the pet eats, the food it refuses and `feedings`. Without that data in the dump the old fallback (food by item subtype, matched by the reader) stays. `/mcp probe` records the raw answers to confirm the signature. | S | 🟡 |
+| 70 | ✅ Where to tame | Which animal to tame to learn a missing rank. No game API lists it and no Classic table is used: the addon learns from what the account's Hunters do in Forever. Done in addon 0.22.0, server 0.22.0 (not yet run in the real client): an account-wide store of observed beasts by creature ID (section `beasts`, at most 300) with the new pet's abilities and ranks at the moment of taming and the raw tooltip lines of beasts carrying Beast Lore; `whereToTame` in `wow_pet` and `pet_care` lists each rank seen, whether the Hunter knows it (Beast Training window) and which observed beasts have it (zone, level, coordinates, when seen), unknown ranks first, and says how to collect observations when there are none. The Beast Lore tooltip format is read tolerantly until `/mcp probe` shows the real one. | L | ⚪ |
 | 71 | ✅ Ammo | How many arrows or bullets you use per hour (from the history) and how many to buy before leaving. Done: `wow_ammo`. | S | 🟡 |
 | 72 | ✅ Pet comparison | A comparison of the active pet with those in the stable (requires 23). Done: the `stable` field in `wow_pet` and in the `pet_care` prompt (level and family of stabled pets versus the active one; there is no data on the abilities of stabled pets). | S | ⚪ |
 

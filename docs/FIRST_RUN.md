@@ -45,6 +45,8 @@ These sections are collected only after you open a window in the game. For each 
 | Dungeons | open the LFG window (group finder) | `wow_dungeons` | whether level ranges come from the client; if not, the server uses the classic table |
 | Talents | open the talents window | `wow_talents` | whether nodes have a `description` (text from `C_Spell.GetSpellDescription`) |
 | Dungeon loot | `/mcp loot deadmines` (or `/mcp loot` inside a dungeon) | `wow_dungeon_loot` | whether chat says what was read; if it says the client has no Encounter Journal for addons, do `/mcp probe` and check `probe.globals` (`EJ_*`) and `probe.addons` |
+| Pet food (0.22.0) | Hunter with a pet and some food in the bags: `/mcp probe` | `wow_section` `probe`, path `petFood`; then `wow_pet` | `petFood.calls`: which argument form (`itemID` or `itemLink`) returned `ok = true` with one `boolean` result; `wow_pet` `bagFood` should list what the pet eats with `feedings` |
+| Where to tame (0.22.0) | Hunter: cast Beast Lore on a beast and keep it targeted, then `/mcp probe`; tame a beast if you can | `wow_section` `probe`, path `beastLore`; then `wow_pet` | `beastLore.hasAura = true` and the tooltip `lines` (do they show the abilities and their ranks, and in what form?); `wow_section` `beasts`; `whereToTame.ranks` in `wow_pet` |
 | Legacy | open the Legacy window (Y) | `wow_legacy` | whether a perk tree with Professions / Adventure / Resourcefulness was found; if not, `discovery=true` shows the client's Legacy API names |
 
 Note what worked and what came back empty: the roadmap fix for each section is based on this. Also check whether `/mcp probe`

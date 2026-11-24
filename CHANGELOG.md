@@ -7,6 +7,51 @@ errors, dump 18 ms), addon 0.7.0 with server 0.9.0 (2026-11-15, no section error
 between are part of 0.11.0 / 0.12.2 and were run with them. Addon 0.14.0 was run on 2026-11-22 (client build 71037, no section errors, dump 25.7 ms: `questDb` for 22 log quests, `guide` reading TUGs, `/mcp quest The Glowing Shard`). **Server 0.15.0 and the 0.12.0 / 0.13.0 addon changes (carried periods, flight zones, auction gear details) have not yet been checked in a real client**: their fixes are
 based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` result and golden response tests.
 
+## 0.22.0 (unreleased)
+
+Pet food the client checks and where to tame missing ranks, for the addon and the server (roadmap 69 and 70). The server
+expects addon 0.22.0. **None of this has been run in the real client**: it was checked only on the addon's API mocks
+(`addon/tests/run_addon.py`), unit tests and golden responses. It assumes the following about Forever, to be confirmed with
+`/mcp probe` and a taming in game:
+
+- `C_PetInfo.CanPetEatItem` (present in the 0.7.0 probe) takes an item ID or an item link and returns a boolean; which
+  form works is not known, so the addon tries both and saves the one that answered.
+- Tame Beast is spell ID 1515 and fires `UNIT_SPELLCAST_START` or `UNIT_SPELLCAST_CHANNEL_START` with `(unit, castGUID,
+  spellID)`; the tamed pet arrives with `UNIT_PET`, `PET_BAR_UPDATE` or `SPELLS_CHANGED` within 60 s; the pet's GUID has
+  the form `Pet-0-…-<npcID>-…` (otherwise the families are compared); creature GUIDs have the form
+  `Creature-0-…-<npcID>-…`.
+- Beast Lore is spell ID 1462 and leaves an aura on the beast that `C_UnitAuras.GetUnitAuraBySpellID` (or, without it,
+  `C_UnitAuras.GetAuraDataByIndex` / `UnitAura`) finds; the beast's abilities appear in the unit tooltip that
+  `C_TooltipInfo.GetUnit` returns. The tooltip format is unknown, so the lines are saved raw.
+- Events `PLAYER_TARGET_CHANGED`, `UPDATE_MOUSEOVER_UNIT`, `UNIT_AURA`, `UNIT_PET`, `PET_BAR_UPDATE`, `SPELLS_CHANGED`
+  and the two spellcast events are accepted by the client (`probe.events` shows it).
+
+- **Added**
+  - Addon: `pet.bagFood` (`PetFood.lua`): for every distinct bag item that may be pet food (Food & Drink, and Trade Goods
+    because raw meat and fish are trade goods) the addon asks the client `C_PetInfo.CanPetEatItem` and saves
+    `{checkedWith, items = {id, name, count, canEat}}`. Nothing is saved when the client has no such function or never
+    answers with a boolean. The addon only asks; it never feeds the pet.
+  - Addon: section `beasts` (Hunters only; `Beasts.lua`, `BeastTaming.lua`, `BeastLore.lua`, `Sections/Beasts.lua`): an
+    account-wide store of observed beasts keyed by creature ID (`WowMcpDB.beasts`, at most 300, the least recently seen
+    dropped), carried in every Hunter's dump. When the player tames a beast, the new pet's spellbook abilities with ranks
+    are saved at that moment (`source = tamed`); when the target or mouseover unit carries Beast Lore, its tooltip lines
+    are saved raw (`source = beastLore`), with name, level, family, zone, map ID and the player's position. `/mcp off
+    beasts` stops the recording.
+  - `/mcp probe` also saves `petFood` (the raw answers of `CanPetEatItem` for the first 3 bag items, with each argument
+    form) and `beastLore` (the target's tooltip lines when it carries Beast Lore), so one run confirms the signature and
+    the tooltip format.
+  - Server: `wow_pet` shows `bagFood` (food the pet can eat, food it refuses, `feedings`) and `whereToTame`: each ability
+    rank seen on observed beasts, whether the Hunter knows it (from the Beast Training window; unknown when it was never
+    opened) and which beasts have it (name, level, zone, coordinates, source, when seen), ranks the Hunter does not know
+    first. Beast Lore lines are read tolerantly: `Bite (Rank 3)`, `Bite Rank 3` (with the rank word the client uses
+    elsewhere in the dump, so any language works) or `Bite 3` for an ability name the dump already knows. The answer says
+    the data comes only from beasts this account tamed or examined, and how to collect them when there are none.
+- **Changed**
+  - `pet_care`, `wow_shopping_list`, `wow_reagents` and `wow_bag_plan` use the client's verdict on the bag food when the
+    dump has it: feedings are counted, refused food is named, raw meat the pet eats is kept instead of banked. Older dumps
+    keep the food by item subtype with the note that matching it to the diet is left to the reader.
+  - The player's map position is read by one helper (`Maps.playerPosition`), shared by `character` and `beasts`.
+
 ## 0.21.0 (unreleased)
 
 Seven new tools and two extended ones, for the addon and the server. The server expects addon 0.21.0. **None of this has been run in the

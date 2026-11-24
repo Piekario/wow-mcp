@@ -197,7 +197,7 @@ Logs go to stderr (and to `--log` if given), never to stdout.
 | `/mcp options` | opens the WowMcp page in the game's options (Interface / AddOns) with the same switches as these commands: sections, minimap button, compact panel, AH tooltip, played time; changes settings only |
 | `/mcp compact on` / `off` | the panel in a single line (dump age and the Save button); off by default |
 | `/mcp ahtip on` / `off` | whether to show an "AH: price (age)" line in the item tooltip with the last saved auction house price (on by default; text in the tooltip only) |
-| `/mcp probe` | diagnostics: a list of the client's API functions and the events the client accepted; also does `/mcp reload` |
+| `/mcp probe` | diagnostics: a list of the client's API functions and the events the client accepted, what the client answers when asked whether the pet can eat the first few bag items (`petFood`), and the tooltip of your target when it carries Beast Lore (`beastLore`); also does `/mcp reload` |
 | `/mcp help` | list of commands |
 
 Alias: `/wmcp`. Deaths (the counter and recent places) are recorded by the addon on its own.
@@ -225,7 +225,7 @@ After login (and after every `/reload`) the addon asks the game for play time, l
 | `wow_bags` | bags, free slots, items |
 | `wow_equipment` | equipped gear with durability and the game's equipment sets (`equipmentSets`, with `isEquipped`) |
 | `wow_spells` | known abilities and ranks |
-| `wow_pet` | pet: level, family, happiness, loyalty, training points, action bar, abilities; `rankReview` (missing ranks from Beast Training and trainer offers), `trainingPlan` (what fits in the free points) and `stable` (stabled pets versus the active one) |
+| `wow_pet` | pet: level, family, happiness, loyalty, training points, action bar, abilities; `rankReview` (missing ranks from Beast Training and trainer offers), `trainingPlan` (what fits in the free points), `bagFood` (which bag food the pet can eat, as the game client answers it, and how many feedings it lasts), `whereToTame` (ability ranks seen on beasts the account's Hunters tamed or examined with Beast Lore, ranks the Hunter does not know first, with zone, level and coordinates) and `stable` (stabled pets versus the active one) |
 | `wow_trainer` | the offer of the last trainer (or a remembered one chosen by `npc`; list in `known`) with prices and a `canAfford` field |
 | `wow_reputation` | reputation with progress in percent and the amount missing to the next level; filters `query`, `standing` |
 | `wow_bank` | the bank from the last visit with its vendor value; filters `query`, `type`, `minQuality`, `sellable` |
@@ -258,7 +258,7 @@ After login (and after every `/reload`) the addon asks the game for play time, l
 | `wow_journal` | a session journal from the history (levels, XP and its sources, gold, quests, notable items, loot, deaths, zones) and records; `sessions`, `markdown=true` returns ready text in the `text` field (the server itself does not write `.md` files) |
 | `wow_bag_plan` | what to do with full bags: keep, bank, sell, auction, with the reason and totals; destroys nothing |
 | `wow_quest_rewards` | an evaluation of choice rewards for quests against your gear (a quest being turned in or offered by an NPC at the top, then the log): slot, differences, score, vendor value, `best` with a justification; `quest` (name or ID), `weights`. Repeated reward lists across several quests get `suspect` and no recommendation |
-| `wow_shopping_list` | what to buy before leaving town: trainer (from all remembered ones), repair, ammo, pet food, running-low materials, who sells it and for how much, a budget in priority order; `returnToTown` says when to return to town; `hours` |
+| `wow_shopping_list` | what to buy before leaving town: trainer (from all remembered ones), repair, ammo, pet food (with the bag food the game client says the pet can eat), running-low materials, who sells it and for how much, a budget in priority order; `returnToTown` says when to return to town; `hours` |
 | `wow_goals` | the player's goals from `goals.json`: current state, how much is missing, percent and an ETA from the `wow_progress` rate |
 | `wow_goal_set` | adds or removes a goal (`level`, `gold`, `reputation`, `profession`, `spell`, `item`); **the only tool that writes**, and only to the server's goals file |
 | `wow_timeline` | a character timeline from the dump history: level-ups, new abilities, gear changes, quests turned in, deaths, profession thresholds; `kind`, `days`, `limit`. An event has the time of the first dump in which it is visible; level-ups and turned-in quests found in the addon's event log have their exact time (`exact`) and reach back before the kept dumps |
@@ -300,7 +300,7 @@ Every prompt takes an optional `character`. In your MCP client they are in the `
 | `before_logout` | what to do before leaving: an inn for rested XP, mail, auctions, repair, bag space, warnings from `wow_status` |
 | `first_run` | an introduction after installation or for a new character: what the assistant sees, which windows to open, what to ask about |
 | `week_in_game` | a summary of the last 7 days from the history: levels, gold, play time, the best session and events |
-| `pet_care` | the state of a Hunter's pet: happiness, loyalty, training points, diet versus food in bags (by item subtype), missing ranks and a training points plan, comparison with the stable |
+| `pet_care` | the state of a Hunter's pet: happiness, loyalty, training points, which bag food it can eat and for how many feedings (by the game client's answer; by item subtype for older dumps), missing ranks and a training points plan, where to tame beasts with ranks the Hunter lacks (only from observed beasts), comparison with the stable |
 
 `session_plan` now uses the quest difficulty rating, the XP rate, cooldowns, gear durability and mail.
 
@@ -489,7 +489,7 @@ has no case). A new addon section is a file in `Sections/`, a registry call and 
 
 On every `/mcp reload`: character, statistics, buffs, quest log, IDs of completed quests, bags and gear
 (with stats and the full item description, and ammo with the item count), abilities, talents, professions
-and weapon skills, pet (action bar and learned abilities), `equipmentSets` (equipment sets), `pvp` (honor and kills), aura duration (`expiresAt`, `duration`), action bars, reputation, macros,
+and weapon skills, pet (action bar, learned abilities and, since 0.22.0, which bag food it can eat), `beasts` (Hunters only, since 0.22.0: beasts the account's Hunters tamed or examined with Beast Lore), `equipmentSets` (equipment sets), `pvp` (honor and kills), aura duration (`expiresAt`, `duration`), action bars, reputation, macros,
 `currencies` (currencies and tokens), `cooldowns` (cooldowns longer than 90 s, e.g. Hearthstone), `played` (play time),
 `group` (party or raid composition) and `dungeons` (dungeons from the group finder and instance lockouts). Talents have
 whole trees with descriptions. The character also has zone, subzone, coordinates, `resting` and `bindLocation`. The dump carries `timings`
