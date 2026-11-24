@@ -25,6 +25,16 @@ local function realmName()
     return nil
 end
 
+-- The player's GUID is "Player-<realm number>-<id>" also in builds that give no realm name, so two characters with
+-- one name on two realms still get two keys.
+function Store.realmId()
+    local read = _G.UnitGUID
+    if type(read) ~= "function" then return nil end
+    local ok, guid = pcall(read, "player")
+    guid = ok and ns.Compat.plain(guid)
+    return type(guid) == "string" and guid:match("^Player%-(%d+)%-") or nil
+end
+
 local function playerTokens()
     local _, classToken = UnitClass("player")
     local _, raceToken = UnitRace("player")
@@ -53,12 +63,14 @@ local function savedRealmKey(name)
 end
 
 -- Character key in WowMcpDB.characters: "Name-Realm"; when the client gives no realm name, the saved
--- key of this character (savedRealmKey), and only then just the name.
+-- key of this character (savedRealmKey), then "Name-<realm number>" from the GUID, and only then just the name.
 function Store.characterKey()
     if sessionKey then return sessionKey end
     local name = UnitName("player") or "unknown"
     local realm = realmName()
     local key = realm and (name .. "-" .. realm) or savedRealmKey(name)
+    local realmId = not key and Store.realmId()
+    if realmId then key = name .. "-" .. realmId end
     -- Remembered for the session: at logout the client may no longer tell the class, and the key must not change.
     sessionKey = key
     return key or name

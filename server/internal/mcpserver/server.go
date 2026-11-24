@@ -120,6 +120,7 @@ func (s *service) loadDatabase() (*snapshot.Database, error) {
 		return nil, err
 	}
 	if s.History != nil {
+		adoptFormerKeys(db, s.History, s.Ledger)
 		s.History.Record(db)
 	}
 	if s.Ledger != nil {

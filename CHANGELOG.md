@@ -9,6 +9,17 @@ based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` 
 
 ## Unreleased
 
+- **Fixed**
+  - Two characters with the same name on two realms shared one key when the client gives no realm name (Forever build
+    71037): the second to log in replaced the first in the dump, and their history and auction prices mixed. The addon
+    now takes the realm number from the player's GUID (`Player-<realm>-<id>`, read with `UnitGUID`) and saves the
+    character as `Name-<realm number>`; the dump has `character.realmId`. A saved `Name-Realm` key of the same class and
+    race still wins, and the dump saved under the bare name moves to the new key at login.
+  - The server follows the key: a character with a realm in its key and no history yet takes the history kept under its
+    former keys (the bare name, or the name with the old realm text) when their newest dump has the same class and race.
+    The dumps are copied, the old directories and rows stay, and the long history imports them before the keep limit
+    trims the copies.
+
 - **Added**
   - A plain logout now leaves a fresh dump on disk. The addon takes a dump when the logout timer starts or the player
     chooses Exit (`PLAYER_CAMPING`, `PLAYER_QUITING`, both confirmed by `/mcp probe` in the real client on 2026-11-24),

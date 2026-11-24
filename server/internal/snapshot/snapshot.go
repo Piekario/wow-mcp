@@ -57,6 +57,14 @@ func (s Snapshot) List(section string) []any { return AsList(s[section]) }
 // Character is the character section: level, class, gold, XP, zone.
 func (s Snapshot) Character() map[string]any { return s.Map("character") }
 
+// ClassAndRace are the character's class and race tokens (the same in every client language); "" when unknown.
+func (s Snapshot) ClassAndRace() (class, race string) {
+	c := s.Character()
+	class, _ = c["classToken"].(string)
+	race, _ = c["raceToken"].(string)
+	return class, race
+}
+
 // Equipment is the list of equipped items (each with a slot field).
 func (s Snapshot) Equipment() []any { return s.List("equipment") }
 

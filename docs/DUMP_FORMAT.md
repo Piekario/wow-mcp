@@ -21,7 +21,7 @@ WowMcpDB
 └── characters  map: character key → dump (snapshot)
 ```
 
-- The character key is `Name-Realm` (when the client provides the realm), otherwise just the name. Every character on the account has its own dump,
+- The character key is `Name-Realm` (when the client provides the realm), otherwise `Name-<realm number>` from the player's GUID (addon 0.20.0, also saved as `character.realmId`), otherwise just the name. Every character on the account has its own dump,
   overwritten on that character's next dump.
 - `settings` contains: `disabledSections` (map section name → `true`, since 0.5.0), `panelHidden`, `panelPoint`, `played`
   (`false` after `/mcp played off`) and `ahTooltip` (`false` after `/mcp ahtip off`, since 0.6.0), `minimap` (`false` after `/mcp minimap off`), `minimapAngle` (position of the minimap

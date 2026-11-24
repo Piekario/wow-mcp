@@ -64,6 +64,7 @@ func (w *watcher) record() error {
 		return err
 	}
 	if w.cfg.History != nil {
+		adoptFormerKeys(db, w.cfg.History, w.cfg.Ledger)
 		w.cfg.History.Record(db)
 	}
 	if w.cfg.Ledger != nil {

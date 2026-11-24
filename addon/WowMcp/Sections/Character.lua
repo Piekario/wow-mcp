@@ -61,6 +61,7 @@ local function collectCharacter()
         or plain(MAX_QUESTLOG_QUESTS)
     -- Client language (enUS, deDE...): the server knows which text in the dump it can read as English.
     c.locale = firstValue({ "GetLocale" })
+    c.realmId = ns.Store.realmId()
     addMapPosition(c)
     addClientVersion(c)
     c.addonVersion = ns.ADDON_VERSION

@@ -2208,6 +2208,23 @@ def check_realmless_key() -> None:
         WowMcpDB.characters = { ["Piekasz-A"] = { character = same }, ["Piekasz-B"] = { character = same } }
     """)
     assert addon_ns.Store.characterKey() == "Piekasz"
+    # No realm name and no saved realm key: the realm number from the GUID keeps same-named characters apart,
+    # and the dump saved under the bare name moves to the new key.
+    runtime, g, addon_ns = load_addon("forever")
+    runtime.execute("""
+        function UnitGUID(unit) if unit == "player" then return "Player-5827-0A1B2C3D" end end
+        WowMcpDB.characters = { ["Piekasz"] = { dumpedAt = 200, character = { classToken = "HUNTER", raceToken = "NightElf" }, note = "bare" } }
+        WowMcpDB.last = "Piekasz"
+    """)
+    assert addon_ns.Store.characterKey() == "Piekasz-5827", addon_ns.Store.characterKey()
+    event_dispatcher(g)(None, "PLAYER_LOGIN")
+    assert g.WowMcpDB["characters"]["Piekasz"] is None and g.WowMcpDB["characters"]["Piekasz-5827"]["note"] == "bare"
+    g.SlashCmdList["WOWMCP"]("")
+    assert g.WowMcpDB["characters"]["Piekasz-5827"]["character"]["realmId"] == "5827"
+    # A GUID in another shape changes nothing.
+    runtime, g, addon_ns = load_addon("forever")
+    runtime.execute('function UnitGUID() return "0x0000000001" end')
+    assert addon_ns.Store.characterKey() == "Piekasz"
     # A realm name from the client always wins; the normalized name is the second choice.
     runtime, g, addon_ns = load_addon("forever")
     runtime.execute('function GetNormalizedRealmName() return "Realm2" end')
