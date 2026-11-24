@@ -74,6 +74,7 @@ one optionally takes a character name.
 | `wow_journal` | "Describe my recent sessions." · "Give me a session journal in Markdown to paste." (with loot and records) |
 | `wow_goals` | "How are my goals going and when will I reach them?" |
 | `wow_goal_set` | "Add a goal: level 25." · "Goal: 10 gold." · "Remove goal g2." (writes only the server's goals file) |
+| `wow_share_dump` | "Share an anonymized dump of my character." · "Prepare a dump of my Priest for the wow-mcp project." (writes a local file with names and personal text removed; you read it and attach it to an issue yourself) |
 | `wow_changes` | "What changed since the last dump?" · "What loot did I get since the last save?" · "Summarize the whole session today (last 4 hours)." |
 | `wow_rested` | "How much rested XP do I have and when will it be full if I log out in an inn?" |
 | `wow_reputation` | "How much do I need to reach Honored with Darnassus?" |

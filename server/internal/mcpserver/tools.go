@@ -78,14 +78,18 @@ const freshness = " Data comes from the last /reload or logout in game; the snap
 type tool struct {
 	name, title, description string
 	add                      func(server *mcp.Server, def *mcp.Tool)
-	writes                   bool     // true = writes to the server's own file (not read-only)
-	args                     []string // argument names of the input type (used for the narrowing hint of oversized answers)
+	writes                   bool                                    // true = writes to the server's own file (not read-only)
+	annotate                 func(title string) *mcp.ToolAnnotations // for a writer that is not ownFileWriter
+	args                     []string                                // argument names of the input type (used for the narrowing hint of oversized answers)
 }
 
 func (t tool) register(server *mcp.Server) {
 	ann := readOnly(t.title)
 	if t.writes {
 		ann = ownFileWriter(t.title)
+	}
+	if t.annotate != nil {
+		ann = t.annotate(t.title)
 	}
 	t.add(server, &mcp.Tool{Name: t.name, Description: t.description, Annotations: ann})
 }
@@ -172,6 +176,8 @@ func (s *service) statusTools() []tool {
 			func(db *snapshot.Database, _ noArgs) (map[string]any, error) { return s.status(db), nil }),
 
 		s.doctorTool(),
+
+		s.shareDumpTool(),
 
 		accountTool(s, "wow_section", "Snapshot section",
 			"Any snapshot section by name, without filters. Reputation, bank, vendor, recipes, mail, cooldowns, talents, auctions, group (and inspect) and dungeons have more convenient tools: wow_reputation, wow_bank, wow_vendor, wow_recipes, wow_mail, wow_cooldowns, wow_talents, wow_auctions, wow_group, wow_dungeons. Big sections (probe is about 60 kB) can be read in pieces: path (a dot path into the section, e.g. namespaces.C_AuctionHouse or events) and limit (first N items or keys). Other sections: actionBars (what sits on which action bar button), macros, completedQuests (IDs of all completed quests; for checking prerequisite quests), flightPaths (flight points from the last opened flight map), probe (list of client API functions after /mcp probe), loot (own loot since the previous save, plus periods: earlier saves carried by the addon; summarized by wow_changes and wow_journal), xpGains (own XP by source: kills, quests, the rest, with periods like loot; also in wow_changes and wow_journal as xpSources), buyback (the vendor buyback list; see wow_vendor), friends and guild (see wow_social), equipmentSets (see wow_equipment), pvp (see wow_character), vendors and trainers (up to 10 remembered NPCs: name -> offer; more convenient via npc in wow_vendor and wow_trainer), legacy (Forever Legacy perk trees, challenges and API discovery; see wow_legacy), stable (stabled pets; see wow_pet), questOffer and questTurnIn (NPC quest windows; see wow_quest_rewards). The list of sections available for a character is given by wow_status."+freshness,
@@ -575,6 +581,9 @@ func (s *service) status(db *snapshot.Database) map[string]any {
 	}
 	if s.GoalsFile != "" {
 		out["goalsFile"] = s.GoalsFile
+	}
+	if s.ShareDir != "" {
+		out["shareDir"] = s.ShareDir
 	}
 	return out
 }

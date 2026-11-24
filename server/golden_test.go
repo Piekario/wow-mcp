@@ -95,6 +95,7 @@ func goldenCases() []goldenCase {
 
 	add(tcs("wow_status", "default", args{}))
 	add(characterVariants("wow_doctor")...)
+	add(characterVariants("wow_share_dump")...)
 	for _, n := range []string{"wow_character", "wow_quests", "wow_bags", "wow_equipment", "wow_spells", "wow_pet", "wow_trainer"} {
 		add(characterVariants(n)...)
 	}
@@ -703,7 +704,8 @@ func newGoldenEnv(t *testing.T, sc goldenScenario) *goldenEnv {
 			t.Fatal(err)
 		}
 	}
-	var options []func(*mcpserver.Config)
+	shareDir := filepath.Join(tmp, "shared")
+	options := []func(*mcpserver.Config){withShares(shareDir)}
 	if sc.ledger {
 		long := seedLedger(t, file)
 		options = append(options, func(c *mcpserver.Config) { c.Ledger = long })
@@ -725,7 +727,7 @@ func newGoldenEnv(t *testing.T, sc goldenScenario) *goldenEnv {
 		ss.Close()
 	})
 
-	scrubber := newPathScrubber(map[string]string{goalsPath: "<GOALS>", file: "<FILE>", histDir: "<HISTORY>", tmp: "<TMP>"})
+	scrubber := newPathScrubber(map[string]string{goalsPath: "<GOALS>", shareDir: "<SHARED>", file: "<FILE>", histDir: "<HISTORY>", tmp: "<TMP>"})
 	return &goldenEnv{cs: cs, scrubber: scrubber}
 }
 

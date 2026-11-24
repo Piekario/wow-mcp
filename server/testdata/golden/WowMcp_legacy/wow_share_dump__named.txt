@@ -1,0 +1,74 @@
+# tool wow_share_dump variant=named
+# args: {"character":"Piekasz"}
+# isError: false
+--- content[0] ---
+{
+  "character": {
+    "addonVersion": "0.20.0",
+    "class": "HUNTER",
+    "clientBuild": "70938",
+    "clientVersion": "1.60.1",
+    "faction": "Alliance",
+    "level": 20,
+    "locale": "enUS",
+    "race": "NightElf"
+  },
+  "file": "<SHARED>/wow-mcp-dump-hunter-20-enUS-20261115-162640.json",
+  "kept": [
+    "class, race, faction, level, client version, build and language",
+    "the structure and game data of every shared section: items, spells, talents, quests, professions, reputations, gold, zone",
+    "the /mcp probe result (names of client API functions) when the dump has one"
+  ],
+  "nextSteps": [
+    "Open the file and read it: it is plain JSON on your own disk, and nothing has been sent anywhere.",
+    "If anything in it still looks personal, do not publish it; say what it was in the issue instead, so the rule can be fixed.",
+    "To share it, attach the file to a new issue: https://github.com/Piekario/wow-mcp/issues/new?template=share_dump.yml"
+  ],
+  "note": "The server only wrote this file in its own directory. It made no network connection and never uploads anything; publishing the file is the player's own step.",
+  "removed": [
+    "character name, realm name and number, player GUIDs",
+    "guild name and the names and notes of its members",
+    "friends and their notes, group members, inspected players",
+    "mail senders and subjects",
+    "the note for the assistant, macro names and bodies, equipment set names, custom pet names",
+    "the same names wherever else they appear (quest texts, the crafter line of a made item)",
+    "sections this server version has no privacy rules for"
+  ],
+  "report": {
+    "fieldsDropped": 0,
+    "namesFoundInText": 0,
+    "replacedWithAliases": {
+      "guilds": 1,
+      "macrosAndEquipmentSets": 1,
+      "mailSendersAndAuctionOwners": 0,
+      "pets": 0,
+      "players": 4
+    },
+    "sections": [
+      "actionBars",
+      "auras",
+      "bags",
+      "character",
+      "equipment",
+      "equipmentSets",
+      "eventLog",
+      "friends",
+      "guild",
+      "legacy",
+      "loot",
+      "pet",
+      "played",
+      "professions",
+      "quests",
+      "reputation",
+      "spells",
+      "stats",
+      "talents",
+      "trainer",
+      "trainers",
+      "xpGains"
+    ],
+    "textsRemoved": 1,
+    "tooltipTagsRemoved": 0
+  }
+}

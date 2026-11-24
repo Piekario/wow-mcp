@@ -20,6 +20,14 @@ Questions and ideas that are not yet a concrete request fit better in
 [Discussions](https://github.com/Piekario/wow-mcp/discussions). Security problems go through a private report, see
 [SECURITY.md](SECURITY.md).
 
+## Sharing a dump from your character
+
+No code needed: a dump from a class, faction, client or language nobody has tested yet is one of the most useful
+contributions. `wow_share_dump` (or `wow-mcp --share-dump`) writes an anonymized file on your disk; you read it and attach
+it to a [Share a dump from your class](https://github.com/Piekario/wow-mcp/issues/new?template=share_dump.yml) issue.
+[docs/SHARING_DUMPS.md](docs/SHARING_DUMPS.md) lists what is removed and kept and how an accepted dump becomes test data
+in `server/testdata/shared/`.
+
 ## Sending a change
 
 1. Fork the repository and create a branch from `main`. Name it after the change (`fix/flight-zone-names`,
@@ -66,6 +74,9 @@ every test run, against baselines in `server/testdata/architecture/` that may on
   in one place.
 - **Patterns only where they remove code:** a registry for things added often (tools, prompts, alert checks), small
   consumer-side interfaces for I/O, functional options for optional settings. No pattern for one case.
+- **A new dump section needs privacy rules.** `wow_share_dump` leaves out every section that is not in `knownSections`
+  (`server/internal/sharedump/rules.go`). Add the section there with a rule for each field holding a player's name or
+  free text, and a case in `sharedump_test.go`.
 - A new tool is a function in its context, an entry in the matching group in `mcpserver/tools.go` and cases in
   `golden_test.go`. Unit tests live next to the code. Run `gofmt` and `go vet`.
 

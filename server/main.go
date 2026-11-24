@@ -7,13 +7,14 @@
 // The server never touches the game process and only reads one text file from
 // the WTF directory of the game. The only thing it writes is the snapshot history
 // in its own directory (by default "history" next to wow-mcp.exe, or in <user config>/wow-mcp
-// when the exe directory is not writable), from which it computes changes between snapshots.
+// when the exe directory is not writable), from which it computes changes between snapshots, the goals file and,
+// when the player asks for one, an anonymized copy of a dump to share. It makes no network connections.
 //
 // Launch (done by the MCP client, e.g. your MCP client):
 //
 //	wow-mcp.exe --wow-dir "<path to World of Warcraft>"
 //
-// This file is only the composition root: flags, wiring dependencies, --check and --version.
+// This file is only the composition root: flags, wiring dependencies, --check, --share-dump and --version.
 package main
 
 import (
@@ -31,6 +32,7 @@ import (
 
 	"wowmcp/internal/ledger"
 	"wowmcp/internal/mcpserver"
+	"wowmcp/internal/sharedump"
 	"wowmcp/internal/snapshot"
 	"wowmcp/internal/storage"
 )
@@ -63,6 +65,12 @@ func main() {
 		"file the server appends errors and startup information to (a relative path is resolved from the server directory: the exe directory, or <user config>/wow-mcp when it is not writable; never inside the game directory)")
 	goalsFile := flag.String("goals-file", "",
 		"goals file (wow_goal_set); defaults to goals.json next to the history directory (a relative path is resolved from the server directory; never inside the game directory). The server also reads an optional weights.json next to it")
+	shareDir := flag.String("share-dir", "",
+		"directory for anonymized dumps (wow_share_dump, --share-dump); defaults to shared next to the history directory (a relative path is resolved from the server directory; never inside the game directory)")
+	shareDump := flag.Bool("share-dump", false,
+		"write an anonymized copy of the latest dump into --share-dir, print what was removed and exit; nothing is uploaded")
+	shareCharacter := flag.String("share-character", "",
+		"character for --share-dump; empty = the most recently dumped character")
 	maxResponseKB := flag.Int("max-response-kb", mcpserver.DefaultMaxResponseKB,
 		"limit of one tool answer in KB: a bigger answer is replaced by a compact envelope with a hint on how to ask for less; 0 = no limit")
 	staleMinutes := flag.Int("stale-minutes", 120, "after how many minutes tools warn that the snapshot is stale; 0 disables")
@@ -87,39 +95,54 @@ func main() {
 
 	fresh := snapshot.Freshness{Now: time.Now, StaleAfter: time.Duration(*staleMinutes) * time.Minute}
 	store := &storage.Store{WowDir: *wowDir, Client: *client, File: *file, Account: *account}
-	var history *storage.History
-	if *historyDir != "" {
-		history = storage.NewHistory(*historyDir, *historyKeep,
-			storage.WithMaxMB(*historyMaxMB), storage.WithCompressDays(*historyCompressDays))
-	}
+	history := newHistory(*historyDir, *historyKeep, *historyMaxMB, *historyCompressDays)
 
-	if err := storage.RequireOutside("goals file (--goals-file)", goalsPath, gameDirs...); err != nil {
-		fmt.Fprintln(os.Stderr, "ERROR:", err)
-		closeLog()
-		os.Exit(1)
+	sharePath := resolveShareDir(*shareDir, *historyDir)
+	err = requireOutsideGame(gameDirs, map[string]string{
+		"goals file (--goals-file)": goalsPath, "directory for shared dumps (--share-dir)": sharePath,
+	})
+	switch {
+	case err != nil:
+	case *check:
+		err = runCheck(store, history, fresh)
+	case *shareDump:
+		err = runShareDump(os.Stdout, store, *shareCharacter, sharePath)
+	default:
+		log.Printf("start: version %s, game directory %q, client %q, history %q", serverVersion, *wowDir, *client, *historyDir)
+		err = serve(store, history, fresh, goalsPath, func(c *mcpserver.Config) {
+			c.MaxResponseKB = *maxResponseKB
+			withShares(sharePath)(c)
+		})
 	}
-
-	if *check {
-		if err := runCheck(store, history, fresh); err != nil {
-			log.Print("ERROR: ", err)
-			closeLog()
-			os.Exit(1)
-		}
-		return
-	}
-
-	log.Printf("start: version %s, game directory %q, client %q, history %q", serverVersion, *wowDir, *client, *historyDir)
-	if err := serve(store, history, fresh, goalsPath, *maxResponseKB); err != nil {
+	if err != nil {
 		log.Print("ERROR: ", err)
 		closeLog()
 		os.Exit(1)
 	}
 }
 
+// newHistory is the dump history in the given directory; nil when history is disabled ("").
+func newHistory(dir string, keep, maxMB, compressDays int) *storage.History {
+	if dir == "" {
+		return nil
+	}
+	return storage.NewHistory(dir, keep, storage.WithMaxMB(maxMB), storage.WithCompressDays(compressDays))
+}
+
+// requireOutsideGame checks the paths the server will write to: none may lie inside the game directory.
+func requireOutsideGame(gameDirs []string, paths map[string]string) error {
+	for what, path := range paths {
+		if err := storage.RequireOutside(what, path, gameDirs...); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // serve runs the MCP server on stdio. With history it also opens the long history database and starts the watcher
 // that records every save of the dump file between tool calls.
-func serve(store *storage.Store, history *storage.History, fresh snapshot.Freshness, goalsPath string, maxResponseKB int) error {
-	options := []func(*mcpserver.Config){func(c *mcpserver.Config) { c.MaxResponseKB = maxResponseKB }}
+func serve(store *storage.Store, history *storage.History, fresh snapshot.Freshness, goalsPath string, settings func(*mcpserver.Config)) error {
+	options := []func(*mcpserver.Config){settings}
 	if history != nil {
 		long, closeLedger := withLedger(history.Dir)
 		defer closeLedger()
@@ -173,6 +196,59 @@ func resolveGoalsFile(flagValue, historyDir string) string {
 		return ""
 	}
 	return filepath.Join(dir, "goals.json")
+}
+
+// resolveShareDir picks the directory for shared dumps: the given one (a relative path is resolved from the server
+// directory) or "shared" next to the history directory, or in the server directory when there is no history.
+func resolveShareDir(flagValue, historyDir string) string {
+	if flagValue != "" {
+		return storage.ResolveBeside(flagValue, ownDir())
+	}
+	dir := ownDir()
+	if historyDir != "" {
+		dir = filepath.Dir(historyDir)
+	}
+	if dir == "" {
+		return ""
+	}
+	return filepath.Join(dir, "shared")
+}
+
+// withShares gives the server the directory wow_share_dump writes to; "" leaves sharing off.
+func withShares(dir string) func(*mcpserver.Config) {
+	return func(c *mcpserver.Config) {
+		if dir != "" {
+			c.Shares, c.ShareDir = storage.ShareDir{Dir: dir}, dir
+		}
+	}
+}
+
+// runShareDump writes the anonymized dump and prints where it is, what was removed and how to share it (--share-dump).
+func runShareDump(w io.Writer, store *storage.Store, character, dir string) error {
+	if dir == "" {
+		return fmt.Errorf("no directory for shared dumps: give one with --share-dir")
+	}
+	db, err := store.Load()
+	if err != nil {
+		return err
+	}
+	answer, err := mcpserver.ShareDump(db, character, serverVersion, storage.ShareDir{Dir: dir})
+	if err != nil {
+		return err
+	}
+	fmt.Fprintln(w, "Anonymized dump written to:", answer["file"])
+	printList(w, "Removed or replaced:", sharedump.Removed)
+	printList(w, "Kept:", sharedump.Kept)
+	fmt.Fprintln(w, "Nothing was sent anywhere. Read the file, and if you want to share it, attach it to a new issue:")
+	fmt.Fprintln(w, " ", sharedump.IssueURL)
+	return nil
+}
+
+func printList(w io.Writer, title string, lines []string) {
+	fmt.Fprintln(w, title)
+	for _, line := range lines {
+		fmt.Fprintln(w, "  -", line)
+	}
 }
 
 // newServer assembles the MCP server from the snapshot store and the freshness policy. Shared by main and tests.

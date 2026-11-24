@@ -61,6 +61,9 @@ and compare them with the code. The project is intended for personal use on your
   at startup.
 - The goals file is changed by a single tool, `wow_goal_set`, and only at the player's request (atomic write: temporary file and rename).
   The server only reads the optional `weights.json` next to it; the player writes it themselves.
+- `wow_share_dump` (and `--share-dump`) writes an anonymized copy of a dump into `--share-dir` (by default `shared` next to
+  the history), only at the player's request. Nothing is uploaded: the player reads the file and attaches it to an issue
+  themselves. See [SHARING_DUMPS.md](SHARING_DUMPS.md).
 - The newer tools (`wow_quest_rewards`, `wow_shopping_list`, `wow_journal`, `wow_bag_plan`, `wow_goals`, `wow_quest_route`, `wow_social`, `wow_quest_lookup`, `wow_guide`) only calculate from the dump
   data: they buy nothing, choose no rewards and send nothing to the game. Recommendations are text for the player, and assumptions are
   described as assumptions in the responses.
