@@ -17,7 +17,7 @@ globals = {
 read_globals = {
     -- C_* namespaces and Enum
     "C_AddOns", "C_ClassTalents", "C_Container", "C_CurrencyInfo", "C_Map", "C_QuestLog", "C_Reputation", "C_SkillInfo",
-    "C_Spell", "C_SpellBook", "C_TaxiMap", "C_TooltipInfo", "C_TradeSkillUI", "C_Traits", "C_UnitAuras",
+    "C_Spell", "C_SpellBook", "C_TaxiMap", "C_Timer", "C_TooltipInfo", "C_TradeSkillUI", "C_Traits", "C_UnitAuras",
     "Enum", "TooltipDataProcessor",
     -- frames and templates
     "BackdropTemplateMixin", "CreateFrame", "InterfaceOptionsFrame_OpenToCategory", "InterfaceOptions_AddCategory", "Settings", "DEFAULT_CHAT_FRAME", "GameTooltip", "InspectFrame", "Minimap", "UIParent",
