@@ -28,7 +28,7 @@ WowMcpDB = {
 ["slot"] = 13,
 }, -- [3]
 },
-["addonVersion"] = "0.19.2",
+["addonVersion"] = "0.20.0",
 ["auctions"] = {
 ["capturedAt"] = 1794760000,
 ["lastVisitAt"] = 1794760000,
@@ -455,7 +455,7 @@ WowMcpDB = {
 ["npc"] = "Einris Brightspear",
 },
 ["character"] = {
-["addonVersion"] = "0.19.2",
+["addonVersion"] = "0.20.0",
 ["bindLocation"] = "Auberdine",
 ["class"] = "Hunter",
 ["classToken"] = "HUNTER",
@@ -743,6 +743,10 @@ WowMcpDB = {
 }, -- [2]
 },
 ["errors"] = {
+},
+["eventLog"] = {
+["entries"] = {
+},
 },
 ["flightPaths"] = {
 ["capturedAt"] = 1794760000,
@@ -1377,6 +1381,12 @@ true, -- [1]
 },
 ["probe"] = {
 ["capturedAt"] = 1794760000,
+["eventCandidates"] = {
+["LOGOUT_CANCEL"] = true,
+["PLAYER_CAMPING"] = true,
+["PLAYER_LEAVING_WORLD"] = true,
+["PLAYER_QUITING"] = true,
+},
 ["events"] = {
 ["ADDON_LOADED"] = true,
 ["AUCTION_HOUSE_BROWSE_RESULTS_ADDED"] = true,
@@ -1405,11 +1415,17 @@ true, -- [1]
 ["OWNED_AUCTIONS_UPDATED"] = true,
 ["PET_STABLE_SHOW"] = true,
 ["PET_STABLE_UPDATE"] = true,
+["PLAYER_CAMPING"] = true,
 ["PLAYER_DEAD"] = true,
+["PLAYER_EQUIPMENT_CHANGED"] = true,
 ["PLAYER_GUILD_UPDATE"] = true,
+["PLAYER_LEVEL_UP"] = true,
 ["PLAYER_LOGIN"] = true,
 ["PLAYER_LOGOUT"] = true,
+["PLAYER_MONEY"] = true,
+["PLAYER_QUITING"] = true,
 ["PLAYER_XP_UPDATE"] = true,
+["QUEST_ACCEPTED"] = true,
 ["QUEST_COMPLETE"] = true,
 ["QUEST_DETAIL"] = true,
 ["QUEST_TURNED_IN"] = true,
@@ -1420,6 +1436,7 @@ true, -- [1]
 ["TRADE_SKILL_UPDATE"] = false,
 ["TRAINER_SHOW"] = true,
 ["TRAINER_UPDATE"] = true,
+["ZONE_CHANGED_NEW_AREA"] = true,
 },
 ["globals"] = {
 "CanMerchantRepair", -- [1]
@@ -2766,26 +2783,26 @@ true, -- [1]
 ["slowest"] = {
 {
 ["ms"] = 2.5,
-["name"] = "completedQuests",
+["name"] = "actionBars",
 }, -- [1]
 {
 ["ms"] = 2.5,
-["name"] = "cooldowns",
+["name"] = "character",
 }, -- [2]
 {
 ["ms"] = 2.5,
-["name"] = "dungeons",
+["name"] = "currencies",
 }, -- [3]
 {
 ["ms"] = 2.5,
-["name"] = "guide",
+["name"] = "equipment",
 }, -- [4]
 {
 ["ms"] = 2.5,
-["name"] = "professions",
+["name"] = "group",
 }, -- [5]
 },
-["totalMs"] = 66.5,
+["totalMs"] = 64.5,
 },
 ["trainer"] = {
 ["capturedAt"] = 1794760000,

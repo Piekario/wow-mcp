@@ -20,7 +20,11 @@ type Trend struct {
 	ChangePercent float64
 	Visits        int
 	First, Last   int64
+	Since         int64 // the first visit kept in the long price history; 0 = only the visits the dump carries
 }
+
+// sameVisit mirrors the addon: prices seen within 10 minutes of the previous one belong to one visit.
+const sameVisit = 10 * 60
 
 // PriceRow is one price after the filters, with what is known about it and about the character's stock of the item.
 type PriceRow struct {
@@ -74,11 +78,12 @@ type Report struct {
 	LastVisitAge time.Duration
 	HasVisit     bool
 	Mine         *MyAuctions
+	PastError    string // the long price history could not be read: trends use only the dump
 }
 
 // Analyse combines the saved prices with the character's items: what is worth listing (biggest profit first),
 // which prices are missing, and the player's own auctions.
-func Analyse(s snapshot.Snapshot, q Query, fresh snapshot.Freshness) Report {
+func Analyse(s snapshot.Snapshot, q Query, fresh snapshot.Freshness, past Past) Report {
 	sec := readSection(s)
 	if !sec.HasData() {
 		return Report{}
@@ -89,11 +94,15 @@ func Analyse(s snapshot.Snapshot, q Query, fresh snapshot.Freshness) Report {
 	r.Gap, r.NoDetails = detailsGap(sec.Prices, gearFilter)
 	buyer := items.NewBuyer(s)
 	only := items.OfferFilter{Affordable: q.Affordable, Usable: q.Usable, Equippable: q.Equippable}
+	stored, err := past.observations(sec.Prices)
+	if err != nil {
+		r.PastError = err.Error()
+	}
 	for _, p := range sec.Prices {
 		if !wanted(p, q, owned[p.Key], gearFilter) || !admitted(p, q, buyer, only) {
 			continue
 		}
-		row := priceRow(p, owned[p.Key], buyer, fresh)
+		row := priceRow(p, owned[p.Key], buyer, fresh, stored[p.Key])
 		r.Rows = append(r.Rows, row)
 		if row.Owned != nil && p.HasBuyout && row.Owned.Tradable() {
 			sale := assess(row.Owned, p, fresh)
@@ -136,8 +145,8 @@ func admitted(p Price, q Query, buyer items.Buyer, only items.OfferFilter) bool 
 	return buyer.Admits(raw, p.MinBuyout, p.HasBuyout, only)
 }
 
-func priceRow(p Price, o *OwnedItem, buyer items.Buyer, fresh snapshot.Freshness) PriceRow {
-	row := PriceRow{Price: p, Owned: o, Trend: trendOf(p)}
+func priceRow(p Price, o *OwnedItem, buyer items.Buyer, fresh snapshot.Freshness, stored []Observation) PriceRow {
+	row := PriceRow{Price: p, Owned: o, Trend: trendOf(p, stored)}
 	row.SeenAge, row.Stale = ageOf(p, fresh)
 	row.HasSeenAge = p.HasSeenAt
 	if p.HasDetails {
@@ -146,15 +155,54 @@ func priceRow(p Price, o *OwnedItem, buyer items.Buyer, fresh snapshot.Freshness
 	return row
 }
 
-func trendOf(p Price) *Trend {
-	if len(p.Buyouts) < 2 {
+// trendOf uses the longer of the visits the dump carries and the visits of the long price history.
+func trendOf(p Price, stored []Observation) *Trend {
+	series, since := p.Visits, int64(0)
+	if visits := visitsOf(stored); len(visits) > len(series) {
+		series, since = visits, visits[0].SeenAt
+	}
+	if len(series) < 2 {
 		return nil
 	}
-	first, last := p.Buyouts[0], p.Buyouts[len(p.Buyouts)-1]
+	first, last := series[0].MinBuyout, series[len(series)-1].MinBuyout
 	if first <= 0 || last <= 0 {
 		return nil
 	}
-	return &Trend{ChangePercent: float64(last-first) / float64(first) * 100, Visits: len(p.Buyouts), First: first, Last: last}
+	return &Trend{ChangePercent: float64(last-first) / float64(first) * 100, Visits: len(series), First: first, Last: last, Since: since}
+}
+
+// visitsOf keeps the last observation of each visit: a dump saved during a visit stored a price the addon later
+// replaced with the visit's final one.
+func visitsOf(observations []Observation) []Observation {
+	var out []Observation
+	for _, o := range observations {
+		if n := len(out); n > 0 && o.SeenAt-out[n-1].SeenAt < sameVisit {
+			out[n-1] = o
+			continue
+		}
+		out = append(out, o)
+	}
+	return out
+}
+
+// observations returns the long price history of the saved prices, by item.
+func (past Past) observations(prices []Price) (map[string][]Observation, error) {
+	if past.Log == nil || len(prices) == 0 {
+		return nil, nil
+	}
+	keys := make([]string, len(prices))
+	for i, p := range prices {
+		keys[i] = p.Key
+	}
+	list, err := past.Log.Prices(past.Realm, keys)
+	if err != nil {
+		return nil, err
+	}
+	out := map[string][]Observation{}
+	for _, o := range list {
+		out[o.Item] = append(out[o.Item], o)
+	}
+	return out, nil
 }
 
 // detailsGap explains missing item details: an old dump (addon before 0.13.0) or a client that had nothing cached.

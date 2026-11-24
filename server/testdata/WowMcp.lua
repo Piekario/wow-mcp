@@ -4,7 +4,7 @@ WowMcpDB = {
 ["Piekasz"] = {
 ["actionBars"] = {
 },
-["addonVersion"] = "0.19.2",
+["addonVersion"] = "0.20.0",
 ["auctions"] = {
 ["capturedAt"] = 1794760000,
 ["lastSearchPartial"] = {
@@ -189,7 +189,7 @@ WowMcpDB = {
 }, -- [3]
 },
 ["character"] = {
-["addonVersion"] = "0.19.2",
+["addonVersion"] = "0.20.0",
 ["bindLocation"] = "Auberdine",
 ["class"] = "Hunter",
 ["classToken"] = "HUNTER",
@@ -305,6 +305,31 @@ WowMcpDB = {
 }, -- [2]
 },
 ["errors"] = {
+},
+["eventLog"] = {
+["entries"] = {
+{
+["at"] = 1794760000,
+["copper"] = 350,
+["kind"] = "questTurnedIn",
+["questID"] = 947,
+["xp"] = 250,
+}, -- [1]
+{
+["at"] = 1794760000,
+["copper"] = 0,
+["kind"] = "questTurnedIn",
+["questID"] = 4740,
+["xp"] = 900,
+}, -- [2]
+{
+["at"] = 1794760000,
+["copper"] = 10,
+["kind"] = "questTurnedIn",
+["questID"] = 5,
+["xp"] = 0,
+}, -- [3]
+},
 },
 ["friends"] = {
 ["capturedAt"] = 1794760000,

@@ -11,6 +11,8 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
+	"wowmcp/internal/game/auctions"
+	"wowmcp/internal/game/eventlog"
 	"wowmcp/internal/game/goals"
 	"wowmcp/internal/game/items"
 	"wowmcp/internal/game/progress"
@@ -28,11 +30,21 @@ type History interface {
 	Record(db *snapshot.Database)
 }
 
+// Ledger is the long history: it keeps the numbers, logged events and auction prices of every dump it is given,
+// beyond the History limit.
+type Ledger interface {
+	progress.Series
+	eventlog.Store
+	auctions.PriceLog
+	Record(db *snapshot.Database, files progress.History)
+}
+
 // Config holds the server dependencies, wired in main.
 type Config struct {
 	Name, Version string
 	Snapshots     Snapshots
 	History       History // nil = history disabled
+	Ledger        Ledger  // nil = no long history
 	HistoryDir    string  // shown in wow_status; "" when history is disabled
 	Freshness     snapshot.Freshness
 	Goals         goals.Store        // nil = goals disabled (wow_goals and wow_goal_set return an error)
@@ -76,6 +88,10 @@ func New(cfg Config) *mcp.Server {
 	if cfg.History != nil {
 		svc.progress.History = cfg.History
 	}
+	if cfg.Ledger != nil {
+		svc.progress.Series = cfg.Ledger
+		svc.progress.Log = cfg.Ledger
+	}
 	limiter := responseCap{limitKB: cfg.MaxResponseKB, args: map[string][]string{}}
 	for _, t := range svc.tools() {
 		t.register(server)
@@ -97,16 +113,28 @@ type service struct {
 	goalsMu sync.Mutex
 }
 
-// loadDatabase reads the dump and records it in the history, so a tool that reads the history sees this dump too.
+// loadDatabase reads the dump and records it in the history and the ledger, so a tool that reads them sees this dump too.
 func (s *service) loadDatabase() (*snapshot.Database, error) {
 	db, err := s.Snapshots.Load()
 	if err != nil {
 		return nil, err
 	}
 	if s.History != nil {
+		adoptFormerKeys(db, s.History, s.Ledger)
 		s.History.Record(db)
 	}
+	if s.Ledger != nil {
+		s.Ledger.Record(db, s.progress.History)
+	}
 	return db, nil
+}
+
+// pricePast is the long price history of the character's realm; empty without a ledger.
+func (s *service) pricePast(character string) auctions.Past {
+	if s.Ledger == nil {
+		return auctions.Past{}
+	}
+	return auctions.Past{Log: s.Ledger, Realm: snapshot.RealmOf(character)}
 }
 
 // load reads the file and returns the snapshot of the given character (empty name = most recently dumped).

@@ -49,13 +49,33 @@ type Price struct {
 	HasBid           bool
 	SeenAt           int64
 	HasSeenAt        bool
-	Buyouts          []int64 // the minimum buyout of each earlier visit, oldest first
+	Visits           []Observation // the lowest buyout of each recent visit the addon carries (seen), oldest first
 	Details          []Detail
 	HasDetails       bool // the addon saved item details (addon 0.13.0, gear it had cached)
 	HasRequiredLevel bool
 	HasNumbers       bool // item level or stat tokens: without them a comparison would only subtract the worn item
 	HasTooltip       bool // addon 0.19.2 read the row's own tooltip, so a random suffix has its stats
 	Raw              any
+}
+
+// Observation is the lowest price of an item at one moment. Item is the Price key: the item name the addon saved the
+// price under, with a random suffix ("of the Eagle") as part of it, so a suffix has its own prices.
+type Observation struct {
+	Item              string
+	SeenAt, MinBuyout int64
+	MinBid            int64 // 0 = no bid seen
+}
+
+// PriceLog is the long-kept price history, per realm (prices differ between realms).
+type PriceLog interface {
+	// Prices returns the observations of the given items on the realm, oldest first.
+	Prices(realm string, items []string) ([]Observation, error)
+}
+
+// Past is where wow_auctions finds prices older than the dump carries; a nil Log = only the dump.
+type Past struct {
+	Log   PriceLog
+	Realm string
 }
 
 // OwnedItem is a character item summed by name across bags and bank. Sell price and quality are the first

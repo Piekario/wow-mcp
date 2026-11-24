@@ -52,9 +52,11 @@ and compare them with the code. The project is intended for personal use on your
 
 ## What the wow-mcp server does
 
-- Reads one file: `WowMcp.lua` from SavedVariables. It does not touch the game process, its memory, network traffic or the screen.
+- Reads one file: `WowMcp.lua` from SavedVariables (it checks its modification time every 5 seconds to record every save, and
+  reads it again only when it changed). It does not touch the game process, its memory, network traffic or the screen.
 - Writes only in its own directory: the dump history (`--history-dir`, by default `history` next to the exe file; since 0.9.0 it
-  compresses old dumps with gzip and enforces a size limit, only inside that directory), an optional log
+  compresses old dumps with gzip and enforces a size limit, only inside that directory), the long history database
+  `history.db` (SQLite, in the history directory: one row per dump and the addon's event log), an optional log
   (`--log`) and the goals file (`--goals-file`, by default `goals.json` next to the history). Paths pointing to the game directory are rejected
   at startup.
 - The goals file is changed by a single tool, `wow_goal_set`, and only at the player's request (atomic write: temporary file and rename).

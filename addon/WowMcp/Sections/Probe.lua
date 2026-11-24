@@ -56,8 +56,21 @@ local function isProbedGlobal(name)
     return false
 end
 
+-- Events the addon does not use yet: the probe only asks whether this client knows them.
+local EVENT_CANDIDATES = { "PLAYER_CAMPING", "PLAYER_QUITING", "PLAYER_LEAVING_WORLD", "LOGOUT_CANCEL" }
+
+local function candidateEvents()
+    local frame, known = CreateFrame("Frame"), {}
+    for _, event in ipairs(EVENT_CANDIDATES) do
+        known[event] = pcall(frame.RegisterEvent, frame, event) and true or false
+    end
+    pcall(frame.UnregisterAllEvents, frame)
+    return known
+end
+
 local function collectProbe()
     local probe = { capturedAt = time(), namespaces = {}, globals = {}, events = ns.Events.registrationResults() }
+    probe.eventCandidates = candidateEvents()
     for _, namespace in ipairs(NAMESPACES) do
         local object = _G[namespace]
         if type(object) == "table" then

@@ -32,8 +32,8 @@ func judge(p Price, buyer items.Buyer) *judgement {
 
 // View combines the saved prices with the character's items: what is worth listing
 // (sellOnAH, biggest profit first), which prices are missing, and the player's own auctions.
-func View(s snapshot.Snapshot, q Query, fresh snapshot.Freshness) map[string]any {
-	return Analyse(s, q, fresh).Render()
+func View(s snapshot.Snapshot, q Query, fresh snapshot.Freshness, past Past) map[string]any {
+	return Analyse(s, q, fresh, past).Render()
 }
 
 func (r Report) Render() map[string]any {
@@ -56,6 +56,9 @@ func (r Report) Render() map[string]any {
 	}
 	if note := r.detailsNote(); note != "" {
 		out["detailsNote"] = note
+	}
+	if r.PastError != "" {
+		out["priceHistoryError"] = "the long price history could not be read, so trends cover only the visits in the dump: " + r.PastError
 	}
 	if r.Equippable {
 		out["sortedBy"] = "best upgrade first (item level plus DPS gained over the equipped item)"
@@ -109,7 +112,11 @@ func (r PriceRow) render() map[string]any {
 		}
 	}
 	if t := r.Trend; t != nil {
-		e["trend"] = fmt.Sprintf("%+.0f%% over %d visits (%s -> %s)", t.ChangePercent, t.Visits, snapshot.Money(t.First), snapshot.Money(t.Last))
+		since := ""
+		if t.Since > 0 {
+			since = " since " + snapshot.FormatTime(t.Since)
+		}
+		e["trend"] = fmt.Sprintf("%+.0f%% over %d visits%s (%s -> %s)", t.ChangePercent, t.Visits, since, snapshot.Money(t.First), snapshot.Money(t.Last))
 	}
 	if r.Judgement != nil {
 		passThrough(e, r.Details)

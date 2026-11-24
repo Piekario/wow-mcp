@@ -20,5 +20,13 @@ local function onLogout()
     pcall(Snapshot.sanitizeCurrent) -- also when the dump itself failed
 end
 
+-- The logout timer started or the player chose Exit: unlike at PLAYER_LOGOUT the character is still loaded,
+-- so this dump is the one a plain logout leaves on disk. It only reads; nothing is reloaded.
+local function onLogoutStart()
+    pcall(Snapshot.dump, "logoutStart")
+end
+
+ns.Events.on("PLAYER_CAMPING", onLogoutStart)
+ns.Events.on("PLAYER_QUITING", onLogoutStart)
 ns.Events.on("PLAYER_LOGOUT", onLogout)
 ns.Events.on("PLAYER_LOGIN", onLogin)

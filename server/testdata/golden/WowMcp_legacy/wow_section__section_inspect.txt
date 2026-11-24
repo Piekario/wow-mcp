@@ -2,4 +2,4 @@
 # args: {"section":"inspect"}
 # isError: true
 --- content[0] ---
-no section "inspect" in the snapshot of character Piekasz. Available: actionBars, auras, bags, character, equipment, equipmentSets, friends, guild, legacy, loot, pet, played, professions, quests, reputation, spells, stats, talents, trainer, trainers, xpGains. The trainer, vendor, bank and flightPaths sections appear after opening the matching window in game and running /mcp reload
+no section "inspect" in the snapshot of character Piekasz. Available: actionBars, auras, bags, character, equipment, equipmentSets, eventLog, friends, guild, legacy, loot, pet, played, professions, quests, reputation, spells, stats, talents, trainer, trainers, xpGains. The trainer, vendor, bank and flightPaths sections appear after opening the matching window in game and running /mcp reload

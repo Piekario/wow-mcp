@@ -50,6 +50,21 @@ func PaceOf(st progress.Stretch) (Pace, bool) {
 	}, true
 }
 
+// pastPace is PaceOf for a session known only from the long history's numbers.
+func pastPace(s progress.PastSession) (Pace, bool) {
+	if s.Points < 2 || s.ElapsedSeconds < minSeconds {
+		return Pace{}, false
+	}
+	h := float64(s.ElapsedSeconds) / 3600
+	return Pace{
+		Start:         s.Start,
+		Hours:         h,
+		XPPerHour:     float64(s.XP) / h,
+		GoldPerHour:   float64(s.MoneyDelta) / h,
+		QuestsPerHour: float64(s.QuestsTurnedIn) / h,
+	}, true
+}
+
 type Speed string
 
 const (
@@ -104,7 +119,11 @@ func rate(name string, current snapshot.Snapshot, tr progress.Tracker) (Rating, 
 	if err != nil {
 		return Rating{}, err
 	}
-	r := Rating{Sessions: len(stretches)}
+	past, err := tr.PastSessions(name, current)
+	if err != nil {
+		return Rating{}, err
+	}
+	r := Rating{Sessions: len(past) + len(stretches)}
 	if len(stretches) == 0 {
 		return r, nil
 	}
@@ -114,6 +133,11 @@ func rate(name string, current snapshot.Snapshot, tr progress.Tracker) (Rating, 
 	}
 	r.Current = &cur
 	var previous []Pace
+	for _, s := range past {
+		if p, ok := pastPace(s); ok {
+			previous = append(previous, p)
+		}
+	}
 	for _, st := range stretches[:len(stretches)-1] {
 		if p, ok := PaceOf(st); ok {
 			previous = append(previous, p)

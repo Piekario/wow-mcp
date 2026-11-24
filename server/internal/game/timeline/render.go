@@ -27,8 +27,16 @@ func View(name string, current snapshot.Snapshot, tr progress.Tracker, q Query) 
 			"so the real time may be earlier; the exception is deaths, which the addon saves with an exact time",
 		"snapshotsRead": r.SnapshotsRead,
 	}
+	if r.LogUsed {
+		out["assumption"] = "an event gets the time of the first dump in which it is visible (the game saves data only on /reload and logout), " +
+			"so the real time may be earlier; events with exact: true (level-ups and turned-in quests) have the time from the addon's event log, " +
+			"which also reaches back before the kept dumps, and deaths are saved with an exact time too"
+	}
+	if r.LogError != "" {
+		out["eventLogError"] = "the event log could not be read, so every event has the time of a dump: " + r.LogError
+	}
 	tr.NoteSkipped(out, name, current)
-	if r.SnapshotsRead < 2 {
+	if r.SnapshotsRead < 2 && len(r.Events) == 0 {
 		out["events"] = []any{}
 		out["note"] = "The history has one dump, so there is nothing to compare with. Events will appear after the next /mcp reload in game."
 		return out, nil
@@ -48,6 +56,9 @@ func View(name string, current snapshot.Snapshot, tr progress.Tracker, q Query) 
 func (e Event) render() map[string]any {
 	text, details := e.What.describe()
 	out := map[string]any{"at": e.At, "atText": snapshot.FormatTime(e.At), "kind": e.Kind, "text": text}
+	if e.Exact {
+		out["exact"] = true
+	}
 	if len(details) > 0 {
 		out["details"] = details
 	}

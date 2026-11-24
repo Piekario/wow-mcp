@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"time"
 
+	"wowmcp/internal/game/eventlog"
 	"wowmcp/internal/snapshot"
 )
 
@@ -30,6 +31,8 @@ type UnloadedCounter interface {
 // Tracker computes progress from history; a nil History means history is disabled.
 type Tracker struct {
 	History History
+	Series  Series         // nil = only the dumps History keeps
+	Log     eventlog.Store // nil = only the events the dumps show
 }
 
 // SkippedUnloaded counts the empty-client dumps skipped in the character's history, including the current one.

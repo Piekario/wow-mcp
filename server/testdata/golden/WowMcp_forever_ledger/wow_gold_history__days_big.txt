@@ -1,0 +1,63 @@
+# tool wow_gold_history variant=days_big
+# args: {"days":365}
+# isError: false
+--- content[0] ---
+{
+  "biggestGains": [
+    {
+      "change": "+15s 0c",
+      "elapsed": "1 h",
+      "from": "2026-11-15 14:26",
+      "to": "2026-11-15 15:26"
+    },
+    {
+      "change": "+10s 0c",
+      "elapsed": "1 h",
+      "from": "2026-11-15 15:26",
+      "to": "2026-11-15 16:26"
+    },
+    {
+      "change": "+6s 28c",
+      "elapsed": "9 d 22 h",
+      "from": "2026-11-05 16:26",
+      "to": "2026-11-15 14:26"
+    }
+  ],
+  "days": [
+    {
+      "day": "2026-10-26",
+      "delta": "+5s 21c",
+      "first": "5s 21c",
+      "last": "10s 42c",
+      "snapshots": 2
+    },
+    {
+      "day": "2026-11-05",
+      "delta": "+5s 21c",
+      "first": "15s 63c",
+      "last": "20s 84c",
+      "snapshots": 2
+    },
+    {
+      "day": "2026-11-15",
+      "delta": "+25s 0c",
+      "first": "27s 12c",
+      "last": "52s 12c",
+      "snapshots": 3
+    }
+  ],
+  "first": "5s 21c",
+  "from": "2026-10-26 15:26",
+  "last": "52s 12c",
+  "note": "This is the balance change between dumps, without a breakdown by source (loot, sales, auctions, repairs). A day's change is the difference from the first to the last dump of that day; what happened between days appears only in totalChange. Days without a dump do not appear in the list.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "snapshots": 7,
+  "to": "2026-11-15 16:26",
+  "totalChange": "+46s 91c",
+  "totalChangeCopper": 4691,
+  "window": "last 365 days"
+}

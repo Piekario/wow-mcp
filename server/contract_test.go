@@ -136,8 +136,8 @@ func TestEveryToolRunsOnEveryFixture(t *testing.T) {
 			scenarios = append(scenarios, sc)
 		}
 	}
-	if len(scenarios) != 5 {
-		t.Fatalf("expected 5 scenarios (3 stubs + deDE + real), got %d", len(scenarios))
+	if len(scenarios) != 6 {
+		t.Fatalf("expected 6 scenarios (3 stubs + deDE + real + long history), got %d", len(scenarios))
 	}
 	for _, sc := range scenarios {
 		env := newGoldenEnv(t, sc)

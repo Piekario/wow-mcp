@@ -78,7 +78,7 @@ func averageSessionHours(points []progressPoint) float64 {
 // Sessions splits the character's history (with the current dump) into sessions, oldest first. breakMinutes > 0
 // changes the gap that ends a session (as in wow_progress). A session with one dump has ElapsedSeconds = 0.
 func (t Tracker) Sessions(name string, current snapshot.Snapshot, breakMinutes int) ([]Stretch, error) {
-	points, err := t.stretchPoints(name, current)
+	points, err := t.dumpPoints(name, current)
 	if err != nil {
 		return nil, err
 	}
@@ -92,6 +92,31 @@ func (t Tracker) Sessions(name string, current snapshot.Snapshot, breakMinutes i
 			st.ElapsedSeconds, st.Basis = elapsedBetween(points, sp.from, sp.to)
 		}
 		out = append(out, st)
+	}
+	return out, nil
+}
+
+// PastSession is the numbers of a session that ended before the oldest kept dump, from the long history (Series).
+type PastSession struct {
+	Start, ElapsedSeconds, XP, MoneyDelta int64
+	Points, QuestsTurnedIn                int
+}
+
+// PastSessions are the sessions the long history has from before the oldest kept dump, oldest first. A session that
+// reaches the kept dumps is in Sessions, cut to its dumps, so no stretch is counted twice.
+func (t Tracker) PastSessions(name string, current snapshot.Snapshot) ([]PastSession, error) {
+	points, err := t.stretchPoints(name, current)
+	if err != nil {
+		return nil, err
+	}
+	var out []PastSession
+	for _, sp := range sessionSpans(points, 0) {
+		if points[sp.to].hasDump() {
+			break
+		}
+		r := rangeStats(points, sp.from, sp.to)
+		out = append(out, PastSession{Start: r.From, ElapsedSeconds: r.Elapsed, XP: r.XP, MoneyDelta: r.Money,
+			Points: r.Snapshots, QuestsTurnedIn: r.QuestsTurnedIn})
 	}
 	return out, nil
 }

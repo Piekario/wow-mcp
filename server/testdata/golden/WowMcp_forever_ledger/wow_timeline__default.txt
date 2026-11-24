@@ -1,0 +1,60 @@
+# tool wow_timeline variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "assumption": "an event gets the time of the first dump in which it is visible (the game saves data only on /reload and logout), so the real time may be earlier; events with exact: true (level-ups and turned-in quests) have the time from the addon's event log, which also reaches back before the kept dumps, and deaths are saved with an exact time too",
+  "events": [
+    {
+      "at": 1794583600,
+      "atText": "2026-11-13 15:26",
+      "details": {
+        "levelAfter": 19,
+        "levelBefore": 18
+      },
+      "exact": true,
+      "kind": "level_up",
+      "text": "Level up: level 18 -\u003e 19"
+    },
+    {
+      "at": 1794587200,
+      "atText": "2026-11-13 16:26",
+      "details": {
+        "id": 90001
+      },
+      "exact": true,
+      "kind": "quest_turned_in",
+      "text": "Quest turned in: Seeded Errand"
+    },
+    {
+      "at": 1794755000,
+      "atText": "2026-11-15 15:03",
+      "details": {
+        "levelAfter": 20,
+        "levelBefore": 19
+      },
+      "exact": true,
+      "kind": "level_up",
+      "text": "Level up: level 19 -\u003e 20"
+    },
+    {
+      "at": 1794760000,
+      "atText": "2026-11-15 16:26",
+      "details": {
+        "level": 20,
+        "subZone": "Old Town",
+        "zone": "Stormwind City"
+      },
+      "kind": "death",
+      "text": "Death: Stormwind City"
+    }
+  ],
+  "order": "from the oldest to the newest event (with a limit the newest are kept)",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "snapshotsRead": 3,
+  "total": 4
+}

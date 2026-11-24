@@ -5,10 +5,12 @@ package timeline
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 	"testing"
 
 	"wowmcp/internal/fixtures"
+	"wowmcp/internal/game/eventlog"
 	"wowmcp/internal/game/progress"
 	"wowmcp/internal/snapshot"
 )
@@ -157,5 +159,92 @@ func TestProfessionMilestoneAndRealSnapshot(t *testing.T) {
 	}
 	if ev := Build([]snapshot.Snapshot{{}, nil}); len(ev) != 0 {
 		t.Errorf("empty dumps: %v", ev)
+	}
+}
+
+type fakeLog struct {
+	entries []eventlog.Entry
+	err     error
+}
+
+func (f fakeLog) Events(_ string, from, to int64) ([]eventlog.Entry, error) {
+	var out []eventlog.Entry
+	for _, e := range f.entries {
+		if e.At >= from && e.At <= to {
+			out = append(out, e)
+		}
+	}
+	return out, f.err
+}
+
+const day = 24 * hour
+
+func logged() fakeLog {
+	t0 := int64(1_000_000)
+	return fakeLog{entries: []eventlog.Entry{
+		{At: t0 - 10*day, Kind: eventlog.KindLevel, Level: 10},
+		{At: t0 - 6*day, Kind: eventlog.KindQuestAccepted, QuestID: 7, Title: "Old Errand"},
+		{At: t0 - 5*day, Kind: eventlog.KindQuestTurnedIn, QuestID: 7},
+		{At: t0 - 4*day, Kind: eventlog.KindQuestTurnedIn, QuestID: 8},
+		{At: t0 - 4*day, Kind: eventlog.KindMoney, Copper: 500},
+		{At: t0 + 1800, Kind: eventlog.KindLevel, Level: 11},
+		{At: t0 + 2*hour - 100, Kind: eventlog.KindQuestTurnedIn, QuestID: 1},
+	}}
+}
+
+func TestLogGivesExactTimesWithoutDuplicates(t *testing.T) {
+	tr, cur := history(t)
+	tr.Log = logged()
+	r, err := build("X", cur, tr, Query{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for _, e := range r.Events {
+		got = append(got, fmt.Sprintf("%s@%d/%v", e.Kind, e.At-1_000_000, e.Exact))
+	}
+	want := []string{
+		"level_up@-864000/true", "quest_turned_in@-432000/true", "quest_turned_in@-345600/true",
+		"level_up@1800/true", "new_spell@3600/false", "equipment@3600/false",
+		"death@6600/false", "quest_turned_in@7100/true", "profession@7200/false",
+	}
+	if strings.Join(got, " ") != strings.Join(want, " ") {
+		t.Fatalf("events\n got %v\nwant %v", got, want)
+	}
+	if r.Events[0].What != (LevelUp{9, 10}) || r.Events[1].What.(TurnedInQuest).Title != "Old Errand" || r.Events[2].What.(TurnedInQuest).Title != "quest 8" {
+		t.Fatalf("log-only facts: %+v", r.Events[:3])
+	}
+	if q := r.Events[7].What.(TurnedInQuest); q.Title != "Wolves" || q.Zone != "Elwynn Forest" {
+		t.Fatalf("the dump's quest keeps its title and zone: %+v", q)
+	}
+	out, _ := View("X", cur, tr, Query{Kind: KindLevelUp, Limit: 1})
+	text := fixtures.JSON(t, out)
+	fixtures.WantAll(t, "filtered", text, `"total":2`, `"olderNotShown":1`, `"exact":true`, "Level up: level 10 -", "event log")
+}
+
+func TestLogSpanningLevelUpAndOneDump(t *testing.T) {
+	a := snap(100, 10, 0, nil)
+	b := snap(200, 12, 0, nil)
+	ev := withLog(Build([]snapshot.Snapshot{a, b}), []eventlog.Entry{{At: 150, Kind: eventlog.KindLevel, Level: 11}})
+	if len(ev) != 1 || ev[0].What != (LevelUp{10, 12}) || ev[0].At != 200 || ev[0].Exact {
+		t.Fatalf("a level inside a two-level jump is not listed again: %+v", ev)
+	}
+	tr := progress.Tracker{History: fakeHistory{}, Log: logged()}
+	r, err := build("X", snap(1_000_000+3*hour, 11, 0, nil), tr, Query{})
+	if err != nil || r.SnapshotsRead != 1 || r.Total != 5 {
+		t.Fatalf("one dump with a log: %+v %v", r, err)
+	}
+}
+
+func TestLogErrorFallsBackToDumpTimes(t *testing.T) {
+	tr, cur := history(t)
+	plain, _ := View("X", cur, tr, Query{})
+	tr.Log = fakeLog{err: errors.New("database is locked")}
+	out, err := View("X", cur, tr, Query{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fixtures.JSON(t, out["events"]) != fixtures.JSON(t, plain["events"]) || !strings.Contains(fmt.Sprint(out["eventLogError"]), "database is locked") {
+		t.Fatalf("fallback: %v", out)
 	}
 }

@@ -283,3 +283,16 @@ func (s *Store) Load() (*snapshot.Database, error) {
 	}
 	return db, nil
 }
+
+// ModTime is the modification time of the dump file Load would read, without reading it.
+func (s *Store) ModTime() (time.Time, error) {
+	loc, err := s.locate()
+	if err != nil {
+		return time.Time{}, err
+	}
+	info, err := os.Stat(loc.path)
+	if err != nil {
+		return time.Time{}, err
+	}
+	return info.ModTime(), nil
+}

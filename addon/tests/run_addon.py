@@ -1737,6 +1737,22 @@ def check_guard_ignores_disabled_sections() -> None:
         assert "clientUnloaded" not in kept or kept["clientUnloaded"] is None
         assert kept["character"]["moneyCopper"] == 5212
 
+    # A plain logout: the dump taken when the logout timer starts is the one that stays on disk.
+    for start in ("PLAYER_CAMPING", "PLAYER_QUITING"):
+        runtime, g, addon_ns, on_event = relog("")
+        g.SlashCmdList["WOWMCP"]("")
+        g.clockNow += 300
+        g.reloaded = False
+        on_event(None, start)
+        fresh = saved_character(g)
+        assert fresh["reason"] == "logoutStart" and fresh["dumpedAt"] == g.clockNow and not g.reloaded, dict(fresh)
+        g.clockNow += 20
+        runtime.execute(UNLOADED_CLIENT)
+        on_event(None, "PLAYER_LOGOUT")
+        kept = saved_character(g)
+        assert kept["reason"] == "logoutStart" and kept["dumpedAt"] == g.clockNow - 20, dict(kept)
+        assert kept["lastSkippedLogoutAt"] == g.clockNow
+
 
 def periods_of(section) -> list:
     """The carried closed periods of a loot or xpGains section as a Python list (oldest first)."""
@@ -1833,6 +1849,71 @@ def check_carried_periods() -> None:
     g.SlashCmdList["WOWMCP"]("off loot")
     assert saved_character(g)["loot"] is None
     assert len(g.forbiddenCalls) == 0, list(g.forbiddenCalls.values())
+
+
+def event_log_entries(g) -> list:
+    log = saved_character(g)["eventLog"]
+    entries = None if log is None else log["entries"]
+    return [] if entries is None else [dict(entries[i]) for i in range(1, len(entries) + 1)]
+
+
+def check_event_log() -> None:
+    """Addon eventLog section: kinds, throttling, de-duplication, bounds, and carrying across saves."""
+    runtime, g, addon_ns, on_event = relog("")
+    runtime.execute("""
+        C_QuestLog.GetTitleForQuestID = function(id) if id == 947 then return "The Glowing Shard" end end
+        local copper, zone = 100, "Darkshore"
+        function GetMoney() return copper end
+        function GetRealZoneText() return zone end
+        function setMoney(value) copper = value end
+        function setZone(value) zone = value end
+    """)
+    start = g.clockNow
+    on_event(None, "PLAYER_LEVEL_UP", 21)
+    on_event(None, "PLAYER_MONEY")
+    g.clockNow += 100
+    runtime.eval("setMoney")(250)
+    on_event(None, "PLAYER_MONEY")
+    g.clockNow += 300
+    runtime.eval("setMoney")(900)
+    on_event(None, "PLAYER_MONEY")
+    on_event(None, "QUEST_ACCEPTED", 3, 947)
+    on_event(None, "QUEST_ACCEPTED", 4740)
+    on_event(None, "QUEST_TURNED_IN", 947, 250, 350)
+    on_event(None, "ZONE_CHANGED_NEW_AREA")
+    on_event(None, "ZONE_CHANGED_NEW_AREA")
+    runtime.eval("setZone")("Ashenvale")
+    on_event(None, "ZONE_CHANGED_NEW_AREA")
+    on_event(None, "PLAYER_EQUIPMENT_CHANGED", 16, False)
+    on_event(None, "PLAYER_EQUIPMENT_CHANGED", 5, True)
+    kinds = [(e["kind"]) for e in event_log_entries(g)]
+    assert kinds == ["level", "money", "money", "questAccepted", "questAccepted", "questTurnedIn", "zone", "zone",
+                     "equipment", "equipment"], kinds
+    entries = event_log_entries(g)
+    assert entries[0] == {"at": start, "kind": "level", "level": 21}, entries[0]
+    assert entries[1]["copper"] == 250 and entries[1]["at"] == start, "a money change within 300 s overwrites"
+    assert entries[2]["copper"] == 900 and entries[2]["at"] == start + 400
+    assert (entries[3]["questID"], entries[3]["title"]) == (947, "The Glowing Shard"), entries[3]
+    assert entries[4]["questID"] == 4740 and "title" not in entries[4], entries[4]
+    assert (entries[5]["questID"], entries[5]["xp"], entries[5]["copper"]) == (947, 250, 350), entries[5]
+    assert [e["zone"] for e in entries[6:8]] == ["Darkshore", "Ashenvale"]
+    assert (entries[8]["slot"], entries[8]["itemID"]) == (16, 5586) and "itemID" not in entries[9], entries[8:]
+
+    for level in range(22, 330):
+        on_event(None, "PLAYER_LEVEL_UP", level)
+    capped = event_log_entries(g)
+    assert len(capped) == 300 and capped[-1]["level"] == 329 and capped[0]["kind"] == "level", capped[0]
+
+    g.SlashCmdList["WOWMCP"]("reload")
+    saved = g.SerializeSavedVariable("WowMcpDB", g.WowMcpDB)
+    runtime, g, addon_ns, on_event = relog(saved, clock=g.clockNow)
+    assert len(event_log_entries(g)) == 300, "the log survives a reload and login"
+    runtime, g, addon_ns, on_event = relog(saved, clock=g.clockNow + 15 * 24 * 3600)
+    assert event_log_entries(g) == [], "entries older than 14 days are dropped at login"
+
+    g.SlashCmdList["WOWMCP"]("off eventLog")
+    on_event(None, "PLAYER_LEVEL_UP", 5)
+    assert saved_character(g)["eventLog"] is None, "a disabled section stores nothing"
 
 
 def check_continent_is_no_zone() -> None:
@@ -1962,6 +2043,7 @@ def check_real_lifecycle() -> None:
     check_guard_ignores_disabled_sections()
     check_options_page()
     check_carried_periods()
+    check_event_log()
     check_continent_is_no_zone()
 
 
@@ -2125,6 +2207,23 @@ def check_realmless_key() -> None:
         local same = { classToken = "HUNTER", raceToken = "NightElf" }
         WowMcpDB.characters = { ["Piekasz-A"] = { character = same }, ["Piekasz-B"] = { character = same } }
     """)
+    assert addon_ns.Store.characterKey() == "Piekasz"
+    # No realm name and no saved realm key: the realm number from the GUID keeps same-named characters apart,
+    # and the dump saved under the bare name moves to the new key.
+    runtime, g, addon_ns = load_addon("forever")
+    runtime.execute("""
+        function UnitGUID(unit) if unit == "player" then return "Player-5827-0A1B2C3D" end end
+        WowMcpDB.characters = { ["Piekasz"] = { dumpedAt = 200, character = { classToken = "HUNTER", raceToken = "NightElf" }, note = "bare" } }
+        WowMcpDB.last = "Piekasz"
+    """)
+    assert addon_ns.Store.characterKey() == "Piekasz-5827", addon_ns.Store.characterKey()
+    event_dispatcher(g)(None, "PLAYER_LOGIN")
+    assert g.WowMcpDB["characters"]["Piekasz"] is None and g.WowMcpDB["characters"]["Piekasz-5827"]["note"] == "bare"
+    g.SlashCmdList["WOWMCP"]("")
+    assert g.WowMcpDB["characters"]["Piekasz-5827"]["character"]["realmId"] == "5827"
+    # A GUID in another shape changes nothing.
+    runtime, g, addon_ns = load_addon("forever")
+    runtime.execute('function UnitGUID() return "0x0000000001" end')
     assert addon_ns.Store.characterKey() == "Piekasz"
     # A realm name from the client always wins; the normalized name is the second choice.
     runtime, g, addon_ns = load_addon("forever")
@@ -2396,6 +2495,10 @@ def main() -> int:
         assert g.tooltip.shown and "no section errors" in g.tooltip.lines[1], list(g.tooltip.lines.values())
         panel.scripts["OnLeave"](panel)
         assert not g.tooltip.shown
+        g.reloaded = False
+        g.WowMcp_SaveAndReload()
+        assert g.reloaded and g.WowMcpDB["characters"]["Piekasz"]["reason"] == "keybind", "the key binding saves like the button"
+        assert g.BINDING_NAME_WOWMCP_SAVE and "WOWMCP_SAVE" in (ADDON_DIR / "Bindings.xml").read_text(encoding="utf-8")
         g.reloaded = False
         panel.saveButton.scripts["OnClick"](panel.saveButton)
         assert g.reloaded, "the Save button should call ReloadUI"

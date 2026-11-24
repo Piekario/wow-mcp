@@ -7,6 +7,12 @@
   "capturedAt": "2026-11-15 16:26",
   "probe": {
     "capturedAt": 1794760000,
+    "eventCandidates": {
+      "LOGOUT_CANCEL": true,
+      "PLAYER_CAMPING": true,
+      "PLAYER_LEAVING_WORLD": true,
+      "PLAYER_QUITING": true
+    },
     "events": {
       "ADDON_LOADED": true,
       "AUCTION_HOUSE_BROWSE_RESULTS_ADDED": true,
@@ -35,11 +41,17 @@
       "OWNED_AUCTIONS_UPDATED": true,
       "PET_STABLE_SHOW": true,
       "PET_STABLE_UPDATE": true,
+      "PLAYER_CAMPING": true,
       "PLAYER_DEAD": true,
+      "PLAYER_EQUIPMENT_CHANGED": true,
       "PLAYER_GUILD_UPDATE": true,
+      "PLAYER_LEVEL_UP": true,
       "PLAYER_LOGIN": true,
       "PLAYER_LOGOUT": true,
+      "PLAYER_MONEY": true,
+      "PLAYER_QUITING": true,
       "PLAYER_XP_UPDATE": true,
+      "QUEST_ACCEPTED": true,
       "QUEST_COMPLETE": true,
       "QUEST_DETAIL": true,
       "QUEST_TURNED_IN": true,
@@ -49,7 +61,8 @@
       "TRADE_SKILL_SHOW": true,
       "TRADE_SKILL_UPDATE": false,
       "TRAINER_SHOW": true,
-      "TRAINER_UPDATE": true
+      "TRAINER_UPDATE": true,
+      "ZONE_CHANGED_NEW_AREA": true
     },
     "globals": [
       "CanMerchantRepair",

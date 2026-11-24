@@ -29,6 +29,7 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
+	"wowmcp/internal/ledger"
 	"wowmcp/internal/mcpserver"
 	"wowmcp/internal/snapshot"
 	"wowmcp/internal/storage"
@@ -36,7 +37,8 @@ import (
 
 const (
 	serverName    = "wow-mcp"
-	serverVersion = "0.19.2"
+	serverVersion = "0.20.0"
+	watchInterval = 5 * time.Second
 )
 
 func main() {
@@ -107,11 +109,28 @@ func main() {
 	}
 
 	log.Printf("start: version %s, game directory %q, client %q, history %q", serverVersion, *wowDir, *client, *historyDir)
-	if err := newServer(store, history, fresh, goalsPath, func(c *mcpserver.Config) { c.MaxResponseKB = *maxResponseKB }).Run(context.Background(), &mcp.StdioTransport{}); err != nil {
+	if err := serve(store, history, fresh, goalsPath, *maxResponseKB); err != nil {
 		log.Print("ERROR: ", err)
 		closeLog()
 		os.Exit(1)
 	}
+}
+
+// serve runs the MCP server on stdio. With history it also opens the long history database and starts the watcher
+// that records every save of the dump file between tool calls.
+func serve(store *storage.Store, history *storage.History, fresh snapshot.Freshness, goalsPath string, maxResponseKB int) error {
+	options := []func(*mcpserver.Config){func(c *mcpserver.Config) { c.MaxResponseKB = maxResponseKB }}
+	if history != nil {
+		long, closeLedger := withLedger(history.Dir)
+		defer closeLedger()
+		options = append(options, long)
+	}
+	ctx, stop := context.WithCancel(context.Background())
+	defer stop()
+	if history != nil {
+		go mcpserver.Watch(ctx, serverConfig(store, history, fresh, goalsPath, options...), watchInterval)
+	}
+	return newServer(store, history, fresh, goalsPath, options...).Run(ctx, &mcp.StdioTransport{})
 }
 
 // setupLogging sends the standard log to stderr (stdout belongs to the MCP protocol) and, when
@@ -159,6 +178,10 @@ func resolveGoalsFile(flagValue, historyDir string) string {
 // newServer assembles the MCP server from the snapshot store and the freshness policy. Shared by main and tests.
 // An empty goalsPath means goals are disabled. Options adjust the configuration (e.g. the response size limit).
 func newServer(store *storage.Store, history *storage.History, fresh snapshot.Freshness, goalsPath string, options ...func(*mcpserver.Config)) *mcp.Server {
+	return mcpserver.New(serverConfig(store, history, fresh, goalsPath, options...))
+}
+
+func serverConfig(store *storage.Store, history *storage.History, fresh snapshot.Freshness, goalsPath string, options ...func(*mcpserver.Config)) mcpserver.Config {
 	cfg := mcpserver.Config{Name: serverName, Version: serverVersion, Snapshots: store, Freshness: fresh}
 	if goalsPath != "" {
 		cfg.Goals = storage.OwnFile{Path: goalsPath}
@@ -171,7 +194,7 @@ func newServer(store *storage.Store, history *storage.History, fresh snapshot.Fr
 	for _, option := range options {
 		option(&cfg)
 	}
-	return mcpserver.New(cfg)
+	return cfg
 }
 
 // runCheck prints where the snapshot is read from, which characters it contains and how old the data is (--check).
@@ -200,6 +223,21 @@ func runCheck(store *storage.Store, history *storage.History, fresh snapshot.Fre
 		fmt.Println("History:", history.Dir)
 	}
 	return nil
+}
+
+// withLedger opens the long history database, history.db inside the history directory (so never in the game
+// directory), and returns the option that gives it to the server. When it cannot be opened the server runs without it.
+func withLedger(historyDir string) (option func(*mcpserver.Config), closeLedger func()) {
+	err := os.MkdirAll(historyDir, 0o755)
+	var long *ledger.Ledger
+	if err == nil {
+		long, err = ledger.Open(filepath.Join(historyDir, "history.db"))
+	}
+	if err != nil {
+		log.Print("the long history is off, the dump history still works: ", err)
+		return func(*mcpserver.Config) {}, func() {}
+	}
+	return func(c *mcpserver.Config) { c.Ledger = long }, func() { long.Close() }
 }
 
 // exeDir is the directory of the server executable; "" when it cannot be determined.

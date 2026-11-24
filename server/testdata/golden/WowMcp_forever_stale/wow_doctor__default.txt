@@ -4,7 +4,7 @@
 --- content[0] ---
 {
   "status": "warn",
-  "summary": "12 checks: 11 ok, 1 warnings, 0 failures (server 0.19.2, expected addon 0.19.2)",
+  "summary": "12 checks: 11 ok, 1 warnings, 0 failures (server 0.20.0, expected addon 0.20.0)",
   "nextStep": "Type /mcp reload in game (or click Save on the WowMcp panel); the game writes the file only on /reload, logout and exit.",
   "checks": [
     {
@@ -28,7 +28,7 @@
     {
       "check": "addon version",
       "status": "ok",
-      "detail": "Addon 0.19.2, the server expects 0.19.2.",
+      "detail": "Addon 0.20.0, the server expects 0.20.0.",
       "fix": ""
     },
     {
@@ -40,7 +40,7 @@
     {
       "check": "dump speed",
       "status": "ok",
-      "detail": "Collecting the dump took 66.5 ms.",
+      "detail": "Collecting the dump took 64.5 ms.",
       "fix": ""
     },
     {
