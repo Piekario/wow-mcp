@@ -18,6 +18,17 @@ local function textOrNil(value)
     return nil
 end
 
+-- The friends API gives the localized class name only; the token (PALADIN) is what the server maps to a group role.
+local function classTokenOf(className)
+    if not className then return nil end
+    for _, names in ipairs({ LOCALIZED_CLASS_NAMES_MALE or {}, LOCALIZED_CLASS_NAMES_FEMALE or {} }) do
+        for token, localized in pairs(names) do
+            if localized == className then return token end
+        end
+    end
+    return nil
+end
+
 -- C_FriendList.GetFriendInfoByIndex: table { name, level, className, area, connected, notes, ... }.
 local function modernFriend(index)
     local info = callFirst({ "C_FriendList.GetFriendInfoByIndex" }, index)
@@ -53,7 +64,10 @@ local function collectFriends()
     local friends = {}
     for index = 1, math.min(count, MAX_FRIENDS) do
         local friend = modernFriend(index) or legacyFriend(index)
-        if friend and friend.name then friends[#friends + 1] = friend end
+        if friend and friend.name then
+            friend.classToken = classTokenOf(friend.class)
+            friends[#friends + 1] = friend
+        end
     end
     -- The event arrives often (status changes): without changes in the list we do not save again.
     local current = signature(friends)

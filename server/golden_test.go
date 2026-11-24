@@ -452,7 +452,11 @@ func goldenCases() []goldenCase {
 		tc("wow_social", "include_offline", args{"includeOffline": true}),
 		tc("wow_social", "include_offline_false", args{"includeOffline": false}),
 		tc("wow_social", "bad_type", args{"includeOffline": "yes"}),
-		ir(tc("wow_social", "all_args", args{"character": charKnown, "includeOffline": true})),
+		tc("wow_social", "level_range", args{"levelRange": 1}),
+		tc("wow_social", "level_range_wide", args{"levelRange": 50}),
+		ir(tc("wow_social", "level_range_negative", args{"levelRange": -3})),
+		tc("wow_social", "bad_level_range_type", args{"levelRange": "five"}),
+		ir(tc("wow_social", "all_args", args{"character": charKnown, "includeOffline": true, "levelRange": 10})),
 	)
 	add(
 		ir(tc("wow_compare_characters", "one_character_account", args{})), // the fixtures have one character: an error instead of a comparison

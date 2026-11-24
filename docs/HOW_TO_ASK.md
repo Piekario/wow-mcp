@@ -68,14 +68,14 @@ one optionally takes a character name.
 
 | Tool or prompt | Example questions |
 |---|---|
-| `wow_progress` | "How much XP per hour am I making and when is the next level?" · "How many times did I die this session?" · "Where does my XP come from this session: kills or quests?" (`xpSources`, since addon 0.7.0) |
+| `wow_progress` | "How much XP per hour am I making and when is the next level?" · "How many times did I die this session?" · "Where does my XP come from this session: kills or quests?" (`xpSources`, since addon 0.7.0) · "How much honor and how many honorable kills did I get this session?" (`honorGained`, `honorableKills`; only when the dumps have `pvp`) |
 | `wow_timeline` | "Show my character's timeline for the last 7 days." · "When did I last level up and what changed afterwards?" · "Show only deaths." |
 | `wow_session_rating` | "Is this session going faster than usual?" · "How do my XP and gold per hour compare with previous sessions?" |
 | `week_in_game` | "Summarize my week in the game: levels, gold, play time and the best session." |
 | `wow_journal` | "Describe my recent sessions." · "Give me a session journal in Markdown to paste." (with loot and records) |
 | `wow_goals` | "How are my goals going and when will I reach them?" |
 | `wow_goal_set` | "Add a goal: level 25." · "Goal: 10 gold." · "Remove goal g2." (writes only the server's goals file) |
-| `wow_changes` | "What changed since the last dump?" · "What loot did I get since the last save?" · "Summarize the whole session today (last 4 hours)." |
+| `wow_changes` | "What changed since the last dump?" · "What loot did I get since the last save?" · "Summarize the whole session today (last 4 hours)." · "How much honor did I earn since the last dump?" |
 | `wow_rested` | "How much rested XP do I have and when will it be full if I log out in an inn?" |
 | `wow_reputation` | "How much do I need to reach Honored with Darnassus?" |
 | `wow_spells` | "Which abilities do I already know?" |
@@ -106,7 +106,7 @@ one optionally takes a character name.
 | `wow_group` | "Who is missing from the group: tank, healer?" · "Show the gear of the player I inspected." (after clicking Inspect) |
 | `wow_dungeons` | "Which dungeons fit my level?" · "Which quests can I do in Deadmines?" |
 | `dungeon_finder` | "Where should I go for a dungeon and how should I prepare?" |
-| `wow_social` | "Which of my friends are online now?" · "Who from the guild is online and in which zone?" · "Show the whole guild, including offline members." (first open the social or guild window in the game and do `/mcp reload`; the addon does not ask the game server for these lists on its own) |
+| `wow_social` | "Which of my friends are online now?" · "Who from the guild is online and in which zone?" · "Show the whole guild, including offline members." · "Which classes and levels are online in my guild?" · "Who from the guild or my friends could I group with now?" (`groupCandidates`, `levelRange`, default 5; roles are what a class can do, not what the player picks) (first open the social or guild window in the game and do `/mcp reload`; the addon does not ask the game server for these lists on its own) |
 
 ## Diagnostics
 

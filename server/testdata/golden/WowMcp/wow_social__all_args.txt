@@ -1,5 +1,5 @@
 # tool wow_social variant=all_args
-# args: {"character":"Piekasz","includeOffline":true}
+# args: {"character":"Piekasz","includeOffline":true,"levelRange":10}
 # isError: false
 --- content[0] ---
 {
@@ -33,6 +33,77 @@
     "online": 2,
     "total": 3
   },
+  "groupCandidates": {
+    "count": 2,
+    "damageCapable": [
+      {
+        "class": "Priest",
+        "level": 19,
+        "name": "Healbot",
+        "rank": "Member",
+        "source": [
+          "friends",
+          "guild"
+        ],
+        "zone": "Darkshore"
+      },
+      {
+        "class": "Paladin",
+        "level": 22,
+        "name": "Tankadin",
+        "note": "main tank",
+        "rank": "Officer",
+        "source": [
+          "friends",
+          "guild"
+        ],
+        "zone": "Stormwind City"
+      }
+    ],
+    "healerCapable": [
+      {
+        "class": "Priest",
+        "level": 19,
+        "name": "Healbot",
+        "rank": "Member",
+        "source": [
+          "friends",
+          "guild"
+        ],
+        "zone": "Darkshore"
+      },
+      {
+        "class": "Paladin",
+        "level": 22,
+        "name": "Tankadin",
+        "note": "main tank",
+        "rank": "Officer",
+        "source": [
+          "friends",
+          "guild"
+        ],
+        "zone": "Stormwind City"
+      }
+    ],
+    "levelRange": 10,
+    "levels": "10-30",
+    "note": "Roles are what the class can do, not what the player will pick: a Paladin or Druid is listed as tank, healer and damage. Only people online when the lists were saved (capturedAge) count; ask them, the state may have changed. Sorted by closeness in level.",
+    "tankCapable": [
+      {
+        "class": "Paladin",
+        "level": 22,
+        "name": "Tankadin",
+        "note": "main tank",
+        "rank": "Officer",
+        "source": [
+          "friends",
+          "guild"
+        ],
+        "zone": "Stormwind City"
+      }
+    ],
+    "yourLevel": 20
+  },
   "guild": {
     "capturedAge": "30 min",
     "capturedAgeMinutes": 30,
@@ -43,6 +114,7 @@
         "class": "Paladin",
         "level": 22,
         "name": "Tankadin",
+        "note": "main tank",
         "online": true,
         "rank": "Officer",
         "rankIndex": 1,
@@ -71,6 +143,29 @@
     "online": 2,
     "rank": "Hunter Rank",
     "rankIndex": 4,
+    "summary": {
+      "classes": {
+        "Mage": 1,
+        "Paladin": 1,
+        "Priest": 1
+      },
+      "levelBands": {
+        "10-19": 1,
+        "20-29": 1,
+        "60-69": 1
+      },
+      "listed": 3,
+      "online": 2,
+      "onlineAverageLevel": 20.5,
+      "onlineClasses": {
+        "Paladin": 1,
+        "Priest": 1
+      },
+      "onlineLevelBands": {
+        "10-19": 1,
+        "20-29": 1
+      }
+    },
     "total": 3
   },
   "privacy": "The addon reads only what the client has in memory after the social or guild window is opened; it never asks the game server for these lists itself. The list is the state at the time of saving (capturedAge), so who is online may have changed.",

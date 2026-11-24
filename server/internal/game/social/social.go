@@ -18,6 +18,7 @@ import (
 type Query struct {
 	Character      string `json:"character,omitempty" jsonschema:"character name; empty = the most recently dumped character"`
 	IncludeOffline bool   `json:"includeOffline,omitempty" jsonschema:"true = also show guild members who were offline (default online only; the rest as a count)"`
+	LevelRange     int    `json:"levelRange,omitempty" jsonschema:"groupCandidates: how many levels above and below the character an online guild member or friend may be; default 5"`
 }
 
 // Count is a number the dump may not have.
@@ -36,6 +37,7 @@ type Capture struct {
 // The text fields of Friend, Member, Guild and PvP are kept as the client gave them; nil means the dump has no such field.
 type Friend struct {
 	Name, Level, Class, Area, Notes any
+	ClassToken                      string
 	Online                          bool
 }
 
@@ -48,6 +50,9 @@ type FriendList struct {
 
 type Member struct {
 	Name, Rank, RankIndex, Level, Class, Zone any
+	Note, ClassToken                          string
+	OfflineDays                               int64
+	HasOfflineDays                            bool
 	Online                                    bool
 }
 

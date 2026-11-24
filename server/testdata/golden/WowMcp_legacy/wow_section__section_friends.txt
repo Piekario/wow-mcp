@@ -11,6 +11,7 @@
       {
         "area": "Stormwind City",
         "class": "Paladin",
+        "classToken": "PALADIN",
         "connected": true,
         "level": 22,
         "name": "Tankadin",
@@ -18,6 +19,7 @@
       },
       {
         "class": "Mage",
+        "classToken": "MAGE",
         "connected": false,
         "level": 60,
         "name": "Oldfriend"

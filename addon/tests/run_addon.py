@@ -150,6 +150,8 @@ guildRoster = {
     { "Healbot", "Member", 3, 19, "Priest", "Darkshore", "", "", true, 0, "PRIEST" },
     { "Oldfriend", "Veteran", 2, 60, "Mage", "Dalaran", "", "", false, 0, "MAGE" },
 }
+function GetGuildRosterLastOnline(i) if i == 3 then return 0, 2, 3, 4 end end
+LOCALIZED_CLASS_NAMES_MALE = { PALADIN = "Paladin", PRIEST = "Priest", MAGE = "Mage", HUNTER = "Hunter" }
 function IsInGuild() return true end
 function GetGuildInfo(unit) if unit == "player" then return "Night Watch", "Hunter Rank", 4 end end
 function GetNumGuildMembers()
@@ -2748,6 +2750,10 @@ def main() -> int:
     assert len(guild["members"]) == 3 and guild["onlineOnly"] is None, "up to 200 people we save everyone"
     assert guild["members"][1]["name"] == "Tankadin" and guild["members"][1]["zone"] == "Stormwind City"
     assert guild["members"][3]["online"] is False
+    # Note, class token and days since the member was last online (only offline members have them).
+    assert guild["members"][1]["note"] == "main tank" and guild["members"][1]["classToken"] == "PALADIN" and guild["members"][1]["daysOffline"] is None
+    assert guild["members"][3]["daysOffline"] == 63, dict(guild["members"][3])
+    assert first_friend["classToken"] == "PALADIN"
     sets = snapshot["equipmentSets"]
     if mode == "legacy":
         assert len(sets) == 1 and sets[1]["name"] == "Leveling" and sets[1]["isEquipped"] is False, dict(sets[1])

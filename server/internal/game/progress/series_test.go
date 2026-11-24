@@ -19,7 +19,7 @@ type fakeSeries struct {
 func (f fakeSeries) Points(string) ([]progress.Point, error) { return f.points, f.err }
 
 func seriesPoint(at, money int64) progress.Point {
-	return progress.Point{At: int64(fixtures.ForeverDumpedAt) + at, Level: 10, XP: 0, XPMax: 1000, Money: money, Played: -1, Deaths: -1}
+	return progress.Point{At: int64(fixtures.ForeverDumpedAt) + at, Level: 10, XP: 0, XPMax: 1000, Money: money, Played: -1, Deaths: -1, Honor: -1, HonorableKills: -1}
 }
 
 // The long history reaches before the dump files; points at or after the oldest file are the files' own.

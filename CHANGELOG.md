@@ -21,6 +21,26 @@ covered by the API mocks of the addon test and the golden tests only.
     that name or ID (bags, bank, equipment, vendor and trainer offers, quest rewards, auctions, mail, loot, recipes, known
     spells), with the section of each hit. When nothing is found it says which commands the player should type
     (`/mcp item <query>` or `/mcp spell <query>`, then `/mcp reload`) and the assistant is told not to answer from memory.
+Guild overview and PvP history, for the addon and the server. **Not run in the real client**: checked only with the API
+mocks, unit tests and golden responses, so the new guild fields (`note`, `classToken`, `daysOffline`) and
+`GetGuildRosterLastOnline` still have to be confirmed in the game.
+
+- **Added**
+  - Guild overview in `wow_social`: a `summary` of the roster (members listed and online, counts by class, level bands
+    of ten, average online level) and `groupCandidates`: online guild members and friends within `levelRange` levels
+    (default 5) of the character, sorted into `tankCapable`, `healerCapable` and `damageCapable` by what their class can
+    do (one class-to-role table in the `group` package), with level, class, zone, guild rank and note. A person on both
+    lists appears once. A character without a guild still gets candidates from the friends list. The guild entries also
+    show `note` and, for offline members, `offlineDays`.
+  - Addon: the `guild` section saves each member's `note` (up to 60 characters; the officer note is never read),
+    `classToken` and, for offline members, `offlineDays` (`GetGuildRosterLastOnline`); the `friends` section saves
+    `classToken`, found from the localized class name, so roles work on non-English clients.
+  - PvP in the long history: `history.db` now keeps honor and honorable kills for every dump that has a `pvp` section
+    (schema 4: two nullable columns on `points`; older databases are migrated in place and their rows stay unknown, never
+    zero). `wow_changes` shows `honor`, `honorableKills` and `honorLevel` between two dumps, and `wow_progress` shows
+    `honorGained` and `honorableKills` for the session and the whole history. Both appear only when the dumps have a
+    `pvp` section. The honor counter restarts at an honor level-up, so a stretch with a level-up undercounts honor and says
+    so through `honorLevel`.
 
 ## 0.20.0 (2026-11-24)
 

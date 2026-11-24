@@ -26,6 +26,8 @@ type progressPoint struct {
 	at        int64
 	played    int64 // -1 = no data from /played
 	deaths    int64 // -1 = no deaths section
+	honor     int64 // -1 = no pvp section or no such number
+	kills     int64 // honorable kills, -1 like honor
 	completed int
 	char      characterState
 	source    snapshot.Snapshot // nil for a point from the long history (Series), older than the kept dumps
@@ -172,6 +174,9 @@ type stretchRate struct {
 	QuestsTurnedIn int
 	HasQuests      bool
 	Deaths         int64
+	HonorGained    int64 // honor earned in the stretch; counted only when HasPvP
+	HonorableKills int64
+	HasPvP         bool
 	RateKnown      bool
 	XPPerHour      float64
 	MoneyPerHour   int64
@@ -193,6 +198,7 @@ func rangeStats(points []progressPoint, from, to int) stretchRate {
 	if a.deaths >= 0 && b.deaths > a.deaths {
 		r.Deaths = b.deaths - a.deaths
 	}
+	r.HonorGained, r.HonorableKills, r.HasPvP = pvpGains(points[from : to+1])
 	if r.Elapsed >= minPaceSeconds {
 		hours := float64(r.Elapsed) / 3600
 		r.RateKnown = true
@@ -202,6 +208,23 @@ func rangeStats(points []progressPoint, from, to int) stretchRate {
 		r.TooShort = true
 	}
 	return r
+}
+
+// pvpGains adds the honor and honorable kills earned between consecutive points that both have them. Honor restarts
+// at an honor level-up, so a drop adds nothing and that stretch is undercounted. False when no pair has pvp numbers.
+func pvpGains(points []progressPoint) (honor, kills int64, ok bool) {
+	for i := 1; i < len(points); i++ {
+		a, b := points[i-1], points[i]
+		if a.honor >= 0 && b.honor >= 0 {
+			honor += max(b.honor-a.honor, 0)
+			ok = true
+		}
+		if a.kills >= 0 && b.kills >= 0 {
+			kills += max(b.kills-a.kills, 0)
+			ok = true
+		}
+	}
+	return honor, kills, ok
 }
 
 // xpSources sums XP by source (the xpGains section) gained after points[0] from the later dumps (the first one's XP predates
