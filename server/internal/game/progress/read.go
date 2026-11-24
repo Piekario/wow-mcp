@@ -5,6 +5,7 @@ package progress
 
 import (
 	"wowmcp/internal/game/character"
+	"wowmcp/internal/game/social"
 	"wowmcp/internal/snapshot"
 )
 
@@ -40,13 +41,20 @@ func readPoint(s snapshot.Snapshot) (progressPoint, bool) {
 	if !ok {
 		return progressPoint{}, false
 	}
-	p := progressPoint{at: at, played: -1, deaths: -1, completed: len(snapshot.AsList(s["completedQuests"])),
+	p := progressPoint{at: at, played: -1, deaths: -1, honor: -1, kills: -1, completed: len(snapshot.AsList(s["completedQuests"])),
 		char: readCharacter(s), source: s}
 	if total, ok := readPlayedTotal(s); ok {
 		p.played = total
 	}
 	if n, ok := character.DeathCount(s); ok {
 		p.deaths = n
+	}
+	h := social.Honor(s)
+	if h.HasHonor {
+		p.honor = h.Honor
+	}
+	if h.HasKills {
+		p.kills = h.HonorableKills
 	}
 	return p, true
 }

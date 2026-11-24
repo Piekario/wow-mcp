@@ -7,6 +7,18 @@ errors, dump 18 ms), addon 0.7.0 with server 0.9.0 (2026-11-15, no section error
 between are part of 0.11.0 / 0.12.2 and were run with them. Addon 0.14.0 was run on 2026-11-22 (client build 71037, no section errors, dump 25.7 ms: `questDb` for 22 log quests, `guide` reading TUGs, `/mcp quest The Glowing Shard`). **Server 0.15.0 and the 0.12.0 / 0.13.0 addon changes (carried periods, flight zones, auction gear details) have not yet been checked in a real client**: their fixes are
 based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` result and golden response tests.
 
+## Unreleased
+
+Server only for the PvP history; not run in the real client (checked with the API mocks, unit tests and golden responses).
+
+- **Added**
+  - PvP in the long history: `history.db` now keeps honor and honorable kills for every dump that has a `pvp` section
+    (schema 4: two nullable columns on `points`; older databases are migrated in place and their rows stay unknown, never
+    zero). `wow_changes` shows `honor`, `honorableKills` and `honorLevel` between two dumps, and `wow_progress` shows
+    `honorGained` and `honorableKills` for the session and the whole history. Both appear only when the dumps have a
+    `pvp` section. The honor counter restarts at an honor level-up, so a stretch with a level-up undercounts honor and says
+    so through `honorLevel`.
+
 ## 0.20.0 (2026-11-24)
 
 A long history and less `/mcp reload`, for the addon and the server. The server expects addon 0.20.0. This release also carries

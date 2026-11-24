@@ -57,6 +57,28 @@ func readGuild(s snapshot.Snapshot) GuildState {
 	return g
 }
 
+// HonorStats is the numbers of the pvp section the history records; Saved is false without the section.
+type HonorStats struct {
+	Saved                 bool
+	Honor, HonorableKills int64
+	HasHonor, HasKills    bool
+	HonorLevel            int64
+	HasHonorLevel         bool
+}
+
+// Honor reads the honor and honorable kills of a dump.
+func Honor(s snapshot.Snapshot) HonorStats {
+	sec := s.Map("pvp")
+	if sec == nil {
+		return HonorStats{}
+	}
+	h := HonorStats{Saved: true}
+	h.Honor, h.HasHonor = snapshot.AsInt(sec["honor"])
+	h.HonorableKills, h.HasKills = snapshot.AsInt(sec["honorableKills"])
+	h.HonorLevel, h.HasHonorLevel = snapshot.AsInt(sec["honorLevel"])
+	return h
+}
+
 func readPvP(s snapshot.Snapshot) PvPRecord {
 	sec := s.Map("pvp")
 	if sec == nil {

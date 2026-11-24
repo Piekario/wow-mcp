@@ -17,7 +17,8 @@ func (l *Ledger) Adopt(from, to string) error {
 	}
 	defer tx.Rollback()
 	if _, err := tx.Exec(`INSERT OR IGNORE INTO points
-		SELECT ?, dumped_at, level, xp, xp_max, money, rested, played, deaths, completed_quests, zone
+		(character, dumped_at, level, xp, xp_max, money, rested, played, deaths, completed_quests, zone, honor, honorable_kills)
+		SELECT ?, dumped_at, level, xp, xp_max, money, rested, played, deaths, completed_quests, zone, honor, honorable_kills
 		FROM points WHERE character = ?`, to, from); err != nil {
 		return err
 	}

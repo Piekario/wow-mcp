@@ -200,7 +200,7 @@ client's own name of each known profession skill line (`C_SkillInfo.GetSkillLine
 | Section | Fields |
 |---|---|
 | `equipmentSets` | list `{name, id, isEquipped, missing, items}` from `C_EquipmentSet` (in older clients the classic `GetEquipmentSetInfo`); `items` is `{slot, id, name}` without empty and ignored slots; up to 30 sets. No API: the section is absent |
-| `pvp` | `honorableKills`, `dishonorableKills`, `highestRank` (`GetPVPLifetimeStats`), `honor`, `honorMax`, `honorLevel` (`UnitHonor*`), `rank`, `rankName` (`UnitPVPRank`, `GetPVPRankInfo`). Every field is optional; with none of them the section is absent |
+| `pvp` | `honorableKills`, `dishonorableKills`, `highestRank` (`GetPVPLifetimeStats`), `honor`, `honorMax`, `honorLevel` (`UnitHonor*`), `rank`, `rankName` (`UnitPVPRank`, `GetPVPRankInfo`). Every field is optional; with none of them the section is absent. The server also records `honor` and `honorableKills` of every dump in `history.db` (schema 4, nullable columns: a dump without the section is stored as NULL, not as zero) |
 
 ### `cooldowns`, `played`, `group`, `dungeons`
 

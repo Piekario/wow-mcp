@@ -4,6 +4,7 @@
 package ledger
 
 import (
+	"database/sql"
 	"log"
 
 	"wowmcp/internal/game/auctions"
@@ -79,18 +80,34 @@ func (l *Ledger) add(character string, points []progress.Point) error {
 	defer tx.Rollback()
 	for _, p := range points {
 		if _, err := tx.Exec(`INSERT OR IGNORE INTO points
-			(character, dumped_at, level, xp, xp_max, money, rested, played, deaths, completed_quests, zone)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-			character, p.At, p.Level, p.XP, p.XPMax, p.Money, p.Rested, p.Played, p.Deaths, p.CompletedQuests, p.Zone); err != nil {
+			(character, dumped_at, level, xp, xp_max, money, rested, played, deaths, completed_quests, zone, honor, honorable_kills)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+			character, p.At, p.Level, p.XP, p.XPMax, p.Money, p.Rested, p.Played, p.Deaths, p.CompletedQuests, p.Zone,
+			nullIfUnknown(p.Honor), nullIfUnknown(p.HonorableKills)); err != nil {
 			return err
 		}
 	}
 	return tx.Commit()
 }
 
+// nullIfUnknown stores the Point's -1 (no such number in the dump) as NULL.
+func nullIfUnknown(v int64) any {
+	if v < 0 {
+		return nil
+	}
+	return v
+}
+
+func orUnknown(v sql.NullInt64) int64 {
+	if !v.Valid {
+		return -1
+	}
+	return v.Int64
+}
+
 // Points implements progress.Series.
 func (l *Ledger) Points(character string) ([]progress.Point, error) {
-	rows, err := l.db.Query(`SELECT dumped_at, level, xp, xp_max, money, rested, played, deaths, completed_quests, zone
+	rows, err := l.db.Query(`SELECT dumped_at, level, xp, xp_max, money, rested, played, deaths, completed_quests, zone, honor, honorable_kills
 		FROM points WHERE character = ? ORDER BY dumped_at`, character)
 	if err != nil {
 		return nil, err
@@ -99,9 +116,11 @@ func (l *Ledger) Points(character string) ([]progress.Point, error) {
 	var points []progress.Point
 	for rows.Next() {
 		var p progress.Point
-		if err := rows.Scan(&p.At, &p.Level, &p.XP, &p.XPMax, &p.Money, &p.Rested, &p.Played, &p.Deaths, &p.CompletedQuests, &p.Zone); err != nil {
+		var honor, kills sql.NullInt64
+		if err := rows.Scan(&p.At, &p.Level, &p.XP, &p.XPMax, &p.Money, &p.Rested, &p.Played, &p.Deaths, &p.CompletedQuests, &p.Zone, &honor, &kills); err != nil {
 			return nil, err
 		}
+		p.Honor, p.HonorableKills = orUnknown(honor), orUnknown(kills)
 		points = append(points, p)
 	}
 	return points, rows.Err()

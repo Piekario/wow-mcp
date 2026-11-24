@@ -155,6 +155,7 @@ func (c Comparison) renderGains(out map[string]any) {
 	if c.Deaths != nil {
 		out["deaths"] = map[string]any{"before": c.Deaths.Before, "after": c.Deaths.After, "new": c.Deaths.Delta()}
 	}
+	c.renderHonor(out)
 	if c.Loot != nil {
 		l := loot.Describe(c.Loot.Items, maxLootListed)
 		c.coverage(l, c.Loot.Merge, "loot from earlier saves between these dumps is not included: the loot section of the newer dump counts from that moment")
@@ -170,6 +171,19 @@ func (c Comparison) renderGains(out map[string]any) {
 	}
 	if len(c.TalentsLearned) > 0 {
 		out["talentsLearned"] = c.TalentsLearned
+	}
+}
+
+func (c Comparison) renderHonor(out map[string]any) {
+	if c.Honor != nil {
+		out["honor"] = map[string]any{"before": c.Honor.Before, "after": c.Honor.After, "change": c.Honor.Delta()}
+	}
+	if c.HonorableKills != nil {
+		out["honorableKills"] = map[string]any{"before": c.HonorableKills.Before, "after": c.HonorableKills.After, "new": c.HonorableKills.Delta()}
+	}
+	if c.HonorLevel != nil {
+		out["honorLevel"] = map[string]any{"before": c.HonorLevel.Before, "after": c.HonorLevel.After,
+			"note": "the honor counter restarts at a new honor level, so the honor change alone does not show what was earned"}
 	}
 }
 
@@ -335,6 +349,10 @@ func (r stretchRate) render() map[string]any {
 	}
 	if r.Deaths > 0 {
 		out["deaths"] = r.Deaths
+	}
+	if r.HasPvP {
+		out["honorGained"] = r.HonorGained
+		out["honorableKills"] = r.HonorableKills
 	}
 	if r.RateKnown {
 		out["xpPerHour"] = int64(math.Round(r.XPPerHour))
