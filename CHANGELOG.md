@@ -13,6 +13,10 @@ based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` 
   - A PayPal donation link next to GitHub Sponsors: the repository's Sponsor button (`.github/FUNDING.yml`), the npm
     package (`funding`, shown by `npm fund`), two README badges, and one line in the README, `SUPPORT.md` and the npm README. Nothing in
     the addon or the server changes, and the game shows no donation message.
+- **Changed**
+  - The feature request form on GitHub is now "Suggest a feature": it asks which game version you play, gives an example,
+    says up front that only read-only ideas can be accepted, and asks to vote with a 👍 on existing suggestions. The README
+    and `SUPPORT.md` link straight to it.
 
 ## 0.19.1 (2026-11-23)
 

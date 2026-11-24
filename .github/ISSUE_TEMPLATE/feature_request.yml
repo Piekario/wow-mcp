@@ -1,23 +1,43 @@
-name: Feature request
-description: An idea for a new tool, prompt or addon data
+name: Suggest a feature
+description: An idea for a new tool, prompt or addon data. A few short fields, no technical knowledge needed.
 labels: [enhancement]
 body:
+  - type: markdown
+    attributes:
+      value: >
+        Thanks for the idea. Search the [open suggestions](https://github.com/Piekario/wow-mcp/issues?q=is%3Aissue+label%3Aenhancement)
+        first and add a 👍 to one that already says it: the most wanted ideas are picked up first.
   - type: textarea
     id: problem
     attributes:
       label: What would you like to ask your assistant, or what is missing?
       description: Describe the question or situation in game, not only the solution.
+      placeholder: "Which of my alts can craft the bag I need, and what am I still missing for it?"
     validations:
       required: true
   - type: textarea
     id: idea
     attributes:
       label: Proposed solution
-      description: Which data the addon would need to read, which tool or prompt could answer it.
+      description: Optional. Which character data the addon would need to read, which tool or prompt could answer it.
+  - type: dropdown
+    id: client
+    attributes:
+      label: Game version
+      description: Where do you play? Only WoW Forever is verified, so ideas for other clients may need your help with testing.
+      options:
+        - WoW Forever
+        - Retail
+        - Classic Era / Hardcore / Season of Discovery
+        - Classic progression (Wrath, Cataclysm, Mists, ...)
+        - Any / not sure
+    validations:
+      required: true
   - type: checkboxes
     id: rules
     attributes:
       label: Read-only
+      description: Ideas that click, cast, move, trade or otherwise act in the game cannot be accepted (Blizzard's Terms of Service).
       options:
         - label: The idea only reads game state and does not automate gameplay (see docs/TOS_COMPLIANCE.md).
           required: true
