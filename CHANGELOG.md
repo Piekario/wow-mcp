@@ -14,7 +14,12 @@ based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` 
     history directory. Every dump the server reads adds one compact row per character (level, XP, gold, rested XP,
     played time, deaths, completed quests, zone) and the rows are kept beyond the `--history-keep` limit of full dumps.
     The dumps already kept in files are imported the first time a character is seen. Several server processes may share
-    the file (WAL mode, rows keyed by character and dump time). Nothing reads it yet. The exe grows by about 4 MB.
+    the file (WAL mode, rows keyed by character and dump time). The exe grows by about 4 MB.
+  - The `eventLog` entries of every dump are kept in `history.db` (table `events`, unique by character, time, kind and
+    quest, slot, zone or level), so the log outlives the addon's 300 entries / 14 days. A repeated `money` entry
+    keeps its time and takes the latest copper. The domain package `game/eventlog` reads the section.
+  - A save watcher: while the server runs it checks the dump file's modification time every 5 seconds and, when it
+    changed, records the dump in the history and `history.db`, so a save between two tool calls is not lost.
   - Section `eventLog` (`Sections/EventLog.lua`): a bounded, timestamped list of level-ups, gold changes, quests accepted and
     turned in, zone changes and equipment changes, carried across saves (300 entries, 14 days), so one save holds the
     whole session with real times. Off with `/mcp off eventLog`.
@@ -29,6 +34,12 @@ based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` 
   - The feature request form on GitHub is now "Suggest a feature": it asks which game version you play, gives an example,
     says up front that only read-only ideas can be accepted, and asks to vote with a 👍 on existing suggestions. The README
     and `SUPPORT.md` link straight to it.
+  - The number-only history answers read `history.db` before the oldest kept dump, so they are no longer limited to the
+    last `--history-keep` dumps: `wow_gold_history`, `wow_progress` (overall pace, level-ups, sessions), the goal ETA
+    rates and the earlier sessions `wow_session_rating` compares with. Answers that need the dump itself (`wow_changes`,
+    `wow_timeline`, `wow_journal`, consumption in `wow_ammo`, `wow_reagents`, `wow_shopping_list`) still use the kept
+    dumps. When a stretch starts before them, `xpSources` says from which dump it counts (`countedFrom`, `partialNote`).
+    A `history.db` that cannot be read leaves the answers as they were.
 
 ## 0.19.2 (2026-11-24)
 

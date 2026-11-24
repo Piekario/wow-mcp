@@ -6,6 +6,7 @@ package ledger
 import (
 	"log"
 
+	"wowmcp/internal/game/eventlog"
 	"wowmcp/internal/game/progress"
 	"wowmcp/internal/snapshot"
 )
@@ -35,7 +36,10 @@ func (l *Ledger) record(character string, s snapshot.Snapshot, files progress.Hi
 			points = append(points, pointsFromFiles(character, files)...)
 		}
 	}
-	return l.add(character, points)
+	if err := l.add(character, points); err != nil {
+		return err
+	}
+	return l.addEvents(character, eventlog.Read(s))
 }
 
 func pointsFromFiles(character string, files progress.History) []progress.Point {

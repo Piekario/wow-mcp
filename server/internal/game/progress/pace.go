@@ -28,10 +28,24 @@ type progressPoint struct {
 	deaths    int64 // -1 = no deaths section
 	completed int
 	char      characterState
-	source    snapshot.Snapshot
+	source    snapshot.Snapshot // nil for a point from the long history (Series), older than the kept dumps
 }
 
-// points loads the character's history and appends the current dump if it is not in it.
+func (p progressPoint) hasDump() bool { return p.source != nil }
+
+// withDumps keeps the points that have their dump, for computations that read more than the numbers.
+func withDumps(points []progressPoint) []progressPoint {
+	var out []progressPoint
+	for _, p := range points {
+		if p.hasDump() {
+			out = append(out, p)
+		}
+	}
+	return out
+}
+
+// points loads the character's history, appends the current dump if it is not in it and puts the long history
+// (Series) older than the oldest dump in front.
 func (t Tracker) points(name string, current snapshot.Snapshot) ([]progressPoint, error) {
 	var points []progressPoint
 	if t.History != nil {
@@ -53,7 +67,7 @@ func (t Tracker) points(name string, current snapshot.Snapshot) ([]progressPoint
 	if cur, ok := readPoint(current); ok && !current.IsUnloadedDump() && (len(points) == 0 || points[len(points)-1].at < cur.at) {
 		points = append(points, cur)
 	}
-	return points, nil
+	return t.withOlderPoints(name, points), nil
 }
 
 // Default gaps after which a new session starts.
@@ -153,6 +167,7 @@ type stretchRate struct {
 	XPExact        bool
 	Levels         int64
 	XPSources      *XPGained
+	XPSourcesFrom  int64 // the first dump XPSources counts from; later than From when the stretch starts in the long history
 	Money          int64
 	QuestsTurnedIn int
 	HasQuests      bool
@@ -169,7 +184,9 @@ func rangeStats(points []progressPoint, from, to int) stretchRate {
 	r := stretchRate{From: a.at, To: b.at, Snapshots: to - from + 1, Levels: b.char.Level - a.char.Level, Money: b.char.Money - a.char.Money}
 	r.XP, r.XPExact = xpOver(points, from, to)
 	r.Elapsed, r.Basis = elapsedBetween(points, from, to)
-	r.XPSources = xpSources(points[from : to+1])
+	if dumps := withDumps(points[from : to+1]); len(dumps) > 0 {
+		r.XPSources, r.XPSourcesFrom = xpSources(dumps), dumps[0].at
+	}
 	if a.completed > 0 && b.completed >= a.completed {
 		r.QuestsTurnedIn, r.HasQuests = b.completed-a.completed, true
 	}
@@ -189,7 +206,7 @@ func rangeStats(points []progressPoint, from, to int) stretchRate {
 
 // xpSources sums XP by source (the xpGains section) gained after points[0] from the later dumps (the first one's XP predates
 // the stretch, like loot in the journal), with the periods carried from saves the server never read; nil when no dump has
-// the section or nothing was gained.
+// the section or nothing was gained. Every point must have its dump.
 func xpSources(points []progressPoint) *XPGained {
 	if len(points) < 2 {
 		return nil

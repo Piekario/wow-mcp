@@ -29,6 +29,7 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	"wowmcp/internal/fixtures"
+	"wowmcp/internal/game/progress"
 	"wowmcp/internal/mcpserver"
 	"wowmcp/internal/snapshot"
 	"wowmcp/internal/storage"
@@ -515,10 +516,20 @@ type goldenScenario struct {
 	history bool                  // whether the server has a history directory (with pre-seeded snapshots)
 	missing bool                  // true = the Store points to a nonexistent file
 	real    bool                  // true = the real dump from the game (fixtures.RealLua) instead of a testdata file
+	ledger  bool                  // true = a long history (Series) with points older than the history files
 	filter  func(goldenCase) bool // nil = all cases
 }
 
 var onlyStale = func(c goldenCase) bool { return c.stale }
+
+// forLedger selects the history tools whose numbers reach back into the long history.
+var forLedger = func(c goldenCase) bool {
+	switch c.name + "/" + c.variant {
+	case "wow_gold_history/days_big", "wow_progress/default", "wow_session_rating/default":
+		return true
+	}
+	return false
+}
 
 // localizedTools are the tools whose conclusions depend on item classes, binding, stats, professions, chat
 // parsing or English-only heuristics: on the deDE fixture they must say the same as on the English one
@@ -560,6 +571,8 @@ func goldenScenarios() []goldenScenario {
 	out = append(out, goldenScenario{dir: "WowMcp_dede", fixture: "WowMcp_dede", age: 30 * time.Minute, history: true, filter: forLocalized})
 	// the real dump from the game (addon 0.5.0, Forever 1.60.1) with a history built from itself
 	out = append(out, goldenScenario{dir: "real", real: true, age: 30 * time.Minute, history: true, filter: forRealSnapshot})
+	// a long history database with sessions from weeks before the oldest history file
+	out = append(out, goldenScenario{dir: "WowMcp_forever_ledger", fixture: "WowMcp_forever", age: 30 * time.Minute, history: true, ledger: true, filter: forLedger})
 	// history disabled: history-based tools must report an error
 	out = append(out, goldenScenario{dir: "WowMcp_forever_nohistory", fixture: "WowMcp_forever", age: 30 * time.Minute, filter: onlyStale})
 	// missing dump file: loading errors
@@ -687,7 +700,12 @@ func newGoldenEnv(t *testing.T, sc goldenScenario) *goldenEnv {
 			t.Fatal(err)
 		}
 	}
-	server := newServer(store, history, fresh, goalsPath)
+	var options []func(*mcpserver.Config)
+	if sc.ledger {
+		long := seedLedger(t, file)
+		options = append(options, func(c *mcpserver.Config) { c.Ledger = long })
+	}
+	server := newServer(store, history, fresh, goalsPath, options...)
 	ct, st := mcp.NewInMemoryTransports()
 	ctx := context.Background()
 	ss, err := server.Connect(ctx, st, nil)
@@ -814,6 +832,43 @@ func seedHistory(t *testing.T, file string, h *storage.History) {
 			}
 		}
 	}
+}
+
+// fakeLedger is a long history that already holds older points; it records nothing.
+type fakeLedger map[string][]progress.Point
+
+func (l fakeLedger) Points(character string) ([]progress.Point, error) { return l[character], nil }
+func (l fakeLedger) Record(*snapshot.Database, progress.History)       {}
+
+// seedLedger gives every character two one-hour sessions, 20 and 10 days before the dump, with a lower level,
+// less gold and less play time than the oldest history file (seedHistory, two hours back).
+func seedLedger(t *testing.T, file string) fakeLedger {
+	t.Helper()
+	db, err := (&storage.Store{File: file}).Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	const day, hour = int64(86400), int64(3600)
+	out := fakeLedger{}
+	for _, name := range db.CharacterNames() {
+		cur, ok := progress.PointOf(db.Characters[name])
+		if !ok {
+			continue
+		}
+		for i, back := range []int64{20*day + hour, 20 * day, 10*day + hour, 10 * day} {
+			p := cur
+			p.At = cur.At - back
+			p.Level = max(cur.Level-int64(3-i/2), 1)
+			p.XP = int64(100 + 600*(i%2))
+			p.Money = cur.Money * int64(i+1) / 10
+			p.CompletedQuests = cur.CompletedQuests * int64(i+1) / 10
+			if cur.Played >= 0 {
+				p.Played = cur.Played - 2*hour - int64(4-i)*hour
+			}
+			out[name] = append(out[name], p)
+		}
+	}
+	return out
 }
 
 // cloneSnapshot makes a deep copy through JSON, the same way History saves and loads snapshots.

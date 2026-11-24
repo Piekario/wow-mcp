@@ -26,7 +26,7 @@ func (s Stretch) Hours() float64 { return float64(s.ElapsedSeconds) / 3600 }
 
 // CurrentSession returns the dumps of the current session (as wow_progress counts it).
 func (t Tracker) CurrentSession(name string, current snapshot.Snapshot) (Stretch, error) {
-	points, err := t.stretchPoints(name, current)
+	points, err := t.dumpPoints(name, current)
 	if err != nil {
 		return Stretch{}, err
 	}
@@ -35,11 +35,17 @@ func (t Tracker) CurrentSession(name string, current snapshot.Snapshot) (Stretch
 
 // WholeHistory returns all remembered dumps of the character together with the current one.
 func (t Tracker) WholeHistory(name string, current snapshot.Snapshot) (Stretch, error) {
-	points, err := t.stretchPoints(name, current)
+	points, err := t.dumpPoints(name, current)
 	if err != nil {
 		return Stretch{}, err
 	}
 	return stretchOf("whole history", points, 0), nil
+}
+
+// dumpPoints are the stretch points that have their dump: a Stretch hands out the dumps themselves.
+func (t Tracker) dumpPoints(name string, current snapshot.Snapshot) ([]progressPoint, error) {
+	points, err := t.stretchPoints(name, current)
+	return withDumps(points), err
 }
 
 func (t Tracker) stretchPoints(name string, current snapshot.Snapshot) ([]progressPoint, error) {

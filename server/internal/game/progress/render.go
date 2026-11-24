@@ -324,6 +324,10 @@ func (r stretchRate) render() map[string]any {
 	if r.XPSources != nil {
 		x := xpgains.Describe(r.XPSources.Gains)
 		r.XPSources.Merge.Describe(x)
+		if r.XPSourcesFrom > r.From {
+			x["countedFrom"] = snapshot.FormatTime(r.XPSourcesFrom)
+			x["partialNote"] = "XP by source is counted only from the oldest kept dump; the older long history has no breakdown"
+		}
 		out["xpSources"] = x
 	}
 	if r.HasQuests {

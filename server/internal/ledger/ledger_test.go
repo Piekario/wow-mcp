@@ -123,3 +123,53 @@ func TestOpenRefusesANewerSchema(t *testing.T) {
 		t.Fatal("a database from a newer server was opened")
 	}
 }
+
+func withEvents(at int64, entries ...any) snapshot.Snapshot {
+	s := dump(at, 5, 100)
+	s["eventLog"] = map[string]any{"entries": entries}
+	return s
+}
+
+func entry(at int64, kind string, fields map[string]any) map[string]any {
+	e := map[string]any{"at": at, "kind": kind}
+	for k, v := range fields {
+		e[k] = v
+	}
+	return e
+}
+
+func TestEventsAreStoredOnceAcrossRepeatedDumps(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "history.db")
+	l := open(t, path)
+	turnIn := entry(1000, "questTurnedIn", map[string]any{"questID": int64(1), "xp": int64(50)})
+	other := entry(1000, "questTurnedIn", map[string]any{"questID": int64(2), "xp": int64(70)})
+	lvl := entry(1005, "level", map[string]any{"level": int64(6)})
+	l.Record(database("Ana", withEvents(2000, turnIn, other)), nil)
+	l.Record(database("Ana", withEvents(2100, turnIn, other, lvl)), nil)
+	l.Record(database("Ana", withEvents(2100, turnIn, other, lvl)), nil)
+	l.Close()
+
+	got, err := open(t, path).Events("Ana", 0, 5000)
+	if err != nil || len(got) != 3 {
+		t.Fatalf("events = %+v, err = %v", got, err)
+	}
+	if got[0].QuestID != 1 || got[1].QuestID != 2 || got[2].Kind != "level" || got[2].Level != 6 {
+		t.Fatalf("events = %+v", got)
+	}
+	if ranged, _ := open(t, path).Events("Ana", 1001, 5000); len(ranged) != 1 {
+		t.Fatalf("range = %+v", ranged)
+	}
+	if other, _ := open(t, path).Events("Bob", 0, 5000); len(other) != 0 {
+		t.Fatalf("another character's events = %+v", other)
+	}
+}
+
+func TestLatestMoneyValueWinsForTheSameTime(t *testing.T) {
+	l := open(t, filepath.Join(t.TempDir(), "history.db"))
+	l.Record(database("Ana", withEvents(2000, entry(1000, "money", map[string]any{"copper": int64(100)}))), nil)
+	l.Record(database("Ana", withEvents(2100, entry(1000, "money", map[string]any{"copper": int64(250)}))), nil)
+	got, err := l.Events("Ana", 0, 5000)
+	if err != nil || len(got) != 1 || got[0].Copper != 250 {
+		t.Fatalf("events = %+v, err = %v", got, err)
+	}
+}

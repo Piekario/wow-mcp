@@ -36,6 +36,47 @@ func PointOf(s snapshot.Snapshot) (Point, bool) {
 	}, true
 }
 
+// progressPoint is the Point as the rate computations see it: no dump behind it.
+func (p Point) progressPoint() progressPoint {
+	level, hasLevel := unknownAsZero(p.Level)
+	xp, hasXP := unknownAsZero(p.XP)
+	xpMax, hasXPMax := unknownAsZero(p.XPMax)
+	money, hasMoney := unknownAsZero(p.Money)
+	return progressPoint{
+		at: p.At, played: p.Played, deaths: p.Deaths, completed: int(max(p.CompletedQuests, 0)),
+		char: characterState{
+			Level: level, XP: xp, XPMax: xpMax, Money: money, Rested: max(p.Rested, 0),
+			HasLevel: hasLevel, HasXP: hasXP, HasXPMax: hasXPMax, HasMoney: hasMoney,
+		},
+	}
+}
+
+func unknownAsZero(v int64) (int64, bool) {
+	if v < 0 {
+		return 0, false
+	}
+	return v, true
+}
+
+// withOlderPoints puts the Series points older than the oldest dump in front of the dump points. A Series error
+// leaves the dump points alone: the long history only extends them.
+func (t Tracker) withOlderPoints(name string, points []progressPoint) []progressPoint {
+	if t.Series == nil || len(points) == 0 {
+		return points
+	}
+	series, err := t.Series.Points(name)
+	if err != nil {
+		return points
+	}
+	var older []progressPoint
+	for _, p := range series {
+		if p.At < points[0].at && p.Level >= 0 && p.Money >= 0 { // without them a point would read as a drop to zero
+			older = append(older, p.progressPoint())
+		}
+	}
+	return append(older, points...)
+}
+
 func known(v int64, has bool) int64 {
 	if !has {
 		return -1

@@ -26,6 +26,14 @@ var migrations = []string{
 		zone TEXT NOT NULL,
 		PRIMARY KEY (character, dumped_at)
 	) WITHOUT ROWID`,
+	`CREATE TABLE events (
+		character TEXT NOT NULL,
+		at INTEGER NOT NULL,
+		kind TEXT NOT NULL,
+		key TEXT NOT NULL,
+		data TEXT NOT NULL,
+		PRIMARY KEY (character, at, kind, key)
+	) WITHOUT ROWID`,
 }
 
 // Ledger is safe for concurrent use, also by several server processes on the same file (the desktop app starts more
