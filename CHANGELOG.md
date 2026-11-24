@@ -77,9 +77,38 @@ with a Hunter, so the points below about taming, Beast Lore and the pet's food l
 
 ## 0.21.0 (unreleased)
 
-Seven new tools and two extended ones, for the addon and the server. The server expects addon 0.21.0. **None of this has been run in the
-real client yet**: everything below was checked only on the addon's API mocks, unit tests and golden responses, and each part
+Seven new tools and two extended ones, for the addon and the server. The server expects addon 0.21.0. **Apart from the first run described below, none of this has been run in the
+real client**: everything below was checked only on the addon's API mocks, unit tests and golden responses, and each part
 names the client API it assumes.
+
+Found in the first real-client run (2026-11-24, build 71037): addon 0.21.0 ran with zero section errors and the dump took 43.5 ms
+(achievements 8.3 ms). The achievement and statistics API exist (111 achievements, 63 statistics); `zoneQuests` works with QuestieDB and
+`/mcp item` works. Titles: 0 known of 111. `C_MountJournal` and `GetCompanionInfo` exist but their lists are empty;
+`C_TitleManager` is absent. The `EJ_*` globals exist, but no `dungeonLoot` section was produced yet. The run showed three problems,
+fixed here:
+
+- **Fixed**
+  - Legacy challenges: the achievements that grant Legacy Points are in ordinary categories (Classes > Warlock, Tradeskills >
+    Alchemy, Dungeons, ...), no category title contains "Legacy", and all achievements are worth 0 points. They are recognised by
+    their reward text "Earn 1 Legacy Point." The addon now matches an achievement as a challenge when its category title mentions
+    Legacy or its reward text mentions "Legacy Point" (`challenges.matchedBy` says which rule matched), reading from the same pass
+    as the `achievements` section instead of reading every achievement twice; `categoryID`, `completedOn` and the criteria of
+    incomplete ones are saved too. `wow_legacy` also derives the challenges from the `achievements` section by the reward text
+    (English client text) when a dump's own list is empty, so dumps from before this fix work; `challenges.source` and
+    `matchedBy` say how they were found, `completedList` has the dates and open ones the `missing` criteria.
+  - `wow_social` was 59.5 KB for a guild of 937 members and was cut at the response limit. The guild member list is now capped:
+    `limit` (default 40, the members closest to the character's level first, then by name; -1 = every matching member) and
+    `query` (name, class, zone, rank or note); `memberList` states `shown`, `total`, `notShown` and how to get the rest. A
+    synthetic guild of 300 members answers in 14.8 KB with the default arguments (a test keeps it under 20 KB).
+  - Dungeon loot: the Encounter Journal lists one tier at a time, so only the current tier's dungeons could be found. The addon
+    now lists the instances of every tier (up to 12), selects the instance's tier before reading it and puts the tier, instance
+    and boss selection back. Every `/mcp loot` now leaves `dungeonLoot.lastAttempt` (outcome `read`, `noMatch`, `readFailed` or
+    `unavailable`, how many instances and tiers the journal offered, the first 40 names, whether the player was in an instance,
+    the error), and the section exists even when nothing was read. `wow_dungeon_loot` shows the last attempt and `journalOffers`,
+    the dungeon names to type. When the journal offers nothing and `Blizzard_EncounterJournal` is loadable but not loaded, the
+    addon does not load it: it says in chat and in `lastAttempt.hint` that opening the Encounter Journal window once and typing
+    `/mcp loot` again may help.
+  - Section order: `legacy` now follows `achievements` in the dump.
 
 Item and spell lookup, for the addon and the server. Not yet run in the real client: it is
 covered by the API mocks of the addon test and the golden tests only.

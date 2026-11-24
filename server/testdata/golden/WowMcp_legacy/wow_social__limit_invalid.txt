@@ -1,0 +1,5 @@
+# tool wow_social variant=limit_invalid
+# args: {"limit":-2}
+# isError: true
+--- content[0] ---
+limit must be positive (default 40) or -1 for every member, got -2

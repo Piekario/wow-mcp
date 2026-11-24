@@ -6,6 +6,14 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
 --- content[1] ---
 {
   "available": false,
+  "lastAttempt": {
+    "at": "2026-11-15 16:26",
+    "error": "no EJ_GetInstanceByIndex in this client",
+    "inInstance": false,
+    "instancesInJournal": 0,
+    "outcome": "unavailable",
+    "query": "deadmines"
+  },
   "note": "When /mcp loot was typed, the client did not give addons the Encounter Journal. Type /mcp probe in game and look at namespaces.C_EncounterJournal, the EJ_ globals and addons.Blizzard_EncounterJournal in the probe section (wow_section). The server has no drop tables of its own and does not guess them: dungeon loot comes only from the game's Encounter Journal.",
   "snapshot": {
     "ageMinutes": 200,

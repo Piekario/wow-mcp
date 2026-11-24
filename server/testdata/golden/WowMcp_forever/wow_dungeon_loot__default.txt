@@ -199,6 +199,21 @@
       ]
     }
   ],
+  "journalOffers": [
+    "The Deadmines",
+    "Wailing Caverns",
+    "Molten Core",
+    "Blackfathom Deeps"
+  ],
+  "lastAttempt": {
+    "at": "2026-11-15 16:26",
+    "inInstance": false,
+    "instancesInJournal": 4,
+    "itemsRead": 2,
+    "outcome": "read",
+    "query": "WAILING",
+    "tiers": 3
+  },
   "level": 20,
   "method": {
     "basis": "item level and DPS",

@@ -1,5 +1,5 @@
 # tool wow_social variant=all_args
-# args: {"character":"Piekasz","includeOffline":true,"levelRange":10}
+# args: {"character":"Piekasz","includeOffline":true,"levelRange":10,"limit":2,"query":"a"}
 # isError: false
 --- content[0] ---
 {

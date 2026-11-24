@@ -40,7 +40,6 @@ Sections\Inventory.lua
 Sections\Spells.lua
 Sections\ClassBuffGroups.lua
 Sections\Talents.lua
-Sections\Legacy.lua
 Sections\Professions.lua
 Sections\Pet.lua
 Sections\Beasts.lua
@@ -55,6 +54,7 @@ Sections\Dungeons.lua
 Sections\EquipmentSets.lua
 Sections\Pvp.lua
 Sections\Achievements.lua
+Sections\Legacy.lua
 Sections\Statistics.lua
 Sections\Titles.lua
 Sections\Collections.lua

@@ -3,7 +3,11 @@
 
 package legacy
 
-import "wowmcp/internal/snapshot"
+import (
+	"fmt"
+
+	"wowmcp/internal/snapshot"
+)
 
 func read(s snapshot.Snapshot) (Section, bool) {
 	m := s.Map("legacy")
@@ -20,6 +24,7 @@ func read(s snapshot.Snapshot) (Section, bool) {
 			list = append(list, readChallenge(snapshot.AsMap(raw)))
 		}
 		section.Challenges = &list
+		section.MatchedBy, _ = challenges["matchedBy"].(string)
 	}
 	section.ChallengesError, section.HasChallengesError = m["challengesError"].(string)
 	return section, true
@@ -66,5 +71,18 @@ func readPerk(m map[string]any) Perk {
 func readChallenge(m map[string]any) Challenge {
 	ch := Challenge{Name: m["name"], Category: m["category"], Description: m["description"], Reward: m["reward"], Points: m["points"]}
 	ch.Completed, _ = m["completed"].(bool)
+	ch.CompletedOn, _ = m["completedOn"].(string)
+	for _, raw := range snapshot.AsList(m["criteria"]) {
+		c := snapshot.AsMap(raw)
+		if done, _ := c["completed"].(bool); done {
+			continue
+		}
+		text, _ := c["text"].(string)
+		if required, _ := snapshot.AsInt(c["required"]); required > 1 {
+			quantity, _ := snapshot.AsInt(c["quantity"])
+			text = fmt.Sprintf("%s (%d/%d)", text, quantity, required)
+		}
+		ch.Missing = append(ch.Missing, text)
+	}
 	return ch
 }

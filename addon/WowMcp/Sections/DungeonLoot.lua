@@ -6,6 +6,7 @@
 -- back). Without a name: the dungeon the character is in, otherwise the dungeons for the character's level (from
 -- the saved dungeons section). Results pass through later dumps, newest first and bounded. Item details come from
 -- Items.describe; items the client has not loaded yet are marked pending and read again a few times as data arrives.
+-- Every /mcp loot leaves lastAttempt in the section (outcome, what the journal offered), so a dump says what happened.
 
 local _, ns = ...
 local plain, chat = ns.Compat.plain, ns.chat
@@ -17,6 +18,7 @@ ns.DungeonLoot = DungeonLoot
 local SECTION = "dungeonLoot"
 local MAX_SAVED = 8
 local MAX_ITEMS = 40
+local MAX_NAMES = 40
 local MAX_PER_COMMAND = 3
 local MAX_RETRIES = 5
 local RETRY_SECONDS = 1
@@ -133,7 +135,6 @@ local function section()
     if type(current[SECTION]) ~= "table" then current[SECTION] = {} end
     local out = current[SECTION]
     if type(out.instances) ~= "table" then out.instances = {} end
-    out.unavailable, out.checkedAt = nil, nil
     return out
 end
 
@@ -146,6 +147,7 @@ local function remember(entry)
     end
     saved.instances = list
     saved.capturedAt = entry.capturedAt
+    saved.unavailable, saved.checkedAt = nil, nil
 end
 
 local function pendingItems()
@@ -189,24 +191,53 @@ local function onItemData()
     end
 end
 
-local function reportUnavailable(missing)
-    local saved = Snapshot.current()
-    if type(saved[SECTION]) ~= "table" or type(saved[SECTION].instances) ~= "table" or #saved[SECTION].instances == 0 then
-        saved[SECTION] = { unavailable = "no " .. missing .. " in this client", checkedAt = time() }
+-- What this /mcp loot found, saved with the section: outcome is read, noMatch, readFailed or unavailable.
+local function recordAttempt(outcome, query, journal, extra)
+    local attempt = { at = time(), query = query, outcome = outcome, instancesInJournal = #journal.instances,
+                      tiers = journal.tiers, inInstance = EJ.isInInstance(), instanceNames = {} }
+    for i = 1, math.min(#journal.instances, MAX_NAMES) do attempt.instanceNames[i] = journal.instances[i].name end
+    for key, value in pairs(extra or {}) do attempt[key] = value end
+    section().lastAttempt = attempt
+    Snapshot.windowCaptured(SECTION)
+end
+
+local EMPTY = { instances = {} }
+
+local function reportUnavailable(missing, query)
+    local saved = section()
+    if #saved.instances == 0 then
+        saved.unavailable, saved.checkedAt = "no " .. missing .. " in this client", time()
     end
+    recordAttempt("unavailable", query, EMPTY, { error = "no " .. missing .. " in this client" })
     chat("This client does not give addons the Encounter Journal (no " .. missing .. "), so dungeon loot cannot be read."
         .. " If opening the Encounter Journal window first changes that, type /mcp loot again; otherwise /mcp probe"
-        .. " lists what the client has.")
+        .. " lists what the client has. Type /mcp reload to save what was found.")
+end
+
+-- The journal lists no dungeon at all. The addon never loads the journal's own addon; the player opens the window.
+local function reportEmptyJournal(query, journal)
+    local extra = {}
+    local text = "The Encounter Journal lists no dungeons."
+    if EJ.notLoadedYet() then
+        extra.hint = "The journal has no data yet: its addon (Blizzard_EncounterJournal) is not loaded. Open the Encounter"
+            .. " Journal window once with the game's own UI, then type /mcp loot again."
+        text = "The Encounter Journal has no data yet. Open the Encounter Journal window once (the game's own UI), then type"
+            .. " /mcp loot again."
+    end
+    extra.journalLoaded = not EJ.notLoadedYet()
+    recordAttempt("noMatch", query, journal, extra)
+    chat(text .. " Type /mcp reload to save this for the assistant.")
 end
 
 local function readTargets(targets, ranges)
-    local items, waiting, restored = 0, 0, true
+    local items, waiting, restored, failure, reads = 0, 0, true, nil, 0
     for i = 1, math.min(#targets, MAX_PER_COMMAND) do
         local instance = targets[i]
         local read, err = EJ.read(instance, MAX_ITEMS)
         if read then
             local entry = buildEntry(instance, read, ranges)
             remember(entry)
+            reads = reads + 1
             restored = restored and read.restored
             items = items + #entry.items
             for _, item in ipairs(entry.items) do
@@ -216,10 +247,11 @@ local function readTargets(targets, ranges)
             chat(("Encounter Journal read: %s - %d bosses, %d items%s."):format(instance.name, #entry.encounters,
                 #entry.items, cut))
         else
+            failure = failure or (instance.name .. ": " .. err)
             chat("Encounter Journal: " .. instance.name .. " could not be read (" .. err .. ").")
         end
     end
-    return items, waiting, restored
+    return items, waiting, restored, failure, reads
 end
 
 local function namesOf(instances, from)
@@ -228,12 +260,11 @@ local function namesOf(instances, from)
     return table.concat(names, ", ")
 end
 
-local function reportRead(targets, items, waiting, restored)
+local function reportRead(targets, items, waiting, restored, failure)
     if #targets > MAX_PER_COMMAND then
         chat("Not read this time (at most " .. MAX_PER_COMMAND .. " per command): " .. namesOf(targets, MAX_PER_COMMAND + 1)
             .. ". Type /mcp loot <name> for them.")
     end
-    if items == 0 then return end
     if not restored then
         chat("The Encounter Journal's selection or loot filter could not be put back; reopen the journal to reset it.")
     end
@@ -241,18 +272,18 @@ local function reportRead(targets, items, waiting, restored)
         retry.left = MAX_RETRIES
         chat(("%d items are still loading from the game; the addon reads them again as their data arrives."):format(waiting))
     end
-    Snapshot.windowCaptured(SECTION)
     chat("Type /mcp reload to save the loot for the assistant.")
 end
 
-local function usage(query)
+local function usage(query, journal)
     if query ~= "" then
         chat("No dungeon in the Encounter Journal matches \"" .. query .. "\".")
     else
         chat("You are not in a dungeon and no dungeon in the journal matches your level (the level ranges come from the"
             .. " last /mcp reload).")
     end
-    chat("Usage: /mcp loot <dungeon name>, e.g. /mcp loot deadmines")
+    chat("Usage: /mcp loot <dungeon name>, e.g. /mcp loot deadmines. Type /mcp reload to save what the journal offers.")
+    recordAttempt("noMatch", query, journal)
 end
 
 -- /mcp loot [dungeon]: reads the journal once, on the player's request.
@@ -261,20 +292,28 @@ function DungeonLoot.run(rest)
         chat("The dungeonLoot section is disabled. Enable it: /mcp on dungeonLoot")
         return
     end
+    local query = tostring(rest or ""):match("^%s*(.-)%s*$")
     local missing = EJ.missingApi()
     if missing then
-        reportUnavailable(missing)
+        reportUnavailable(missing, query)
         return
     end
-    local query = tostring(rest or ""):match("^%s*(.-)%s*$")
-    local instances = EJ.instances()
+    local instances, tiers = EJ.instances()
+    local journal = { instances = instances, tiers = tiers }
+    if #instances == 0 then
+        reportEmptyJournal(query, journal)
+        return
+    end
     local ranges = savedLevelRanges()
     local targets = chooseTargets(query, instances, ranges)
     if #targets == 0 then
-        usage(query)
+        usage(query, journal)
         return
     end
-    reportRead(targets, readTargets(targets, ranges))
+    local items, waiting, restored, failure, reads = readTargets(targets, ranges)
+    local outcome = ns.Compat.pick(reads == 0, "readFailed", "read")
+    recordAttempt(outcome, query, journal, { itemsRead = items, error = failure })
+    reportRead(targets, items, waiting, restored, failure)
 end
 
 ns.Snapshot.addWindowSection(SECTION)

@@ -27,19 +27,44 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
     }
   ],
   "challenges": {
-    "completed": 1,
-    "completedNames": [
-      "Hunter: Level 25"
+    "completed": 2,
+    "completedList": [
+      {
+        "category": "Classes",
+        "completedOn": "2026-11-20",
+        "name": "Hunter: Level 25"
+      },
+      {
+        "category": "Classic",
+        "completedOn": "2026-10-01",
+        "name": "Novice Mage"
+      }
     ],
+    "completedNames": [
+      "Hunter: Level 25",
+      "Novice Mage"
+    ],
+    "matchedBy": "achievement category title contains Legacy + reward text contains Legacy Point",
     "open": [
       {
         "category": "Classes",
         "description": "Reach level 25 with a Warlock.",
         "name": "Warlock: Level 25",
         "points": 1
+      },
+      {
+        "category": "Classic",
+        "description": "Reach 150 Alchemy skill.",
+        "missing": [
+          "150 Alchemy Skill (0/150)"
+        ],
+        "name": "Journeyman Alchemist",
+        "points": 0,
+        "reward": "Earn 1 Legacy Point."
       }
     ],
-    "total": 2
+    "source": "addon",
+    "total": 4
   },
   "configID": 7001,
   "howToUse": "Legacy Points are earned once per account from Legacy challenges and each character spends its own on perks. Base advice on the perk descriptions in this dump (there is no built-in perk list). status: available = a point can go there now (the game's own flag), locked = an arrow prerequisite (requires) or a points-spent gate (requiresSpent) is not met, maxed = full rank. unrevealed = a \"?\" perk the game does not name yet: do not recommend it. The tool and the addon never learn perks: the player clicks the perk and Apply Changes in the Legacy window (default key Y).",

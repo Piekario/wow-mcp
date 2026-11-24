@@ -104,10 +104,25 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
     "capturedAt": "2026-11-15 16:26",
     "capturedNote": "This is the state from a visit 3 h 20 min ago; it may have changed. For fresh data: open the window in game and type /mcp reload.",
     "inGuild": true,
+    "memberList": {
+      "notShown": 0,
+      "order": "closest to the character's level first, then by name",
+      "shown": 2,
+      "total": 2
+    },
     "name": "Night Watch",
     "offlineHidden": 1,
     "online": 2,
     "onlineMembers": [
+      {
+        "class": "Priest",
+        "level": 19,
+        "name": "Healbot",
+        "online": true,
+        "rank": "Member",
+        "rankIndex": 3,
+        "zone": "Darkshore"
+      },
       {
         "class": "Paladin",
         "level": 22,
@@ -117,15 +132,6 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
         "rank": "Officer",
         "rankIndex": 1,
         "zone": "Stormwind City"
-      },
-      {
-        "class": "Priest",
-        "level": 19,
-        "name": "Healbot",
-        "online": true,
-        "rank": "Member",
-        "rankIndex": 3,
-        "zone": "Darkshore"
       }
     ],
     "rank": "Hunter Rank",

@@ -1,5 +1,5 @@
 # tool wow_social variant=all_args
-# args: {"character":"Piekasz","includeOffline":true,"levelRange":10}
+# args: {"character":"Piekasz","includeOffline":true,"levelRange":10,"limit":2,"query":"a"}
 # isError: false
 --- content[0] ---
 {
@@ -109,7 +109,24 @@
     "capturedAgeMinutes": 30,
     "capturedAt": "2026-11-15 16:26",
     "inGuild": true,
+    "memberList": {
+      "howToGetMore": "pass limit (a larger number, or -1 for all), or query to filter by name, class, zone or rank",
+      "notShown": 1,
+      "order": "closest to the character's level first, then by name",
+      "query": "a",
+      "shown": 2,
+      "total": 3
+    },
     "members": [
+      {
+        "class": "Priest",
+        "level": 19,
+        "name": "Healbot",
+        "online": true,
+        "rank": "Member",
+        "rankIndex": 3,
+        "zone": "Darkshore"
+      },
       {
         "class": "Paladin",
         "level": 22,
@@ -119,24 +136,6 @@
         "rank": "Officer",
         "rankIndex": 1,
         "zone": "Stormwind City"
-      },
-      {
-        "class": "Mage",
-        "level": 60,
-        "name": "Oldfriend",
-        "online": false,
-        "rank": "Veteran",
-        "rankIndex": 2,
-        "zone": "Dalaran"
-      },
-      {
-        "class": "Priest",
-        "level": 19,
-        "name": "Healbot",
-        "online": true,
-        "rank": "Member",
-        "rankIndex": 3,
-        "zone": "Darkshore"
       }
     ],
     "name": "Night Watch",

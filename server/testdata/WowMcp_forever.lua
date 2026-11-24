@@ -75,11 +75,11 @@ WowMcpDB = {
 ["total"] = 2,
 }, -- [4]
 {
-["completed"] = 1,
+["completed"] = 2,
 ["id"] = 14861,
 ["name"] = "Classic",
 ["parentID"] = 96,
-["total"] = 2,
+["total"] = 4,
 }, -- [5]
 {
 ["completed"] = 1,
@@ -88,7 +88,7 @@ WowMcpDB = {
 ["total"] = 3,
 }, -- [6]
 },
-["completed"] = 5,
+["completed"] = 6,
 ["list"] = {
 {
 ["category"] = 92,
@@ -178,6 +178,38 @@ WowMcpDB = {
 ["points"] = 10,
 }, -- [7]
 {
+["category"] = 14861,
+["completed"] = true,
+["completedOn"] = "2026-10-01",
+["description"] = "Reach level 25 for the first time on a Mage.",
+["earnedByMe"] = true,
+["id"] = 5500,
+["name"] = "Novice Mage",
+["points"] = 0,
+["reward"] = "Earn 1 Legacy Point.",
+}, -- [8]
+{
+["category"] = 14861,
+["completed"] = false,
+["criteria"] = {
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 150,
+["text"] = "150 Alchemy Skill",
+}, -- [1]
+},
+["criteriaDone"] = 0,
+["criteriaRead"] = 1,
+["criteriaTotal"] = 1,
+["description"] = "Reach 150 Alchemy skill.",
+["earnedByMe"] = false,
+["id"] = 5501,
+["name"] = "Journeyman Alchemist",
+["points"] = 0,
+["reward"] = "Earn 1 Legacy Point.",
+}, -- [9]
+{
 ["category"] = 97,
 ["completed"] = true,
 ["completedOn"] = "2026-08-30",
@@ -186,7 +218,7 @@ WowMcpDB = {
 ["id"] = 768,
 ["name"] = "Explore Teldrassil",
 ["points"] = 10,
-}, -- [8]
+}, -- [10]
 {
 ["category"] = 97,
 ["completed"] = false,
@@ -224,7 +256,7 @@ WowMcpDB = {
 ["id"] = 844,
 ["name"] = "Explore Darkshore",
 ["points"] = 10,
-}, -- [9]
+}, -- [11]
 {
 ["category"] = 97,
 ["completed"] = false,
@@ -287,10 +319,10 @@ WowMcpDB = {
 ["name"] = "Explore Kalimdor",
 ["points"] = 25,
 ["reward"] = "Reward: Title - the Wanderer",
-}, -- [10]
+}, -- [12]
 },
 ["points"] = 41,
-["total"] = 10,
+["total"] = 12,
 },
 ["actionBars"] = {
 {
@@ -1287,6 +1319,21 @@ WowMcpDB = {
 ["name"] = "The Deadmines",
 }, -- [2]
 },
+["lastAttempt"] = {
+["at"] = 1794760000,
+["inInstance"] = false,
+["instanceNames"] = {
+"The Deadmines", -- [1]
+"Wailing Caverns", -- [2]
+"Molten Core", -- [3]
+"Blackfathom Deeps", -- [4]
+},
+["instancesInJournal"] = 4,
+["itemsRead"] = 2,
+["outcome"] = "read",
+["query"] = "WAILING",
+["tiers"] = 3,
+},
 },
 ["dungeons"] = {
 ["activities"] = {
@@ -1772,7 +1819,9 @@ WowMcpDB = {
 ["list"] = {
 {
 ["category"] = "Classes",
+["categoryID"] = 15501,
 ["completed"] = true,
+["completedOn"] = "2026-11-20",
 ["description"] = "Reach level 25 with a Hunter.",
 ["earnedByMe"] = true,
 ["id"] = 70001,
@@ -1782,6 +1831,7 @@ WowMcpDB = {
 }, -- [1]
 {
 ["category"] = "Classes",
+["categoryID"] = 15501,
 ["completed"] = false,
 ["description"] = "Reach level 25 with a Warlock.",
 ["earnedByMe"] = false,
@@ -1789,8 +1839,39 @@ WowMcpDB = {
 ["name"] = "Warlock: Level 25",
 ["points"] = 1,
 }, -- [2]
+{
+["category"] = "Classic",
+["categoryID"] = 14861,
+["completed"] = true,
+["completedOn"] = "2026-10-01",
+["description"] = "Reach level 25 for the first time on a Mage.",
+["earnedByMe"] = true,
+["id"] = 5500,
+["name"] = "Novice Mage",
+["points"] = 0,
+["reward"] = "Earn 1 Legacy Point.",
+}, -- [3]
+{
+["category"] = "Classic",
+["categoryID"] = 14861,
+["completed"] = false,
+["criteria"] = {
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 150,
+["text"] = "150 Alchemy Skill",
+}, -- [1]
 },
-["matchedBy"] = "achievement category title contains Legacy",
+["description"] = "Reach 150 Alchemy skill.",
+["earnedByMe"] = false,
+["id"] = 5501,
+["name"] = "Journeyman Alchemist",
+["points"] = 0,
+["reward"] = "Earn 1 Legacy Point.",
+}, -- [4]
+},
+["matchedBy"] = "achievement category title contains Legacy + reward text contains Legacy Point",
 },
 ["configs"] = {
 {
@@ -2379,93 +2460,96 @@ true, -- [1]
 },
 ["globals"] = {
 "CanMerchantRepair", -- [1]
-"EJ_GetEncounterInfoByIndex", -- [2]
-"EJ_GetInstanceByIndex", -- [3]
-"EJ_GetLootFilter", -- [4]
-"EJ_GetNumLoot", -- [5]
-"EJ_ResetLootFilter", -- [6]
-"EJ_SelectEncounter", -- [7]
-"EJ_SelectInstance", -- [8]
-"EJ_SetLootFilter", -- [9]
-"GetAchievementCriteriaInfo", -- [10]
-"GetAchievementInfo", -- [11]
-"GetAchievementNumCriteria", -- [12]
-"GetBuybackItemInfo", -- [13]
-"GetBuybackItemLink", -- [14]
-"GetCategoryInfo", -- [15]
-"GetCategoryList", -- [16]
-"GetCategoryNumAchievements", -- [17]
-"GetCompanionInfo", -- [18]
-"GetCritChance", -- [19]
-"GetCurrentTitle", -- [20]
-"GetCursorPosition", -- [21]
-"GetGuildInfo", -- [22]
-"GetGuildRosterInfo", -- [23]
-"GetGuildRosterLastOnline", -- [24]
-"GetInboxHeaderInfo", -- [25]
-"GetInboxItem", -- [26]
-"GetInboxItemLink", -- [27]
-"GetInboxNumItems", -- [28]
-"GetInventoryItemCount", -- [29]
-"GetInventoryItemDurability", -- [30]
-"GetInventoryItemID", -- [31]
-"GetInventoryItemLink", -- [32]
-"GetInventoryItemQuality", -- [33]
-"GetLFDChoiceOrder", -- [34]
-"GetLFGDungeonInfo", -- [35]
-"GetMerchantItemLink", -- [36]
-"GetMerchantNumItems", -- [37]
-"GetNumBuybackItems", -- [38]
-"GetNumCompanions", -- [39]
-"GetNumCompletedAchievements", -- [40]
-"GetNumGuildMembers", -- [41]
-"GetNumQuestChoices", -- [42]
-"GetNumQuestLogChoices", -- [43]
-"GetNumQuestLogRewards", -- [44]
-"GetNumQuestRewards", -- [45]
-"GetNumSavedInstances", -- [46]
-"GetNumTitles", -- [47]
-"GetNumTrainerServices", -- [48]
-"GetObjectiveText", -- [49]
-"GetPVPLifetimeStats", -- [50]
-"GetPetActionInfo", -- [51]
-"GetPetExperience", -- [52]
-"GetQuestID", -- [53]
-"GetQuestItemInfo", -- [54]
-"GetQuestItemLink", -- [55]
-"GetQuestLogChoiceInfo", -- [56]
-"GetQuestLogRewardInfo", -- [57]
-"GetQuestLogRewardMoney", -- [58]
-"GetQuestLogRewardXP", -- [59]
-"GetRaidRosterInfo", -- [60]
-"GetRangedCritChance", -- [61]
-"GetRepairAllCost", -- [62]
-"GetRewardMoney", -- [63]
-"GetRewardText", -- [64]
-"GetRewardXP", -- [65]
-"GetSavedInstanceInfo", -- [66]
-"GetStatistic", -- [67]
-"GetStatisticsCategoryList", -- [68]
-"GetTaxiMapID", -- [69]
-"GetTitleName", -- [70]
-"GetTitleText", -- [71]
-"GetTotalAchievementPoints", -- [72]
-"GetTrainerServiceCost", -- [73]
-"GetTrainerServiceInfo", -- [74]
-"GetTrainerServiceLevelReq", -- [75]
-"GetXPExhaustion", -- [76]
-"IsInGuild", -- [77]
-"IsInInstance", -- [78]
-"IsTitleKnown", -- [79]
-"RequestTimePlayed", -- [80]
-"UnitHonor", -- [81]
-"UnitHonorLevel", -- [82]
-"UnitHonorMax", -- [83]
-"UnitRangedAttackPower", -- [84]
-"UnitRangedDamage", -- [85]
-"UnitStat", -- [86]
-"UnitXP", -- [87]
-"UnitXPMax", -- [88]
+"EJ_GetCurrentTier", -- [2]
+"EJ_GetEncounterInfoByIndex", -- [3]
+"EJ_GetInstanceByIndex", -- [4]
+"EJ_GetLootFilter", -- [5]
+"EJ_GetNumLoot", -- [6]
+"EJ_GetNumTiers", -- [7]
+"EJ_ResetLootFilter", -- [8]
+"EJ_SelectEncounter", -- [9]
+"EJ_SelectInstance", -- [10]
+"EJ_SelectTier", -- [11]
+"EJ_SetLootFilter", -- [12]
+"GetAchievementCriteriaInfo", -- [13]
+"GetAchievementInfo", -- [14]
+"GetAchievementNumCriteria", -- [15]
+"GetBuybackItemInfo", -- [16]
+"GetBuybackItemLink", -- [17]
+"GetCategoryInfo", -- [18]
+"GetCategoryList", -- [19]
+"GetCategoryNumAchievements", -- [20]
+"GetCompanionInfo", -- [21]
+"GetCritChance", -- [22]
+"GetCurrentTitle", -- [23]
+"GetCursorPosition", -- [24]
+"GetGuildInfo", -- [25]
+"GetGuildRosterInfo", -- [26]
+"GetGuildRosterLastOnline", -- [27]
+"GetInboxHeaderInfo", -- [28]
+"GetInboxItem", -- [29]
+"GetInboxItemLink", -- [30]
+"GetInboxNumItems", -- [31]
+"GetInventoryItemCount", -- [32]
+"GetInventoryItemDurability", -- [33]
+"GetInventoryItemID", -- [34]
+"GetInventoryItemLink", -- [35]
+"GetInventoryItemQuality", -- [36]
+"GetLFDChoiceOrder", -- [37]
+"GetLFGDungeonInfo", -- [38]
+"GetMerchantItemLink", -- [39]
+"GetMerchantNumItems", -- [40]
+"GetNumBuybackItems", -- [41]
+"GetNumCompanions", -- [42]
+"GetNumCompletedAchievements", -- [43]
+"GetNumGuildMembers", -- [44]
+"GetNumQuestChoices", -- [45]
+"GetNumQuestLogChoices", -- [46]
+"GetNumQuestLogRewards", -- [47]
+"GetNumQuestRewards", -- [48]
+"GetNumSavedInstances", -- [49]
+"GetNumTitles", -- [50]
+"GetNumTrainerServices", -- [51]
+"GetObjectiveText", -- [52]
+"GetPVPLifetimeStats", -- [53]
+"GetPetActionInfo", -- [54]
+"GetPetExperience", -- [55]
+"GetQuestID", -- [56]
+"GetQuestItemInfo", -- [57]
+"GetQuestItemLink", -- [58]
+"GetQuestLogChoiceInfo", -- [59]
+"GetQuestLogRewardInfo", -- [60]
+"GetQuestLogRewardMoney", -- [61]
+"GetQuestLogRewardXP", -- [62]
+"GetRaidRosterInfo", -- [63]
+"GetRangedCritChance", -- [64]
+"GetRepairAllCost", -- [65]
+"GetRewardMoney", -- [66]
+"GetRewardText", -- [67]
+"GetRewardXP", -- [68]
+"GetSavedInstanceInfo", -- [69]
+"GetStatistic", -- [70]
+"GetStatisticsCategoryList", -- [71]
+"GetTaxiMapID", -- [72]
+"GetTitleName", -- [73]
+"GetTitleText", -- [74]
+"GetTotalAchievementPoints", -- [75]
+"GetTrainerServiceCost", -- [76]
+"GetTrainerServiceInfo", -- [77]
+"GetTrainerServiceLevelReq", -- [78]
+"GetXPExhaustion", -- [79]
+"IsInGuild", -- [80]
+"IsInInstance", -- [81]
+"IsTitleKnown", -- [82]
+"RequestTimePlayed", -- [83]
+"UnitHonor", -- [84]
+"UnitHonorLevel", -- [85]
+"UnitHonorMax", -- [86]
+"UnitRangedAttackPower", -- [87]
+"UnitRangedDamage", -- [88]
+"UnitStat", -- [89]
+"UnitXP", -- [90]
+"UnitXPMax", -- [91]
 },
 ["namespaces"] = {
 ["C_AddOns"] = {
@@ -3862,7 +3946,7 @@ true, -- [1]
 ["slowest"] = {
 {
 ["ms"] = 2.5,
-["name"] = "beasts",
+["name"] = "actionBars",
 }, -- [1]
 {
 ["ms"] = 2.5,
@@ -3870,15 +3954,15 @@ true, -- [1]
 }, -- [2]
 {
 ["ms"] = 2.5,
-["name"] = "equipmentSets",
+["name"] = "currencies",
 }, -- [3]
 {
 ["ms"] = 2.5,
-["name"] = "guide",
+["name"] = "group",
 }, -- [4]
 {
 ["ms"] = 2.5,
-["name"] = "legacy",
+["name"] = "guide",
 }, -- [5]
 },
 ["totalMs"] = 84,
