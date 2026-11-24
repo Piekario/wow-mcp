@@ -3,8 +3,8 @@
 
 -- The sharing reminder: a rare chat line that offers the sharing window, the way QuestieTrace asks for its data.
 --
--- It is asked only for a class, client build and language this account has not opened the window for yet, never
--- before the character has a saved dump, at most once in REMIND_EVERY and at most MAX_ASKS times; opening the
+-- It is asked only for a class, client build and language this account has not reported yet, never before the
+-- character has a saved dump, at most once in REMIND_EVERY and at most MAX_ASKS times; "I reported this" in the
 -- window ends it for that combination, and /mcp share off (or the options page) ends it for good. It prints one
 -- line and nothing else: no window opens and nothing is sent unless the player clicks.
 
@@ -28,12 +28,12 @@ function ShareReminder.setEnabled(enabled)
     if enabled then settings.shareReminder = nil else settings.shareReminder = false end
 end
 
--- What the account has been asked and has opened so far; state is the settings.share table (may be nil).
+-- What the account has been asked and has reported so far; state is the settings.share table (may be nil).
 -- Returns whether a reminder for this signature is due at `now`.
 function ShareReminder.due(state, signature, now, enabled)
     if not enabled or not signature then return false end
     state = type(state) == "table" and state or {}
-    if type(state.opened) == "table" and state.opened[signature] then return false end
+    if type(state.reported) == "table" and state.reported[signature] then return false end
     local asked = type(state.asked) == "table" and tonumber(state.asked[signature]) or 0
     if asked >= ShareReminder.MAX_ASKS then return false end
     local last = tonumber(state.remindedAt) or 0
@@ -69,13 +69,14 @@ function ShareReminder.check()
     return true
 end
 
--- The player has seen the window for the current class, client and language: no more reminders for it.
-local function markOpened()
+-- The player says the report for the current class, client and language is sent: no more reminders for it.
+-- A new client build or another class is a new combination, so there is something new to ask for.
+local function markReported()
     local signature = ShareReport.signature()
     if not signature then return end
     local share = state()
-    if type(share.opened) ~= "table" then share.opened = {} end
-    share.opened[signature] = time()
+    if type(share.reported) ~= "table" then share.reported = {} end
+    share.reported[signature] = time()
 end
 
 -- Some time after login, so the line is not lost among the login messages. A client without timers gets no
@@ -87,7 +88,7 @@ function ShareReminder.schedule()
     return true
 end
 
-ns.ShareWindow.onOpen(markOpened)
+ns.ShareWindow.onReported(markReported)
 ChatLinks.on(LINK_ACTION, function()
     ns.ShareWindow.open()
     return true

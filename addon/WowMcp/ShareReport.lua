@@ -40,6 +40,7 @@ end
 
 -- How much a section holds: list items, otherwise keys.
 local function size(value)
+    if value == nil then return 0 end
     if type(value) ~= "table" then return 1 end
     if #value > 0 then return #value end
     local count = 0
@@ -142,6 +143,32 @@ function ShareReport.lines()
     return lines
 end
 
+-- The report as one line between a start and an end mark, so it fits a one-line box and a paste that lost its
+-- end can be told from a whole one.
 function ShareReport.text()
-    return table.concat(ShareReport.lines(), "\n")
+    local mark = "WowMcp:" .. ShareReport.FORMAT
+    return mark .. "! " .. table.concat(ShareReport.lines(), " || ") .. " !End:" .. mark .. "!"
+end
+
+local function probedFunctions(probe)
+    if type(probe) ~= "table" or type(probe.namespaces) ~= "table" then return 0 end
+    local total = size(probe.globals)
+    for _, names in pairs(probe.namespaces) do total = total + size(names) end
+    return total
+end
+
+-- The numbers shown under the report: { sections, errors, apiFunctions, dumpMs }; nil without a dump.
+function ShareReport.counters()
+    local snapshot = Store.savedCurrentCharacter()
+    if type(snapshot) ~= "table" or type(snapshot.character) ~= "table" then return nil end
+    local sections = 0
+    for name in pairs(snapshot) do
+        if not META_FIELDS[name] then sections = sections + 1 end
+    end
+    return {
+        sections = sections,
+        errors = type(snapshot.errors) == "table" and #snapshot.errors or 0,
+        apiFunctions = probedFunctions(snapshot.probe),
+        dumpMs = type(snapshot.timings) == "table" and snapshot.timings.totalMs or nil,
+    }
 end

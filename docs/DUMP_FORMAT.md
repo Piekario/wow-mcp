@@ -26,7 +26,7 @@ WowMcpDB
   overwritten on that character's next dump.
 - `settings` contains: `disabledSections` (map section name → `true`, since 0.5.0), `panelHidden`, `panelPoint`, `played`
   (`false` after `/mcp played off`) and `ahTooltip` (`false` after `/mcp ahtip off`, since 0.6.0), `minimap` (`false` after `/mcp minimap off`), `minimapAngle` (position of the minimap
-  button in degrees) and `compact` (`true` after `/mcp compact on`), all since 0.7.0. Since the sharing window: `shareReminder` (`false` after `/mcp share off`) and `share` (`remindedAt`, and per "class|build|locale": `asked`, how many reminders were printed, and `opened`, when the window was first shown). The server does not read them.
+  button in degrees) and `compact` (`true` after `/mcp compact on`), all since 0.7.0. Since the sharing window: `shareReminder` (`false` after `/mcp share off`) and `share` (`remindedAt`, and per "class|build|locale": `asked`, how many reminders were printed, and `reported`, when the player clicked "I reported this"). The server does not read them.
 - The server keeps its own history (`history\<character>\<dumpedAt>.json`), so the game file always holds only the latest dump.
 
 ## 2. When a section ends up in the dump
