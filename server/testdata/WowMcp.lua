@@ -744,7 +744,7 @@ WowMcpDB = {
 ["name"] = "pet",
 }, -- [5]
 },
-["totalMs"] = 61.5,
+["totalMs"] = 65,
 },
 ["trainer"] = {
 ["capturedAt"] = 1794760000,

@@ -51,6 +51,7 @@ import (
 	"wowmcp/internal/game/talents"
 	"wowmcp/internal/game/timeline"
 	"wowmcp/internal/game/trainer"
+	"wowmcp/internal/game/zoneprogress"
 	"wowmcp/internal/snapshot"
 )
 
@@ -368,6 +369,13 @@ func (s *service) questingTools() []tool {
 			func(a questguide.Query) string { return a.Character },
 			func(_ string, snap snapshot.Snapshot, q questguide.Query) (map[string]any, error) {
 				return questguide.Lookup(snap, q), nil
+			}),
+
+		characterTool(s, "wow_zone_progress", "Zone quest progress",
+			"How far the character is with the quests of a zone: how many of the zone's quests are done, in the log and left, the quests left (level, required level, state: available, needs a higher level or an earlier quest, and the quest giver with map coordinates) and the unfinished quest chains (the next quest of a chain whose earlier step is done). Quests the database marks for another faction, race or class, and repeatable quests, are left out of the counts and the answer says so. The zone's quest list is read by the addon from the quest database the player has installed in the game (QuestieDB, what Questie shows) for the current zone and the zones of quests in the log; done quests come from the client's completed quest list. zone: a zone name or fragment; empty = the character's current zone. Requires Questie with QuestieDB and /mcp reload."+freshness,
+			func(a zoneprogress.Query) string { return a.Character },
+			func(_ string, snap snapshot.Snapshot, q zoneprogress.Query) (map[string]any, error) {
+				return zoneprogress.View(snap, q), nil
 			}),
 
 		characterTool(s, "wow_guide", "Leveling guide steps",

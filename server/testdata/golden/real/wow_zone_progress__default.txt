@@ -1,0 +1,12 @@
+# tool wow_zone_progress variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "note": "The dump has no zoneQuests section. The zone's quest list comes from the quest database the player has installed in the game: install Questie (with QuestieDB) and the WowMcp addon version that has this section, then run /mcp reload.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz-CAMWOW EU4 Realm 7 PvE",
+    "dumpedAt": "2026-11-15 23:43:01"
+  }
+}

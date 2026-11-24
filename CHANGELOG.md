@@ -41,6 +41,28 @@ mocks, unit tests and golden responses, so the new guild fields (`note`, `classT
     `honorGained` and `honorableKills` for the session and the whole history. Both appear only when the dumps have a
     `pvp` section. The honor counter restarts at an honor level-up, so a stretch with a level-up undercounts honor and says
     so through `honorLevel`.
+Zone quest progress, for the addon and the server. **Not yet run in the real client**: the addon side was checked only on the
+API mocks (`addon/tests/run_addon.py`, with an invented QuestieDB), the server side with unit and golden tests. The QuestieDB
+calls it relies on (`Quest.GetAllIds`, the `zoneOrSort`, `preQuestSingle`, `preQuestGroup`, `exclusiveTo`,
+`breadcrumbForQuestId`, `specialFlags` and `requiredMaxLevel` fields, `Enum.raceMaskById`, `Enum.classKeys`,
+`Enum.factionRaceMasks`) are taken from that addon's public API documentation, not from a run in the game.
+
+- **Added**
+  - Section `zoneQuests` (`Sections/ZoneQuests.lua`, foundation file `QuestZones.lua`): every quest the installed quest
+    database files under the current zone and under the zones of the log quests (up to 3 zones, 150 quests each), in a
+    compact form: name, level, required and maximum level, race and class masks, prerequisite and next quests, the quest
+    it closes or leads to, repeatable, and the first quest giver with its coordinates in that zone. It also has the
+    character's race and class bits and both factions' race masks. The database has no zone index, so the first dump of
+    a game session walks its quest IDs once (one field per quest) and keeps the index; each zone's list is built once
+    per session. Absent without QuestieDB; `noZoneIndex` when the database cannot list its quests. It only reads.
+  - Tool `wow_zone_progress` (domain package `game/zoneprogress`): for a zone (`zone`, by default the character's current
+    zone) how many of its quests are done (`completedQuests`), in the log and left; the quests left with level, required
+    level, state (available, needs a higher level, needs an earlier quest) and quest giver; and the unfinished quest
+    chains (the next quest of a chain whose earlier step is done). Quests the database marks for another faction, race or
+    class are left out of the counts and counted in `notForCharacter`; repeatable quests and quests closed by an
+    alternative or above their maximum level are counted apart. Without the section the answer says what to install.
+- **Changed**
+  - `QuestDb.lua` exposes its database accessor and field read (`QuestDb.lib`, `QuestDb.field`) for `QuestZones.lua`.
 
 ## 0.20.0 (2026-11-24)
 

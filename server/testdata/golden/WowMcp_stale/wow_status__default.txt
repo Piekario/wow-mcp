@@ -15,7 +15,7 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
       "disabledSections": [
         "macros"
       ],
-      "dumpTimeMs": 61.5,
+      "dumpTimeMs": 65,
       "dumpedAt": "2026-11-15 16:50:00",
       "level": 20,
       "race": "Night Elf",

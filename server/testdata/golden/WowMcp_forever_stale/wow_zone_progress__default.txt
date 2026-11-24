@@ -1,0 +1,47 @@
+# tool wow_zone_progress variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game.
+--- content[1] ---
+{
+  "counts": {
+    "completed": 2,
+    "inLog": 0,
+    "left": 1,
+    "noLongerAvailable": 0,
+    "repeatable": 0,
+    "total": 3
+  },
+  "current": true,
+  "filterNote": "Left out 1 quest the database marks for another faction, race or class; they are not in the counts.",
+  "left": [
+    {
+      "id": 343,
+      "level": 25,
+      "name": "Speaking of Fortitude",
+      "requiredLevel": 20,
+      "start": "Cerellean Whiteclaw in Darkshore",
+      "state": "available"
+    }
+  ],
+  "notForCharacter": {
+    "otherClass": 1,
+    "otherFaction": 0,
+    "otherRace": 0
+  },
+  "otherZonesInDump": [
+    "Darkshore"
+  ],
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  },
+  "source": "The zone's quest list, levels, prerequisites and quest givers come from the quest database installed in the game (QuestieDB, what Questie shows), read by the addon; done quests come from the client's list of completed quests. Repeatable quests are not counted.",
+  "summary": "Stormwind City: 2 of 3 quests done, 0 in the log, 1 left (1 available now).",
+  "unfinishedChains": [],
+  "zone": "Stormwind City"
+}

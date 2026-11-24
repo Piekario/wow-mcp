@@ -1,0 +1,12 @@
+# tool wow_zone_progress variant=zone_name
+# args: {"zone":"darkshore"}
+# isError: false
+--- content[0] ---
+{
+  "note": "The dump has no zoneQuests section. The zone's quest list comes from the quest database the player has installed in the game: install Questie (with QuestieDB) and the WowMcp addon version that has this section, then run /mcp reload.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

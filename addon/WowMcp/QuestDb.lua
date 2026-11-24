@@ -29,6 +29,7 @@ local function lib()
     if type(db.Quest) ~= "table" or type(db.Npc) ~= "table" then return nil end
     return db
 end
+QuestDb.lib = lib
 
 function QuestDb.available()
     return lib() ~= nil
@@ -48,7 +49,7 @@ function QuestDb.source()
 end
 
 -- One field of an entity ("Quest", "Npc", "Object", "Item"), or nil.
-local function field(entityName, id, key)
+function QuestDb.field(entityName, id, key)
     local db = lib()
     local entity = db and db[entityName]
     if type(entity) ~= "table" or type(entity.Get) ~= "function" then return nil end
@@ -56,6 +57,7 @@ local function field(entityName, id, key)
     if ok then return value end
     return nil
 end
+local field = QuestDb.field
 
 local function exists(entityName, id)
     local db = lib()

@@ -131,9 +131,9 @@ function UnitName(unit)
 end
 function UnitLevel(unit) if unit == "pet" then return 19 end return 20 end
 function GetBindLocation() return "Auberdine" end
-function UnitClass() return "Hunter", "HUNTER" end
+function UnitClass() return "Hunter", "HUNTER", 3 end
 function GetLocale() return "enUS" end
-function UnitRace() return "Night Elf", "NightElf" end
+function UnitRace() return "Night Elf", "NightElf", 4 end
 function UnitFactionGroup() return "Alliance" end
 playedRequested = false
 function RequestTimePlayed() playedRequested = true end
@@ -1056,7 +1056,7 @@ C_GameRules.SetLegacyChallengeTracked = function() legacyActionCalls[#legacyActi
 # Guidelime (registerGuide, GuidelimeDataChar). All quest, NPC and guide data below is invented for the tests; the
 # addon ships no quest or guide data and reads these only when the player has those addons installed.
 QUEST_SOURCES_STUBS = r"""
-local areaNames = { [148] = "Darkshore", [331] = "Ashenvale", [719] = "Blackfathom Deeps" }
+local areaNames = { [148] = "Darkshore", [331] = "Ashenvale", [719] = "Blackfathom Deeps", [1519] = "Stormwind City" }
 C_Map.GetAreaInfo = function(areaID) return areaNames[areaID] end
 C_QuestLog.IsQuestFlaggedCompleted = function(id) return id == 918 or id == 456 or id == 457 end
 
@@ -1066,18 +1066,45 @@ local rows = {
                   startedBy = { { 3583 } }, finishedBy = { { 3583 } },
                   objectivesText = { "Bring 5 Scaber Stalks and 1 Death Cap to Barithras Moonshade in Auberdine." },
                   objectives = { nil, { { 174795, "Scaber Stalk" } }, { { 5270 } } } },
-        [948] = { name = "Onu", questLevel = 17, requiredLevel = 10, zoneOrSort = 148, startedBy = { { 3583 } }, finishedBy = { { 3616 } } },
+        [948] = { name = "Onu", questLevel = 17, requiredLevel = 10, zoneOrSort = 148, preQuestSingle = { 947 },
+                  startedBy = { { 3583 } }, finishedBy = { { 3616 } } },
         [4740] = { name = "WANTED: Murkdeep!", questLevel = 18, requiredLevel = 12, zoneOrSort = 148,
                    startedBy = { nil, { 176115 } }, finishedBy = { { 3693 } }, objectives = { { { 10323 } } } },
         [982] = { name = "Deep Ocean, Vast Sea", questLevel = 17, requiredLevel = 13, zoneOrSort = 148,
                   startedBy = { { 3644 } }, finishedBy = { { 3644 }, { 9999001 } }, objectives = { { { 2165, "Grizzled Thistle Bear slain" } } } },
         [-1] = { name = "Deleted quest" },
+        -- zoneQuests: more quests of Darkshore and of the current zone, Stormwind City. 918 is done and
+        -- leads to 4730; 4813 needs a higher level; 2118, 3524 and 4725 are for the Horde, for druids and repeatable;
+        -- 1138 is a breadcrumb to 4740, which is in the log.
+        [918] = { name = "Washed Ashore", questLevel = 14, requiredLevel = 11, zoneOrSort = 148, nextQuestInChain = 4730,
+                  startedBy = { { 3693 } }, finishedBy = { { 3693 } } },
+        [4730] = { name = "Beached Sea Turtle", questLevel = 15, requiredLevel = 11, zoneOrSort = 148, preQuestSingle = { 918 },
+                   startedBy = { { 3693 } }, finishedBy = { { 3693 } } },
+        [4813] = { name = "The Fragments Within", questLevel = 23, requiredLevel = 21, zoneOrSort = 148,
+                   startedBy = { { 3616 } }, finishedBy = { { 3616 } } },
+        [2118] = { name = "Plagued Lands", questLevel = 15, requiredLevel = 10, zoneOrSort = 148, requiredRaces = 178,
+                   startedBy = { { 3693 } }, finishedBy = { { 3693 } } },
+        [3524] = { name = "Grove of the Ancients", questLevel = 16, requiredLevel = 10, zoneOrSort = 148, requiredClasses = 1024,
+                   startedBy = { { 3693 } }, finishedBy = { { 3693 } } },
+        [4725] = { name = "Beached Sea Creature", questLevel = 15, requiredLevel = 10, zoneOrSort = 148, specialFlags = 1,
+                   startedBy = { nil, { 176115 } }, finishedBy = { { 3693 } } },
+        [1138] = { name = "Fruit of the Sea", questLevel = 18, requiredLevel = 12, zoneOrSort = 148, breadcrumbForQuestId = 4740,
+                   startedBy = { nil, nil, { 5270 } }, finishedBy = { { 3693 } } },
+        [456] = { name = "Report to Thomas", questLevel = 10, requiredLevel = 8, zoneOrSort = 1519, nextQuestInChain = 457,
+                  startedBy = { { 1323 } }, finishedBy = { { 1323 } } },
+        [457] = { name = "Harlan Needs a Resupply", questLevel = 11, requiredLevel = 8, zoneOrSort = 1519, preQuestSingle = { 456 },
+                  startedBy = { { 1323 } }, finishedBy = { { 1323 } } },
+        [343] = { name = "Speaking of Fortitude", questLevel = 25, requiredLevel = 20, zoneOrSort = 1519,
+                  startedBy = { { 3644 } }, finishedBy = { { 1323 } } },
+        [1638] = { name = "A Warrior's Training", questLevel = 10, requiredLevel = 10, zoneOrSort = 1519, requiredClasses = 1,
+                   startedBy = { { 1323 } }, finishedBy = { { 1323 } } },
     },
     Npc = {
         [3583] = { name = "Barithras Moonshade", subName = "Mushroom Collector", friendlyToFaction = "A", minLevel = 22, maxLevel = 22,
                    zoneID = 148, spawns = { [148] = { { 37.32, 43.64 } } } },
         [3616] = { name = "Onu", friendlyToFaction = "A", zoneID = 148, spawns = { [148] = { { 43.56, 76.29 } } } },
         [3693] = { name = "Terenthis", friendlyToFaction = "A", zoneID = 148, spawns = { [148] = { { 39.37, 43.48 } } } },
+        [1323] = { name = "Osric Strang", friendlyToFaction = "A", zoneID = 1519, spawns = { [1519] = { { 74.62, 40.21 } } } },
         [3644] = { name = "Cerellean Whiteclaw", friendlyToFaction = "A", zoneID = 148, spawns = { [148] = { { 35.74, 43.71 } } } },
         [10323] = { name = "Murkdeep", minLevel = 19, maxLevel = 19, zoneID = 148, spawns = { [148] = { { 36.4, 76.6 } } } },
         -- A creature with spawn points in two zones and inside an instance: the main zone comes first.
@@ -1096,6 +1123,12 @@ local function entity(kind)
     return {
         Get = function(id, key) questDbReads = questDbReads + 1; return data[id] and data[id][key] end,
         Exists = function(id) return data[id] ~= nil end,
+        GetAllIds = function()
+            local ids = {}
+            for id in pairs(data) do if id > 0 then ids[#ids + 1] = id end end
+            table.sort(ids)
+            return ids
+        end,
         IdsByName = function(name)
             local ids = {}
             for id, row in pairs(data) do if row.name == name then ids[#ids + 1] = id end end
@@ -1107,6 +1140,9 @@ local function entity(kind)
 end
 LibQuestieDB = { Quest = entity("Quest"), Npc = entity("Npc"), Object = entity("Object"), Item = entity("Item"),
                  addonName = "QuestieDB", contractVersion = 4, readMode = "baked" }
+-- zoneQuests: the race and class bit masks of the database (QuestieDB contract 3 and 4).
+LibQuestieDB.Enum = { classKeys = { WARRIOR = 1, HUNTER = 4, DRUID = 1024 }, raceMaskById = { [1] = 1, [2] = 2, [4] = 8 },
+                      factionRaceMasks = { Alliance = 77, Horde = 178 } }
 C_AddOns = { GetAddOnMetadata = function(name, key) if name == "QuestieDB" and key == "Version" then return "1.1.3" end end }
 -- Addon 0.18.0: the zone support data (area ID -> UI map ID) as the Lua source text QuestieDB ships, and the client's
 -- link handler API (Forever: LinkUtil.RegisterLinkHandler, as Questie uses it). TomTom is absent unless a check adds it.
@@ -1232,8 +1268,8 @@ FOREVER_REJECTED_EVENTS = (
 # so the server must reach the same conclusions from the deDE dump as from the English one.
 DEDE_TEXT = (
     ('function GetLocale() return "enUS" end', 'function GetLocale() return "deDE" end'),
-    ('function UnitClass() return "Hunter", "HUNTER" end', 'function UnitClass() return "Jäger", "HUNTER" end'),
-    ('function UnitRace() return "Night Elf", "NightElf" end', 'function UnitRace() return "Nachtelf", "NightElf" end'),
+    ('function UnitClass() return "Hunter", "HUNTER", 3 end', 'function UnitClass() return "Jäger", "HUNTER", 3 end'),
+    ('function UnitRace() return "Night Elf", "NightElf", 4 end', 'function UnitRace() return "Nachtelf", "NightElf", 4 end'),
     ('return "Hunter", "", "header", true', 'return "Jäger", "", "header", true'),
     ('"Rank ', '"Rang '),
     ('[Skinning Knife]', '[Kürschnermesser]'), ('"Skinning Knife"', '"Kürschnermesser"'),
@@ -2186,6 +2222,7 @@ def check_quest_sources(snapshot, g, mode: str) -> None:
     """Addon 0.14.0: quest locations from the installed quest database and the next steps of the Guidelime guide."""
     if mode not in FOREVER_MODES:
         assert snapshot["questDb"] is None and snapshot["guide"] is None and snapshot["questLookups"] is None
+        assert snapshot["zoneQuests"] is None
         g.SlashCmdList["WOWMCP"]("quest 947")
         assert "No quest database found" in last_chat(g), last_chat(g)
         return
@@ -2237,6 +2274,24 @@ def check_quest_sources(snapshot, g, mode: str) -> None:
     chat = [str(line) for line in g.chatlog.values()]
     assert any("ends: Barithras Moonshade, Darkshore 37.3, 43.6" in line for line in chat), chat
     assert any('Nothing found for "No Such Quest"' in line for line in chat), chat
+    check_zone_quests(snapshot["zoneQuests"])
+
+
+def check_zone_quests(section) -> None:
+    """The quests of the current zone and of the zones of log quests, with the character's race and class masks."""
+    assert section["currentZone"] == "Stormwind City" and dict(section["player"]) == {"raceMask": 8, "classMask": 4}
+    zones = values(section["zones"])
+    assert [(z["name"], z["current"], z["logQuests"]) for z in zones] == [("Stormwind City", True, None), ("Darkshore", None, 2)]
+    darkshore = {q["id"]: q for q in values(zones[1]["quests"])}
+    assert zones[1]["questCount"] == 11 and zones[1]["truncated"] is None and len(darkshore) == 11
+    turtle = darkshore[4730]
+    assert values(turtle["preAny"]) == [918] and darkshore[918]["next"] == 4730, dict(turtle)
+    assert (turtle["start"]["name"], turtle["start"]["x"], turtle["start"]["y"]) == ("Terenthis", 39.4, 43.5)
+    assert darkshore[2118]["races"] == 178 and darkshore[3524]["classes"] == 1024 and darkshore[4725]["repeatable"]
+    assert darkshore[1138]["breadcrumbFor"] == 4740 and dict(darkshore[1138]["start"]) == {"kind": "item", "name": "Death Cap"}
+    # A starter that spawns only in another zone names that zone instead of coordinates.
+    fortitude = values(zones[0]["quests"])[0]
+    assert dict(fortitude["start"]) == {"kind": "npc", "name": "Cerellean Whiteclaw", "zone": "Darkshore"}, dict(fortitude["start"])
 
 
 def check_passed_guide_steps() -> None:
@@ -2401,6 +2456,9 @@ def check_quest_sources_absent() -> None:
     # Quests still exist in the database, but every field read fails: IDs only, nothing invented.
     quest = values(snapshot["questDb"]["quests"])[0]
     assert quest["id"] == 947 and quest["name"] is None and quest["finishedBy"] is None, dict(quest)
+    # No field reads, so no zone index: the section says so instead of listing empty zones.
+    zone_quests = snapshot["zoneQuests"]
+    assert zone_quests["noZoneIndex"] and zone_quests["zones"] is None, dict(zone_quests)
 
     # A guide that was registered before the addon loaded is not visible: the section says so instead of guessing.
     runtime, g, _ = load_addon("forever")

@@ -19,7 +19,7 @@
       ],
       "character": "Piekasz",
       "class": "Jäger",
-      "dumpTimeMs": 64.5,
+      "dumpTimeMs": 68,
       "dumpedAt": "2026-11-15 16:50:00",
       "level": 20,
       "note": {
@@ -76,7 +76,8 @@
         "trainers",
         "vendor",
         "vendors",
-        "xpGains"
+        "xpGains",
+        "zoneQuests"
       ]
     }
   ],
