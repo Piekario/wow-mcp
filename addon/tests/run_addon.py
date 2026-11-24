@@ -2326,7 +2326,9 @@ def check_sharing() -> None:
     window = [f for f in g.frames.values() if f.frameName == "WowMcpShareWindow"][0]
     assert window.shown is True
     report = str(window.reportBox.fixedText)
-    for expected in ("WowMcp client report, format 1", "client: 1.60.1 build 70938, interface 16001, locale enUS",
+    assert report.startswith("WowMcp:1! WowMcp client report, format 1 || addon: ") and report.endswith(" !End:WowMcp:1!"), report
+    assert "\n" not in report, "one line, for a one-line box"
+    for expected in ( "client: 1.60.1 build 70938, interface 16001, locale enUS",
                      "character: HUNTER, NightElf, Alliance, level 20", "sections (", "quests=", "errors: 1",
                      "bad Player value", "events the client rejected: ", "probe: ", "C_Item="):
         assert expected in report, (expected, report)
@@ -2337,21 +2339,29 @@ def check_sharing() -> None:
     # The boxes are for copying: typed text is put back.
     window.reportBox.scripts["OnTextChanged"](window.reportBox, True)
     assert str(window.reportBox.label) == report
-    # Opened once for this class, client and language: never asked for it again, however much time passes.
-    assert share["opened"]["HUNTER|70938|enUS"] is not None
+    counters = str(window.countersText.label)
+    assert "Sections in the dump: |cffffd100" in counters and "Addon errors: |cffffd1001|r" in counters, counters
+    # Opening the window settles nothing: a month later the line comes again, until "I reported this".
+    assert share["reported"] is None
+    g.clockNow = g.clockNow + 31 * 24 * 3600
+    g.timers[1].fn()
+    assert len(g.chatlog) == asked + 1 and share["asked"]["HUNTER|70938|enUS"] == 2
+    window.reportedButton.scripts["OnClick"](window.reportedButton)
+    assert share["reported"]["HUNTER|70938|enUS"] is not None and window.shown is False
+    asked = len(g.chatlog)
     g.clockNow = g.clockNow + 400 * 24 * 3600
     g.timers[1].fn()
-    assert len(g.chatlog) == asked
+    assert len(g.chatlog) == asked, "reported: never asked for it again"
     assert len(g.forbiddenCalls) == 0 and not g.reloaded
 
     due = addon_ns.ShareReminder.due
     day = 24 * 3600
-    state = runtime.eval('{ remindedAt = 1000, asked = { ["MAGE|1|enUS"] = 2, ["PRIEST|1|enUS"] = 3 }, opened = { ["ROGUE|1|enUS"] = 5 } }')
+    state = runtime.eval('{ remindedAt = 1000, asked = { ["MAGE|1|enUS"] = 2, ["PRIEST|1|enUS"] = 3 }, reported = { ["ROGUE|1|enUS"] = 5 } }')
     assert due(None, "MAGE|1|enUS", 1794760000, True) is True, "never asked"
     assert due(state, "MAGE|1|enUS", 1000 + 29 * day, True) is False, "not twice in a month"
     assert due(state, "MAGE|1|enUS", 1000 + 30 * day, True) is True
     assert due(state, "PRIEST|1|enUS", 1000 + 300 * day, True) is False, "three asks at most"
-    assert due(state, "ROGUE|1|enUS", 1000 + 300 * day, True) is False, "the window was opened for it"
+    assert due(state, "ROGUE|1|enUS", 1000 + 300 * day, True) is False, "already reported"
     assert due(state, "MAGE|1|enUS", 1000 + 300 * day, False) is False, "turned off"
     assert due(state, None, 1000 + 300 * day, True) is False, "no dump"
 
@@ -2368,11 +2378,9 @@ def check_sharing() -> None:
     g.SlashCmdList["WOWMCP"]("share")
     window = [f for f in g.frames.values() if f.frameName == "WowMcpShareWindow"][0]
     assert window.shown is True and "probe: none" in str(window.reportBox.fixedText)
+    assert "none (type /mcp probe" in str(window.countersText.label)
     g.SlashCmdList["WOWMCP"]("share on")
     assert g.WowMcpDB["settings"]["shareReminder"] is None
-    # "Do not remind me" on the window is the same switch.
-    window.quietButton.scripts["OnClick"](window.quietButton)
-    assert g.WowMcpDB["settings"]["shareReminder"] is False and window.shown is False
 
     # A client without the link API gets the command in words; one without timers gets no reminder at all.
     runtime, g, addon_ns = load_addon("forever", before_addon=TIMER_STUB + "LinkUtil = nil")

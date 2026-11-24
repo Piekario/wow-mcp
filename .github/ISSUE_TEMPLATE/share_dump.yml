@@ -33,8 +33,8 @@ body:
     attributes:
       label: Client report from the game
       description: >
-        Type `/mcp share` in game, press Ctrl+C in the window and paste here. A few lines about the client and the
-        last dump (class, race, level, client build, language, section sizes, addon errors); it holds no names.
+        Type `/mcp share` in game, click the text in the window, press Ctrl+C and paste here. One line that starts with
+        `WowMcp:1!` and ends with `!End:WowMcp:1!`, about the client and the last dump (class, race, level, client build, language, section sizes, addon errors); it holds no names.
       render: text
   - type: dropdown
     id: client
