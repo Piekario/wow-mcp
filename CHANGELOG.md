@@ -31,6 +31,14 @@ with a Hunter, so the points below about taming, Beast Lore and the pet's food l
 - Events `PLAYER_TARGET_CHANGED`, `UPDATE_MOUSEOVER_UNIT`, `UNIT_AURA`, `UNIT_PET`, `PET_BAR_UPDATE`, `SPELLS_CHANGED`
   and the two spellcast events are accepted by the client (`probe.events` shows it).
 
+- **Fixed**
+  - The `friends` section was never saved in Forever build 71037: opening the friends list fires no `FRIENDLIST_UPDATE`
+    there (real client, 2026-11-24). Every dump now reads the list the client already holds, still without asking the
+    server for it; an empty list read this way is not saved, because the client reports no friends before it has the
+    list. Battle.net friends who are in the game join the list as their character (`battleNet = true`); the account
+    name and BattleTag are not read. Assumes `BNGetNumFriends` and `C_BattleNet.GetFriendAccountInfo(index)` with
+    `gameAccountInfo` (not yet confirmed in the real client; `/mcp probe` now lists the `BNGet*` globals).
+
 - **Added**
   - Addon: section `classBuffGroups` (`ClassBuffs.lua`, `Sections/ClassBuffGroups.lua`): the player's class buff groups
     (Aspects, Blessings, mage and warlock armors, shamans' shields, Arcane Intellect, Fortitude, Mark of the Wild, Battle

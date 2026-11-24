@@ -35,7 +35,7 @@ local GLOBAL_PREFIXES = {
     "^GetLatestCompletedAchievements", "^GetPreviousAchievement", "^GetNextAchievement", "^GetStatistic",
     "^GetComparisonStatistic", "^GetNumTitles", "^IsTitleKnown", "^GetTitleName", "^GetCurrentTitle",
     "^GetNumCompanions", "^GetCompanionInfo",
-    "^EJ_", "^IsInInstance", "^GetInstanceInfo", "^IsAddOnLoaded", "^GetAddOnInfo",
+    "^EJ_", "^BNGet", "^IsInInstance", "^GetInstanceInfo", "^IsAddOnLoaded", "^GetAddOnInfo",
 }
 
 local GLOBAL_FRAGMENTS = { "Loyal", "Happiness", "TrainingPoint", "PetFood", "PetExperience", "CritChance" }

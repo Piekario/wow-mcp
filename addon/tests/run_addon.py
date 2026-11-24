@@ -2428,8 +2428,9 @@ def check_real_lifecycle() -> None:
     # A guild without an open window: only the fact of membership (name and rank from client memory, no list).
     guild = reloaded["guild"]
     assert guild["inGuild"] is True and guild["name"] == "Night Watch" and guild["members"] is None, dict(guild)
-    # The friends window was not open: there is no friends section (different from an empty list).
-    assert reloaded["friends"] is None
+    # The friends window was not open (real client 2026-11-24: opening it fires no event either): the dump reads the
+    # list the client holds.
+    assert reloaded["friends"]["total"] == 3 and len(reloaded["friends"]["friends"]) == 3, dict(reloaded["friends"])
     assert set(reloaded["vendors"].keys()) == {"Quartermaster Lewis"} and reloaded["buyback"] is not None
     assert reloaded["loot"]["since"] == login_at and reloaded["xpGains"]["kills"]["count"] == 1
     assert {i["name"] for i in reloaded["loot"]["items"].values()} == {"Linen Cloth", "Copper Ore"}
@@ -2870,6 +2871,38 @@ def check_secret_group_range() -> None:
     assert not values(snapshot["errors"]), values(snapshot["errors"])
     members = values(snapshot["group"]["members"])
     assert len(members) == 3 and all(m["inRange"] is None for m in members), [dict(m) for m in members]
+
+
+def check_battle_net_friends() -> None:
+    """Battle.net friends who are in the game join the list as their character; other programs, offline accounts and a
+    character already on the list are skipped, and no account name is saved. An empty list is not saved by a dump alone."""
+    runtime, g, _ = load_addon("forever")
+    runtime.execute("""
+        function BNGetNumFriends() return 4, 3 end
+        local accounts = {
+            { accountName = "Real Name", battleTag = "Tag#1234", gameAccountInfo = { characterName = "Shamanka", className = "Priest",
+                characterLevel = 31, areaName = "Thousand Needles", isOnline = true, clientProgram = "WoW" } },
+            { accountName = "Other", gameAccountInfo = { characterName = "Tankadin", className = "Paladin", isOnline = true, clientProgram = "WoW" } },
+            { accountName = "Elsewhere", gameAccountInfo = { characterName = "Barb", isOnline = true, clientProgram = "D4" } },
+            { accountName = "Away", gameAccountInfo = { isOnline = false, clientProgram = "App" } },
+        }
+        C_BattleNet = { GetFriendAccountInfo = function(i) return accounts[i] end }
+    """)
+    event_dispatcher(g)(None, "PLAYER_LOGIN")
+    g.SlashCmdList["WOWMCP"]("reload")
+    friends = saved_character(g)["friends"]
+    names = [f["name"] for f in values(friends["friends"])]
+    assert names == ["Tankadin", "Healbot", "Oldfriend", "Shamanka"] and friends["total"] == 4, names
+    added = values(friends["friends"])[3]
+    assert added["battleNet"] is True and added["classToken"] == "PRIEST" and added["level"] == 31, dict(added)
+    saved_values = [str(v) for f in values(friends["friends"]) for v in dict(f).values()]
+    assert "Real Name" not in saved_values and "Tag#1234" not in saved_values, saved_values
+
+    runtime, g, _ = load_addon("forever")
+    runtime.execute("C_FriendList.GetNumFriends = function() return 0 end")
+    event_dispatcher(g)(None, "PLAYER_LOGIN")
+    g.SlashCmdList["WOWMCP"]("reload")
+    assert saved_character(g)["friends"] is None
 
 
 def check_quest_sources_absent() -> None:
@@ -3519,6 +3552,7 @@ def main() -> int:
     check_robustness(runtime, g, on_event, mode)
     if mode == "forever":
         check_quest_sources_absent()
+        check_battle_net_friends()
         check_waypoint_links()
         check_secret_group_range()
         check_passed_guide_steps()
