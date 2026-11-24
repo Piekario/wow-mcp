@@ -7,6 +7,14 @@ errors, dump 18 ms), addon 0.7.0 with server 0.9.0 (2026-11-15, no section error
 between are part of 0.11.0 / 0.12.2 and were run with them. Addon 0.14.0 was run on 2026-11-22 (client build 71037, no section errors, dump 25.7 ms: `questDb` for 22 log quests, `guide` reading TUGs, `/mcp quest The Glowing Shard`). **Server 0.15.0 and the 0.12.0 / 0.13.0 addon changes (carried periods, flight zones, auction gear details) have not yet been checked in a real client**: their fixes are
 based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` result and golden response tests.
 
+## Unreleased
+
+- **Changed**
+  - CI runs `staticcheck` on the server and tests `install.ps1` on a Windows runner, under Windows PowerShell 5.1 and
+    PowerShell 7 (`scripts/test-install.ps1`: a `-Client` value that leaves the game folder is refused, a fresh install
+    with `-Build`, a second install that backs up and removes stale files, `-Rollback`, and an addon folder that is a
+    junction is refused with the linked folder left alone). This closes roadmap item 117.
+
 ## 0.20.0 (2026-11-24)
 
 A long history and less `/mcp reload`, for the addon and the server. The server expects addon 0.20.0. This release also carries

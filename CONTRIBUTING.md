@@ -67,7 +67,7 @@ every test run, against baselines in `server/testdata/architecture/` that may on
 - **Patterns only where they remove code:** a registry for things added often (tools, prompts, alert checks), small
   consumer-side interfaces for I/O, functional options for optional settings. No pattern for one case.
 - A new tool is a function in its context, an entry in the matching group in `mcpserver/tools.go` and cases in
-  `golden_test.go`. Unit tests live next to the code. Run `gofmt` and `go vet`.
+  `golden_test.go`. Unit tests live next to the code. Run `gofmt`, `go vet` and `staticcheck` (CI runs all three).
 
 ### Addon (Lua 5.1)
 
