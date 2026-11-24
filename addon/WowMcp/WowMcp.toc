@@ -12,6 +12,7 @@ Core.lua
 Compat.lua
 Maps.lua
 QuestDb.lua
+ChatLinks.lua
 Waypoints.lua
 Items.lua
 AuctionItems.lua
@@ -74,6 +75,9 @@ Panel.lua
 Keybind.lua
 MinimapButton.lua
 AuctionTooltip.lua
+ShareReport.lua
+ShareWindow.lua
+ShareReminder.lua
 Options.lua
 WowMcp.lua
 Commands.lua

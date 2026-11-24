@@ -3,19 +3,19 @@
 
 -- Waypoints: coordinates in WowMcp chat lines as clickable links that set a TomTom waypoint (and its arrow).
 --
--- TomTom is optional and never required: without it (or without the client's link handler API) a place stays
+-- TomTom is optional and never required: without it (or without the client's link handler API, see ChatLinks) a place stays
 -- plain text, and /mcp quest suggests TomTom once per session. A waypoint is set only when the player clicks
 -- a link; nothing here runs on its own. TomTom's API (v4.4.1 on Forever): TomTom:AddWaypoint(uiMapID, x, y, opts)
 -- with x and y from 0 to 1, the same call Questie makes; the UI map ID comes from the quest database (QuestDb),
 -- or from the zone name through the client's map data (Maps).
 
 local _, ns = ...
-local QuestDb, Maps, chat = ns.QuestDb, ns.Maps, ns.chat
+local QuestDb, Maps, ChatLinks, chat = ns.QuestDb, ns.Maps, ns.ChatLinks, ns.chat
 
 local Waypoints = {}
 ns.Waypoints = Waypoints
 
-local LINK_TYPE = "wowmcp"
+local LINK_ACTION = "way"
 local LINK_COLOR = "|cff71d5ff"
 local SOURCE = "WowMcp"
 local DEFAULT_TITLE = "WowMcp waypoint"
@@ -24,7 +24,6 @@ local MAX_TITLES = 200
 -- Titles of the links printed this session, by "mapID:x:y" (a title can hold any text, a link field cannot).
 local titles, titleCount = {}, 0
 local zoneIDs
-local linksEnabled = false
 local hintShown = false
 
 local function tomTom()
@@ -34,7 +33,7 @@ local function tomTom()
 end
 
 function Waypoints.available()
-    return linksEnabled and tomTom() ~= nil
+    return ChatLinks.enabled() and tomTom() ~= nil
 end
 
 local function mapIDByZoneName(zone)
@@ -73,12 +72,12 @@ function Waypoints.chatText(location, title, text)
     local place = Waypoints.resolve(location)
     if not place then return text end
     rememberTitle(place, title)
-    return ("%s|H%s:way:%s|h[%s]|h|r"):format(LINK_COLOR, LINK_TYPE, key(place.mapID, place.x, place.y), text)
+    return ChatLinks.text(LINK_ACTION, key(place.mapID, place.x, place.y), text, LINK_COLOR)
 end
 
 -- After a lookup that printed coordinates: once per session, says that TomTom would make them clickable.
 function Waypoints.suggestTomTom()
-    if hintShown or not linksEnabled or tomTom() then return end
+    if hintShown or not ChatLinks.enabled() or tomTom() then return end
     hintShown = true
     chat("Tip: install TomTom and the coordinates in /mcp quest become links that set a waypoint with one click.")
 end
@@ -86,7 +85,7 @@ end
 -- Sets the waypoint of a clicked link. Returns true when the link was ours.
 function Waypoints.click(link)
     if type(link) ~= "string" then return false end
-    local mapID, x, y = link:match(LINK_TYPE .. ":way:(%d+):([%d%.]+):([%d%.]+)")
+    local mapID, x, y = link:match(":" .. LINK_ACTION .. ":(%d+):([%d%.]+):([%d%.]+)")
     mapID, x, y = tonumber(mapID), tonumber(x), tonumber(y)
     if not (mapID and x and y) then return false end
     local addon = tomTom()
@@ -100,23 +99,4 @@ function Waypoints.click(link)
     return true
 end
 
-local function response(name, default)
-    local responses = _G.LinkProcessorResponse
-    return (type(responses) == "table" and responses[name] ~= nil) and responses[name] or default
-end
-
--- The client's link handler API (LinkUtil.RegisterLinkHandler, which Questie also uses on Forever): a handler,
--- not a replaced function, so no Blizzard code is tainted. A modified click (shift-click) keeps its default.
-local function registerLinkHandler()
-    local linkUtil = _G.LinkUtil
-    if type(linkUtil) ~= "table" or type(linkUtil.RegisterLinkHandler) ~= "function" then return false end
-    local ok = pcall(linkUtil.RegisterLinkHandler, LINK_TYPE, function(link)
-        local modified = _G.IsModifiedClick
-        if type(modified) == "function" and modified() then return response("Unhandled", false) end
-        if Waypoints.click(link) then return response("Handled", true) end
-        return response("Unhandled", false)
-    end)
-    return ok
-end
-
-linksEnabled = registerLinkHandler()
+ChatLinks.on(LINK_ACTION, Waypoints.click)

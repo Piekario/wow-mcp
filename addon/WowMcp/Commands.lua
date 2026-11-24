@@ -21,6 +21,8 @@ local HELP = {
     "/mcp minimap on|off - minimap button (left click: panel; on by default)",
     "/mcp compact on|off - one-line panel: dump age and Save button (off by default)",
     "/mcp ahtip on|off - auction house price in the item tooltip (on by default)",
+    "/mcp share - open a window with a short client report (no names, items or gold) to copy into an issue, so your class,"
+        .. " client and language can be supported; /mcp share off|on turns the rare chat reminder off or on",
     "/mcp options - open the WowMcp page in the game's options (the same switches as the commands above)",
     "/mcp probe - diagnostics: list of client API functions (spells, items, maps, achievements...), the events the client accepted"
         .. " and the client's Legacy API names",
@@ -115,6 +117,17 @@ local function lookUpQuest(rest)
     for _, line in ipairs(lines) do chat(line) end
     if coordinates then ns.Waypoints.suggestTomTom() end
     Panel.refresh()
+end
+
+local function share(rest)
+    local word = firstWord(rest)
+    if word == "off" or word == "on" then
+        ns.ShareReminder.setEnabled(word == "on")
+        chat(word == "on" and "Sharing reminders are on: at most one chat line a month. Turn off: /mcp share off"
+            or "Sharing reminders are off. The window stays available: /mcp share")
+        return
+    end
+    ns.ShareWindow.open()
 end
 
 local function listSections()
@@ -241,6 +254,7 @@ local COMMANDS = {
     compact = setCompactPanel,
     note = setNote,
     quest = lookUpQuest,
+    share = share,
     off = disableSection,
     on = enableSection,
     status = showStatus,

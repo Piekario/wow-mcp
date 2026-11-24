@@ -12,6 +12,7 @@ local function onLogin()
     pcall(ns.MinimapButton.create)
     pcall(Played.request)
     pcall(ns.Options.register)
+    pcall(ns.ShareReminder.schedule)
 end
 
 -- Also fires on /reload, right before SavedVariables are written.

@@ -26,6 +26,26 @@ writes a file on your disk.
 5. Attach it to a new [Share a dump from your class](https://github.com/Piekario/wow-mcp/issues/new?template=share_dump.yml)
    issue. The issue is public.
 
+## From inside the game: the client report
+
+`/mcp share` opens a window with a short text report and the address of the issue form. Select the text, press Ctrl+C
+and paste it into the form's "Client report from the game" field. It is the quick way when you cannot run the server
+command, and it complements the full dump.
+
+The report is built from a fixed list of fields, not by filtering the dump: addon and schema version, client version,
+build, interface number and language, class, race, faction and level, why and how fast the last dump was taken, the
+name and size of every section, sections that are missing or disabled, the addon's own error texts, the events the
+client rejected and, after `/mcp probe`, how many functions each client API namespace has. It contains no name of a
+character, realm, guild or player, no item and no gold. The character's own name is cut out of error texts.
+
+The addon cannot send anything: it shows the text and you copy it. The same holds for the reminder.
+
+**The reminder.** At most once a month, some time after login, the addon may print one chat line offering the window,
+with a link that opens it. It appears only for a class, client build and language for which this account has not opened
+the window yet, never before the character has a saved dump, and at most three times; opening the window once ends it
+for that combination. `/mcp share off`, the "Do not remind me" button in the window or the "Sharing reminder" switch
+on the options page turns it off for good; `/mcp share on` turns it back on.
+
 ## What is removed or replaced
 
 | In the dump | In the shared file |
