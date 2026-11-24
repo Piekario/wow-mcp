@@ -9,6 +9,12 @@ based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` 
 
 ## Unreleased
 
+- **Fixed**
+  - A recipe window for which the client gives no profession name was saved under an empty name, and `wow_recipes`
+    showed a profession called `""` (seen in the real client on 2026-11-23: one recipe, Camp Chair, `professionName`
+    empty, skill 0/0). The addon now saves it as `Unnamed profession`, keeps the client's own fields in `windowInfo`
+    so the missing name can be traced, and drops the old entry; the server shows dumps of older addons the same way.
+
 - **Changed**
   - CI runs `staticcheck` on the server and tests `install.ps1` on a Windows runner, under Windows PowerShell 5.1 and
     PowerShell 7 (`scripts/test-install.ps1`: a `-Client` value that leaves the game folder is refused, a fresh install
