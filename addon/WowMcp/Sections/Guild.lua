@@ -12,6 +12,7 @@ local plain, callFirst = ns.Compat.plain, ns.Compat.callFirst
 local MAX_MEMBERS = 500
 local ONLINE_ONLY_ABOVE = 200
 local MIN_SECONDS_BETWEEN = 5 -- the event is frequent; the same state is not read again
+local MAX_NOTE_LENGTH = 60
 
 local lastRead = 0
 local lastSignature
@@ -22,16 +23,32 @@ local function textOrNil(value)
     return nil
 end
 
+-- GetGuildRosterLastOnline: years, months, days, hours since the member was last seen; nothing for an online one.
+-- Saved as whole days (a month counts as 30 days), which is as exact as the client's own display.
+local function daysOffline(index)
+    local seen = callFirst({ "GetGuildRosterLastOnline", "C_GuildInfo.GetGuildRosterLastOnline" }, index)
+    if not seen then return nil end
+    local years, months, days = plain(seen[1]), plain(seen[2]), plain(seen[3])
+    if type(years) ~= "number" and type(months) ~= "number" and type(days) ~= "number" then return nil end
+    return (years or 0) * 365 + (months or 0) * 30 + (days or 0)
+end
+
 -- GetGuildRosterInfo: fullName, rank, rankIndex, level, class, zone, note, officerNote, online, status, classFileName, ...
+-- The officer note is not read: it is private to officers.
 local function readMember(index)
     local info = callFirst({ "GetGuildRosterInfo", "C_GuildInfo.GetGuildRosterInfo" }, index)
     if not info then return nil end
     local name = textOrNil(info[1])
     if not name then return nil end
-    return {
+    local member = {
         name = name, rank = textOrNil(info[2]), rankIndex = plain(info[3]), level = plain(info[4]),
-        class = textOrNil(info[5]), zone = textOrNil(info[6]), online = plain(info[9]) and true or false,
+        class = textOrNil(info[5]), classToken = textOrNil(info[11]), zone = textOrNil(info[6]),
+        online = plain(info[9]) and true or false,
     }
+    local note = textOrNil(info[7])
+    member.note = note and note:sub(1, MAX_NOTE_LENGTH) or nil
+    if not member.online then member.daysOffline = daysOffline(index) end
+    return member
 end
 
 local function readMembers(total)
@@ -50,7 +67,7 @@ end
 local function signature(guild)
     local parts = { tostring(guild.name), tostring(guild.rank), tostring(guild.total), tostring(guild.online) }
     for _, m in ipairs(guild.members or {}) do
-        parts[#parts + 1] = (m.name or "") .. "|" .. (m.zone or "") .. "|" .. tostring(m.level) .. "|" .. tostring(m.online)
+        parts[#parts + 1] = (m.name or "") .. "|" .. (m.zone or "") .. "|" .. tostring(m.level) .. "|" .. tostring(m.online) .. "|" .. (m.note or "")
     end
     return table.concat(parts, "\n")
 end

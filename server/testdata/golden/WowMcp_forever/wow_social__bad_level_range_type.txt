@@ -1,0 +1,5 @@
+# tool wow_social variant=bad_level_range_type
+# args: {"levelRange":"five"}
+# isError: true
+--- content[0] ---
+validating "arguments": validating root: validating /properties/levelRange: type: five has type "string", want "integer"

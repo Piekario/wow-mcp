@@ -337,6 +337,7 @@ WowMcpDB = {
 {
 ["area"] = "Stormwind City",
 ["class"] = "Paladin",
+["classToken"] = "PALADIN",
 ["connected"] = true,
 ["level"] = 22,
 ["name"] = "Tankadin",
@@ -345,12 +346,14 @@ WowMcpDB = {
 {
 ["area"] = "Darkshore",
 ["class"] = "Priest",
+["classToken"] = "PRIEST",
 ["connected"] = true,
 ["level"] = 19,
 ["name"] = "Healbot",
 }, -- [2]
 {
 ["class"] = "Mage",
+["classToken"] = "MAGE",
 ["connected"] = false,
 ["level"] = 60,
 ["name"] = "Oldfriend",
@@ -402,8 +405,10 @@ WowMcpDB = {
 ["members"] = {
 {
 ["class"] = "Paladin",
+["classToken"] = "PALADIN",
 ["level"] = 22,
 ["name"] = "Tankadin",
+["note"] = "main tank",
 ["online"] = true,
 ["rank"] = "Officer",
 ["rankIndex"] = 1,
@@ -411,6 +416,7 @@ WowMcpDB = {
 }, -- [1]
 {
 ["class"] = "Priest",
+["classToken"] = "PRIEST",
 ["level"] = 19,
 ["name"] = "Healbot",
 ["online"] = true,
@@ -420,6 +426,8 @@ WowMcpDB = {
 }, -- [2]
 {
 ["class"] = "Mage",
+["classToken"] = "MAGE",
+["daysOffline"] = 63,
 ["level"] = 60,
 ["name"] = "Oldfriend",
 ["online"] = false,

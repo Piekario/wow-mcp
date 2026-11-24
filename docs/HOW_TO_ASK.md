@@ -105,7 +105,7 @@ one optionally takes a character name.
 | `wow_group` | "Who is missing from the group: tank, healer?" · "Show the gear of the player I inspected." (after clicking Inspect) |
 | `wow_dungeons` | "Which dungeons fit my level?" · "Which quests can I do in Deadmines?" |
 | `dungeon_finder` | "Where should I go for a dungeon and how should I prepare?" |
-| `wow_social` | "Which of my friends are online now?" · "Who from the guild is online and in which zone?" · "Show the whole guild, including offline members." (first open the social or guild window in the game and do `/mcp reload`; the addon does not ask the game server for these lists on its own) |
+| `wow_social` | "Which of my friends are online now?" · "Who from the guild is online and in which zone?" · "Show the whole guild, including offline members." · "Which classes and levels are online in my guild?" · "Who from the guild or my friends could I group with now?" (`groupCandidates`, `levelRange`, default 5; roles are what a class can do, not what the player picks) (first open the social or guild window in the game and do `/mcp reload`; the addon does not ask the game server for these lists on its own) |
 
 ## Diagnostics
 

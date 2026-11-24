@@ -512,10 +512,10 @@ func (s *service) accountTools() []tool {
 			}),
 
 		characterTool(s, "wow_social", "Friends and guild",
-			"The character's friends and guild lists from the most recently opened windows (from addon 0.7.0): who is online, level, class, zone, guild rank, counts and the age of the save (capturedAge). By default it shows only online guild members; includeOffline=true shows everyone. The addon reads only client memory and NEVER asks the game server for the friends or guild list itself, so when a list is missing, the response says which window to open in game and that /mcp reload is needed afterwards. The list is the state at the time of saving, not live. PvP stats are in wow_character (pvp)."+freshness,
+			"The character's friends and guild lists from the most recently opened windows (from addon 0.7.0): who is online, level, class, zone, guild rank, counts and the age of the save (capturedAge). By default it shows only online guild members; includeOffline=true shows everyone. It also gives a roster summary of the guild (members listed and online, counts by class, level bands, summary) and groupCandidates: online guild members and friends within levelRange levels (default 5) of the character, sorted into tankCapable, healerCapable and damageCapable by what their class can do (not the role they will pick), with level, class, zone, guild rank and note; use it to answer who could group with the character. A character without a guild is a normal answer (inGuild=false). The addon reads only client memory and NEVER asks the game server for the friends or guild list itself, so when a list is missing, the response says which window to open in game and that /mcp reload is needed afterwards. The list is the state at the time of saving, not live. PvP stats are in wow_character (pvp)."+freshness,
 			func(a social.Query) string { return a.Character },
 			func(_ string, snap snapshot.Snapshot, q social.Query) (map[string]any, error) {
-				return social.View(snap, q, fresh), nil
+				return social.View(snap, q, fresh)
 			}),
 
 		characterTool(s, "wow_export", "Character export",

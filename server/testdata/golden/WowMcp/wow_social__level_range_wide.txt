@@ -1,0 +1,169 @@
+# tool wow_social variant=level_range_wide
+# args: {"levelRange":50}
+# isError: false
+--- content[0] ---
+{
+  "friends": {
+    "capturedAge": "30 min",
+    "capturedAgeMinutes": 30,
+    "capturedAt": "2026-11-15 16:26",
+    "friends": [
+      {
+        "area": "Stormwind City",
+        "class": "Paladin",
+        "level": 22,
+        "name": "Tankadin",
+        "notes": "dungeon buddy",
+        "online": true
+      },
+      {
+        "area": "Darkshore",
+        "class": "Priest",
+        "level": 19,
+        "name": "Healbot",
+        "online": true
+      },
+      {
+        "class": "Mage",
+        "level": 60,
+        "name": "Oldfriend",
+        "online": false
+      }
+    ],
+    "online": 2,
+    "total": 3
+  },
+  "groupCandidates": {
+    "count": 2,
+    "damageCapable": [
+      {
+        "class": "Priest",
+        "level": 19,
+        "name": "Healbot",
+        "rank": "Member",
+        "source": [
+          "friends",
+          "guild"
+        ],
+        "zone": "Darkshore"
+      },
+      {
+        "class": "Paladin",
+        "level": 22,
+        "name": "Tankadin",
+        "note": "main tank",
+        "rank": "Officer",
+        "source": [
+          "friends",
+          "guild"
+        ],
+        "zone": "Stormwind City"
+      }
+    ],
+    "healerCapable": [
+      {
+        "class": "Priest",
+        "level": 19,
+        "name": "Healbot",
+        "rank": "Member",
+        "source": [
+          "friends",
+          "guild"
+        ],
+        "zone": "Darkshore"
+      },
+      {
+        "class": "Paladin",
+        "level": 22,
+        "name": "Tankadin",
+        "note": "main tank",
+        "rank": "Officer",
+        "source": [
+          "friends",
+          "guild"
+        ],
+        "zone": "Stormwind City"
+      }
+    ],
+    "levelRange": 50,
+    "levels": "1-70",
+    "note": "Roles are what the class can do, not what the player will pick: a Paladin or Druid is listed as tank, healer and damage. Only people online when the lists were saved (capturedAge) count; ask them, the state may have changed. Sorted by closeness in level.",
+    "tankCapable": [
+      {
+        "class": "Paladin",
+        "level": 22,
+        "name": "Tankadin",
+        "note": "main tank",
+        "rank": "Officer",
+        "source": [
+          "friends",
+          "guild"
+        ],
+        "zone": "Stormwind City"
+      }
+    ],
+    "yourLevel": 20
+  },
+  "guild": {
+    "capturedAge": "30 min",
+    "capturedAgeMinutes": 30,
+    "capturedAt": "2026-11-15 16:26",
+    "inGuild": true,
+    "name": "Night Watch",
+    "offlineHidden": 1,
+    "online": 2,
+    "onlineMembers": [
+      {
+        "class": "Paladin",
+        "level": 22,
+        "name": "Tankadin",
+        "note": "main tank",
+        "online": true,
+        "rank": "Officer",
+        "rankIndex": 1,
+        "zone": "Stormwind City"
+      },
+      {
+        "class": "Priest",
+        "level": 19,
+        "name": "Healbot",
+        "online": true,
+        "rank": "Member",
+        "rankIndex": 3,
+        "zone": "Darkshore"
+      }
+    ],
+    "rank": "Hunter Rank",
+    "rankIndex": 4,
+    "summary": {
+      "classes": {
+        "Mage": 1,
+        "Paladin": 1,
+        "Priest": 1
+      },
+      "levelBands": {
+        "10-19": 1,
+        "20-29": 1,
+        "60-69": 1
+      },
+      "listed": 3,
+      "online": 2,
+      "onlineAverageLevel": 20.5,
+      "onlineClasses": {
+        "Paladin": 1,
+        "Priest": 1
+      },
+      "onlineLevelBands": {
+        "10-19": 1,
+        "20-29": 1
+      }
+    },
+    "total": 3
+  },
+  "privacy": "The addon reads only what the client has in memory after the social or guild window is opened; it never asks the game server for these lists itself. The list is the state at the time of saving (capturedAge), so who is online may have changed.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

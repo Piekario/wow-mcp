@@ -76,6 +76,7 @@
       "GetCursorPosition",
       "GetGuildInfo",
       "GetGuildRosterInfo",
+      "GetGuildRosterLastOnline",
       "GetInboxHeaderInfo",
       "GetInboxItem",
       "GetInboxItemLink",

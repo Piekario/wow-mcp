@@ -1,0 +1,5 @@
+# tool wow_social variant=level_range_negative
+# args: {"levelRange":-3}
+# isError: true
+--- content[0] ---
+levelRange must be positive (default 5), got -3
