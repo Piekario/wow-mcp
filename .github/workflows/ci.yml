@@ -1,4 +1,4 @@
-# CI: server tests (Go, three operating systems), addon tests (Lua) and shell script lint.
+# CI: server tests (Go, three operating systems), addon tests (Lua), shell script lint and the Windows installer test.
 name: CI
 
 on:
@@ -26,6 +26,9 @@ jobs:
           go-version-file: server/go.mod
       - name: go vet
         run: go vet ./...
+      - name: staticcheck
+        if: matrix.os == 'ubuntu-latest'
+        run: go run honnef.co/go/tools/cmd/staticcheck@2026.2.2 ./...
       - name: 'go test (with the race detector: tool calls may run concurrently)'
         run: go test -race ./...
 
@@ -59,3 +62,18 @@ jobs:
         run: shellcheck install.sh scripts/*.sh
       - name: Release archives build
         run: make dist
+
+  installer:
+    name: Windows installer (install.ps1)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: server/go.mod
+      - name: install.ps1 under Windows PowerShell 5.1
+        shell: powershell
+        run: .\scripts\test-install.ps1
+      - name: install.ps1 under PowerShell 7
+        shell: pwsh
+        run: .\scripts\test-install.ps1

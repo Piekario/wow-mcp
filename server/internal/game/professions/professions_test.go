@@ -44,6 +44,17 @@ func withBeastTraining(s snapshot.Snapshot) snapshot.Snapshot {
 }
 
 // A material without a name (an item not loaded in the client) gets "item <id>", not an empty string.
+func TestRecipeBookWithoutProfessionName(t *testing.T) {
+	s := snapshot.Snapshot{"recipes": map[string]any{"": map[string]any{"name": "", "rank": int64(0), "maxRank": int64(0), "recipes": []any{
+		map[string]any{"name": "Camp Chair", "difficulty": "trivial"},
+	}}}}
+	text := fixtures.JSON(t, Recipes(s, RecipeQuery{}, fixtures.At(time.Minute)))
+	fixtures.WantAll(t, "unnamed book", text, `"name":"Unnamed profession"`, `"Camp Chair"`)
+	if byName := Recipes(s, RecipeQuery{Profession: "unnamed"}, fixtures.At(time.Minute)); !strings.Contains(fixtures.JSON(t, byName), "Camp Chair") {
+		t.Error("the profession filter does not find the unnamed book")
+	}
+}
+
 func TestReagentWithoutName(t *testing.T) {
 	s := fixtures.Forever(t)
 	lw := s["recipes"].(map[string]any)["Leatherworking"].(map[string]any)

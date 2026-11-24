@@ -2872,6 +2872,28 @@ def check_secret_group_range() -> None:
     assert len(members) == 3 and all(m["inRange"] is None for m in members), [dict(m) for m in members]
 
 
+def check_unnamed_profession_window() -> None:
+    """Real client 2026-11-23: a recipe window (Camp Chair) had an empty professionName and was saved under the key "".
+    It is now saved under a fixed name with the client's fields, and the old "" entry is dropped."""
+    runtime, g, addon_ns = load_addon("forever")
+    runtime.execute("""
+        C_TradeSkillUI.GetBaseProfessionInfo = function()
+            return { professionName = "", parentProfessionName = "", skillLevel = 0, maxSkillLevel = 0, professionID = 2777 }
+        end
+    """)
+    on_event = event_dispatcher(g)
+    on_event(None, "PLAYER_LOGIN")
+    runtime.eval('function(ns) ns.Snapshot.current().recipes = { [""] = { name = "", recipes = {} } } end')(addon_ns)
+    on_event(None, "TRADE_SKILL_SHOW")
+    g.SlashCmdList["WOWMCP"]("reload")
+    snapshot = saved_character(g)
+    assert not values(snapshot["errors"]), values(snapshot["errors"])
+    books = dict(snapshot["recipes"])
+    assert sorted(books) == ["Unnamed profession"], sorted(books)
+    book = books["Unnamed profession"]
+    assert len(values(book["recipes"])) == 3 and book["windowInfo"]["professionID"] == 2777, dict(book)
+
+
 def check_quest_sources_absent() -> None:
     """Without the other addons (or with broken ones) the dump has no error and no section."""
     runtime, g, _ = load_addon("forever")
@@ -3519,6 +3541,7 @@ def main() -> int:
     check_robustness(runtime, g, on_event, mode)
     if mode == "forever":
         check_quest_sources_absent()
+        check_unnamed_profession_window()
         check_waypoint_links()
         check_secret_group_range()
         check_passed_guide_steps()
