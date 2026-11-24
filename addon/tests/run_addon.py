@@ -786,10 +786,16 @@ C_TooltipInfo.GetItemKey = function(id, level, suffix)
     local d = ahItemData[id]
     if not (d and d.cached) then uncachedLookups[#uncachedLookups + 1] = "GetItemKey " .. tostring(id) return nil end
     if id == 12020 and suffixes[suffix] then return chokerLines(suffixes[suffix]) end
-    if id == 1404 then return { lines = { { leftText = d.name }, { leftText = "Trinket" }, { leftText = "Use: Stuns the target for 3 sec." } } } end
+    if id == 1404 then return { lines = { { leftText = d.name }, { leftText = "Trinket" } } } end
     return { lines = { { leftText = d.name } } }
 end
-C_TooltipInfo.GetHyperlink = function(link) local s = linkSuffix(link) if s then return chokerLines(s) end end
+-- The link's tooltip has the Use effect the item key tooltip leaves out; the bow's names another item and is ignored.
+C_TooltipInfo.GetHyperlink = function(link)
+    local s = linkSuffix(link)
+    if s then return chokerLines(s) end
+    if ahItemId(link) == 1404 then return { lines = { { leftText = "Tidal Charm" }, { leftText = "Trinket" }, { leftText = "Use: Stuns the target for 3 sec." } } } end
+    if ahItemId(link) == 2506 then return { lines = { { leftText = "Some Other Bow" } } } end
+end
 -- Server requests and actions in the auction house: the addon must not call them (forbid records every call).
 C_AuctionHouse = {
     SendBrowseQuery = forbid("C_AuctionHouse.SendBrowseQuery"), SendSearchQuery = forbid("C_AuctionHouse.SendSearchQuery"),

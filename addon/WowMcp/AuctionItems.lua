@@ -27,8 +27,13 @@ local function keyLink(key, itemID)
     return "item:" .. itemID
 end
 
-local function keyTooltip(key, itemID)
-    return ns.Compat.tooltipFor("GetItemKey", itemID, plain(key.itemLevel) or 0, suffixOf(key) or 0)
+-- The item key tooltip is what the row shows, but it leaves out Use and Equip effects; the link's tooltip has them.
+-- The link's is taken only when it names the same item, so a link that lost the suffix cannot rename the row.
+local function keyTooltip(key, itemID, link)
+    local row = ns.Compat.tooltipFor("GetItemKey", itemID, plain(key.itemLevel) or 0, suffixOf(key) or 0)
+    local full = ns.Compat.tooltipFor("GetHyperlink", link)
+    if full and (not row or full[1] == row[1]) then return full end
+    return row
 end
 
 -- The key info names the base item on some clients; the tooltip title is what the auction row shows.
@@ -56,9 +61,10 @@ function AuctionItems.describeKey(key)
     local itemID = type(key) == "table" and plain(key.itemID)
     if type(itemID) ~= "number" then return nil, {}, true end
     local details = { suffix = suffixOf(key) }
-    Items.addCachedDetails(details, itemID, true, keyLink(key, itemID))
+    local link = keyLink(key, itemID)
+    Items.addCachedDetails(details, itemID, true, link)
     local gear, cached = Items.isGear(details), Items.isDataCached(itemID)
-    local tooltip = cached and keyTooltip(key, itemID) or nil
+    local tooltip = cached and keyTooltip(key, itemID, link) or nil
     if gear then Items.attachTooltip(details, tooltip) end
     local name = keyName(key, itemID, tooltip)
     return name, withoutLabels(details), name ~= nil and (cached or not gear)
