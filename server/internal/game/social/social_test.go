@@ -22,8 +22,8 @@ func TestViewFriendsAndGuild(t *testing.T) {
 	fixtures.WantAll(t, "social", text, `"Tankadin"`, `"dungeon buddy"`, `"capturedAge"`, `"name":"Night Watch"`, `"onlineMembers"`, `"offlineHidden":1`, "privacy")
 	g := out["guild"].(map[string]any)
 	members := g["onlineMembers"].([]any)
-	if len(members) != 2 || members[0].(map[string]any)["name"] != "Tankadin" {
-		t.Errorf("online members sorted by rank: %v", members)
+	if len(members) != 2 || members[0].(map[string]any)["name"] != "Healbot" {
+		t.Errorf("online members closest to the character's level first: %v", members)
 	}
 	if strings.Contains(fixtures.JSON(t, g), "Oldfriend") {
 		t.Error("offline hidden by default")

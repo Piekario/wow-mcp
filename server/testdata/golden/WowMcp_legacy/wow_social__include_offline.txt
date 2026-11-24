@@ -100,7 +100,22 @@
     "capturedAgeMinutes": 30,
     "capturedAt": "2026-11-15 16:26",
     "inGuild": true,
+    "memberList": {
+      "notShown": 0,
+      "order": "closest to the character's level first, then by name",
+      "shown": 3,
+      "total": 3
+    },
     "members": [
+      {
+        "class": "Priest",
+        "level": 19,
+        "name": "Healbot",
+        "online": true,
+        "rank": "Member",
+        "rankIndex": 3,
+        "zone": "Darkshore"
+      },
       {
         "class": "Paladin",
         "level": 22,
@@ -119,15 +134,6 @@
         "rank": "Veteran",
         "rankIndex": 2,
         "zone": "Dalaran"
-      },
-      {
-        "class": "Priest",
-        "level": 19,
-        "name": "Healbot",
-        "online": true,
-        "rank": "Member",
-        "rankIndex": 3,
-        "zone": "Darkshore"
       }
     ],
     "name": "Night Watch",

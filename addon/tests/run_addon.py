@@ -1180,7 +1180,11 @@ achievementData = {
                { { "Complete 100 quests", false, 74, 100 } } } },
     [14861] = { { 4899, "Darkshore Quests", 10, true, 11, 14, 26, "Complete 30 quests in Darkshore.", "" },
                 { 4896, "Ashenvale Quests", 10, false, nil, nil, nil, "Complete 40 quests in Ashenvale.", "",
-                  { { "Complete quests in Ashenvale", false, 6, 40 } } } },
+                  { { "Complete quests in Ashenvale", false, 6, 40 } } },
+                -- Legacy challenges found by their reward text in an ordinary category (real client 2026-11-24).
+                { 5500, "Novice Mage", 0, true, 10, 1, 26, "Reach level 25 for the first time on a Mage.", "Earn 1 Legacy Point." },
+                { 5501, "Journeyman Alchemist", 0, false, nil, nil, nil, "Reach 150 Alchemy skill.", "Earn 1 Legacy Point.",
+                  { { "150 Alchemy Skill", false, 0, 150 } } } },
     [97] = { { 768, "Explore Teldrassil", 10, true, 8, 30, 26, "Explore Teldrassil, revealing the covered areas of the world map.", "" },
              { 844, "Explore Darkshore", 10, false, nil, nil, nil, "Explore Darkshore, revealing the covered areas of the world map.", "",
                { { "Auberdine", true, 1, 1 }, { "Ruins of Mathystra", false, 0, 1 }, { "Bashal'Aran", true, 1, 1 }, { "Grove of the Ancients", false, 0, 1 } } },
@@ -1426,7 +1430,7 @@ GuidelimeDataChar = {
 # names are an assumption. The player's journal window shows Wailing Caverns with a class and a slot filter; a read must
 # see every item and put all of that back. Wailing Caverns lists loot only per boss (the per-encounter fallback).
 EJ_STUBS = r"""
-ejState = { instance = 240, encounter = 2, classID = 3, specID = 0, slot = 5 }
+ejState = { instance = 240, encounter = 2, classID = 3, specID = 0, slot = 5, tier = 3 }
 ejChanges = 0
 EncounterJournal = { instanceID = 240, encounterID = 2 }
 local function item(id, name, encounterID, quality, slot, info, stats, cached)
@@ -1463,22 +1467,31 @@ ejEncounters = {
     [63] = { { "Rhahk'Zor", 89 }, { "Sneed's Shredder", 91 }, { "Gilnid", 92 }, { "Mr. Smite", 93 }, { "Edwin VanCleef", 95 } },
     [240] = { { "Lady Anacondra", 1 }, { "Lord Cobrahn", 2 }, { "Lord Pythas", 3 } },
 }
-ejInstances = { { 63, "The Deadmines", 36 }, { 240, "Wailing Caverns", 43 }, { 227, "Blackfathom Deeps", 48 } }
+-- { id, name, mapID, tier }: the journal lists only the selected tier (the window starts on tier 3, which has none).
+ejInstances = { { 63, "The Deadmines", 36, 1 }, { 240, "Wailing Caverns", 43, 1 }, { 227, "Blackfathom Deeps", 48, 2 } }
+ejTierCalls = 0
+function EJ_GetNumTiers() return 3 end
+function EJ_GetCurrentTier() return ejState.tier end
+function EJ_SelectTier(tier) ejTierCalls = ejTierCalls + 1 ejState.tier = tier end
 ejByID = {}
 for _, list in pairs(ejLoot) do for _, it in ipairs(list) do ejByID[it.id] = it end end
 
 function EJ_GetInstanceByIndex(index, isRaid)
     if isRaid then
-        if index == 1 then return 741, "Molten Core", "", 0, 0, 0, 0, 232, "", true, 409 end
+        if index == 1 and ejState.tier == 1 then return 741, "Molten Core", "", 0, 0, 0, 0, 232, "", true, 409 end
         return nil
     end
-    local i = ejInstances[index]
+    local shown = {}
+    for _, i in ipairs(ejInstances) do if (i[4] or 1) == ejState.tier then shown[#shown + 1] = i end end
+    local i = shown[index]
     if i then return i[1], i[2], "", 0, 0, 0, 0, 0, "", false, i[3] end
 end
 function EJ_SelectInstance(id) ejChanges = ejChanges + 1 ejState.instance, ejState.encounter = id, nil end
 function EJ_SelectEncounter(id) ejChanges = ejChanges + 1 ejState.encounter = id end
 function EJ_GetEncounterInfoByIndex(index, instanceID)
-    local e = (ejEncounters[instanceID or ejState.instance] or {})[index]
+    local id = instanceID or ejState.instance
+    for _, i in ipairs(ejInstances) do if i[1] == id and (i[4] or 1) ~= ejState.tier then return nil end end
+    local e = (ejEncounters[id] or {})[index]
     if e then return e[1], "", e[2], 0, "", instanceID, 0, 0 end
 end
 function EJ_GetLootFilter() return ejState.classID, ejState.specID end
@@ -1487,6 +1500,7 @@ function EJ_ResetLootFilter() ejState.classID, ejState.specID = 0, 0 end
 local function visibleLoot()
     local out = {}
     if ejState.slot ~= nil or ejState.classID ~= 0 then return out end -- a filter hides most loot; a read must clear it
+    for _, i in ipairs(ejInstances) do if i[1] == ejState.instance and (i[4] or 1) ~= ejState.tier then return out end end
     for _, it in ipairs(ejLoot[ejState.instance] or {}) do
         -- Wailing Caverns lists loot only when a boss is selected.
         if ejState.instance == 240 and ejState.encounter == it.encounterID then out[#out + 1] = it
@@ -2428,8 +2442,9 @@ def check_real_lifecycle() -> None:
     # A guild without an open window: only the fact of membership (name and rank from client memory, no list).
     guild = reloaded["guild"]
     assert guild["inGuild"] is True and guild["name"] == "Night Watch" and guild["members"] is None, dict(guild)
-    # The friends window was not open: there is no friends section (different from an empty list).
-    assert reloaded["friends"] is None
+    # The friends window was not open (real client 2026-11-24: opening it fires no event either): the dump reads the
+    # list the client holds.
+    assert reloaded["friends"]["total"] == 3 and len(reloaded["friends"]["friends"]) == 3, dict(reloaded["friends"])
     assert set(reloaded["vendors"].keys()) == {"Quartermaster Lewis"} and reloaded["buyback"] is not None
     assert reloaded["loot"]["since"] == login_at and reloaded["xpGains"]["kills"]["count"] == 1
     assert {i["name"] for i in reloaded["loot"]["items"].values()} == {"Linen Cloth", "Copper Ore"}
@@ -2527,7 +2542,12 @@ def check_legacy_tree(legacy, g) -> None:
     assert currency["name"] == "Legacy Points" and currency["totalEarned"] == 5, dict(currency)
     challenges = list(legacy["challenges"]["list"].values())
     assert [(c["name"], c["completed"], c["category"]) for c in challenges] == [
-        ("Hunter: Level 25", True, "Classes"), ("Warlock: Level 25", False, "Classes")], challenges
+        ("Hunter: Level 25", True, "Classes"), ("Warlock: Level 25", False, "Classes"),
+        ("Novice Mage", True, "Classic"), ("Journeyman Alchemist", False, "Classic")], challenges
+    assert legacy["challenges"]["matchedBy"] == "achievement category title contains Legacy + reward text contains Legacy Point"
+    alchemist = challenges[3]
+    assert alchemist["reward"] == "Earn 1 Legacy Point." and alchemist["categoryID"] == 14861 and alchemist["criteria"][1]["required"] == 150
+    assert challenges[2]["completedOn"] == "2026-10-01" and challenges[2]["criteria"] is None
     assert challenges[0]["reward"] == "Reward: 1 Legacy Point" and challenges[1]["reward"] is None
     discovery = legacy["discovery"]
     assert list(discovery["namespaces"]["C_LegacyMock"].values()) == ["GetPerkInfo", "GetPointsInfo", "IsEnabled", "LearnPerk"]
@@ -2618,7 +2638,11 @@ def check_achievement_sections(snapshot, mode: str) -> None:
     assert achievements["points"] == expected_points and achievements["completed"] == len(
         [a for a in entries.values() if a["completed"]]), (achievements["points"], achievements["completed"])
     classic = [c for c in achievements["categories"].values() if c["name"] == "Classic"][0]
-    assert classic["parentID"] == 96 and classic["total"] == 2 and classic["completed"] == 1, dict(classic)
+    assert classic["parentID"] == 96 and classic["total"] == 4 and classic["completed"] == 2, dict(classic)
+    if mode == "modern":  # no category is named Legacy: only the reward text finds the challenges (real client 2026-11-24)
+        challenges = snapshot["legacy"]["challenges"]
+        assert challenges["matchedBy"] == "reward text contains Legacy Point", challenges["matchedBy"]
+        assert [c["name"] for c in challenges["list"].values()] == ["Novice Mage", "Journeyman Alchemist"]
     statistics = snapshot["statistics"]
     values = {s["name"]: s["value"] for c in statistics["categories"].values() for s in c["list"].values()}
     assert values == {"Quests completed": "62", "Creatures killed": "1404", "Total gold acquired": "5g 20s 3c",
@@ -2640,8 +2664,7 @@ def check_achievement_sections(snapshot, mode: str) -> None:
 def check_achievement_cache(runtime, g, snapshot) -> None:
     """A later dump re-reads only the incomplete achievements (and the Legacy challenges); statistic names are cached."""
     incomplete = len([a for a in snapshot["achievements"]["list"].values() if not a["completed"]])
-    legacy = snapshot["legacy"]["challenges"]
-    challenges = len(legacy["list"]) if legacy is not None else 0
+    challenges = 0  # the Legacy challenges come from the achievements read of the same dump
     runtime.execute("achievementInfoCalls = 0")
     g.SlashCmdList["WOWMCP"]("")
     assert g.achievementInfoCalls == incomplete + challenges, (g.achievementInfoCalls, incomplete, challenges)
@@ -2892,6 +2915,36 @@ def check_unnamed_profession_window() -> None:
     assert sorted(books) == ["Unnamed profession"], sorted(books)
     book = books["Unnamed profession"]
     assert len(values(book["recipes"])) == 3 and book["windowInfo"]["professionID"] == 2777, dict(book)
+def check_battle_net_friends() -> None:
+    """Battle.net friends who are in the game join the list as their character; other programs, offline accounts and a
+    character already on the list are skipped, and no account name is saved. An empty list is not saved by a dump alone."""
+    runtime, g, _ = load_addon("forever")
+    runtime.execute("""
+        function BNGetNumFriends() return 4, 3 end
+        local accounts = {
+            { accountName = "Real Name", battleTag = "Tag#1234", gameAccountInfo = { characterName = "Shamanka", className = "Priest",
+                characterLevel = 31, areaName = "Thousand Needles", isOnline = true, clientProgram = "WoW" } },
+            { accountName = "Other", gameAccountInfo = { characterName = "Tankadin", className = "Paladin", isOnline = true, clientProgram = "WoW" } },
+            { accountName = "Elsewhere", gameAccountInfo = { characterName = "Barb", isOnline = true, clientProgram = "D4" } },
+            { accountName = "Away", gameAccountInfo = { isOnline = false, clientProgram = "App" } },
+        }
+        C_BattleNet = { GetFriendAccountInfo = function(i) return accounts[i] end }
+    """)
+    event_dispatcher(g)(None, "PLAYER_LOGIN")
+    g.SlashCmdList["WOWMCP"]("reload")
+    friends = saved_character(g)["friends"]
+    names = [f["name"] for f in values(friends["friends"])]
+    assert names == ["Tankadin", "Healbot", "Oldfriend", "Shamanka"] and friends["total"] == 4, names
+    added = values(friends["friends"])[3]
+    assert added["battleNet"] is True and added["classToken"] == "PRIEST" and added["level"] == 31, dict(added)
+    saved_values = [str(v) for f in values(friends["friends"]) for v in dict(f).values()]
+    assert "Real Name" not in saved_values and "Tag#1234" not in saved_values, saved_values
+
+    runtime, g, _ = load_addon("forever")
+    runtime.execute("C_FriendList.GetNumFriends = function() return 0 end")
+    event_dispatcher(g)(None, "PLAYER_LOGIN")
+    g.SlashCmdList["WOWMCP"]("reload")
+    assert saved_character(g)["friends"] is None
 
 
 def check_quest_sources_absent() -> None:
@@ -2925,7 +2978,10 @@ def check_quest_sources_absent() -> None:
 def read_dungeon_loot(g, on_event) -> None:
     """/mcp loot in the forever flow: usage without a name (no saved dungeon list yet), then two dungeons."""
     g.SlashCmdList["WOWMCP"]("loot")
-    assert g.ejChanges == 0 and "Usage: /mcp loot" in last_chat(g), last_chat(g)
+    assert "Usage: /mcp loot" in last_chat(g), last_chat(g)
+    # Listing the instances of every tier moves the tier and puts it back (and the selected instance and boss).
+    state = g.ejState
+    assert g.ejTierCalls == 4 and (state.tier, state.instance, state.encounter) == (3, 240, 2), (g.ejTierCalls, dict(state))
     g.SlashCmdList["WOWMCP"]("loot deadmines")
     assert any("2 items are still loading" in line for line in g.chatlog.values())
     g.SlashCmdList["WOWMCP"]("loot WAILING")
@@ -2944,7 +3000,9 @@ def check_dungeon_loot(snapshot, g, mode: str) -> None:
     """The dungeonLoot section: read on request in forever, a reason without the API (modern), absent otherwise."""
     loot = snapshot["dungeonLoot"]
     if mode == "modern":
-        assert loot["unavailable"] == "no EJ_GetInstanceByIndex in this client" and loot["instances"] is None, dict(loot)
+        assert loot["unavailable"] == "no EJ_GetInstanceByIndex in this client" and len(loot["instances"]) == 0, dict(loot)
+        attempt = loot["lastAttempt"]
+        assert attempt["outcome"] == "unavailable" and attempt["query"] == "deadmines" and attempt["instancesInJournal"] == 0
         return
     if mode != "forever":
         assert loot is None, "without /mcp loot there is no dungeonLoot section"
@@ -2963,6 +3021,10 @@ def check_dungeon_loot(snapshot, g, mode: str) -> None:
     assert items["Emberstone Staff"]["pending"] is None and items["Emberstone Staff"]["itemLevel"] == 24
     assert items["Cruel Barb"]["pending"] is True and items["Cruel Barb"]["id"] == 5191
     assert {i["encounter"] for i in wc["items"].values()} == {"Lord Cobrahn", "Lord Pythas"}, "per-boss fallback"
+    attempt = loot["lastAttempt"]
+    assert (attempt["outcome"], attempt["query"], attempt["tiers"], attempt["inInstance"], attempt["itemsRead"]) == ("read", "WAILING", 3, False, 2)
+    assert attempt["instancesInJournal"] == 4 and list(attempt["instanceNames"].values()) == [
+        "The Deadmines", "Wailing Caverns", "Molten Core", "Blackfathom Deeps"], dict(attempt["instanceNames"])
 
 
 def check_dungeon_loot_targets() -> None:
@@ -2972,7 +3034,7 @@ def check_dungeon_loot_targets() -> None:
     on_event = event_dispatcher(g)
     on_event(None, "PLAYER_LOGIN")
     g.SlashCmdList["WOWMCP"]("reload")
-    assert g.ejChanges == 0, "a dump must not touch the Encounter Journal"
+    assert g.ejChanges == 0 and g.ejTierCalls == 0, "a dump must not touch the Encounter Journal"
     g.SlashCmdList["WOWMCP"]("loot")
     saved = g.WowMcpDB["characters"]["Piekasz"]["dungeonLoot"]
     # Level 20 fits The Deadmines (17-26) and Wailing Caverns (17-25), not Blackfathom Deeps (24-32) or a raid.
@@ -3001,6 +3063,36 @@ def check_dungeon_loot_targets() -> None:
     assert len(saved["instances"][1]["items"]) == 40 and saved["instances"][1]["truncated"] is True
     g.SlashCmdList["WOWMCP"]("loot no such place")
     assert "No dungeon in the Encounter Journal matches" in "".join(g.chatlog.values())
+    attempt = saved["lastAttempt"]
+    assert attempt["outcome"] == "noMatch" and attempt["query"] == "no such place" and attempt["instancesInJournal"] == 14, dict(attempt)
+    assert len(attempt["instanceNames"]) == 14 and len(saved["instances"]) == 8, "a no-match attempt keeps the saved loot"
+    # A journal that lists nothing because its addon is not loaded: the addon does not load it, it says what to do.
+    runtime.execute("""
+        function EJ_GetInstanceByIndex() return nil end
+        function C_AddOns.IsAddOnLoaded(name) return false end
+        function C_AddOns.IsAddOnLoadable(name) return true end
+    """)
+    g.SlashCmdList["WOWMCP"]("loot deadmines")
+    attempt = saved["lastAttempt"]
+    assert attempt["outcome"] == "noMatch" and attempt["instancesInJournal"] == 0 and attempt["journalLoaded"] is False
+    assert "has no data yet" in attempt["hint"] and "has no data yet" in last_chat(g), dict(attempt)
+
+
+def check_legacy_challenge_rules() -> None:
+    """The category rule without the reward-text achievements, and the category rule alone without the achievements section."""
+    drop = "table.remove(achievementData[14861], 4) table.remove(achievementData[14861], 3)"
+    for off in (False, True):
+        runtime, g, _ = load_addon("forever", drop)
+        on_event = event_dispatcher(g)
+        on_event(None, "PLAYER_LOGIN")
+        if off:
+            g.SlashCmdList["WOWMCP"]("off achievements")
+        g.SlashCmdList["WOWMCP"]("reload")
+        challenges = g.WowMcpDB["characters"]["Piekasz"]["legacy"]["challenges"]
+        assert [c["name"] for c in challenges["list"].values()] == ["Hunter: Level 25", "Warlock: Level 25"]
+        expected = "achievement category title contains Legacy"
+        expected += " (the achievements section was not available)" if off else " + reward text contains Legacy Point"  # the Hunter mock has both
+        assert challenges["matchedBy"] == expected, challenges["matchedBy"]
 
 
 ELDER_NIGHTSABER = ('{ guid = "Creature-0-5827-0-12-2033-00004A1B2C", name = "Elder Nightsaber", level = 12, family = "Cat",'
@@ -3542,6 +3634,7 @@ def main() -> int:
     if mode == "forever":
         check_quest_sources_absent()
         check_unnamed_profession_window()
+        check_battle_net_friends()
         check_waypoint_links()
         check_secret_group_range()
         check_passed_guide_steps()
@@ -3550,6 +3643,7 @@ def main() -> int:
         check_dungeon_loot_targets()
         check_beast_store_edges()
         check_class_buff_group_edges()
+        check_legacy_challenge_rules()
         check_real_lifecycle()
         print("lifecycle from the real game: OK")
     return 0

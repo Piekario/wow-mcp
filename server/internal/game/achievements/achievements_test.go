@@ -49,8 +49,8 @@ func TestProgress(t *testing.T) {
 func TestViews(t *testing.T) {
 	s := fixtures.Forever(t)
 	summary := analyse(t, s, Query{})
-	if !summary.Found || summary.View != ViewSummary || len(summary.Listed) != 4 {
-		t.Fatalf("summary: the four dated achievements, got %v", names(summary.Listed))
+	if !summary.Found || summary.View != ViewSummary || len(summary.Listed) != 5 {
+		t.Fatalf("summary: the five dated achievements, got %v", names(summary.Listed))
 	}
 	if summary.Listed[0].Name != "Hunter: Level 25" || summary.Undated != 1 {
 		t.Errorf("newest first, the undated one counted: %v, undated %d", names(summary.Listed), summary.Undated)
@@ -61,11 +61,11 @@ func TestViews(t *testing.T) {
 	}
 	closest := analyse(t, s, Query{View: "closest"})
 	got := names(closest.Listed)
-	if len(got) != 4 || got[0] != "100 Quests Completed" || got[1] != "Explore Darkshore" || closest.WithoutProgress != 1 {
+	if len(got) != 5 || got[0] != "100 Quests Completed" || got[1] != "Explore Darkshore" || closest.WithoutProgress != 1 {
 		t.Errorf("closest: %v, without progress %d", got, closest.WithoutProgress)
 	}
 	quests := analyse(t, s, Query{View: "all", Category: "quests"})
-	if len(quests.Matched) != 4 {
+	if len(quests.Matched) != 6 {
 		t.Errorf("a parent category includes its subcategories: %v", names(quests.Matched))
 	}
 	if _, err := Analyse(Section{}, false, Query{View: "nope"}); err == nil {

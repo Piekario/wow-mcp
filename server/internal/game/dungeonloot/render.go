@@ -42,13 +42,20 @@ func (r Report) Render() map[string]any {
 			"note": "The dump has no dungeon loot yet. If /mcp loot says the client does not give addons the Encounter Journal, " +
 				"type /mcp probe so the probe section shows which journal functions the client has. " + noTables}
 	case Unavailable:
-		return map[string]any{"available": false, "unavailable": r.Reason,
+		out := map[string]any{"available": false, "unavailable": r.Reason,
 			"note": "When /mcp loot was typed, the client did not give addons the Encounter Journal. Type /mcp probe in game and " +
 				"look at namespaces.C_EncounterJournal, the EJ_ globals and addons.Blizzard_EncounterJournal in the probe section " +
 				"(wow_section). " + noTables}
+		r.addAttempt(out)
+		return out
+	case NothingRead:
+		out := map[string]any{"available": false, "howTo": howToRead, "note": r.nothingReadNote()}
+		r.addAttempt(out)
+		return out
 	}
 	out := map[string]any{"available": true, "level": r.Character.Level, "upgradesOnly": r.UpgradesOnly,
 		"method": r.method(), "proficiencyNote": proficiencyNote, "dungeons": r.renderDungeons()}
+	r.addAttempt(out)
 	if r.Character.Class != "" {
 		out["class"] = r.Character.Class
 	}
@@ -65,6 +72,53 @@ func (r Report) Render() map[string]any {
 		out["note"] = "No item from these dungeons would be an upgrade for the equipped gear. upgradesOnly=false lists every item with its verdict."
 	}
 	return out
+}
+
+// nothingReadNote says what to do after a /mcp loot that read no dungeon, from what the addon recorded.
+func (r Report) nothingReadNote() string {
+	a := r.Attempt
+	switch {
+	case a.Hint != "":
+		return a.Hint + " " + noTables
+	case a.Offered == 0:
+		return "/mcp loot found no dungeon in the Encounter Journal (instancesInJournal is 0). Open the Encounter Journal window once " +
+			"with the game's own UI, then type /mcp loot <dungeon> and /mcp reload. If it stays empty, type /mcp probe. " + noTables
+	case a.Outcome == "readFailed":
+		return "The journal lists dungeons, but reading one failed (see error). " + noTables
+	}
+	return fmt.Sprintf("/mcp loot %s matched no dungeon. Tell the player exactly what to type: /mcp loot <one of journalOffers>, then /mcp reload. %s",
+		strconv.Quote(a.Query), noTables)
+}
+
+// addAttempt puts the last /mcp loot attempt and the dungeon names the journal offered into the answer.
+func (r Report) addAttempt(out map[string]any) {
+	a := r.Attempt
+	if a == nil {
+		return
+	}
+	attempt := map[string]any{"outcome": a.Outcome, "query": a.Query, "instancesInJournal": a.Offered, "inInstance": a.InInst}
+	if a.At.Known {
+		attempt["at"] = snapshot.FormatTime(a.At.At)
+	}
+	if a.Tiers > 0 {
+		attempt["tiers"] = a.Tiers
+	}
+	if a.Error != "" {
+		attempt["error"] = a.Error
+	}
+	if a.Hint != "" {
+		attempt["hint"] = a.Hint
+	}
+	if a.Outcome == "read" {
+		attempt["itemsRead"] = a.ItemsRead
+	}
+	out["lastAttempt"] = attempt
+	if len(a.Names) > 0 {
+		out["journalOffers"] = a.Names
+		if a.Offered > int64(len(a.Names)) {
+			out["journalOffersNote"] = fmt.Sprintf("the first %d of %d dungeons and raids the journal lists", len(a.Names), a.Offered)
+		}
+	}
 }
 
 func (r Report) upgrades() int {

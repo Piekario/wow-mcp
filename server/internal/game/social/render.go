@@ -30,13 +30,16 @@ func View(s snapshot.Snapshot, q Query, fresh snapshot.Freshness) (map[string]an
 	case q.LevelRange > 0:
 		levelRange = int64(q.LevelRange)
 	}
+	if q.Limit < AllMembers {
+		return nil, fmt.Errorf("limit must be positive (default %d) or -1 for every member, got %d", DefaultMemberLimit, q.Limit)
+	}
 	out := map[string]any{"privacy": privacyNote}
 	if f := Friends(s, fresh); f != nil {
 		out["friends"] = f
 	} else {
 		out["friendsHint"] = friendsHint
 	}
-	if g := Guild(s, q.IncludeOffline, fresh); g != nil {
+	if g := guildView(s, q, fresh); g != nil {
 		out["guild"] = g
 	} else {
 		out["guildHint"] = guildHint
@@ -80,6 +83,10 @@ func Friends(s snapshot.Snapshot, fresh snapshot.Freshness) map[string]any {
 
 // Guild describes the guild: name, the player's rank, counts and online members (everyone when includeOffline); nil without a guild section.
 func Guild(s snapshot.Snapshot, includeOffline bool, fresh snapshot.Freshness) map[string]any {
+	return guildView(s, Query{IncludeOffline: includeOffline}, fresh)
+}
+
+func guildView(s snapshot.Snapshot, q Query, fresh snapshot.Freshness) map[string]any {
 	g := readGuild(s)
 	if !g.Saved {
 		return nil
@@ -101,9 +108,23 @@ func Guild(s snapshot.Snapshot, includeOffline bool, fresh snapshot.Freshness) m
 	g.Capture.render(out, fresh)
 
 	out["summary"] = Summarize(g.people()).render()
-	roster := g.Roster(includeOffline)
-	members := make([]any, len(roster.Shown))
-	for i, m := range roster.Shown {
+	g.renderMembers(out, q, readSelf(s))
+	if g.OnlineOnly {
+		out["onlineOnlyNote"] = "The guild is large (over 200 people), so the addon saved only online members; the total and online counts come from the client."
+	}
+	return out
+}
+
+// renderMembers lists a window of the roster (see Window) with how many were left out and how to get them.
+func (g GuildState) renderMembers(out map[string]any, q Query, self Self) {
+	limit := q.Limit
+	if limit == 0 {
+		limit = DefaultMemberLimit
+	}
+	roster := g.Roster(q.IncludeOffline)
+	w := roster.Window(self, q.Search, limit)
+	members := make([]any, len(w.Members))
+	for i, m := range w.Members {
 		e := present(map[string]any{"name": m.Name, "rank": m.Rank, "rankIndex": m.RankIndex, "level": m.Level, "class": m.Class, "zone": m.Zone})
 		if m.Note != "" {
 			e["note"] = m.Note
@@ -115,17 +136,21 @@ func Guild(s snapshot.Snapshot, includeOffline bool, fresh snapshot.Freshness) m
 		members[i] = e
 	}
 	label := "onlineMembers"
-	if includeOffline {
+	if q.IncludeOffline {
 		label = "members"
 	}
 	out[label] = members
-	if !includeOffline && roster.OfflineHidden > 0 {
+	out["memberList"] = map[string]any{"shown": len(w.Members), "total": w.Matching, "notShown": w.NotShown,
+		"order": "closest to the character's level first, then by name"}
+	if w.NotShown > 0 {
+		out["memberList"].(map[string]any)["howToGetMore"] = "pass limit (a larger number, or -1 for all), or query to filter by name, class, zone or rank"
+	}
+	if q.Search != "" {
+		out["memberList"].(map[string]any)["query"] = q.Search
+	}
+	if !q.IncludeOffline && roster.OfflineHidden > 0 {
 		out["offlineHidden"] = roster.OfflineHidden
 	}
-	if g.OnlineOnly {
-		out["onlineOnlyNote"] = "The guild is large (over 200 people), so the addon saved only online members; the total and online counts come from the client."
-	}
-	return out
 }
 
 // PvP describes the pvp section (honorable kills, honor, rank); nil when the dump has no section.

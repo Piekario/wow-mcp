@@ -4,10 +4,13 @@
 package dungeonloot
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 
 	"wowmcp/internal/fixtures"
 	"wowmcp/internal/game/items"
+	"wowmcp/internal/snapshot"
 )
 
 func verdicts(t *testing.T, r Report, dungeon string) map[string]Verdict {
@@ -101,4 +104,38 @@ func TestUnknownClassKeepsItems(t *testing.T) {
 	if v := verdicts(t, r, "The Deadmines")["Cookie's Stirring Rod"]; v == NotForClass {
 		t.Error("without a class nothing is left out for its type")
 	}
+}
+
+func TestNothingReadShowsLastAttempt(t *testing.T) {
+	s := fixtures.Forever(t)
+	s["dungeonLoot"] = map[string]any{
+		"instances": []any{},
+		"lastAttempt": map[string]any{"at": int64(1794760000), "query": "deadmins", "outcome": "noMatch", "instancesInJournal": int64(31),
+			"tiers": int64(3), "inInstance": false, "instanceNames": []any{"The Deadmines", "Wailing Caverns"}},
+	}
+	r, err := Analyse(s, Query{}, items.Scoring{})
+	if err != nil || r.State != NothingRead {
+		t.Fatalf("state %v, err %v", r.State, err)
+	}
+	out := r.Render()
+	text := fmt.Sprint(out)
+	for _, want := range []string{"journalOffers", "The Deadmines", "noMatch", "deadmins", "journalOffersNote"} {
+		if !strings.Contains(text, want) {
+			t.Errorf("the answer lacks %q: %v", want, out)
+		}
+	}
+	s["dungeonLoot"].(map[string]any)["lastAttempt"].(map[string]any)["instancesInJournal"] = int64(0)
+	s["dungeonLoot"].(map[string]any)["lastAttempt"].(map[string]any)["hint"] = "The journal has no data yet."
+	if note := fmt.Sprint(mustRender(t, s)["note"]); !strings.Contains(note, "no data yet") {
+		t.Errorf("hint: %v", note)
+	}
+}
+
+func mustRender(t *testing.T, s snapshot.Snapshot) map[string]any {
+	t.Helper()
+	r, err := Analyse(s, Query{}, items.Scoring{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return r.Render()
 }

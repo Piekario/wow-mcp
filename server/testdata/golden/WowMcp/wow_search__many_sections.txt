@@ -332,7 +332,7 @@
       "truncated": false
     },
     {
-      "count": 19,
+      "count": 22,
       "hits": [
         {
           "label": "Classic",
@@ -341,7 +341,7 @@
             "achievements",
             "Classic"
           ],
-          "summary": "completed 1"
+          "summary": "completed 2"
         },
         {
           "label": "Exploration",
@@ -377,6 +377,33 @@
             "achievements",
             "Ashenvale Quests",
             "Complete quests in Ashenvale"
+          ]
+        },
+        {
+          "label": "Novice Mage",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Novice Mage"
+          ],
+          "summary": "points 0, completed, 2026-10-01"
+        },
+        {
+          "label": "Journeyman Alchemist",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Journeyman Alchemist"
+          ],
+          "summary": "points 0"
+        },
+        {
+          "label": "150 Alchemy Skill",
+          "matchedIn": "text",
+          "path": [
+            "achievements",
+            "Journeyman Alchemist",
+            "150 Alchemy Skill"
           ]
         },
         {
@@ -488,29 +515,11 @@
             "Explore Kalimdor",
             "Desolace"
           ]
-        },
-        {
-          "label": "Feralas",
-          "matchedIn": "text",
-          "path": [
-            "achievements",
-            "Explore Kalimdor",
-            "Feralas"
-          ]
-        },
-        {
-          "label": "Thousand Needles",
-          "matchedIn": "text",
-          "path": [
-            "achievements",
-            "Explore Kalimdor",
-            "Thousand Needles"
-          ]
         }
       ],
       "section": "achievements",
-      "shown": 19,
-      "truncated": false
+      "shown": 20,
+      "truncated": true
     },
     {
       "count": 6,
@@ -676,6 +685,6 @@
     "character": "Piekasz",
     "dumpedAt": "2026-11-15 16:50:00"
   },
-  "totalHits": 59,
-  "truncated": false
+  "totalHits": 62,
+  "truncated": true
 }

@@ -16,6 +16,8 @@ local MAX_LISTED_CRITERIA = 8   -- criteria kept per achievement (the missing on
 local MAX_READ_CRITERIA = 25    -- criteria read per achievement
 local CRITERIA_BUDGET = 3000    -- criteria read per dump over all achievements
 
+ns.Achievements = {}          -- latest: this dump's result, for the Legacy challenges (read after this section)
+
 local layout                    -- { categories, slots = { {categoryID, index, id} }, notListed }; nil = read on the next dump
 local completedCache = {}       -- achievement ID -> entry, once completed
 
@@ -80,6 +82,7 @@ local function readCategories(categories)
 end
 
 local function collectAchievements()
+    ns.Achievements.latest = nil
     if not (Compat.resolve("GetCategoryList") and Compat.resolve("GetAchievementInfo")) then return nil end
     if not layout or layout.stale then layout = buildLayout() end
     if #layout.categories == 0 then return nil end
@@ -104,6 +107,7 @@ local function collectAchievements()
     end
     result.notListed = Compat.pick(current.notListed > 0, current.notListed, nil)
     result.criteriaSkipped = Compat.pick(skipped > 0, skipped, nil)
+    ns.Achievements.latest = result
     return result
 end
 

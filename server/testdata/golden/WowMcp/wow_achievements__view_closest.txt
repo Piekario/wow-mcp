@@ -58,10 +58,22 @@
       "name": "Ashenvale Quests",
       "points": 10,
       "progressPercent": 15
+    },
+    {
+      "category": "Quests \u003e Classic",
+      "completed": false,
+      "description": "Reach 150 Alchemy skill.",
+      "missing": [
+        "150 Alchemy Skill (0/150)"
+      ],
+      "name": "Journeyman Alchemist",
+      "points": 0,
+      "progressPercent": 0,
+      "reward": "Earn 1 Legacy Point."
     }
   ],
-  "completed": 3,
-  "completedPercent": 42.9,
+  "completed": 4,
+  "completedPercent": 44.4,
   "coverage": "The addon lists up to 600 achievements of this character (notListed counts the rest), with the completion date of completed ones and, for incomplete ones only, up to 8 criteria (missing ones first). Account-wide, guild and comparison data are not in the dump.",
   "note": "progressPercent comes from the criteria: the count of a single counted criterion (74/100), otherwise the share of criteria done.",
   "points": 30,
@@ -70,6 +82,6 @@
     "character": "Piekasz",
     "dumpedAt": "2026-11-15 16:50:00"
   },
-  "total": 7,
+  "total": 9,
   "view": "closest"
 }

@@ -1,0 +1,5 @@
+# tool wow_social variant=bad_limit_type
+# args: {"limit":"ten"}
+# isError: true
+--- content[0] ---
+validating "arguments": validating root: validating /properties/limit: type: ten has type "string", want "integer"

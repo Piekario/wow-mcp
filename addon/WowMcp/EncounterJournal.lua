@@ -13,6 +13,7 @@ local EJ = {}
 ns.EncounterJournal = EJ
 
 local MAX_INSTANCES = 150
+local MAX_TIERS = 12
 local MAX_ENCOUNTERS = 20
 
 local REQUIRED = { "EJ_GetInstanceByIndex", "EJ_SelectInstance", "EJ_GetEncounterInfoByIndex", "EJ_GetNumLoot" }
@@ -33,35 +34,71 @@ function EJ.missingApi()
     return nil
 end
 
--- Instances of the journal's current tier: { id, name, raid, mapID }. EJ_GetInstanceByIndex returns
+-- Instances of one tier (or of the current one): { id, name, raid, mapID, tier }. EJ_GetInstanceByIndex returns
 -- instanceID, name, description, bgImage, buttonImage1, loreImage, buttonImage2, dungeonAreaMapID, link,
 -- shouldDisplayDifficulty, mapID (11: the instance's map ID, as in GetInstanceInfo and the group finder).
-function EJ.instances()
-    local list = {}
+local function scanTier(list, seen, tier)
     for _, isRaid in ipairs({ false, true }) do
         for index = 1, MAX_INSTANCES do
             local r = callFirst({ "EJ_GetInstanceByIndex" }, index, isRaid)
             local id = r and numberOrNil(r[1])
             local name = r and plain(r[2])
             if not (id and type(name) == "string") then break end
-            list[#list + 1] = { id = id, name = name, raid = isRaid or nil, mapID = numberOrNil(r[11]) }
+            if not seen[id] then
+                seen[id] = true
+                list[#list + 1] = { id = id, name = name, raid = isRaid or nil, mapID = numberOrNil(r[11]), tier = tier }
+            end
         end
     end
-    return list
+end
+
+local rememberState, restoreSelection
+
+-- Instances of every journal tier (the journal lists one tier at a time), and how many tiers there are (nil when the
+-- client has no tiers). The tier, instance and boss the window had selected are put back afterwards.
+function EJ.instances()
+    local list, seen = {}, {}
+    local tiers = numberOrNil(ns.Compat.firstValue({ "EJ_GetNumTiers" }))
+    if not (tiers and tiers > 0 and resolve("EJ_SelectTier")) then
+        scanTier(list, seen, nil)
+        return list, nil
+    end
+    local state = rememberState()
+    pcall(function()
+        for tier = 1, math.min(tiers, MAX_TIERS) do
+            if callFirst({ "EJ_SelectTier" }, tier) then scanTier(list, seen, tier) end
+        end
+    end)
+    restoreSelection(state)
+    return list, tiers
+end
+
+local function isInInstance()
+    local inside = callFirst({ "IsInInstance" })
+    return inside ~= nil and plain(inside[1]) == true
+end
+EJ.isInInstance = isInInstance
+
+-- True when the journal's addon is loadable but not loaded yet, so the journal has no data to give.
+function EJ.notLoadedYet()
+    local loaded = callFirst({ "C_AddOns.IsAddOnLoaded", "IsAddOnLoaded" }, "Blizzard_EncounterJournal")
+    if not loaded or plain(loaded[1]) ~= false then return false end
+    local loadable = callFirst({ "C_AddOns.IsAddOnLoadable", "IsAddOnLoadable" }, "Blizzard_EncounterJournal")
+    return not loadable or plain(loadable[1]) ~= false
 end
 
 -- The journal instance of the dungeon the character is in, or nil outside an instance.
 function EJ.currentInstanceID()
-    local inside = callFirst({ "IsInInstance" })
-    if not (inside and plain(inside[1]) == true) then return nil end
+    if not isInInstance() then return nil end
     local uiMapID = ns.Compat.firstValue({ "C_Map.GetBestMapForUnit" }, "player")
     if type(uiMapID) ~= "number" then return nil end
     return numberOrNil(ns.Compat.firstValue({ "C_EncounterJournal.GetInstanceForGameMap", "EJ_GetInstanceForMap" }, uiMapID))
 end
 
 -- The journal window's selection and loot filters, to put back after a read.
-local function rememberState()
+function rememberState()
     local state = {}
+    state.tier = numberOrNil(ns.Compat.firstValue({ "EJ_GetCurrentTier" }))
     local frame = _G.EncounterJournal
     if type(frame) == "table" then
         state.instanceID, state.encounterID = numberOrNil(frame.instanceID), numberOrNil(frame.encounterID)
@@ -79,17 +116,26 @@ local function clearFilters(state)
     if state.slotFilter then callFirst({ "C_EncounterJournal.ResetSlotFilter", "EJ_ResetSlotFilter" }) end
 end
 
--- Returns true when everything the read changed could be put back.
-local function restoreState(state)
+-- The tier, instance and boss the window had selected (a tier change does not keep the instance in every client).
+function restoreSelection(state)
     local restored = true
     local function call(paths, ...)
         if not callFirst(paths, ...) then restored = false end
     end
-    if state.classID then call({ "EJ_SetLootFilter" }, state.classID, state.specID or 0) end
-    if state.slotFilter then call({ "C_EncounterJournal.SetSlotFilter", "EJ_SetSlotFilter" }, state.slotFilter) end
+    if state.tier then call({ "EJ_SelectTier" }, state.tier) end
     if state.instanceID then call({ "EJ_SelectInstance" }, state.instanceID) end
     if state.encounterID then call({ "EJ_SelectEncounter" }, state.encounterID) end
     return restored
+end
+
+-- Returns true when everything the read changed could be put back.
+local function restoreState(state)
+    local restored = true
+    if state.classID and not callFirst({ "EJ_SetLootFilter" }, state.classID, state.specID or 0) then restored = false end
+    if state.slotFilter and not callFirst({ "C_EncounterJournal.SetSlotFilter", "EJ_SetSlotFilter" }, state.slotFilter) then
+        restored = false
+    end
+    return restoreSelection(state) and restored
 end
 
 -- Bosses: { id, name }. EJ_GetEncounterInfoByIndex returns name, description, journalEncounterID, ...
@@ -155,6 +201,7 @@ function EJ.read(instance, maxItems)
     local state = rememberState()
     local ok, result = pcall(function()
         clearFilters(state)
+        if instance.tier then callFirst({ "EJ_SelectTier" }, instance.tier) end
         if not callFirst({ "EJ_SelectInstance" }, instance.id) then error("EJ_SelectInstance failed") end
         local encounters = readEncounters(instance.id)
         local rows, truncated = readLoot(encounters, maxItems)
