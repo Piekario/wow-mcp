@@ -30,11 +30,11 @@ WowMcpDB = {
 ["total"] = 2,
 }, -- [4]
 {
-["completed"] = 1,
+["completed"] = 2,
 ["id"] = 14861,
 ["name"] = "Classic",
 ["parentID"] = 96,
-["total"] = 2,
+["total"] = 4,
 }, -- [5]
 {
 ["completed"] = 1,
@@ -43,7 +43,7 @@ WowMcpDB = {
 ["total"] = 3,
 }, -- [6]
 },
-["completed"] = 5,
+["completed"] = 6,
 ["list"] = {
 {
 ["category"] = 92,
@@ -133,6 +133,38 @@ WowMcpDB = {
 ["points"] = 10,
 }, -- [7]
 {
+["category"] = 14861,
+["completed"] = true,
+["completedOn"] = "2026-10-01",
+["description"] = "Reach level 25 for the first time on a Mage.",
+["earnedByMe"] = true,
+["id"] = 5500,
+["name"] = "Novice Mage",
+["points"] = 0,
+["reward"] = "Earn 1 Legacy Point.",
+}, -- [8]
+{
+["category"] = 14861,
+["completed"] = false,
+["criteria"] = {
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 150,
+["text"] = "150 Alchemy Skill",
+}, -- [1]
+},
+["criteriaDone"] = 0,
+["criteriaRead"] = 1,
+["criteriaTotal"] = 1,
+["description"] = "Reach 150 Alchemy skill.",
+["earnedByMe"] = false,
+["id"] = 5501,
+["name"] = "Journeyman Alchemist",
+["points"] = 0,
+["reward"] = "Earn 1 Legacy Point.",
+}, -- [9]
+{
 ["category"] = 97,
 ["completed"] = true,
 ["completedOn"] = "2026-08-30",
@@ -141,7 +173,7 @@ WowMcpDB = {
 ["id"] = 768,
 ["name"] = "Explore Teldrassil",
 ["points"] = 10,
-}, -- [8]
+}, -- [10]
 {
 ["category"] = 97,
 ["completed"] = false,
@@ -179,7 +211,7 @@ WowMcpDB = {
 ["id"] = 844,
 ["name"] = "Explore Darkshore",
 ["points"] = 10,
-}, -- [9]
+}, -- [11]
 {
 ["category"] = 97,
 ["completed"] = false,
@@ -242,10 +274,10 @@ WowMcpDB = {
 ["name"] = "Explore Kalimdor",
 ["points"] = 25,
 ["reward"] = "Reward: Title - the Wanderer",
-}, -- [10]
+}, -- [12]
 },
 ["points"] = 41,
-["total"] = 10,
+["total"] = 12,
 },
 ["actionBars"] = {
 {
@@ -1285,7 +1317,9 @@ WowMcpDB = {
 ["list"] = {
 {
 ["category"] = "Classes",
+["categoryID"] = 15501,
 ["completed"] = true,
+["completedOn"] = "2026-11-20",
 ["description"] = "Reach level 25 with a Hunter.",
 ["earnedByMe"] = true,
 ["id"] = 70001,
@@ -1295,6 +1329,7 @@ WowMcpDB = {
 }, -- [1]
 {
 ["category"] = "Classes",
+["categoryID"] = 15501,
 ["completed"] = false,
 ["description"] = "Reach level 25 with a Warlock.",
 ["earnedByMe"] = false,
@@ -1302,8 +1337,39 @@ WowMcpDB = {
 ["name"] = "Warlock: Level 25",
 ["points"] = 1,
 }, -- [2]
+{
+["category"] = "Classic",
+["categoryID"] = 14861,
+["completed"] = true,
+["completedOn"] = "2026-10-01",
+["description"] = "Reach level 25 for the first time on a Mage.",
+["earnedByMe"] = true,
+["id"] = 5500,
+["name"] = "Novice Mage",
+["points"] = 0,
+["reward"] = "Earn 1 Legacy Point.",
+}, -- [3]
+{
+["category"] = "Classic",
+["categoryID"] = 14861,
+["completed"] = false,
+["criteria"] = {
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 150,
+["text"] = "150 Alchemy Skill",
+}, -- [1]
 },
-["matchedBy"] = "achievement category title contains Legacy",
+["description"] = "Reach 150 Alchemy skill.",
+["earnedByMe"] = false,
+["id"] = 5501,
+["name"] = "Journeyman Alchemist",
+["points"] = 0,
+["reward"] = "Earn 1 Legacy Point.",
+}, -- [4]
+},
+["matchedBy"] = "achievement category title contains Legacy + reward text contains Legacy Point",
 },
 ["configs"] = {
 {
@@ -3269,23 +3335,23 @@ true, -- [1]
 ["slowest"] = {
 {
 ["ms"] = 2.5,
-["name"] = "auras",
+["name"] = "actionBars",
 }, -- [1]
 {
 ["ms"] = 2.5,
-["name"] = "bags",
+["name"] = "auras",
 }, -- [2]
 {
 ["ms"] = 2.5,
-["name"] = "equipmentSets",
+["name"] = "bags",
 }, -- [3]
 {
 ["ms"] = 2.5,
-["name"] = "guide",
+["name"] = "currencies",
 }, -- [4]
 {
 ["ms"] = 2.5,
-["name"] = "macros",
+["name"] = "group",
 }, -- [5]
 },
 ["totalMs"] = 77.5,

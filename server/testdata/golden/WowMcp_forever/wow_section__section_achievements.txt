@@ -31,11 +31,11 @@
         "total": 2
       },
       {
-        "completed": 1,
+        "completed": 2,
         "id": 14861,
         "name": "Classic",
         "parentID": 96,
-        "total": 2
+        "total": 4
       },
       {
         "completed": 1,
@@ -44,7 +44,7 @@
         "total": 3
       }
     ],
-    "completed": 5,
+    "completed": 6,
     "list": [
       {
         "category": 92,
@@ -132,6 +132,38 @@
         "id": 4896,
         "name": "Ashenvale Quests",
         "points": 10
+      },
+      {
+        "category": 14861,
+        "completed": true,
+        "completedOn": "2026-10-01",
+        "description": "Reach level 25 for the first time on a Mage.",
+        "earnedByMe": true,
+        "id": 5500,
+        "name": "Novice Mage",
+        "points": 0,
+        "reward": "Earn 1 Legacy Point."
+      },
+      {
+        "category": 14861,
+        "completed": false,
+        "criteria": [
+          {
+            "completed": false,
+            "quantity": 0,
+            "required": 150,
+            "text": "150 Alchemy Skill"
+          }
+        ],
+        "criteriaDone": 0,
+        "criteriaRead": 1,
+        "criteriaTotal": 1,
+        "description": "Reach 150 Alchemy skill.",
+        "earnedByMe": false,
+        "id": 5501,
+        "name": "Journeyman Alchemist",
+        "points": 0,
+        "reward": "Earn 1 Legacy Point."
       },
       {
         "category": 97,
@@ -246,7 +278,7 @@
       }
     ],
     "points": 41,
-    "total": 10
+    "total": 12
   },
   "snapshot": {
     "ageMinutes": 30,

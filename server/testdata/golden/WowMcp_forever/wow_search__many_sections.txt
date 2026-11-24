@@ -791,7 +791,7 @@
       "truncated": false
     },
     {
-      "count": 24,
+      "count": 27,
       "hits": [
         {
           "label": "General",
@@ -827,7 +827,7 @@
             "achievements",
             "Classic"
           ],
-          "summary": "completed 1"
+          "summary": "completed 2"
         },
         {
           "label": "Exploration",
@@ -882,6 +882,33 @@
             "achievements",
             "Ashenvale Quests",
             "Complete quests in Ashenvale"
+          ]
+        },
+        {
+          "label": "Novice Mage",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Novice Mage"
+          ],
+          "summary": "points 0, completed, 2026-10-01"
+        },
+        {
+          "label": "Journeyman Alchemist",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Journeyman Alchemist"
+          ],
+          "summary": "points 0"
+        },
+        {
+          "label": "150 Alchemy Skill",
+          "matchedIn": "text",
+          "path": [
+            "achievements",
+            "Journeyman Alchemist",
+            "150 Alchemy Skill"
           ]
         },
         {
@@ -948,33 +975,6 @@
             "Explore Kalimdor"
           ],
           "summary": "points 25"
-        },
-        {
-          "label": "Ashenvale",
-          "matchedIn": "text",
-          "path": [
-            "achievements",
-            "Explore Kalimdor",
-            "Ashenvale"
-          ]
-        },
-        {
-          "label": "The Barrens",
-          "matchedIn": "text",
-          "path": [
-            "achievements",
-            "Explore Kalimdor",
-            "The Barrens"
-          ]
-        },
-        {
-          "label": "Durotar",
-          "matchedIn": "text",
-          "path": [
-            "achievements",
-            "Explore Kalimdor",
-            "Durotar"
-          ]
         }
       ],
       "section": "achievements",
@@ -1144,6 +1144,6 @@
     "character": "Piekasz",
     "dumpedAt": "2026-11-15 16:50:00"
   },
-  "totalHits": 101,
+  "totalHits": 104,
   "truncated": true
 }

@@ -501,11 +501,17 @@ func goldenCases() []goldenCase {
 		tc("wow_social", "include_offline", args{"includeOffline": true}),
 		tc("wow_social", "include_offline_false", args{"includeOffline": false}),
 		tc("wow_social", "bad_type", args{"includeOffline": "yes"}),
+		tc("wow_social", "limit_one", args{"limit": 1}),
+		tc("wow_social", "limit_all", args{"limit": -1, "includeOffline": true}),
+		ir(tc("wow_social", "limit_invalid", args{"limit": -2})),
+		tc("wow_social", "query_class", args{"query": "priest"}),
+		tc("wow_social", "query_nomatch", args{"query": "zzzz"}),
+		tc("wow_social", "bad_limit_type", args{"limit": "ten"}),
 		tc("wow_social", "level_range", args{"levelRange": 1}),
 		tc("wow_social", "level_range_wide", args{"levelRange": 50}),
 		ir(tc("wow_social", "level_range_negative", args{"levelRange": -3})),
 		tc("wow_social", "bad_level_range_type", args{"levelRange": "five"}),
-		ir(tc("wow_social", "all_args", args{"character": charKnown, "includeOffline": true, "levelRange": 10})),
+		ir(tc("wow_social", "all_args", args{"character": charKnown, "includeOffline": true, "levelRange": 10, "limit": 2, "query": "a"})),
 	)
 	add(
 		ir(tc("wow_compare_characters", "one_character_account", args{})), // the fixtures have one character: an error instead of a comparison

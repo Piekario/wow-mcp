@@ -48,11 +48,27 @@ type Dungeon struct {
 	Truncated  bool // the addon kept only the first items
 }
 
+// Attempt is what the last /mcp loot found: Outcome is read, noMatch, readFailed or unavailable. Names are the first
+// dungeons the journal offered (the addon keeps 40), Offered how many it listed in all.
+type Attempt struct {
+	At        snapshot.Captured
+	Query     string
+	Outcome   string
+	Offered   int64
+	Names     []string
+	Tiers     int64
+	InInst    bool
+	Error     string
+	Hint      string
+	ItemsRead int64
+}
+
 // Section is the dungeonLoot section. Unavailable is the addon's reason when the client has no journal API.
 type Section struct {
 	Present     bool
 	Unavailable string
 	Dungeons    []Dungeon
+	LastAttempt *Attempt
 }
 
 type Character struct {
@@ -100,6 +116,7 @@ type State int
 const (
 	Absent      State = iota // no /mcp loot yet
 	Unavailable              // the client has no journal API
+	NothingRead              // /mcp loot was typed but read no dungeon (no match, empty journal, read failed)
 	Ready
 )
 
@@ -107,6 +124,7 @@ const (
 type Report struct {
 	State        State
 	Reason       string
+	Attempt      *Attempt
 	Character    Character
 	UpgradesOnly bool
 	Query        Query
@@ -124,12 +142,15 @@ func Analyse(s snapshot.Snapshot, q Query, sc items.Scoring) (Report, error) {
 		return Report{}, err
 	}
 	sec := readSection(s)
-	r := Report{Character: readCharacter(s), UpgradesOnly: q.upgradesOnly(), Query: q}
+	r := Report{Character: readCharacter(s), UpgradesOnly: q.upgradesOnly(), Query: q, Attempt: sec.LastAttempt}
 	switch {
 	case len(sec.Dungeons) > 0:
 		r.State = Ready
 	case sec.Present && sec.Unavailable != "":
 		r.State, r.Reason = Unavailable, sec.Unavailable
+		return r, nil
+	case sec.Present && sec.LastAttempt != nil:
+		r.State = NothingRead
 		return r, nil
 	default:
 		return r, nil
