@@ -2783,26 +2783,26 @@ true, -- [1]
 ["slowest"] = {
 {
 ["ms"] = 2.5,
-["name"] = "actionBars",
+["name"] = "completedQuests",
 }, -- [1]
 {
 ["ms"] = 2.5,
-["name"] = "character",
+["name"] = "cooldowns",
 }, -- [2]
 {
 ["ms"] = 2.5,
-["name"] = "currencies",
+["name"] = "dungeons",
 }, -- [3]
 {
 ["ms"] = 2.5,
-["name"] = "equipment",
+["name"] = "guide",
 }, -- [4]
 {
 ["ms"] = 2.5,
-["name"] = "group",
+["name"] = "professions",
 }, -- [5]
 },
-["totalMs"] = 64.5,
+["totalMs"] = 68,
 },
 ["trainer"] = {
 ["capturedAt"] = 1794760000,
@@ -3070,6 +3070,229 @@ true, -- [1]
 },
 ["since"] = 1794760000,
 ["total"] = 0,
+},
+["zoneQuests"] = {
+["currentZone"] = "Stormwind City",
+["factionRaceMasks"] = {
+["Alliance"] = 77,
+["Horde"] = 178,
+},
+["player"] = {
+["classMask"] = 4,
+["raceMask"] = 8,
+},
+["zones"] = {
+{
+["areaID"] = 1519,
+["current"] = true,
+["name"] = "Stormwind City",
+["questCount"] = 4,
+["quests"] = {
+{
+["id"] = 343,
+["level"] = 25,
+["name"] = "Speaking of Fortitude",
+["requiredLevel"] = 20,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Cerellean Whiteclaw",
+["zone"] = "Darkshore",
+},
+}, -- [1]
+{
+["id"] = 456,
+["level"] = 10,
+["name"] = "Report to Thomas",
+["next"] = 457,
+["requiredLevel"] = 8,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Osric Strang",
+["x"] = 74.6,
+["y"] = 40.2,
+},
+}, -- [2]
+{
+["id"] = 457,
+["level"] = 11,
+["name"] = "Harlan Needs a Resupply",
+["preAny"] = {
+456, -- [1]
+},
+["requiredLevel"] = 8,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Osric Strang",
+["x"] = 74.6,
+["y"] = 40.2,
+},
+}, -- [3]
+{
+["classes"] = 1,
+["id"] = 1638,
+["level"] = 10,
+["name"] = "A Warrior's Training",
+["requiredLevel"] = 10,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Osric Strang",
+["x"] = 74.6,
+["y"] = 40.2,
+},
+}, -- [4]
+},
+}, -- [1]
+{
+["areaID"] = 148,
+["logQuests"] = 2,
+["name"] = "Darkshore",
+["questCount"] = 11,
+["quests"] = {
+{
+["id"] = 918,
+["level"] = 14,
+["name"] = "Washed Ashore",
+["next"] = 4730,
+["requiredLevel"] = 11,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Terenthis",
+["x"] = 39.4,
+["y"] = 43.5,
+},
+}, -- [1]
+{
+["id"] = 947,
+["level"] = 17,
+["name"] = "Cave Mushrooms",
+["next"] = 948,
+["requiredLevel"] = 10,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Barithras Moonshade",
+["x"] = 37.3,
+["y"] = 43.6,
+},
+}, -- [2]
+{
+["id"] = 948,
+["level"] = 17,
+["name"] = "Onu",
+["preAny"] = {
+947, -- [1]
+},
+["requiredLevel"] = 10,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Barithras Moonshade",
+["x"] = 37.3,
+["y"] = 43.6,
+},
+}, -- [3]
+{
+["id"] = 982,
+["level"] = 17,
+["name"] = "Deep Ocean, Vast Sea",
+["requiredLevel"] = 13,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Cerellean Whiteclaw",
+["x"] = 35.7,
+["y"] = 43.7,
+},
+}, -- [4]
+{
+["breadcrumbFor"] = 4740,
+["id"] = 1138,
+["level"] = 18,
+["name"] = "Fruit of the Sea",
+["requiredLevel"] = 12,
+["start"] = {
+["kind"] = "item",
+["name"] = "Death Cap",
+},
+}, -- [5]
+{
+["id"] = 2118,
+["level"] = 15,
+["name"] = "Plagued Lands",
+["races"] = 178,
+["requiredLevel"] = 10,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Terenthis",
+["x"] = 39.4,
+["y"] = 43.5,
+},
+}, -- [6]
+{
+["classes"] = 1024,
+["id"] = 3524,
+["level"] = 16,
+["name"] = "Grove of the Ancients",
+["requiredLevel"] = 10,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Terenthis",
+["x"] = 39.4,
+["y"] = 43.5,
+},
+}, -- [7]
+{
+["id"] = 4725,
+["level"] = 15,
+["name"] = "Beached Sea Creature",
+["repeatable"] = true,
+["requiredLevel"] = 10,
+["start"] = {
+["kind"] = "object",
+["name"] = "Wanted Poster",
+["x"] = 37.2,
+["y"] = 44.2,
+},
+}, -- [8]
+{
+["id"] = 4730,
+["level"] = 15,
+["name"] = "Beached Sea Turtle",
+["preAny"] = {
+918, -- [1]
+},
+["requiredLevel"] = 11,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Terenthis",
+["x"] = 39.4,
+["y"] = 43.5,
+},
+}, -- [9]
+{
+["id"] = 4740,
+["level"] = 18,
+["name"] = "WANTED: Murkdeep!",
+["requiredLevel"] = 12,
+["start"] = {
+["kind"] = "object",
+["name"] = "Wanted Poster",
+["x"] = 37.2,
+["y"] = 44.2,
+},
+}, -- [10]
+{
+["id"] = 4813,
+["level"] = 23,
+["name"] = "The Fragments Within",
+["requiredLevel"] = 21,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Onu",
+["x"] = 43.6,
+["y"] = 76.3,
+},
+}, -- [11]
+},
+}, -- [2]
+},
 },
 },
 },

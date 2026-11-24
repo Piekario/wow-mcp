@@ -1,0 +1,83 @@
+# tool wow_zone_progress variant=zone_name
+# args: {"zone":"darkshore"}
+# isError: false
+--- content[0] ---
+{
+  "counts": {
+    "completed": 1,
+    "inLog": 2,
+    "left": 4,
+    "noLongerAvailable": 1,
+    "repeatable": 1,
+    "total": 8
+  },
+  "current": false,
+  "filterNote": "Left out 2 quests the database marks for another faction, race or class; they are not in the counts.",
+  "left": [
+    {
+      "id": 4730,
+      "level": 15,
+      "name": "Beached Sea Turtle",
+      "requiredLevel": 11,
+      "start": "Terenthis at 39.4, 43.5",
+      "state": "available"
+    },
+    {
+      "id": 982,
+      "level": 17,
+      "name": "Deep Ocean, Vast Sea",
+      "requiredLevel": 13,
+      "start": "Cerellean Whiteclaw at 35.7, 43.7",
+      "state": "available"
+    },
+    {
+      "id": 4813,
+      "level": 23,
+      "name": "The Fragments Within",
+      "requiredLevel": 21,
+      "start": "Onu at 43.6, 76.3",
+      "state": "needs a higher level"
+    },
+    {
+      "id": 948,
+      "level": 17,
+      "name": "Onu",
+      "needsFirst": [
+        "Cave Mushrooms"
+      ],
+      "requiredLevel": 10,
+      "start": "Barithras Moonshade at 37.3, 43.6",
+      "state": "needs an earlier quest"
+    }
+  ],
+  "notForCharacter": {
+    "otherClass": 1,
+    "otherFaction": 1,
+    "otherRace": 0
+  },
+  "notes": [
+    "noLongerAvailable: quests closed by a quest already done or taken (an alternative or the quest a breadcrumb leads to) or above their maximum level."
+  ],
+  "otherZonesInDump": [
+    "Stormwind City"
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "source": "The zone's quest list, levels, prerequisites and quest givers come from the quest database installed in the game (QuestieDB, what Questie shows), read by the addon; done quests come from the client's list of completed quests. Repeatable quests are not counted.",
+  "summary": "Darkshore: 1 of 8 quests done, 2 in the log, 4 left (2 available now).",
+  "unfinishedChains": [
+    {
+      "after": "Washed Ashore",
+      "id": 4730,
+      "level": 15,
+      "name": "Beached Sea Turtle",
+      "requiredLevel": 11,
+      "start": "Terenthis at 39.4, 43.5",
+      "state": "available"
+    }
+  ],
+  "zone": "Darkshore"
+}

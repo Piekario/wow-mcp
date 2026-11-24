@@ -114,6 +114,18 @@ Open the friends and guild windows yourself: the addon only reads what the clien
 6. **Recipes, stable, auctions.** Open the professions window (ingredients in `wow_recipes`), the stable (`active` on the active pet)
    and search for something at the auction house (`wow_auctions`).
 
+## 3d. What to check in the game for zone quest progress (unreleased)
+
+Needs Questie (with QuestieDB). This has only been run on API mocks so far.
+
+1. **Current zone.** Stand in a zone where you have done some quests, `/mcp reload`, then ask for `wow_zone_progress` without arguments.
+   `zone` should be the zone you stand in, and `counts.completed` should match what you remember; the quests in `left` should have
+   quest givers with coordinates that match Questie's map pins.
+2. **Other zones.** With quests from another zone in the log, `wow_zone_progress` with `zone` set to that zone should answer too.
+3. **Filtering.** `notForCharacter` should count quests for the other faction or other classes; none of them should appear in `left`.
+4. **Dump time.** `/mcp status` after the first dump of a session: the first `zoneQuests` read walks the whole quest database once,
+   so report the dump time if it grows noticeably (the second dump of the session should be back to normal).
+
 ## 4. When something does not work
 
 General diagnostic mode: in the game `/mcp probe`, then `/mcp reload` (probe attaches the list of the client's API functions and the events the client

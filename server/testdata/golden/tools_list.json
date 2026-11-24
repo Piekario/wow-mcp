@@ -1361,5 +1361,29 @@
       "type": "object"
     },
     "name": "wow_vendor"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
+      "title": "Zone quest progress"
+    },
+    "description": "How far the character is with the quests of a zone: how many of the zone's quests are done, in the log and left, the quests left (level, required level, state: available, needs a higher level or an earlier quest, and the quest giver with map coordinates) and the unfinished quest chains (the next quest of a chain whose earlier step is done). Quests the database marks for another faction, race or class, and repeatable quests, are left out of the counts and the answer says so. The zone's quest list is read by the addon from the quest database the player has installed in the game (QuestieDB, what Questie shows) for the current zone and the zones of quests in the log; done quests come from the client's completed quest list. zone: a zone name or fragment; empty = the character's current zone. Requires Questie with QuestieDB and /mcp reload. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        },
+        "zone": {
+          "description": "zone name or a fragment of it; empty = the zone the character is in",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "name": "wow_zone_progress"
   }
 ]

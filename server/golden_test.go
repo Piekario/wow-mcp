@@ -432,6 +432,13 @@ func goldenCases() []goldenCase {
 		tc("wow_quest_lookup", "quest_nomatch", args{"quest": "Zzzz"}),
 		tc("wow_quest_lookup", "all_args", args{"character": charKnown, "quest": "947"}),
 	)
+	add(characterVariants("wow_zone_progress")...)
+	add(
+		tc("wow_zone_progress", "zone_name", args{"zone": "darkshore"}),
+		tc("wow_zone_progress", "zone_fragment", args{"zone": "storm"}),
+		tc("wow_zone_progress", "zone_unknown", args{"zone": "Zzzz"}),
+		tc("wow_zone_progress", "all_args", args{"character": charKnown, "zone": "Darkshore"}),
+	)
 	add(characterVariants("wow_guide")...)
 	add(characterVariants("wow_social")...)
 	add(

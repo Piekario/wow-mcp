@@ -12,6 +12,7 @@ Core.lua
 Compat.lua
 Maps.lua
 QuestDb.lua
+QuestZones.lua
 Waypoints.lua
 Items.lua
 AuctionItems.lua
@@ -47,6 +48,7 @@ Sections\EquipmentSets.lua
 Sections\Pvp.lua
 Sections\Guide.lua
 Sections\QuestDb.lua
+Sections\ZoneQuests.lua
 
 # Sections collected when a window opens.
 Sections\Trainer.lua

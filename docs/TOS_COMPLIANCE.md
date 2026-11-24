@@ -26,7 +26,7 @@ and compare them with the code. The project is intended for personal use on your
 - Quest rewards from the quest log are read by the addon by quest ID. In older clients that cannot do this, it selects the
   log entry for the duration of the read and immediately restores the previous selection; it does not accept, abandon or turn in quests.
 - Quest locations and guide steps (since addon 0.14.0) come from **other addons the player has installed**, read inside the game through
-  what those addons expose: the quest database QuestieDB (its public read functions: `Get`, `Exists`, `IdsByName`) and Guidelime (the guide
+  what those addons expose: the quest database QuestieDB (its public read functions: `Get`, `Exists`, `IdsByName`, `GetAllIds`, and the read-only `Enum` race and class masks) and Guidelime (the guide
   text at the moment a guide addon registers it, observed with `hooksecurefunc`, and the per-character progress table). WowMcp only
   reads: it registers no corrections, changes no data of those addons and calls nothing that acts in the game. It ships no quest database and
   no guide text of its own; the dump holds the locations of the player's current quests and the next steps of the player's own guide, and
@@ -61,7 +61,7 @@ and compare them with the code. The project is intended for personal use on your
   at startup.
 - The goals file is changed by a single tool, `wow_goal_set`, and only at the player's request (atomic write: temporary file and rename).
   The server only reads the optional `weights.json` next to it; the player writes it themselves.
-- The newer tools (`wow_quest_rewards`, `wow_shopping_list`, `wow_journal`, `wow_bag_plan`, `wow_goals`, `wow_quest_route`, `wow_social`, `wow_quest_lookup`, `wow_guide`) only calculate from the dump
+- The newer tools (`wow_quest_rewards`, `wow_shopping_list`, `wow_journal`, `wow_bag_plan`, `wow_goals`, `wow_quest_route`, `wow_social`, `wow_quest_lookup`, `wow_guide`, `wow_zone_progress`) only calculate from the dump
   data: they buy nothing, choose no rewards and send nothing to the game. Recommendations are text for the player, and assumptions are
   described as assumptions in the responses.
 - It exposes data locally through MCP (stdio) to your MCP client started by the player. It does not connect to any service itself.

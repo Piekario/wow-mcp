@@ -21,7 +21,7 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
       ],
       "character": "Piekasz",
       "class": "Hunter",
-      "dumpTimeMs": 64.5,
+      "dumpTimeMs": 68,
       "dumpedAt": "2026-11-15 16:50:00",
       "level": 20,
       "note": {
@@ -77,7 +77,8 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
         "trainers",
         "vendor",
         "vendors",
-        "xpGains"
+        "xpGains",
+        "zoneQuests"
       ],
       "stale": true,
       "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
