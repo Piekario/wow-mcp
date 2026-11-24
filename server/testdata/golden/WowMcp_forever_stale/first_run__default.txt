@@ -47,6 +47,7 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
     "guild",
     "inspect",
     "legacy",
+    "lookups",
     "loot",
     "macros",
     "mail",

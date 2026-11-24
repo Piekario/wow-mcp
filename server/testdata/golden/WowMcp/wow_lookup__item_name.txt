@@ -1,0 +1,38 @@
+# tool wow_lookup variant=item_name
+# args: {"kind":"item","query":"skinning"}
+# isError: false
+--- content[0] ---
+{
+  "addonNote": "The dump has no lookups section: it needs addon 0.21.0 or newer and /mcp reload.",
+  "ask": "The dump only mentions this by name or ID and holds no full in-game description of it. For the real text ask the player to type /mcp item skinning in game, then /mcp reload.",
+  "elsewhere": [
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Skinning Knife",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Backpack",
+            "Skinning Knife"
+          ],
+          "summary": "count 1"
+        }
+      ],
+      "section": "bags",
+      "shown": 1,
+      "truncated": false
+    }
+  ],
+  "found": true,
+  "kind": "item",
+  "note": "This is everything the dump knows. Describe the item or spell only from these fields: World of Warcraft: Forever differs from other game versions, so do not fill gaps from memory.",
+  "query": "skinning",
+  "saved": [],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

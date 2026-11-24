@@ -432,6 +432,20 @@ func goldenCases() []goldenCase {
 		tc("wow_quest_lookup", "quest_nomatch", args{"quest": "Zzzz"}),
 		tc("wow_quest_lookup", "all_args", args{"character": charKnown, "quest": "947"}),
 	)
+	add(
+		tc("wow_lookup", "item_id", args{"query": "5586"}),
+		tc("wow_lookup", "item_name", args{"query": "skinning", "kind": "item"}),
+		tc("wow_lookup", "spell_name", args{"query": "arcane shot", "kind": "spell"}),
+		tc("wow_lookup", "spell_link", args{"query": "|cff71d5ff|Hspell:19416|h[Efficiency]|h|r"}),
+		tc("wow_lookup", "from_dump_only", args{"query": "linen cloth"}),
+		tc("wow_lookup", "nothing_found", args{"query": "Zzzz"}),
+		tc("wow_lookup", "nothing_found_item_id", args{"query": "424242", "kind": "item"}),
+		tc("wow_lookup", "empty_query", args{"query": ""}),
+		tc("wow_lookup", "bad_kind", args{"query": "arcane", "kind": "quest"}),
+		tc("wow_lookup", "no_args", args{}),
+		tc("wow_lookup", "unknown_character", args{"character": charUnknown, "query": "arcane"}),
+		tc("wow_lookup", "all_args", args{"character": charKnown, "query": "arcane shot", "kind": "spell"}),
+	)
 	add(characterVariants("wow_guide")...)
 	add(characterVariants("wow_social")...)
 	add(

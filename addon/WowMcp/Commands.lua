@@ -16,6 +16,8 @@ local HELP = {
     "/mcp note <text> - note for the assistant in the dump (e.g. what you plan today); bare /mcp note removes it",
     "/mcp quest <id or name> - where a quest starts and ends, from the Questie database you have installed; the answer also goes into the dump."
         .. " With TomTom installed, click a coordinate to set a waypoint",
+    "/mcp item <id, item link or exact name> - reads the item's description from the game and saves it for the assistant (the client knows items it has seen; an ID is always tried)",
+    "/mcp spell <id, spell link or name> - reads the spell's description, cast time, cost and range and saves it for the assistant",
     "/mcp off <section> - stop collecting this section; bare /mcp off lists disabled sections and all section names",
     "/mcp on <section> - collect the section again",
     "/mcp minimap on|off - minimap button (left click: panel; on by default)",
@@ -116,6 +118,36 @@ local function lookUpQuest(rest)
     if coordinates then ns.Waypoints.suggestTomTom() end
     Panel.refresh()
 end
+
+local LOOKUP_USAGE = {
+    item = "Usage: /mcp item <item ID, item link (shift-click an item) or exact item name>",
+    spell = "Usage: /mcp spell <spell ID, spell link or spell name>",
+}
+
+local LOOKUP_REPLY = {
+    disabled = "The lookups section is disabled. Enable it: /mcp on lookups",
+    pending = "The client has not loaded this %s yet and was asked for it. The result is saved and announced here in a moment;"
+        .. " if nothing appears, check the ID.",
+    unknown = "The client does not know that %s by name. Use its ID, or shift-click it into the command to paste a link.",
+}
+
+-- Shared by /mcp item and /mcp spell: `lookup` is ItemLookup or SpellLookup.
+local function lookUp(kind, lookup, rest)
+    local status, entry = lookup.run(rest)
+    if status == "usage" then
+        chat(LOOKUP_USAGE[kind])
+    elseif status == "saved" then
+        chat(ns.Lookups.confirmation(entry))
+        if entry.descriptionMissing then
+            chat("The client has no description for this spell yet. Repeat the command in a moment.")
+        end
+    else
+        chat(LOOKUP_REPLY[status]:format(kind))
+    end
+end
+
+local function lookUpItem(rest) lookUp("item", ns.ItemLookup, rest) end
+local function lookUpSpell(rest) lookUp("spell", ns.SpellLookup, rest) end
 
 local function listSections()
     local disabled = Snapshot.disabledNames()
@@ -241,6 +273,8 @@ local COMMANDS = {
     compact = setCompactPanel,
     note = setNote,
     quest = lookUpQuest,
+    item = lookUpItem,
+    spell = lookUpSpell,
     off = disableSection,
     on = enableSection,
     status = showStatus,

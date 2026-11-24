@@ -1280,6 +1280,127 @@ true, -- [1]
 },
 ["source"] = "traits",
 },
+["lookups"] = {
+{
+["at"] = 1794760000,
+["castTimeMs"] = 0,
+["description"] = "Loaded later.",
+["descriptionSource"] = "api",
+["id"] = 99002,
+["kind"] = "spell",
+["maxRange"] = 0,
+["minRange"] = 0,
+["name"] = "Late Spell",
+["query"] = "99002",
+}, -- [1]
+{
+["at"] = 1794760000,
+["castTimeMs"] = 0,
+["description"] = "Reduces the Mana cost of your Shots and Stings by 2%.",
+["descriptionSource"] = "api",
+["id"] = 19416,
+["kind"] = "spell",
+["maxRange"] = 0,
+["minRange"] = 0,
+["name"] = "Efficiency",
+["query"] = "|cff71d5ff|Hspell:19416|h[Efficiency]|h|r",
+}, -- [2]
+{
+["at"] = 1794760000,
+["castTimeMs"] = 0,
+["costs"] = {
+{
+["amount"] = 50,
+["power"] = "MANA",
+}, -- [1]
+},
+["description"] = "An instant shot that causes 15 Arcane damage.",
+["descriptionSource"] = "api",
+["id"] = 3044,
+["kind"] = "spell",
+["maxRange"] = 35,
+["minRange"] = 5,
+["name"] = "Arcane Shot",
+["query"] = "Arcane Shot",
+["rank"] = "Rank 1",
+["tooltip"] = {
+"Arcane Shot | Rank 1", -- [1]
+"50 Mana | 35 yd range", -- [2]
+"Instant", -- [3]
+"An instant shot that causes 15 Arcane damage.", -- [4]
+},
+}, -- [3]
+{
+["at"] = 1794760000,
+["bindType"] = 0,
+["classID"] = 7,
+["id"] = 99001,
+["itemLevel"] = 10,
+["kind"] = "item",
+["name"] = "Item 99001",
+["quality"] = 1,
+["query"] = "99001",
+["requiredLevel"] = 1,
+["sellPrice"] = 13,
+["subType"] = "Cloth",
+["subclassID"] = 5,
+["type"] = "Trade Goods",
+}, -- [4]
+{
+["at"] = 1794760000,
+["bindType"] = 0,
+["classID"] = 2,
+["equipLoc"] = "INVTYPE_WEAPON",
+["id"] = 7005,
+["itemLevel"] = 4,
+["kind"] = "item",
+["name"] = "Skinning Knife",
+["quality"] = 1,
+["query"] = "Skinning Knife",
+["requiredLevel"] = 1,
+["sellPrice"] = 16,
+["statTokens"] = {
+["ITEM_MOD_DAMAGE_PER_SECOND_SHORT"] = 2.2,
+},
+["stats"] = {
+["Damage Per Second"] = 2.2,
+},
+["subType"] = "Dagger",
+["subclassID"] = 15,
+["type"] = "Weapon",
+}, -- [5]
+{
+["at"] = 1794760000,
+["bindType"] = 2,
+["classID"] = 2,
+["equipLoc"] = "INVTYPE_WEAPON",
+["id"] = 5586,
+["itemLevel"] = 18,
+["kind"] = "item",
+["name"] = "Curvewood Dagger",
+["quality"] = 2,
+["query"] = "5586",
+["requiredLevel"] = 13,
+["sellPrice"] = 812,
+["statTokens"] = {
+["ITEM_MOD_AGILITY_SHORT"] = 3,
+["ITEM_MOD_DAMAGE_PER_SECOND_SHORT"] = 8.4,
+["ITEM_MOD_STAMINA_SHORT"] = 2,
+},
+["stats"] = {
+["Agility"] = 3,
+["Damage Per Second"] = 8.4,
+["ITEM_MOD_STAMINA_SHORT"] = 2,
+},
+["subType"] = "Dagger",
+["subclassID"] = 15,
+["tooltip"] = {
+"Curvewood Dagger", -- [1]
+"One-Hand | Dagger", -- [2]
+},
+["type"] = "Weapon",
+}, -- [6]
+},
 ["loot"] = {
 ["items"] = {
 },
@@ -1429,6 +1550,7 @@ true, -- [1]
 ["QUEST_COMPLETE"] = true,
 ["QUEST_DETAIL"] = true,
 ["QUEST_TURNED_IN"] = true,
+["SPELL_DATA_LOAD_RESULT"] = true,
 ["TAXIMAP_OPENED"] = true,
 ["TIME_PLAYED_MSG"] = true,
 ["TRADE_SKILL_LIST_UPDATE"] = true,
@@ -1613,9 +1735,12 @@ true, -- [1]
 ["C_Spell"] = {
 "GetSpellCooldown", -- [1]
 "GetSpellDescription", -- [2]
-"GetSpellName", -- [3]
-"IsSelfBuff", -- [4]
-"RequestLoadSpellData", -- [5]
+"GetSpellInfo", -- [3]
+"GetSpellName", -- [4]
+"GetSpellPowerCost", -- [5]
+"GetSpellSubtext", -- [6]
+"IsSelfBuff", -- [7]
+"RequestLoadSpellData", -- [8]
 },
 ["C_SpellBook"] = {
 "GetNumSpellBookSkillLines", -- [1]

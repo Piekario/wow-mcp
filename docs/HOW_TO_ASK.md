@@ -29,6 +29,7 @@ one optionally takes a character name.
 |---|---|
 | `wow_quests` | "What quests do I have in my log and which can I turn in?" · "Which quest has an unfinished objective?" |
 | `wow_quest_lookup` | "Where do I turn in The Glowing Shard?" · "Where do I pick up the next quest of this chain?" · "Where are the mobs for this quest?" (needs Questie installed; for a quest outside your log type `/mcp quest <name or ID>` in game, then `/mcp reload`) |
+| `wow_lookup` | "What does this item really do?" · "What does Arcane Shot cost and how long does it take to cast?" · "Is this trinket's Use effect the same as in Classic?" (for something the dump does not know, type `/mcp item <ID, link or name>` or `/mcp spell <ID, link or name>` in game, then `/mcp reload`; shift-click an item into the command to paste its link) |
 | `wow_guide` | "What is my next step in the guide?" · "What do I have left in this TUGs part and where do I go?" (needs Guidelime with a guide selected) |
 | `wow_quest_plan` | "Arrange my quests by zone." · "Which quests are too hard or gray?" |
 | `wow_leftovers` | "Do I have quest items in my bags for quests I no longer have?" (these are only candidates, nothing is removed automatically) |

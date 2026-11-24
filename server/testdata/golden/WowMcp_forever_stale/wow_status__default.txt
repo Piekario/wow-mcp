@@ -53,6 +53,7 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
         "guild",
         "inspect",
         "legacy",
+        "lookups",
         "loot",
         "macros",
         "mail",

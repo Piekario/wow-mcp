@@ -748,6 +748,37 @@
       "idempotentHint": true,
       "openWorldHint": false,
       "readOnlyHint": true,
+      "title": "Item and spell lookup"
+    },
+    "description": "What an item or spell really does in this game, instead of guessing from other game versions. USE THIS before describing an item's effect or a spell's description, cost, cast time or range. It returns the answers to /mcp item \u003cid, link or name\u003e and /mcp spell \u003cid, link or name\u003e that the player typed in game (the description and tooltip text the client shows, rank, cast time, cost, range, stats) and ALSO everything else the dump knows under that name or ID, with the section it came from: bags, bank, equipment, vendor and trainer offers, quest rewards, auctions, mail, loot, recipes and known spells. query is a name fragment or an ID; kind is item, spell or empty for both. When the dump has nothing, or only a mention without the full text, the answer's ask field says exactly what the player should type (/mcp item \u003cquery\u003e or /mcp spell \u003cquery\u003e, then /mcp reload); never answer from memory then. Requires addon 0.21.0 for the saved lookups. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "description": "character name; empty = most recently dumped character",
+          "type": "string"
+        },
+        "kind": {
+          "description": "item, spell or empty for both",
+          "type": "string"
+        },
+        "query": {
+          "description": "item or spell name (or a fragment of it), or its ID",
+          "type": "string"
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "type": "object"
+    },
+    "name": "wow_lookup"
+  },
+  {
+    "annotations": {
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true,
       "title": "Mail"
     },
     "description": "The mailbox from the last time it was opened: sender, subject, gold, cash on delivery (COD), attachments, whether the letter was returned and when it expires (expiringSoon = less than 3 days). The capturedAgeMinutes field says how long ago the mailbox was open. Data comes from the last /reload or logout in game; the snapshot.ageMinutes field says how many minutes old it is.",

@@ -1,0 +1,54 @@
+# tool wow_lookup variant=item_name
+# args: {"kind":"item","query":"skinning"}
+# isError: false
+--- content[0] ---
+{
+  "ask": "The dump only mentions this by name or ID and holds no full in-game description of it. For the real text ask the player to type /mcp item skinning in game, then /mcp reload.",
+  "elsewhere": [
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Skinning Knife",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Backpack",
+            "Skinning Knife"
+          ],
+          "summary": "count 1, Weapon, Dagger"
+        }
+      ],
+      "section": "bags",
+      "shown": 1,
+      "truncated": false
+    }
+  ],
+  "found": true,
+  "kind": "item",
+  "note": "This is everything the dump knows. Describe the item or spell only from these fields: World of Warcraft: Forever differs from other game versions, so do not fill gaps from memory.",
+  "query": "skinning",
+  "saved": [
+    {
+      "equipLoc": "INVTYPE_WEAPON",
+      "id": 7005,
+      "itemLevel": 4,
+      "kind": "item",
+      "name": "Skinning Knife",
+      "quality": "Common",
+      "query": "Skinning Knife",
+      "requiredLevel": 1,
+      "savedAgo": "30 min",
+      "sellPrice": "16c",
+      "stats": {
+        "Damage Per Second": 2.2
+      },
+      "type": "Weapon Dagger"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

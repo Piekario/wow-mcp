@@ -55,6 +55,7 @@
       "QUEST_COMPLETE": true,
       "QUEST_DETAIL": true,
       "QUEST_TURNED_IN": true,
+      "SPELL_DATA_LOAD_RESULT": true,
       "TAXIMAP_OPENED": true,
       "TIME_PLAYED_MSG": true,
       "TRADE_SKILL_LIST_UPDATE": true,
@@ -239,7 +240,10 @@
       "C_Spell": [
         "GetSpellCooldown",
         "GetSpellDescription",
+        "GetSpellInfo",
         "GetSpellName",
+        "GetSpellPowerCost",
+        "GetSpellSubtext",
         "IsSelfBuff",
         "RequestLoadSpellData"
       ],

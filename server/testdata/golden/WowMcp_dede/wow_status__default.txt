@@ -51,6 +51,7 @@
         "guild",
         "inspect",
         "legacy",
+        "lookups",
         "loot",
         "macros",
         "mail",

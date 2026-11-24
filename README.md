@@ -19,7 +19,7 @@ An [MCP](https://modelcontextprotocol.io) server that lets an AI assistant in an
 character: quests, bags, gear, talents, professions, reputation, auctions, progress over time, and more. It has two parts:
 
 - **WowMcp** (addon, Lua): saves the character state to the game's SavedVariables file.
-- **wow-mcp** (MCP server, Go): reads that file and exposes it as 52 `wow_*` tools, 14 prompts and read-only resources.
+- **wow-mcp** (MCP server, Go): reads that file and exposes it as 53 `wow_*` tools, 14 prompts and read-only resources.
 
 > **License:** [GPL-3.0-or-later](LICENSE) with an additional term that the author attribution must be kept in every copy and
 > modified version (see [NOTICE](NOTICE)). Original author: Piekasz (GitHub: Piekario).
@@ -189,6 +189,8 @@ Logs go to stderr (and to `--log` if given), never to stdout.
 | `/mcp played on` / `off` | whether to ask the game for play time (`/played`) after login, from which the XP rate is computed |
 | `/mcp note <text>` | a note for the assistant in the dump, e.g. what you plan to do today; `/mcp note` alone removes it |
 | `/mcp quest <name or ID>` | where a quest starts, what it needs and where it ends, from the installed Questie database; with [TomTom](https://www.curseforge.com/wow/addons/tomtom) installed, click a coordinate to set a waypoint (TomTom is optional) |
+| `/mcp item <ID, link or exact name>` | the item's description as the client shows it (type, level, stats, tooltip text), saved for the assistant; an uncached ID is requested from the client and saved when it arrives |
+| `/mcp spell <ID, link or name>` | the spell's description, rank, cast time, cost and range, saved for the assistant (the last 30 lookups are kept) |
 | `/mcp off <section>` / `/mcp on <section>` | stop collecting a section (it disappears from the dump) or collect it again; `/mcp off` alone shows the disabled ones and all names |
 | `/mcp minimap on` / `off` | the minimap button (on by default): a left click shows or hides the panel, saves nothing; it can be dragged |
 | `/mcp options` | opens the WowMcp page in the game's options (Interface / AddOns) with the same switches as these commands: sections, minimap button, compact panel, AH tooltip, played time; changes settings only |
@@ -264,6 +266,7 @@ After login (and after every `/reload`) the addon asks the game for play time, l
 | `wow_make_or_buy` | craft or buy at the auction house: ingredient cost versus the price of the finished item; a missing price is `unknown`, never zero (`profession`, `query`, `sort`, `limit`) |
 | `wow_quest_route` | a suggested order of zones with quests (current zone, then by the number of quests ready to turn in and of all quests) with known flight points; this is not the shortest route, the server does not know the world map |
 | `wow_quest_lookup` | where a quest is picked up, done and turned in: NPC or object, zone, map coordinates, objective targets, next quest of the chain and a one-line `nextStep`; the data is read in game from the quest database the player has installed (QuestieDB, what Questie shows), never from memory or the quest text (`quest`: ID or a fragment of a quest or NPC name; `/mcp quest <name or ID>` in game adds any other quest) |
+| `wow_lookup` | what an item or spell really does in this game: the answers to `/mcp item` and `/mcp spell` typed in game plus everything else the dump knows under that name or ID (bags, bank, equipment, vendor and trainer offers, quest rewards, auctions, known spells), with the section each hit came from; when nothing is there it says what the player should type |
 | `wow_guide` | the next steps of the player's Guidelime leveling guide (for example TUGs) in guide order, as readable text with quest names, states and places |
 | `wow_social` | friends and guild from the most recently opened windows: who is online, level, class, zone, rank, counts and the age of the record; `includeOffline`. The addon does not ask the game server for these lists on its own, so you must open them in the game (PvP is in `wow_character`) |
 | `wow_section` | any dump section by name, without filters: `actionBars`, `macros`, `completedQuests`, `flightPaths`, `stats`, `auras`, `currencies`, `probe`, `loot`, `xpGains`, `buyback`, `friends`, `guild`, `vendors`, `trainers`, `stable`, `questOffer`, `questTurnIn` and the rest |

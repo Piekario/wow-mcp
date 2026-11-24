@@ -31,6 +31,7 @@ import (
 	"wowmcp/internal/game/journal"
 	"wowmcp/internal/game/leftovers"
 	"wowmcp/internal/game/legacy"
+	"wowmcp/internal/game/lookup"
 	"wowmcp/internal/game/mail"
 	"wowmcp/internal/game/makeorbuy"
 	"wowmcp/internal/game/pet"
@@ -477,6 +478,17 @@ func (s *service) accountTools() []tool {
 			func(a search.Query) string { return a.Character },
 			func(_ string, snap snapshot.Snapshot, q search.Query) (map[string]any, error) {
 				return search.Run(snap, q)
+			}),
+
+		characterTool(s, "wow_lookup", "Item and spell lookup",
+			"What an item or spell really does in this game, instead of guessing from other game versions. USE THIS before describing an item's effect or a spell's description, cost, cast time or range. It returns the answers to /mcp item <id, link or name> and /mcp spell <id, link or name> that the player typed in game (the description and tooltip text the client shows, rank, cast time, cost, range, stats) and ALSO everything else the dump knows under that name or ID, with the section it came from: bags, bank, equipment, vendor and trainer offers, quest rewards, auctions, mail, loot, recipes and known spells. query is a name fragment or an ID; kind is item, spell or empty for both. When the dump has nothing, or only a mention without the full text, the answer's ask field says exactly what the player should type (/mcp item <query> or /mcp spell <query>, then /mcp reload); never answer from memory then. Requires addon 0.21.0 for the saved lookups."+freshness,
+			func(a lookup.Query) string { return a.Character },
+			func(_ string, snap snapshot.Snapshot, q lookup.Query) (map[string]any, error) {
+				r, err := lookup.Find(snap, q)
+				if err != nil {
+					return nil, err
+				}
+				return r.Render(fresh), nil
 			}),
 
 		characterTool(s, "wow_leftovers", "Leftover quest items",

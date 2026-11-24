@@ -7,6 +7,21 @@ errors, dump 18 ms), addon 0.7.0 with server 0.9.0 (2026-11-15, no section error
 between are part of 0.11.0 / 0.12.2 and were run with them. Addon 0.14.0 was run on 2026-11-22 (client build 71037, no section errors, dump 25.7 ms: `questDb` for 22 log quests, `guide` reading TUGs, `/mcp quest The Glowing Shard`). **Server 0.15.0 and the 0.12.0 / 0.13.0 addon changes (carried periods, flight zones, auction gear details) have not yet been checked in a real client**: their fixes are
 based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` result and golden response tests.
 
+## Unreleased
+
+Item and spell lookup, for the addon and the server (0.21.0 when released). Not yet run in the real client: it is
+covered by the API mocks of the addon test and the golden tests only.
+
+- **Added**
+  - `/mcp item <ID, item link or exact name>` and `/mcp spell <ID, spell link or name>`: the addon reads the item or spell
+    from the client (the same details and tooltip lines as bag items; for spells the name, rank, description, cast time,
+    cost, range and tooltip) and keeps the last 30 answers in the new dump section `lookups`. An item or spell the client
+    has not cached is requested from the client cache and saved when the data arrives; chat says so.
+  - Tool `wow_lookup` (`query`, `kind`, `character`): returns the saved lookups and also what the dump already holds under
+    that name or ID (bags, bank, equipment, vendor and trainer offers, quest rewards, auctions, mail, loot, recipes, known
+    spells), with the section of each hit. When nothing is found it says which commands the player should type
+    (`/mcp item <query>` or `/mcp spell <query>`, then `/mcp reload`) and the assistant is told not to answer from memory.
+
 ## 0.20.0 (2026-11-24)
 
 A long history and less `/mcp reload`, for the addon and the server. The server expects addon 0.20.0. This release also carries

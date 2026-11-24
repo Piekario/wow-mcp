@@ -68,6 +68,11 @@ Sections\Loot.lua
 Sections\XpGains.lua
 Sections\EventLog.lua
 Sections\Note.lua
+Sections\Lookups.lua
+
+# Lookups typed by the player (/mcp item, /mcp spell).
+LookupItem.lua
+LookupSpell.lua
 
 # Player UI.
 Panel.lua

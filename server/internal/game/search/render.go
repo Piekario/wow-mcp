@@ -50,6 +50,9 @@ func (r Result) Render(query string) map[string]any {
 	return out
 }
 
+// Render is the group as it appears in an answer: the section, the counts and the shown hits.
+func (g Group) Render() map[string]any { return g.render() }
+
 func (g Group) render() map[string]any {
 	shown := g.Shown()
 	views := make([]any, len(shown))

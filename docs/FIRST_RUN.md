@@ -31,6 +31,9 @@ client with the snippet the installer prints. On the first installation `--check
 6. In your MCP client ask for `wow_status`. It should show `serverVersion` 0.10.0, `addonVersion` 0.8.0 for the character, a fresh `dumpedAt`,
    `dumpTimeMs`, the note `test` and an empty or short `alerts`.
 7. In `wow_character` check `resting`, `bindLocation` and `zone`; also ask for `wow_search` (e.g. the name of an item from your bags).
+8. `/mcp item 5498`, then `/mcp reload` (any item ID or a shift-clicked link; an item the client has not seen yet is requested and
+   saved a moment later, chat tells you when). Ask for `wow_lookup` with that ID: the answer has the description the client shows.
+   `/mcp spell <name or ID>` works the same way for spells. Addon 0.21.0 or newer.
 
 ## 3. Verifying auctions, dungeons and talents (roadmap 4-6)
 

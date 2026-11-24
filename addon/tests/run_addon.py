@@ -540,7 +540,13 @@ WEAPON_SPEED = "Speed"
 -- 7 Trade Goods / 5 Cloth; Enum.ItemBind 2 = binds when equipped. The numbers match the type texts of the mock.
 C_Item = {
     GetItemInfo = function(link)
+        -- Like the real client, an ID or name gets a full link back; items by name are known only when the client has seen them.
+        if type(link) == "number" then link = "|cffffffff|Hitem:" .. link .. ":0|h[Item " .. link .. "]|h|r" end
+        if link == "Skinning Knife" then link = "|cffffffff|Hitem:7005:0|h[Skinning Knife]|h|r" end
         local id = tonumber(tostring(link):match("item:(%d+)")) or link
+        if type(id) == "string" then return nil end
+        -- Item 99001 is not in the client cache until the data arrives (lateItemLoaded).
+        if id == 99001 and not lateItemLoaded then return nil end
         if ahItemData[id] then return ahItemInfo(link) end
         if id == 5586 then return "Curvewood Dagger", link, 2, 18, 13, "Weapon", "Dagger", 1, "INVTYPE_WEAPON", 135, 812, 2, 15, 2 end
         if id == 7005 then return "Skinning Knife", link, 1, 4, 1, "Weapon", "Dagger", 1, "INVTYPE_WEAPON", 135, 16, 2, 15, 0 end
@@ -576,6 +582,7 @@ C_TooltipInfo = {
     GetSpellByID = function(id)
         if id == 1225451 then return { lines = { { leftText = "Working Overtime" }, { leftText = "Passive" } } } end
         if id == 1225440 then return { lines = { { leftText = "Gourmand" }, { leftText = "Passive" }, { leftText = "Food heals you more." } } } end
+        if id == 3044 then return { lines = { { leftText = "Arcane Shot", rightText = "Rank 1" }, { leftText = "50 Mana", rightText = "35 yd range" }, { leftText = "Instant" }, { leftText = "An instant shot that causes 15 Arcane damage." } } } end
         if id == 19426 then return { lines = { { leftText = "Lethal Shots" }, { leftText = "Increases your critical strike chance with ranged weapons by |cffffffff1%|r." } } } end
         if id == 19295 then return { lines = { { leftText = "Deflection" }, { leftText = "Increases your Parry chance by 1%." } } } end
     end,
@@ -592,13 +599,33 @@ C_UnitAuras = {
 C_QuestLog.GetAllCompletedQuestIDs = function() return { 918, 456, 457 } end
 
 spellDataRequested = {}
+lateItemLoaded, lateSpellLoaded = false, false
 local actions = { [1] = { "spell", 3044 }, [2] = { "macro", 1 }, [13] = { "item", 4540 } }
 function HasAction(slot) return actions[slot] ~= nil end
 function GetActionInfo(slot) local a = actions[slot]; if a then return a[1], a[2], "" end end
 C_Spell = {
     IsSelfBuff = function(id) return id == 13165 end,
     GetSpellName = function(id) if id == 3044 then return "Arcane Shot" end if id == 19416 then return "Efficiency" end end,
-    GetSpellDescription = function(id) if id == 19416 then return "Reduces the Mana cost of your Shots and Stings by |cffffffff2%|r." end return "" end,
+    GetSpellDescription = function(id)
+        if id == 19416 then return "Reduces the Mana cost of your Shots and Stings by |cffffffff2%|r." end
+        if id == 3044 then return "An instant shot that causes |cffffffff15|r Arcane damage." end
+        if id == 99002 and lateSpellLoaded then return "Loaded later." end
+        return ""
+    end,
+    -- Spell 99002 is unknown to the client until its data arrives (lateSpellLoaded).
+    GetSpellInfo = function(key)
+        local known = { [3044] = "Arcane Shot", [19416] = "Efficiency", [99002] = lateSpellLoaded and "Late Spell" or nil }
+        local id = tonumber(key)
+        if not id then for spellID, name in pairs(known) do if name == key then id = spellID end end end
+        if not (id and known[id]) then return nil end
+        local arcane = id == 3044
+        return { name = known[id], spellID = id, iconID = 132218, castTime = 0, minRange = arcane and 5 or 0, maxRange = arcane and 35 or 0 }
+    end,
+    GetSpellSubtext = function(id) if id == 3044 then return "Rank 1" end return "" end,
+    GetSpellPowerCost = function(id)
+        if id == 3044 then return { { name = "MANA", type = 0, cost = 50, minCost = 50 }, { name = "RAGE", type = 1, cost = 0 } } end
+        return {}
+    end,
     RequestLoadSpellData = function(id) spellDataRequested[#spellDataRequested + 1] = id end,
     -- Aspect of the Hawk has (unrealistically) a 5 min cooldown here, Hunter's Mark only the global one.
     GetSpellCooldown = function(id)
@@ -1242,7 +1269,7 @@ DEDE_TEXT = (
 # Text the assertions expect, per mode (English unless the deDE client translates it).
 DEDE_EXPECT = {
     "One-Hand | Dagger": "Einhändig | Dolch", "9 - 18 Damage | Speed 1.60": "9 - 18 Schaden | Tempo 1,60",
-    "Hearthstone": "Ruhestein", "Leatherworking": "Lederverarbeitung", "Attack": "Angriff",
+    "Hearthstone": "Ruhestein", "Skinning Knife": "Kürschnermesser", "Rank 1": "Rang 1", "Leatherworking": "Lederverarbeitung", "Attack": "Angriff",
 }
 
 
@@ -1431,7 +1458,7 @@ def check_auction_item_keys(prices, g) -> None:
     assert trinket["equipLoc"] == "INVTYPE_TRINKET" and trinket["minBuyout"] == 52000 and trinket["requiredLevel"] == 40, dict(trinket)
     assert list(trinket["tooltip"].values())[2].startswith("Use:"), dict(trinket["tooltip"])
     assert list(prices["Hornwood Recurve Bow"]["tooltip"].values()) == ["Hornwood Recurve Bow"]
-    requested = set(g.itemDataRequests.values())
+    requested = set(g.itemDataRequests.values()) - {99001}  # 99001: the /mcp item lookup, not the auction house
     assert requested == {2507, 1404}, requested
 
 
@@ -2104,6 +2131,55 @@ def check_legacy_tree(legacy, g) -> None:
     assert "Enum.TraitConfigType.Generic=3" in list(discovery["enums"].values())
 
 
+def run_lookups(g, on_event, mode: str) -> None:
+    """Addon 0.21.0: /mcp item and /mcp spell by ID, name and link; data the client lacks arrives later."""
+    command = g.SlashCmdList["WOWMCP"]
+    for query in ("5586", expect(mode, "Skinning Knife"), "No Such Item", "99001"):
+        command("item " + query)
+    on_event(None, "GET_ITEM_INFO_RECEIVED", 99001, False)
+    command("item 99001")
+    g.lateItemLoaded = True
+    on_event(None, "GET_ITEM_INFO_RECEIVED", 99001, True)
+    for query in ("3044", "Arcane Shot", "|cff71d5ff|Hspell:19416|h[Efficiency]|h|r", "99002"):
+        command("spell " + query)
+    g.lateSpellLoaded = True
+    on_event(None, "SPELL_DATA_LOAD_RESULT", 99002, True)
+    command("item")
+    command("spell")
+
+
+def check_lookups(snapshot, g, mode: str) -> None:
+    """The lookups section and the chat answers of run_lookups."""
+    if mode not in FOREVER_MODES:
+        assert snapshot["lookups"] is None
+        g.SlashCmdList["WOWMCP"]("item 5586")
+        assert "has not loaded this item" in last_chat(g), last_chat(g)
+        return
+    entries = {(e["kind"], e["id"]): e for e in values(snapshot["lookups"])}
+    order = [(e["kind"], e["id"]) for e in values(snapshot["lookups"])]
+    assert order == [("spell", 99002), ("spell", 19416), ("spell", 3044), ("item", 99001), ("item", 7005), ("item", 5586)], order
+    dagger = entries[("item", 5586)]
+    assert (dagger["name"], dagger["query"], dagger["equipLoc"], dagger["classID"]) == ("Curvewood Dagger", "5586", "INVTYPE_WEAPON", 2), dict(dagger)
+    assert values(dagger["tooltip"]) == ["Curvewood Dagger", expect(mode, "One-Hand | Dagger")], dict(dagger)
+    knife = entries[("item", 7005)]
+    assert knife["name"] == knife["query"] == expect(mode, "Skinning Knife"), dict(knife)
+    assert entries[("item", 99001)]["name"] == "Item 99001"
+    shot = entries[("spell", 3044)]
+    assert shot["query"] == "Arcane Shot" and shot["rank"] == expect(mode, "Rank 1") and shot["castTimeMs"] == 0, dict(shot)
+    assert (shot["minRange"], shot["maxRange"]) == (5, 35)
+    assert [dict(c) for c in values(shot["costs"])] == [{"power": "MANA", "amount": 50}], values(shot["costs"])
+    assert shot["description"] == "An instant shot that causes |cffffffff15|r Arcane damage.".replace("|cffffffff", "").replace("|r", "")
+    assert shot["descriptionSource"] == "api" and values(shot["tooltip"])[1] == "50 Mana | 35 yd range"
+    assert entries[("spell", 19416)]["description"].startswith("Reduces the Mana cost")
+    late = entries[("spell", 99002)]
+    assert late["name"] == "Late Spell" and late["description"] == "Loaded later." and late["descriptionMissing"] is None
+    assert 99001 in values(g.itemDataRequests) and 99002 in values(g.spellDataRequested)
+    chat = [str(line) for line in g.chatlog.values()]
+    for expected in ("Usage: /mcp item", "Usage: /mcp spell", "does not know that item", "has not loaded this item",
+                     "item 99001 Item 99001 saved", "spell 99002 Late Spell saved", "The client has no item 99001"):
+        assert any(expected in line for line in chat), (expected, chat)
+
+
 def check_quest_sources(snapshot, g, mode: str) -> None:
     """Addon 0.14.0: quest locations from the installed quest database and the next steps of the Guidelime guide."""
     if mode not in FOREVER_MODES:
@@ -2420,6 +2496,7 @@ def main() -> int:
         # Quest lookups by name (any letter case), by ID and with no match; the same query twice is stored once.
         for query in ("deep ocean, vast sea", "947", "Murkdeep", "No Such Quest", "947"):
             g.SlashCmdList["WOWMCP"]("quest " + query)
+        run_lookups(g, on_event, mode)
     elif mode == "modern":
         for event in ("AUCTION_HOUSE_SHOW", "AUCTION_ITEM_LIST_UPDATE", "AUCTION_OWNED_LIST_UPDATE"):
             on_event(None, event)
@@ -2712,6 +2789,7 @@ def main() -> int:
     check_identifiers(snapshot, mode)
     check_numeric_ids(snapshot, mode, runtime, addon_ns)
     check_quest_sources(snapshot, g, mode)
+    check_lookups(snapshot, g, mode)
 
     dump = g.SerializeSavedVariable("WowMcpDB", g.WowMcpDB)
     assert "INVTYPE_NON_EQUIP_IGNORE" not in dump, "equipLoc = INVTYPE_NON_EQUIP_IGNORE should not reach the dump"

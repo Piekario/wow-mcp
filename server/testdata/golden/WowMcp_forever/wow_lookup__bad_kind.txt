@@ -1,0 +1,5 @@
+# tool wow_lookup variant=bad_kind
+# args: {"kind":"quest","query":"arcane"}
+# isError: true
+--- content[0] ---
+kind must be item, spell or empty, not "quest"
