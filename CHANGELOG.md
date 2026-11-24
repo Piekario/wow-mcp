@@ -10,12 +10,13 @@ based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` 
 ## 0.22.0 (unreleased)
 
 Pet food the client checks, where to tame missing ranks, and class buffs by spell ID, for the addon and the server
-(roadmap 69, 70 and 105). The server expects addon 0.22.0. **None of this has been run in the real client**: it was checked only on the addon's API mocks
-(`addon/tests/run_addon.py`), unit tests and golden responses. It assumes the following about Forever, to be confirmed with
-`/mcp probe` and a taming in game:
+(roadmap 69, 70 and 105). The server expects addon 0.22.0. Run in the real client on 2026-11-24 with a Warlock (build 71037, no section errors, dump 43.5 ms), which confirmed:
+`C_PetInfo.CanPetEatItem(itemID)` returns one boolean and raises an error for an item link (`probe.petFood`); every new
+event is accepted (`PLAYER_TARGET_CHANGED`, `UPDATE_MOUSEOVER_UNIT`, `UNIT_AURA`, `UNIT_PET`, `PET_BAR_UPDATE`,
+`SPELLS_CHANGED`, `UNIT_SPELLCAST_START`, `UNIT_SPELLCAST_CHANNEL_START`); `classBuffGroups` gave Demon Skin (687) and
+Demon Armor (706) with the right names and left out Fel Armor (28176), which this client does not know. Not yet run
+with a Hunter, so the points below about taming, Beast Lore and the pet's food list are still assumptions:
 
-- `C_PetInfo.CanPetEatItem` (present in the 0.7.0 probe) takes an item ID or an item link and returns a boolean; which
-  form works is not known, so the addon tries both and saves the one that answered.
 - Tame Beast is spell ID 1515 and fires `UNIT_SPELLCAST_START` or `UNIT_SPELLCAST_CHANNEL_START` with `(unit, castGUID,
   spellID)`; the tamed pet arrives with `UNIT_PET`, `PET_BAR_UPDATE` or `SPELLS_CHANGED` within 60 s; the pet's GUID has
   the form `Pet-0-…-<npcID>-…` (otherwise the families are compared); creature GUIDs have the form
