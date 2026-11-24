@@ -744,6 +744,10 @@ WowMcpDB = {
 },
 ["errors"] = {
 },
+["eventLog"] = {
+["entries"] = {
+},
+},
 ["flightPaths"] = {
 ["capturedAt"] = 1794760000,
 ["nodeFields"] = {
@@ -1427,10 +1431,14 @@ true, -- [1]
 ["PET_STABLE_SHOW"] = true,
 ["PET_STABLE_UPDATE"] = true,
 ["PLAYER_DEAD"] = true,
+["PLAYER_EQUIPMENT_CHANGED"] = true,
 ["PLAYER_GUILD_UPDATE"] = true,
+["PLAYER_LEVEL_UP"] = true,
 ["PLAYER_LOGIN"] = true,
 ["PLAYER_LOGOUT"] = true,
+["PLAYER_MONEY"] = true,
 ["PLAYER_XP_UPDATE"] = true,
+["QUEST_ACCEPTED"] = true,
 ["QUEST_COMPLETE"] = true,
 ["QUEST_DETAIL"] = true,
 ["QUEST_TURNED_IN"] = true,
@@ -1441,6 +1449,7 @@ true, -- [1]
 ["TRADE_SKILL_UPDATE"] = false,
 ["TRAINER_SHOW"] = true,
 ["TRAINER_UPDATE"] = true,
+["ZONE_CHANGED_NEW_AREA"] = true,
 },
 ["globals"] = {
 "CanMerchantRepair", -- [1]

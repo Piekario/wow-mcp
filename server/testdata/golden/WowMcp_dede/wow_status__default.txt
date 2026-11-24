@@ -43,6 +43,7 @@
         "dungeons",
         "equipment",
         "equipmentSets",
+        "eventLog",
         "flightPaths",
         "friends",
         "group",

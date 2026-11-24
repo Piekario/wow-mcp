@@ -66,6 +66,7 @@ Sections\Probe.lua
 Sections\Deaths.lua
 Sections\Loot.lua
 Sections\XpGains.lua
+Sections\EventLog.lua
 Sections\Note.lua
 
 # Player UI.

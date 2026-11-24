@@ -1835,6 +1835,71 @@ def check_carried_periods() -> None:
     assert len(g.forbiddenCalls) == 0, list(g.forbiddenCalls.values())
 
 
+def event_log_entries(g) -> list:
+    log = saved_character(g)["eventLog"]
+    entries = None if log is None else log["entries"]
+    return [] if entries is None else [dict(entries[i]) for i in range(1, len(entries) + 1)]
+
+
+def check_event_log() -> None:
+    """Addon eventLog section: kinds, throttling, de-duplication, bounds, and carrying across saves."""
+    runtime, g, addon_ns, on_event = relog("")
+    runtime.execute("""
+        C_QuestLog.GetTitleForQuestID = function(id) if id == 947 then return "The Glowing Shard" end end
+        local copper, zone = 100, "Darkshore"
+        function GetMoney() return copper end
+        function GetRealZoneText() return zone end
+        function setMoney(value) copper = value end
+        function setZone(value) zone = value end
+    """)
+    start = g.clockNow
+    on_event(None, "PLAYER_LEVEL_UP", 21)
+    on_event(None, "PLAYER_MONEY")
+    g.clockNow += 100
+    runtime.eval("setMoney")(250)
+    on_event(None, "PLAYER_MONEY")
+    g.clockNow += 300
+    runtime.eval("setMoney")(900)
+    on_event(None, "PLAYER_MONEY")
+    on_event(None, "QUEST_ACCEPTED", 3, 947)
+    on_event(None, "QUEST_ACCEPTED", 4740)
+    on_event(None, "QUEST_TURNED_IN", 947, 250, 350)
+    on_event(None, "ZONE_CHANGED_NEW_AREA")
+    on_event(None, "ZONE_CHANGED_NEW_AREA")
+    runtime.eval("setZone")("Ashenvale")
+    on_event(None, "ZONE_CHANGED_NEW_AREA")
+    on_event(None, "PLAYER_EQUIPMENT_CHANGED", 16, False)
+    on_event(None, "PLAYER_EQUIPMENT_CHANGED", 5, True)
+    kinds = [(e["kind"]) for e in event_log_entries(g)]
+    assert kinds == ["level", "money", "money", "questAccepted", "questAccepted", "questTurnedIn", "zone", "zone",
+                     "equipment", "equipment"], kinds
+    entries = event_log_entries(g)
+    assert entries[0] == {"at": start, "kind": "level", "level": 21}, entries[0]
+    assert entries[1]["copper"] == 250 and entries[1]["at"] == start, "a money change within 300 s overwrites"
+    assert entries[2]["copper"] == 900 and entries[2]["at"] == start + 400
+    assert (entries[3]["questID"], entries[3]["title"]) == (947, "The Glowing Shard"), entries[3]
+    assert entries[4]["questID"] == 4740 and "title" not in entries[4], entries[4]
+    assert (entries[5]["questID"], entries[5]["xp"], entries[5]["copper"]) == (947, 250, 350), entries[5]
+    assert [e["zone"] for e in entries[6:8]] == ["Darkshore", "Ashenvale"]
+    assert (entries[8]["slot"], entries[8]["itemID"]) == (16, 5586) and "itemID" not in entries[9], entries[8:]
+
+    for level in range(22, 330):
+        on_event(None, "PLAYER_LEVEL_UP", level)
+    capped = event_log_entries(g)
+    assert len(capped) == 300 and capped[-1]["level"] == 329 and capped[0]["kind"] == "level", capped[0]
+
+    g.SlashCmdList["WOWMCP"]("reload")
+    saved = g.SerializeSavedVariable("WowMcpDB", g.WowMcpDB)
+    runtime, g, addon_ns, on_event = relog(saved, clock=g.clockNow)
+    assert len(event_log_entries(g)) == 300, "the log survives a reload and login"
+    runtime, g, addon_ns, on_event = relog(saved, clock=g.clockNow + 15 * 24 * 3600)
+    assert event_log_entries(g) == [], "entries older than 14 days are dropped at login"
+
+    g.SlashCmdList["WOWMCP"]("off eventLog")
+    on_event(None, "PLAYER_LEVEL_UP", 5)
+    assert saved_character(g)["eventLog"] is None, "a disabled section stores nothing"
+
+
 def check_continent_is_no_zone() -> None:
     """Addon 0.12.0: a node position that only resolves to a continent (addon 0.7.0 wrote "Eastern Kingdoms" as every
     point's zone) is stored as continent, never as zone."""
@@ -1962,6 +2027,7 @@ def check_real_lifecycle() -> None:
     check_guard_ignores_disabled_sections()
     check_options_page()
     check_carried_periods()
+    check_event_log()
     check_continent_is_no_zone()
 
 

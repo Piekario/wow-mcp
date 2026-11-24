@@ -37,6 +37,7 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
     "dungeons",
     "equipment",
     "equipmentSets",
+    "eventLog",
     "friends",
     "group",
     "guild",

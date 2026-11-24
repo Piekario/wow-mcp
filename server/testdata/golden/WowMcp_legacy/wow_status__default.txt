@@ -19,6 +19,7 @@
         "character",
         "equipment",
         "equipmentSets",
+        "eventLog",
         "friends",
         "guild",
         "legacy",
