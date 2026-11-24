@@ -62,7 +62,7 @@ const instructions = "The tools read World of Warcraft: Forever character state 
 	"An answer over the size limit comes back as {truncated: true, hint, topLevel, partial}: follow the hint and ask for less. " +
 	"Tools: " +
 	"status and version: wow_status (also alerts: mail, auctions, gear, bags and which account was read), wow_doctor (the first thing to call when something looks wrong: ordered checks with fixes), wow_section (any section, big ones in pieces with path and limit); " +
-	"character: wow_character (with the player's note and deaths), wow_equipment, wow_bags, wow_spells, wow_talents, wow_legacy (Legacy perks, points and challenges), " +
+	"character: wow_character (with the player's note and deaths), wow_equipment, wow_bags, wow_spells, wow_talents, wow_legacy (Legacy perks, points and challenges), wow_achievements (points, dates, closest to done), wow_statistics (the game's counters), wow_collections (titles, mounts, companions), " +
 	"wow_reputation, wow_pet (also missing ranks, training point plan and stable), wow_quests; " +
 	"windows from the last visit: wow_trainer and wow_vendor (optionally npc: up to 10 remembered), wow_bank, wow_mail, wow_auctions, wow_recipes; " +
 	"shopping and quests: wow_shopping_list (trainer, repairs, ammo, food, who sells it, when to return to town), wow_quest_rewards (which quest reward to pick); " +

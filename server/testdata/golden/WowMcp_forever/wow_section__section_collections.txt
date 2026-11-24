@@ -1,0 +1,38 @@
+# tool wow_section variant=section_collections
+# args: {"section":"collections"}
+# isError: false
+--- content[0] ---
+{
+  "collections": {
+    "companions": {
+      "list": [
+        {
+          "id": 7385,
+          "name": "Bombay Cat",
+          "spellID": 10673
+        },
+        {
+          "id": 7390,
+          "name": "Cockatiel",
+          "spellID": 10680
+        }
+      ],
+      "source": "GetCompanionInfo"
+    },
+    "mounts": {
+      "list": [
+        {
+          "id": 7322,
+          "name": "Striped Nightsaber",
+          "spellID": 10793
+        }
+      ],
+      "source": "GetCompanionInfo"
+    }
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

@@ -70,6 +70,7 @@ var sectionTools = map[string]string{
 	"vendors": "wow_vendor", "trainers": "wow_trainer", "stable": "wow_pet", "questOffer": "wow_quest_rewards",
 	"questTurnIn": "wow_quest_rewards", "loot": "wow_journal", "xpGains": "wow_journal", "buyback": "wow_vendor",
 	"equipmentSets": "wow_equipment", "pvp": "wow_character", "friends": "wow_social", "guild": "wow_social",
+	"achievements": "wow_achievements", "statistics": "wow_statistics", "titles": "wow_collections", "collections": "wow_collections",
 }
 
 // ToolFor returns the tool that uses the section.

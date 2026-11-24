@@ -12,6 +12,7 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	"wowmcp/internal/game/accountcraft"
+	"wowmcp/internal/game/achievements"
 	"wowmcp/internal/game/addon"
 	"wowmcp/internal/game/alerts"
 	"wowmcp/internal/game/altmail"
@@ -20,6 +21,7 @@ import (
 	"wowmcp/internal/game/bagplan"
 	"wowmcp/internal/game/buffs"
 	"wowmcp/internal/game/character"
+	"wowmcp/internal/game/collections"
 	"wowmcp/internal/game/compare"
 	"wowmcp/internal/game/cooldowns"
 	"wowmcp/internal/game/dungeons"
@@ -174,7 +176,7 @@ func (s *service) statusTools() []tool {
 		s.doctorTool(),
 
 		accountTool(s, "wow_section", "Snapshot section",
-			"Any snapshot section by name, without filters. Reputation, bank, vendor, recipes, mail, cooldowns, talents, auctions, group (and inspect) and dungeons have more convenient tools: wow_reputation, wow_bank, wow_vendor, wow_recipes, wow_mail, wow_cooldowns, wow_talents, wow_auctions, wow_group, wow_dungeons. Big sections (probe is about 60 kB) can be read in pieces: path (a dot path into the section, e.g. namespaces.C_AuctionHouse or events) and limit (first N items or keys). Other sections: actionBars (what sits on which action bar button), macros, completedQuests (IDs of all completed quests; for checking prerequisite quests), flightPaths (flight points from the last opened flight map), probe (list of client API functions after /mcp probe), loot (own loot since the previous save, plus periods: earlier saves carried by the addon; summarized by wow_changes and wow_journal), xpGains (own XP by source: kills, quests, the rest, with periods like loot; also in wow_changes and wow_journal as xpSources), buyback (the vendor buyback list; see wow_vendor), friends and guild (see wow_social), equipmentSets (see wow_equipment), pvp (see wow_character), vendors and trainers (up to 10 remembered NPCs: name -> offer; more convenient via npc in wow_vendor and wow_trainer), legacy (Forever Legacy perk trees, challenges and API discovery; see wow_legacy), stable (stabled pets; see wow_pet), questOffer and questTurnIn (NPC quest windows; see wow_quest_rewards). The list of sections available for a character is given by wow_status."+freshness,
+			"Any snapshot section by name, without filters. Reputation, bank, vendor, recipes, mail, cooldowns, talents, auctions, group (and inspect) and dungeons have more convenient tools: wow_reputation, wow_bank, wow_vendor, wow_recipes, wow_mail, wow_cooldowns, wow_talents, wow_auctions, wow_group, wow_dungeons. Big sections (probe is about 60 kB) can be read in pieces: path (a dot path into the section, e.g. namespaces.C_AuctionHouse or events) and limit (first N items or keys). Other sections: actionBars (what sits on which action bar button), macros, completedQuests (IDs of all completed quests; for checking prerequisite quests), flightPaths (flight points from the last opened flight map), probe (list of client API functions after /mcp probe), loot (own loot since the previous save, plus periods: earlier saves carried by the addon; summarized by wow_changes and wow_journal), xpGains (own XP by source: kills, quests, the rest, with periods like loot; also in wow_changes and wow_journal as xpSources), buyback (the vendor buyback list; see wow_vendor), friends and guild (see wow_social), equipmentSets (see wow_equipment), pvp (see wow_character), vendors and trainers (up to 10 remembered NPCs: name -> offer; more convenient via npc in wow_vendor and wow_trainer), legacy (Forever Legacy perk trees, challenges and API discovery; see wow_legacy), achievements (see wow_achievements), statistics (see wow_statistics), titles and collections (mounts and companions; see wow_collections), stable (stabled pets; see wow_pet), questOffer and questTurnIn (NPC quest windows; see wow_quest_rewards). The list of sections available for a character is given by wow_status."+freshness,
 			s.section),
 	}
 }
@@ -211,6 +213,27 @@ func (s *service) characterTools() []tool {
 			func(a legacy.Query) string { return a.Character },
 			func(_ string, snap snapshot.Snapshot, q legacy.Query) (map[string]any, error) {
 				return legacy.View(snap, q), nil
+			}),
+
+		characterTool(s, "wow_achievements", "Achievements",
+			"The character's achievements from the achievements section: points, completed/total, progress per category, completion dates and, for incomplete achievements, their criteria (what is done and what is missing). view: summary (default: totals, per-category progress, the 5 most recent), timeline (completed ones in date order, with the earliest and latest), recent (newest first), closest (incomplete ones ranked by criteria progress, with the missing criteria) or all. query narrows by name, category by category name (a parent includes its subcategories), limit sets how many are listed. The dump holds at most 600 achievements and criteria only for incomplete ones (up to 8 each, missing first); there is no account-wide, guild or comparison data. When the section is absent the answer says so: the addon is older, or the client has no achievement API (nobody has confirmed yet that Forever has one); /mcp probe in game shows which API names the client has. Never invent achievements from general game knowledge."+freshness,
+			func(a achievements.Query) string { return a.Character },
+			func(_ string, snap snapshot.Snapshot, q achievements.Query) (map[string]any, error) {
+				return achievements.View(snap, q)
+			}),
+
+		characterTool(s, "wow_statistics", "Statistics",
+			"The counters the game keeps for the character (the Statistics tab of the achievement window), from the statistics section: per category, each statistic with its value as the game shows it (numbers, or money as \"5g 20s 3c\"), e.g. total deaths, quests completed, creatures killed, gold acquired. query narrows by statistic name, category by category name. Statistics the game shows as \"--\" are left out and only counted (empty); the dump holds up to 400. When the section is absent the answer says so: the addon is older, or the client has no statistics API (nobody has confirmed yet that Forever has one); /mcp probe in game shows which API names the client has. For deaths recorded by the addon itself see wow_character (deaths)."+freshness,
+			func(a achievements.StatisticsQuery) string { return a.Character },
+			func(_ string, snap snapshot.Snapshot, q achievements.StatisticsQuery) (map[string]any, error) {
+				return achievements.ViewStatistics(snap, q), nil
+			}),
+
+		characterTool(s, "wow_collections", "Titles, mounts and companions",
+			"What the character has collected: earned titles and the one it shows now (titles section), and the mounts and companion pets it knows (collections section: name, spell ID, the API it came from; up to 300 of each). kind narrows to titles, mounts or companions (default all); query narrows by name. Companions read from the pet journal follow the journal's filters in game. Each part says when it is absent: the addon is older, or the client has no such API (nobody has confirmed yet which of these Forever has); /mcp probe in game shows which API names the client has. The tool and the addon never change the title or summon anything."+freshness,
+			func(a collections.Query) string { return a.Character },
+			func(_ string, snap snapshot.Snapshot, q collections.Query) (map[string]any, error) {
+				return collections.View(snap, q)
 			}),
 
 		characterTool(s, "wow_reputation", "Reputation",
@@ -473,7 +496,7 @@ func (s *service) accountTools() []tool {
 			}),
 
 		characterTool(s, "wow_search", "Snapshot search",
-			"Searches for text (case-insensitive) across one character's whole snapshot at once: quests (title, objectives, zone), items in the bags, bank and equipped (name, type, description), spells, trainer and vendor offers (including remembered ones), quest rewards, quests from NPC windows, stable, loot, recipes and their materials, mail, reputation, prices and own auctions, professions, currencies, macros and flight points. Returns hits grouped by section, with the location (path) and a short summary; up to 20 hits per section, truncated says how many were cut. To find an item across all characters use wow_find_item."+freshness,
+			"Searches for text (case-insensitive) across one character's whole snapshot at once: quests (title, objectives, zone), items in the bags, bank and equipped (name, type, description), spells, trainer and vendor offers (including remembered ones), quest rewards, quests from NPC windows, stable, loot, recipes and their materials, mail, reputation, prices and own auctions, professions, currencies, macros, flight points, achievements (name, description, reward, criteria), statistics, titles, mounts and companions. Returns hits grouped by section, with the location (path) and a short summary; up to 20 hits per section, truncated says how many were cut. To find an item across all characters use wow_find_item."+freshness,
 			func(a search.Query) string { return a.Character },
 			func(_ string, snap snapshot.Snapshot, q search.Query) (map[string]any, error) {
 				return search.Run(snap, q)

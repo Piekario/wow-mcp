@@ -15,16 +15,18 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
       "disabledSections": [
         "macros"
       ],
-      "dumpTimeMs": 61.5,
+      "dumpTimeMs": 73,
       "dumpedAt": "2026-11-15 16:50:00",
       "level": 20,
       "race": "Night Elf",
       "sections": [
+        "achievements",
         "actionBars",
         "auctions",
         "auras",
         "bags",
         "character",
+        "collections",
         "dungeons",
         "equipment",
         "equipmentSets",
@@ -42,8 +44,10 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
         "reputation",
         "spells",
         "stable",
+        "statistics",
         "stats",
         "talents",
+        "titles",
         "trainer",
         "trainers",
         "xpGains"

@@ -1,0 +1,23 @@
+# tool wow_collections variant=all_args
+# args: {"character":"Piekasz","kind":"mounts","query":"saber"}
+# isError: false
+--- content[0] ---
+{
+  "kind": "mounts",
+  "mounts": {
+    "count": 1,
+    "known": [
+      {
+        "name": "Striped Nightsaber",
+        "spellID": 10793
+      }
+    ],
+    "matching": 1,
+    "source": "GetCompanionInfo"
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

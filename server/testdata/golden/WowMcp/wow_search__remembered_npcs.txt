@@ -48,7 +48,11 @@
     "stable",
     "reputation",
     "auctions",
-    "professions"
+    "professions",
+    "achievements",
+    "statistics",
+    "titles",
+    "collections"
   ],
   "snapshot": {
     "ageMinutes": 30,

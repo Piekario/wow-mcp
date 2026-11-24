@@ -1,0 +1,53 @@
+# tool wow_collections variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game.
+--- content[1] ---
+{
+  "companions": {
+    "count": 2,
+    "known": [
+      {
+        "name": "Mechanical Squirrel"
+      },
+      {
+        "name": "Whiskers",
+        "species": "Cat (Black Tabby)"
+      }
+    ],
+    "source": "C_PetJournal",
+    "sourceNote": "read from the pet journal, whose list follows the journal's own filters in game: a hidden pet is missing here"
+  },
+  "kind": "all",
+  "mounts": {
+    "count": 2,
+    "known": [
+      {
+        "name": "Brown Horse",
+        "spellID": 458
+      },
+      {
+        "name": "Striped Nightsaber",
+        "spellID": 10793
+      }
+    ],
+    "source": "C_MountJournal"
+  },
+  "snapshot": {
+    "ageMinutes": 200,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00",
+    "stale": true,
+    "warning": "The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game."
+  },
+  "titles": {
+    "current": "the Patient",
+    "known": [
+      "Private",
+      "the Patient"
+    ],
+    "knownCount": 2,
+    "titlesInGame": 143
+  }
+}

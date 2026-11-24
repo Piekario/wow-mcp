@@ -1,0 +1,26 @@
+# tool wow_collections variant=kind_companions
+# args: {"kind":"companions"}
+# isError: false
+--- content[0] ---
+{
+  "companions": {
+    "count": 2,
+    "known": [
+      {
+        "name": "Mechanical Squirrel"
+      },
+      {
+        "name": "Whiskers",
+        "species": "Cat (Black Tabby)"
+      }
+    ],
+    "source": "C_PetJournal",
+    "sourceNote": "read from the pet journal, whose list follows the journal's own filters in game: a hidden pet is missing here"
+  },
+  "kind": "companions",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

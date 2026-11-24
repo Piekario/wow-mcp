@@ -1,0 +1,37 @@
+# tool wow_achievements variant=timeline_limit_1
+# args: {"limit":1,"view":"timeline"}
+# isError: false
+--- content[0] ---
+{
+  "achievements": [
+    {
+      "category": "Quests \u003e Classic",
+      "completed": true,
+      "completedOn": "2026-11-14",
+      "name": "Darkshore Quests",
+      "points": 10
+    }
+  ],
+  "completed": 3,
+  "completedPercent": 42.9,
+  "coverage": "The addon lists up to 600 achievements of this character (notListed counts the rest), with the completion date of completed ones and, for incomplete ones only, up to 8 criteria (missing ones first). Account-wide, guild and comparison data are not in the dump.",
+  "earliest": {
+    "completedOn": "2026-08-30",
+    "name": "Explore Teldrassil"
+  },
+  "latest": {
+    "completedOn": "2026-11-14",
+    "name": "Darkshore Quests"
+  },
+  "note": "Showing the latest 1 of 3; raise limit to see more.",
+  "of": 3,
+  "points": 30,
+  "shown": 1,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "total": 7,
+  "view": "timeline"
+}

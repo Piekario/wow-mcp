@@ -1,0 +1,45 @@
+# tool wow_collections variant=named
+# args: {"character":"Piekasz"}
+# isError: false
+--- content[0] ---
+{
+  "companions": {
+    "count": 2,
+    "known": [
+      {
+        "name": "Bombay Cat",
+        "spellID": 10673
+      },
+      {
+        "name": "Cockatiel",
+        "spellID": 10680
+      }
+    ],
+    "source": "GetCompanionInfo"
+  },
+  "kind": "all",
+  "mounts": {
+    "count": 1,
+    "known": [
+      {
+        "name": "Striped Nightsaber",
+        "spellID": 10793
+      }
+    ],
+    "source": "GetCompanionInfo"
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "titles": {
+    "current": "the Patient",
+    "known": [
+      "Private",
+      "the Patient"
+    ],
+    "knownCount": 2,
+    "titlesInGame": 143
+  }
+}

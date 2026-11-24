@@ -5,6 +5,13 @@
 WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game.
 --- content[1] ---
 {
+  "challenges": {
+    "completed": 0,
+    "completedNames": [],
+    "note": "No achievement category named Legacy in this client; challenges may live elsewhere (see discovery=true).",
+    "open": [],
+    "total": 0
+  },
   "discovery": {
     "enums": [],
     "frames": [],

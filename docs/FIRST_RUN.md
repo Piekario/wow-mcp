@@ -114,6 +114,22 @@ Open the friends and guild windows yourself: the addon only reads what the clien
 6. **Recipes, stable, auctions.** Open the professions window (ingredients in `wow_recipes`), the stable (`active` on the active pet)
    and search for something at the auction house (`wow_auctions`).
 
+## 3d. What to check in the game: achievements, statistics, titles and collections
+
+These four sections use API names that nobody has run in Forever yet (`GetCategoryList`, `GetAchievementInfo`,
+`GetAchievementCriteriaInfo`, `GetStatisticsCategoryList`, `GetStatistic`, `GetNumTitles`, `IsTitleKnown`, `GetTitleName`,
+`GetCurrentTitle`, `C_MountJournal`, `C_PetJournal`, `GetNumCompanions`, `GetCompanionInfo`). A missing section is not an error: the
+client may simply not have that API.
+
+1. Type `/mcp probe` and `/mcp reload`, then ask for `wow_section` with section `probe` and path `globals` (and `namespaces`): report which of
+   the names above are listed.
+2. Ask for `wow_achievements`, `wow_statistics` and `wow_collections`. Each answers with data, or with a note that the section is absent.
+3. If achievements are there: compare `points` and a few completion dates (`view: timeline`) with the achievement window in the game; the
+   date conversion assumes the client gives the year as years since 2000. Check `/mcp status` for the dump time: the first dump of a session
+   reads every achievement, later ones only the incomplete ones.
+4. If titles or mounts are there: compare them with the character window (title drop-down) and the mount list. Companions read from the pet
+   journal follow the journal's filters.
+
 ## 4. When something does not work
 
 General diagnostic mode: in the game `/mcp probe`, then `/mcp reload` (probe attaches the list of the client's API functions and the events the client

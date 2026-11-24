@@ -25,6 +25,7 @@ LogoutGuard.lua
 Snapshot.lua
 Periods.lua
 LegacyDiscovery.lua
+AchievementCategories.lua
 
 # Sections collected on every dump. File order = section order in the dump.
 Sections\Character.lua
@@ -45,6 +46,10 @@ Sections\Group.lua
 Sections\Dungeons.lua
 Sections\EquipmentSets.lua
 Sections\Pvp.lua
+Sections\Achievements.lua
+Sections\Statistics.lua
+Sections\Titles.lua
+Sections\Collections.lua
 Sections\Guide.lua
 Sections\QuestDb.lua
 

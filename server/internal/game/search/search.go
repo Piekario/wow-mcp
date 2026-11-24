@@ -56,6 +56,10 @@ var specs = []spec{
 	{"currencies", []string{"name", "group"}, []string{"quantity", "group"}, ""},
 	{"macros", []string{"name", "body"}, []string{"scope"}, ""},
 	{"flightPaths", []string{"name"}, []string{"state"}, ""},
+	{"achievements", []string{"name", "description", "reward", "text"}, []string{"points", "completed", "completedOn"}, ""},
+	{"statistics", []string{"name"}, []string{"value"}, ""},
+	{"titles", []string{"name", "current"}, nil, ""},
+	{"collections", []string{"name", "species"}, []string{"spellID"}, ""},
 }
 
 // FieldTexts is the text a record holds in one searched field (one string, or the strings of a list).

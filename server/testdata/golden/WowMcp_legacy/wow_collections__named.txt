@@ -1,0 +1,16 @@
+# tool wow_collections variant=named
+# args: {"character":"Piekasz"}
+# isError: false
+--- content[0] ---
+{
+  "collectionsNote": "The dump has no collections (mounts and companions) section. Either the WowMcp addon is older than this feature (update it and type /mcp reload), or this game client has no mount or companion API (C_MountJournal, C_PetJournal, GetNumCompanions), so the addon has nothing to read. To tell which: type /mcp probe in game, then /mcp reload, and read wow_section with section probe and path globals for the API names. Do not answer from general game knowledge as if it were this character's data.",
+  "kind": "all",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "titles": {
+    "note": "The dump has no titles section. Either the WowMcp addon is older than this feature (update it and type /mcp reload), or this game client has no title API (GetNumTitles, IsTitleKnown, GetTitleName), so the addon has nothing to read. To tell which: type /mcp probe in game, then /mcp reload, and read wow_section with section probe and path globals for the API names. Do not answer from general game knowledge as if it were this character's data."
+  }
+}

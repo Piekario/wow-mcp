@@ -40,4 +40,6 @@ read_globals = {
     "issecretvalue", "time",
     -- achievements (Legacy challenges)
     "GetAchievementInfo", "GetCategoryInfo", "GetCategoryList", "GetCategoryNumAchievements",
+    -- achievements and statistics sections
+    "GetStatisticsCategoryList",
 }

@@ -1,0 +1,16 @@
+# tool wow_statistics variant=query_nomatch
+# args: {"query":"Zzzz"}
+# isError: false
+--- content[0] ---
+{
+  "categories": [],
+  "coverage": "Values are the game's own display text from the Statistics tab (up to 400 statistics); statistics the game shows as \"--\" (never happened) are left out and only counted in empty.",
+  "empty": 2,
+  "note": "No statistic with a value matches the filters (the game may show it as \"--\", which the dump leaves out).",
+  "shown": 0,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

@@ -433,6 +433,39 @@ func goldenCases() []goldenCase {
 		tc("wow_quest_lookup", "all_args", args{"character": charKnown, "quest": "947"}),
 	)
 	add(characterVariants("wow_guide")...)
+	add(characterVariants("wow_achievements")...)
+	add(
+		tc("wow_achievements", "view_timeline", args{"view": "timeline"}),
+		tc("wow_achievements", "view_recent", args{"view": "recent"}),
+		tc("wow_achievements", "view_closest", args{"view": "closest"}),
+		tc("wow_achievements", "view_all", args{"view": "all"}),
+		tc("wow_achievements", "view_unknown", args{"view": "nope"}),
+		tc("wow_achievements", "query_match", args{"view": "all", "query": "explore"}),
+		tc("wow_achievements", "query_nomatch", args{"view": "all", "query": "Zzzz"}),
+		tc("wow_achievements", "category_parent", args{"category": "Quests"}),
+		tc("wow_achievements", "timeline_limit_1", args{"view": "timeline", "limit": 1}),
+		ir(tc("wow_achievements", "all_args", args{"character": charKnown, "view": "closest", "query": "Explore", "category": "Exploration", "limit": 1})),
+	)
+	add(characterVariants("wow_statistics")...)
+	add(
+		tc("wow_statistics", "query_match", args{"query": "death"}),
+		tc("wow_statistics", "query_nomatch", args{"query": "Zzzz"}),
+		tc("wow_statistics", "category_parent", args{"category": "Character"}),
+		ir(tc("wow_statistics", "all_args", args{"character": charKnown, "query": "gold", "category": "Wealth"})),
+	)
+	add(characterVariants("wow_collections")...)
+	add(
+		tc("wow_collections", "kind_titles", args{"kind": "titles"}),
+		tc("wow_collections", "kind_mounts", args{"kind": "mounts"}),
+		tc("wow_collections", "kind_companions", args{"kind": "companions"}),
+		tc("wow_collections", "kind_unknown", args{"kind": "toys"}),
+		tc("wow_collections", "query_match", args{"query": "cat"}),
+		ir(tc("wow_collections", "all_args", args{"character": charKnown, "kind": "mounts", "query": "saber"})),
+	)
+	for _, sec := range []string{"achievements", "statistics", "titles", "collections"} {
+		add(tc("wow_section", "section_"+sec, args{"section": sec}))
+	}
+	add(tc("wow_search", "achievement_text", args{"query": "Darkshore"}))
 	add(characterVariants("wow_social")...)
 	add(
 		tc("wow_social", "include_offline", args{"includeOffline": true}),

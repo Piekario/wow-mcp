@@ -1,0 +1,47 @@
+# tool wow_statistics variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "categories": [
+    {
+      "category": "Character",
+      "statistics": [
+        {
+          "name": "Quests completed",
+          "value": "62"
+        },
+        {
+          "name": "Creatures killed",
+          "value": "1404"
+        }
+      ]
+    },
+    {
+      "category": "Character \u003e Wealth",
+      "statistics": [
+        {
+          "name": "Total gold acquired",
+          "value": "5g 20s 3c"
+        }
+      ]
+    },
+    {
+      "category": "Deaths",
+      "statistics": [
+        {
+          "name": "Total deaths",
+          "value": "3"
+        }
+      ]
+    }
+  ],
+  "coverage": "Values are the game's own display text from the Statistics tab (up to 400 statistics); statistics the game shows as \"--\" (never happened) are left out and only counted in empty.",
+  "empty": 2,
+  "shown": 4,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}
