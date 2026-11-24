@@ -79,8 +79,13 @@ func (p Person) Roles() []group.Role {
 	return group.ClassRoles(p.Class)
 }
 
+// nameKey drops a realm suffix; rosters write it as "Name-Realm" and some clients as "Name Realm".
 func nameKey(name string) string {
-	return strings.ToLower(strings.SplitN(name, "-", 2)[0])
+	name = strings.TrimSpace(name)
+	if cut := strings.IndexAny(name, "- "); cut > 0 {
+		name = name[:cut]
+	}
+	return strings.ToLower(name)
 }
 
 func isSelf(p Person, self Self) bool {

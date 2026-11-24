@@ -3066,8 +3066,9 @@ def check_dungeon_loot_targets() -> None:
     attempt = saved["lastAttempt"]
     assert attempt["outcome"] == "noMatch" and attempt["query"] == "no such place" and attempt["instancesInJournal"] == 14, dict(attempt)
     assert len(attempt["instanceNames"]) == 14 and len(saved["instances"]) == 8, "a no-match attempt keeps the saved loot"
-    # A journal that lists nothing because its addon is not loaded: the addon does not load it, it says what to do.
+    # A journal that lists nothing because its module is not loaded and cannot be loaded: the addon says what to do.
     runtime.execute("""
+        ejInstanceByIndex = EJ_GetInstanceByIndex
         function EJ_GetInstanceByIndex() return nil end
         function C_AddOns.IsAddOnLoaded(name) return false end
         function C_AddOns.IsAddOnLoadable(name) return true end
@@ -3076,6 +3077,20 @@ def check_dungeon_loot_targets() -> None:
     attempt = saved["lastAttempt"]
     assert attempt["outcome"] == "noMatch" and attempt["instancesInJournal"] == 0 and attempt["journalLoaded"] is False
     assert "has no data yet" in attempt["hint"] and "has no data yet" in last_chat(g), dict(attempt)
+    # The same journal when the client can load the module: /mcp loot loads it and reads.
+    runtime.execute("""
+        ejModuleLoads = 0
+        function C_AddOns.LoadAddOn(name)
+            ejModuleLoads = ejModuleLoads + 1
+            EJ_GetInstanceByIndex = ejInstanceByIndex
+            C_AddOns.IsAddOnLoaded = function() return true end
+            return true
+        end
+    """)
+    g.SlashCmdList["WOWMCP"]("loot test dungeon 10")
+    attempt = saved["lastAttempt"]
+    assert g.ejModuleLoads == 1 and attempt["outcome"] == "read" and attempt["instancesInJournal"] == 14, dict(attempt)
+    assert any("Loaded the game's Encounter Journal module" in str(line) for line in g.chatlog.values())
 
 
 def check_legacy_challenge_rules() -> None:

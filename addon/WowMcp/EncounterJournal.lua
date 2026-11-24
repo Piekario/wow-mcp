@@ -87,6 +87,12 @@ function EJ.notLoadedYet()
     return not loadable or plain(loadable[1]) ~= false
 end
 
+-- Loads the game's own journal module, as opening the journal window does; the EJ_* functions list nothing before it.
+function EJ.loadJournal()
+    local loaded = callFirst({ "C_AddOns.LoadAddOn", "LoadAddOn" }, "Blizzard_EncounterJournal")
+    return loaded ~= nil and plain(loaded[1]) ~= false and not EJ.notLoadedYet()
+end
+
 -- The journal instance of the dungeon the character is in, or nil outside an instance.
 function EJ.currentInstanceID()
     if not isInInstance() then return nil end

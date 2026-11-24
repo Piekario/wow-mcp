@@ -170,3 +170,13 @@ func TestNoGuildStillGivesFriendCandidates(t *testing.T) {
 		t.Errorf("friend candidates: %v", gc)
 	}
 }
+
+func TestSelfIsNotACandidateWhateverTheRealmSuffix(t *testing.T) {
+	self := Self{Name: "Piekasz", Level: 31, HasLevel: true}
+	for _, name := range []string{"Piekasz", "Piekasz-Forever", "Piekasz Forever", "piekasz"} {
+		c := FindCandidates([]Person{{Name: name, Level: 31, HasLevel: true, Online: true}}, self, 5)
+		if c.Total != 0 {
+			t.Errorf("%q is the character itself and must be left out", name)
+		}
+	}
+}

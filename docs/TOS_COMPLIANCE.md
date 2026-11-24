@@ -44,6 +44,9 @@ and compare them with the code. The project is intended for personal use on your
   sends an auction house query, never searches, scans, bids or buys.
 - It writes data only to SavedVariables (`WowMcpDB`), as every addon does. The game saves this file
   itself, on `/reload` and logout.
+- `/mcp loot`, typed by the player, loads the game's own Encounter Journal module (`Blizzard_EncounterJournal`, through
+  `C_AddOns.LoadAddOn`) when it is not loaded yet, exactly as opening the journal window does; the journal lists nothing before that.
+  It never happens on a dump.
 - The only "action" in the game is `ReloadUI()`, called after the `/mcp reload` command or a click on the "Save" button. The panel
   highlights the button as a reminder, but never saves or reloads anything by itself.
 - The only request to the game besides reading is `RequestTimePlayed` after login (the same as the `/played` command; the line "Total time played"
