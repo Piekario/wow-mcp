@@ -10,6 +10,14 @@ based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` 
 ## Unreleased
 
 - **Added**
+  - A long history database on the server: `history.db` (SQLite, the cgo-free `modernc.org/sqlite` driver) inside the
+    history directory. Every dump the server reads adds one compact row per character (level, XP, gold, rested XP,
+    played time, deaths, completed quests, zone) and the rows are kept beyond the `--history-keep` limit of full dumps.
+    The dumps already kept in files are imported the first time a character is seen. Several server processes may share
+    the file (WAL mode, rows keyed by character and dump time). Nothing reads it yet. The exe grows by about 4 MB.
+  - Section `eventLog` (`Sections/EventLog.lua`): a bounded, timestamped list of level-ups, gold changes, quests accepted and
+    turned in, zone changes and equipment changes, carried across saves (300 entries, 14 days), so one save holds the
+    whole session with real times. Off with `/mcp off eventLog`.
   - A key binding "Save character state (dump and /reload)" in the game's Key Bindings, under WowMcp (`Bindings.xml`,
     `Keybind.lua`). It does what the panel's Save button does, on one key the player picks; no key is bound by default.
   - `/mcp probe` also reports whether the client knows the logout events `PLAYER_CAMPING`, `PLAYER_QUITING`,

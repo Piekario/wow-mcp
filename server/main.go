@@ -29,6 +29,7 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
+	"wowmcp/internal/ledger"
 	"wowmcp/internal/mcpserver"
 	"wowmcp/internal/snapshot"
 	"wowmcp/internal/storage"
@@ -107,7 +108,13 @@ func main() {
 	}
 
 	log.Printf("start: version %s, game directory %q, client %q, history %q", serverVersion, *wowDir, *client, *historyDir)
-	if err := newServer(store, history, fresh, goalsPath, func(c *mcpserver.Config) { c.MaxResponseKB = *maxResponseKB }).Run(context.Background(), &mcp.StdioTransport{}); err != nil {
+	options := []func(*mcpserver.Config){func(c *mcpserver.Config) { c.MaxResponseKB = *maxResponseKB }}
+	if history != nil {
+		long, closeLedger := withLedger(*historyDir)
+		defer closeLedger()
+		options = append(options, long)
+	}
+	if err := newServer(store, history, fresh, goalsPath, options...).Run(context.Background(), &mcp.StdioTransport{}); err != nil {
 		log.Print("ERROR: ", err)
 		closeLog()
 		os.Exit(1)
@@ -200,6 +207,21 @@ func runCheck(store *storage.Store, history *storage.History, fresh snapshot.Fre
 		fmt.Println("History:", history.Dir)
 	}
 	return nil
+}
+
+// withLedger opens the long history database, history.db inside the history directory (so never in the game
+// directory), and returns the option that gives it to the server. When it cannot be opened the server runs without it.
+func withLedger(historyDir string) (option func(*mcpserver.Config), closeLedger func()) {
+	err := os.MkdirAll(historyDir, 0o755)
+	var long *ledger.Ledger
+	if err == nil {
+		long, err = ledger.Open(filepath.Join(historyDir, "history.db"))
+	}
+	if err != nil {
+		log.Print("the long history is off, the dump history still works: ", err)
+		return func(*mcpserver.Config) {}, func() {}
+	}
+	return func(c *mcpserver.Config) { c.Ledger = long }, func() { long.Close() }
 }
 
 // exeDir is the directory of the server executable; "" when it cannot be determined.
