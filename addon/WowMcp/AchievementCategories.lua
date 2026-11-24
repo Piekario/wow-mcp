@@ -65,3 +65,96 @@ function AchievementCategories.achievement(categoryID, index)
         earnedByMe = Compat.pick(plain(earnedByMe) == nil, nil, earnedByMe and true or false),
     }
 end
+
+-- The Legacy challenges: achievements that grant Legacy Points. Two rules, both on English client text:
+--   * the achievement category title (or its parent's) contains "Legacy";
+--   * the reward text contains "Legacy Point" (real client 2026-11-24: "Earn 1 Legacy Point." on achievements in
+--     ordinary categories such as Classes > Warlock; no category is named Legacy there).
+-- The achievements section reads every achievement once per dump and leaves its result in ns.Achievements.latest,
+-- so this reads from there; without it (section off or no achievement API) only the category rule can be applied.
+
+local MAX_CHALLENGES = 200
+local TITLE_RULE = "achievement category title contains Legacy"
+local REWARD_RULE = "reward text contains Legacy Point"
+
+local function mentions(text, fragment)
+    return type(text) == "string" and text:lower():find(fragment, 1, true) ~= nil
+end
+
+local function copyCriteria(criteria)
+    if type(criteria) ~= "table" then return nil end
+    local out = {}
+    for _, c in ipairs(criteria) do
+        out[#out + 1] = { text = c.text, completed = c.completed, quantity = c.quantity, required = c.required }
+    end
+    return out
+end
+
+local function entryOf(a, title)
+    return {
+        id = a.id, category = title, categoryID = a.category, name = a.name, points = a.points,
+        completed = a.completed, completedOn = a.completedOn, earnedByMe = a.earnedByMe,
+        description = a.description, reward = a.reward, criteria = copyCriteria(a.criteria),
+    }
+end
+
+local function matchedBy(byTitle, byReward)
+    local rules = {}
+    if byTitle then rules[#rules + 1] = TITLE_RULE end
+    if byReward then rules[#rules + 1] = REWARD_RULE end
+    if #rules == 0 then return "none matched (rules: " .. TITLE_RULE .. "; " .. REWARD_RULE .. ")" end
+    return table.concat(rules, " + ")
+end
+
+-- Titles by category ID and whether the category (or its parent) is a Legacy one.
+local function categoryTable(categories)
+    local titles, parents, legacy = {}, {}, {}
+    for _, c in ipairs(categories) do
+        titles[c.id], parents[c.id] = c.name or c.title, c.parentID
+    end
+    for id, title in pairs(titles) do
+        if mentions(title, "legacy") or (parents[id] and mentions(titles[parents[id]], "legacy")) then legacy[id] = true end
+    end
+    return titles, legacy
+end
+
+local function fromAchievements(result)
+    local titles, legacyCategory = categoryTable(result.categories or {})
+    local list, byTitle, byReward = {}, false, false
+    for _, a in ipairs(result.list or {}) do
+        local inCategory, hasReward = legacyCategory[a.category], mentions(a.reward, "legacy point")
+        if (inCategory or hasReward) and #list < MAX_CHALLENGES then
+            byTitle, byReward = byTitle or inCategory, byReward or hasReward
+            list[#list + 1] = entryOf(a, titles[a.category])
+        end
+    end
+    return { matchedBy = matchedBy(byTitle, byReward), list = list }
+end
+
+-- Without the achievements section: the category rule only, reading the achievements of the matching categories.
+local function fromCategories()
+    local read = AchievementCategories.read(GetCategoryList)
+    local mapped = {}
+    for _, c in ipairs(read) do mapped[#mapped + 1] = { id = c.id, name = c.title, parentID = c.parentID } end
+    local titles, legacyCategory = categoryTable(mapped)
+    local list = {}
+    for _, c in ipairs(read) do
+        if legacyCategory[c.id] then
+            for index = 1, AchievementCategories.count(c.id) do
+                local a = AchievementCategories.achievement(c.id, index)
+                if a and #list < MAX_CHALLENGES then
+                    a.category = c.id
+                    list[#list + 1] = entryOf(a, titles[c.id])
+                end
+            end
+        end
+    end
+    return { matchedBy = matchedBy(#list > 0, false) .. " (the achievements section was not available)", list = list }
+end
+
+function AchievementCategories.legacyChallenges()
+    local latest = ns.Achievements and ns.Achievements.latest
+    if latest then return fromAchievements(latest) end
+    if not (GetCategoryList and GetCategoryInfo and GetCategoryNumAchievements and GetAchievementInfo) then return nil end
+    return fromCategories()
+end

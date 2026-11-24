@@ -7,7 +7,8 @@
 -- No public documentation names the API behind it, so the section does not hard-code one:
 --   * configs: every C_Traits config that is not the class talents (C_Traits.GetConfigsByType for each
 --     Enum.TraitConfigType, plus a configID found on a Legacy frame), read like the talents (TraitTree);
---   * challenges: achievements in categories whose title contains "Legacy" (English client text);
+--   * challenges: achievements in categories whose title contains "Legacy", or whose reward text says "Legacy Point"
+--     (English client text; see AchievementCategories);
 --   * discovery: the scan of the client's Legacy API names (LegacyDiscovery).
 -- Real client (2026-11-22): the perks are a Generic config with trees 1187, 1188, 1189 and no named groups.
 -- Everything is a read. Nothing here stages, learns, refunds or applies a perk.
@@ -16,13 +17,6 @@ local _, ns = ...
 local Compat = ns.Compat
 local plain = Compat.plain
 local TraitTree = ns.TraitTree
-local Categories = ns.AchievementCategories
-
-local MAX_ACHIEVEMENTS = 150
-
-local function mentionsLegacy(name)
-    return type(name) == "string" and name:lower():find("legacy", 1, true) ~= nil
-end
 
 local function append(list, value, limit)
     if #list < limit then list[#list + 1] = value end
@@ -217,40 +211,6 @@ local function readConfigs(legacy, typeNames, extraConfigIDs)
     end
 end
 
-local function legacyCategories()
-    local titles, parents, picked = {}, {}, {}
-    for _, category in ipairs(Categories.read(GetCategoryList)) do
-        titles[category.id], parents[category.id] = category.title, category.parentID
-        if mentionsLegacy(category.title) then picked[category.id] = true end
-    end
-    local list = {}
-    for categoryID in pairs(titles) do
-        if picked[categoryID] or (parents[categoryID] and picked[parents[categoryID]]) then
-            list[#list + 1] = { id = categoryID, title = titles[categoryID] }
-        end
-    end
-    table.sort(list, function(a, b) return a.id < b.id end)
-    return list
-end
-
-local function readChallenges()
-    if not (GetCategoryList and GetCategoryInfo and GetCategoryNumAchievements and GetAchievementInfo) then return nil end
-    local challenges = { matchedBy = "achievement category title contains Legacy", list = {} }
-    for _, category in ipairs(legacyCategories()) do
-        for index = 1, Categories.count(category.id) do
-            local achievement = Categories.achievement(category.id, index)
-            if achievement and #challenges.list < MAX_ACHIEVEMENTS then
-                challenges.list[#challenges.list + 1] = {
-                    id = achievement.id, category = category.title, name = achievement.name, points = achievement.points,
-                    completed = achievement.completed, earnedByMe = achievement.earnedByMe,
-                    description = achievement.description, reward = achievement.reward,
-                }
-            end
-        end
-    end
-    return challenges
-end
-
 local function collectLegacy()
     local legacy = { configs = {} }
     local extraConfigIDs = {}
@@ -261,7 +221,7 @@ local function collectLegacy()
         legacy.discovery = ns.LegacyDiscovery.discover(extraConfigIDs)
         if #legacy.configs == 0 then readConfigs(legacy, configTypeNames(), extraConfigIDs) end
     end
-    local ok, challenges = pcall(readChallenges)
+    local ok, challenges = pcall(ns.AchievementCategories.legacyChallenges)
     if ok then
         legacy.challenges = challenges
     else

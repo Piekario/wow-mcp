@@ -210,3 +210,55 @@ func TestDiscoveryAskedButNotInTheDump(t *testing.T) {
 		t.Errorf("discoveryNote = %q, want the hint to run /mcp probe", note)
 	}
 }
+
+func achievementsSection() map[string]any {
+	return map[string]any{
+		"categories": []any{
+			map[string]any{"id": int64(15), "name": "Classes"},
+			map[string]any{"id": int64(15584), "name": "Warlock", "parentID": int64(15)},
+		},
+		"list": []any{
+			map[string]any{"id": int64(62009), "name": "Novice Warlock", "category": int64(15584), "completed": true, "completedOn": "2026-11-22",
+				"description": "Reach level 25 for the first time on a Warlock.", "reward": "Earn 1 Legacy Point."},
+			map[string]any{"id": int64(62012), "name": "Journeyman Alchemist", "category": int64(15584), "reward": "Earn 1 Legacy Point.",
+				"criteria": []any{map[string]any{"text": "150 Alchemy Skill", "quantity": int64(0), "required": int64(150), "completed": false}}},
+			map[string]any{"id": int64(1), "name": "Level 10", "category": int64(15), "reward": "A title"},
+		},
+	}
+}
+
+func TestChallengesDerivedFromRewardText(t *testing.T) {
+	s := snapshot.Snapshot{
+		"legacy":       map[string]any{"configs": []any{}, "challenges": map[string]any{"matchedBy": "achievement category title contains Legacy", "list": []any{}}},
+		"achievements": achievementsSection(),
+	}
+	c := Analyse(s, Query{}).Challenges
+	if c == nil || c.Total != 2 || c.Source != ChallengesFromRewards || len(c.CompletedNames) != 1 || len(c.Open) != 1 {
+		t.Fatalf("challenges = %+v", c)
+	}
+	open := c.Open[0]
+	if open.Category != "Classes > Warlock" || len(open.Missing) != 1 || open.Missing[0] != "150 Alchemy Skill (0/150)" {
+		t.Fatalf("open = %+v", open)
+	}
+	out := c.render()
+	if out["matchedBy"] == nil || out["completedList"].([]any)[0].(map[string]any)["completedOn"] != "2026-11-22" {
+		t.Fatalf("render = %v", out)
+	}
+	// Without the achievements section the empty list stays as the addon wrote it.
+	delete(s, "achievements")
+	if c := Analyse(s, Query{}).Challenges; c == nil || c.Total != 0 || c.Source != ChallengesFromAddon {
+		t.Fatalf("without achievements: %+v", c)
+	}
+}
+
+func TestChallengesFromAddonWinOverRewardText(t *testing.T) {
+	s := snapshot.Snapshot{
+		"legacy": map[string]any{"configs": []any{}, "challenges": map[string]any{"matchedBy": "reward text contains Legacy Point",
+			"list": []any{map[string]any{"name": "From addon", "completed": false}}}},
+		"achievements": achievementsSection(),
+	}
+	c := Analyse(s, Query{}).Challenges
+	if c.Total != 1 || c.Source != ChallengesFromAddon || c.MatchedBy != "reward text contains Legacy Point" {
+		t.Fatalf("challenges = %+v", c)
+	}
+}
