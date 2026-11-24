@@ -273,7 +273,7 @@ WowMcpDB = {
 ["slot"] = 13,
 }, -- [3]
 },
-["addonVersion"] = "0.20.0",
+["addonVersion"] = "0.21.0",
 ["auctions"] = {
 ["capturedAt"] = 1794760000,
 ["lastVisitAt"] = 1794760000,
@@ -700,7 +700,7 @@ WowMcpDB = {
 ["npc"] = "Einris Brightspear",
 },
 ["character"] = {
-["addonVersion"] = "0.20.0",
+["addonVersion"] = "0.21.0",
 ["bindLocation"] = "Auberdine",
 ["class"] = "Jäger",
 ["classToken"] = "HUNTER",

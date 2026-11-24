@@ -11,7 +11,7 @@ Data of character Piekasz-CAMWOW EU4 Realm 7 PvE from World of Warcraft: Forever
 ```json
 {
   "addon": {
-    "addonUpdate": "Dump from addon 0.7.0; the server supports 0.20.0 (currencies, cooldowns, recipes, mail, played time, panel, note, deaths, dump timings, quest rewards, loot, stable, multiple vendors and trainers, XP by source, buyback list, equipment sets, PvP, friends and guild, zone and dungeon IDs, weapon speed, quest locations and guide steps). Copy the new addon into AddOns and run /reload.",
+    "addonUpdate": "Dump from addon 0.7.0; the server supports 0.21.0 (currencies, cooldowns, recipes, mail, played time, panel, note, deaths, dump timings, quest rewards, loot, stable, multiple vendors and trainers, XP by source, buyback list, equipment sets, PvP, friends and guild, zone and dungeon IDs, weapon speed, quest locations and guide steps). Copy the new addon into AddOns and run /reload.",
     "addonVersion": "0.7.0",
     "dumpTimeMs": 28.9
   },
@@ -22,7 +22,7 @@ Data of character Piekasz-CAMWOW EU4 Realm 7 PvE from World of Warcraft: Forever
     "race": "Night Elf",
     "zone": "Westfall"
   },
-  "expectedAddonVersion": "0.20.0",
+  "expectedAddonVersion": "0.21.0",
   "sectionsInSnapshot": [
     "actionBars",
     "auras",

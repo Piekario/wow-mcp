@@ -1050,7 +1050,7 @@ C_GameRules.GetLegacyChallengeList = function() return { { challengeID = 9, comp
 C_GameRules.SetLegacyChallengeTracked = function() legacyActionCalls[#legacyActionCalls + 1] = "SetLegacyChallengeTracked" end
 """
 
-# Achievements, statistics, titles and collections (unreleased): the modern achievement API in the shape of the retail
+# Achievements, statistics, titles and collections (addon 0.21.0): the modern achievement API in the shape of the retail
 # documentation. Nobody has confirmed yet which of these the real Forever client has, so every mode except the legacy
 # client gets them; the legacy client has none and proves that the sections stay absent. In the Forever modes these
 # functions wrap the Legacy category mocks above, which keep their results. Names, IDs, dates and values are invented.

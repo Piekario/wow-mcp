@@ -7,9 +7,13 @@ errors, dump 18 ms), addon 0.7.0 with server 0.9.0 (2026-11-15, no section error
 between are part of 0.11.0 / 0.12.2 and were run with them. Addon 0.14.0 was run on 2026-11-22 (client build 71037, no section errors, dump 25.7 ms: `questDb` for 22 log quests, `guide` reading TUGs, `/mcp quest The Glowing Shard`). **Server 0.15.0 and the 0.12.0 / 0.13.0 addon changes (carried periods, flight zones, auction gear details) have not yet been checked in a real client**: their fixes are
 based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` result and golden response tests.
 
-## Unreleased
+## 0.21.0 (unreleased)
 
-Item and spell lookup, for the addon and the server (0.21.0 when released). Not yet run in the real client: it is
+Seven new tools and two extended ones, for the addon and the server. The server expects addon 0.21.0. **None of this has been run in the
+real client yet**: everything below was checked only on the addon's API mocks, unit tests and golden responses, and each part
+names the client API it assumes.
+
+Item and spell lookup, for the addon and the server. Not yet run in the real client: it is
 covered by the API mocks of the addon test and the golden tests only.
 
 - **Added**
@@ -21,6 +25,7 @@ covered by the API mocks of the addon test and the golden tests only.
     that name or ID (bags, bank, equipment, vendor and trainer offers, quest rewards, auctions, mail, loot, recipes, known
     spells), with the section of each hit. When nothing is found it says which commands the player should type
     (`/mcp item <query>` or `/mcp spell <query>`, then `/mcp reload`) and the assistant is told not to answer from memory.
+
 Guild overview and PvP history, for the addon and the server. **Not run in the real client**: checked only with the API
 mocks, unit tests and golden responses, so the new guild fields (`note`, `classToken`, `daysOffline`) and
 `GetGuildRosterLastOnline` still have to be confirmed in the game.
@@ -41,6 +46,7 @@ mocks, unit tests and golden responses, so the new guild fields (`note`, `classT
     `honorGained` and `honorableKills` for the session and the whole history. Both appear only when the dumps have a
     `pvp` section. The honor counter restarts at an honor level-up, so a stretch with a level-up undercounts honor and says
     so through `honorLevel`.
+
 Zone quest progress, for the addon and the server. **Not yet run in the real client**: the addon side was checked only on the
 API mocks (`addon/tests/run_addon.py`, with an invented QuestieDB), the server side with unit and golden tests. The QuestieDB
 calls it relies on (`Quest.GetAllIds`, the `zoneOrSort`, `preQuestSingle`, `preQuestGroup`, `exclusiveTo`,
@@ -63,6 +69,7 @@ calls it relies on (`Quest.GetAllIds`, the `zoneOrSort`, `preQuestSingle`, `preQ
     alternative or above their maximum level are counted apart. Without the section the answer says what to install.
 - **Changed**
   - `QuestDb.lua` exposes its database accessor and field read (`QuestDb.lib`, `QuestDb.field`) for `QuestZones.lua`.
+
 Achievements, statistics, titles and collections, for the addon and the server. **None of this has been run in the real client.**
 Which of these APIs Forever has is not known yet: every name below is an assumption taken from the documented modern API, to be
 confirmed with `/mcp probe`. Each section is absent when the client supplies nothing, and the tools say so.
@@ -92,6 +99,7 @@ confirmed with `/mcp probe`. Each section is absent when the client supplies not
   - Tests: the modern, Forever and deDE mocks have these APIs (journals in the modern mock, the companion API in Forever);
     the legacy client has none and proves the sections stay absent. In the modern mock the Legacy challenges now report an
     empty Legacy category list, since that client has the achievement API.
+
 Dungeon loot upgrades. **Not run in the real client yet**: the addon side was tested only against API mocks in
 `addon/tests/run_addon.py`. The real `/mcp probe` of 2026-11-15 lists `C_EncounterJournal` (including `GetLootInfoByIndex`
 and `GetInstanceForGameMap`), but nobody has checked whether Forever has the global `EJ_*` functions, so these names are

@@ -118,7 +118,7 @@ Open the friends and guild windows yourself: the addon only reads what the clien
 6. **Recipes, stable, auctions.** Open the professions window (ingredients in `wow_recipes`), the stable (`active` on the active pet)
    and search for something at the auction house (`wow_auctions`).
 
-## 3d. What to check in the game for zone quest progress (unreleased)
+## 3d. What to check in the game for zone quest progress (0.21.0)
 
 Needs Questie (with QuestieDB). This has only been run on API mocks so far.
 

@@ -203,7 +203,7 @@ WowMcpDB = {
 },
 ["actionBars"] = {
 },
-["addonVersion"] = "0.20.0",
+["addonVersion"] = "0.21.0",
 ["auctions"] = {
 ["capturedAt"] = 1794760000,
 ["lastSearchPartial"] = {
@@ -388,7 +388,7 @@ WowMcpDB = {
 }, -- [3]
 },
 ["character"] = {
-["addonVersion"] = "0.20.0",
+["addonVersion"] = "0.21.0",
 ["bindLocation"] = "Auberdine",
 ["class"] = "Hunter",
 ["classToken"] = "HUNTER",

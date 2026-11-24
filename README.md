@@ -19,7 +19,7 @@ An [MCP](https://modelcontextprotocol.io) server that lets an AI assistant in an
 character: quests, bags, gear, talents, professions, reputation, auctions, progress over time, and more. It has two parts:
 
 - **WowMcp** (addon, Lua): saves the character state to the game's SavedVariables file.
-- **wow-mcp** (MCP server, Go): reads that file and exposes it as 53 `wow_*` tools, 14 prompts and read-only resources.
+- **wow-mcp** (MCP server, Go): reads that file and exposes it as 58 `wow_*` tools, 14 prompts and read-only resources.
 
 > **License:** [GPL-3.0-or-later](LICENSE) with an additional term that the author attribution must be kept in every copy and
 > modified version (see [NOTICE](NOTICE)). Original author: Piekasz (GitHub: Piekario).
