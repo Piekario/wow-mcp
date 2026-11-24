@@ -215,18 +215,17 @@ local function reportUnavailable(missing, query)
         .. " lists what the client has. Type /mcp reload to save what was found.")
 end
 
--- The journal lists no dungeon at all, also after its module was loaded or when the client cannot load it.
-local function reportEmptyJournal(query, journal)
-    local extra = {}
+-- The journal lists no dungeon at all, also after its module was loaded or when the client refused to load it.
+local function reportEmptyJournal(query, journal, loadRefused)
+    local extra = { journalLoaded = not EJ.notLoadedYet(), loadRefused = loadRefused }
     local text = "The Encounter Journal lists no dungeons."
-    if EJ.notLoadedYet() then
-        extra.hint = "The journal has no data yet: its addon (Blizzard_EncounterJournal) is not loaded. Open the Encounter"
-            .. " Journal window once with the game's own UI, then type /mcp loot again."
-        text = "The Encounter Journal has no data yet. Open the Encounter Journal window once (the game's own UI), then type"
-            .. " /mcp loot again."
+    if loadRefused then
+        extra.hint = "This client has no Encounter Journal: it refused to load Blizzard_EncounterJournal (" .. loadRefused
+            .. "), so dungeon loot cannot be read here. Do not ask the player to open a journal window or to try again."
+        text = "This client has no Encounter Journal (it refused to load it: " .. loadRefused
+            .. "), so dungeon loot cannot be read here."
     end
-    extra.journalLoaded = not EJ.notLoadedYet()
-    recordAttempt("noMatch", query, journal, extra)
+    recordAttempt(loadRefused and "unavailable" or "noMatch", query, journal, extra)
     chat(text .. " Type /mcp reload to save this for the assistant.")
 end
 
@@ -300,13 +299,19 @@ function DungeonLoot.run(rest)
         return
     end
     local instances, tiers = EJ.instances()
-    if #instances == 0 and EJ.notLoadedYet() and EJ.loadJournal() then
-        chat("Loaded the game's Encounter Journal module (Blizzard_EncounterJournal) to read it.")
-        instances, tiers = EJ.instances()
+    local loadRefused
+    if #instances == 0 and EJ.notLoadedYet() then
+        local loaded, reason = EJ.loadJournal()
+        if loaded then
+            chat("Loaded the game's Encounter Journal module (Blizzard_EncounterJournal) to read it.")
+            instances, tiers = EJ.instances()
+        else
+            loadRefused = reason
+        end
     end
     local journal = { instances = instances, tiers = tiers }
     if #instances == 0 then
-        reportEmptyJournal(query, journal)
+        reportEmptyJournal(query, journal, loadRefused)
         return
     end
     local ranges = savedLevelRanges()

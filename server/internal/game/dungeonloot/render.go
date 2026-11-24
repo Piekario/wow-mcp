@@ -81,8 +81,8 @@ func (r Report) nothingReadNote() string {
 	case a.Hint != "":
 		return a.Hint + " " + noTables
 	case a.Offered == 0:
-		return "/mcp loot found no dungeon in the Encounter Journal (instancesInJournal is 0). Open the Encounter Journal window once " +
-			"with the game's own UI, then type /mcp loot <dungeon> and /mcp reload. If it stays empty, type /mcp probe. " + noTables
+		return "/mcp loot found no dungeon in the Encounter Journal (instancesInJournal is 0), also after loading the journal's module. " +
+			"This client may not have an Encounter Journal; /mcp probe lists what it has. " + noTables
 	case a.Outcome == "readFailed":
 		return "The journal lists dungeons, but reading one failed (see error). " + noTables
 	}

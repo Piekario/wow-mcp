@@ -2897,17 +2897,20 @@ def check_dungeon_loot_targets() -> None:
     attempt = saved["lastAttempt"]
     assert attempt["outcome"] == "noMatch" and attempt["query"] == "no such place" and attempt["instancesInJournal"] == 14, dict(attempt)
     assert len(attempt["instanceNames"]) == 14 and len(saved["instances"]) == 8, "a no-match attempt keeps the saved loot"
-    # A journal that lists nothing because its module is not loaded and cannot be loaded: the addon says what to do.
+    # WoW: Forever: the module counts as loadable, but the client refuses to load it and has no journal window.
     runtime.execute("""
         ejInstanceByIndex = EJ_GetInstanceByIndex
         function EJ_GetInstanceByIndex() return nil end
         function C_AddOns.IsAddOnLoaded(name) return false end
         function C_AddOns.IsAddOnLoadable(name) return true end
+        function C_AddOns.LoadAddOn(name) return false, "WRONG_GAME_TYPE" end
     """)
     g.SlashCmdList["WOWMCP"]("loot deadmines")
     attempt = saved["lastAttempt"]
-    assert attempt["outcome"] == "noMatch" and attempt["instancesInJournal"] == 0 and attempt["journalLoaded"] is False
-    assert "has no data yet" in attempt["hint"] and "has no data yet" in last_chat(g), dict(attempt)
+    assert attempt["outcome"] == "unavailable" and attempt["instancesInJournal"] == 0 and attempt["journalLoaded"] is False
+    assert attempt["loadRefused"] == "WRONG_GAME_TYPE" and "WRONG_GAME_TYPE" in attempt["hint"], dict(attempt)
+    assert "has no Encounter Journal" in last_chat(g) and "Open the" not in last_chat(g), last_chat(g)
+    assert len(saved["instances"]) == 8, "a refused load keeps the saved loot"
     # The same journal when the client can load the module: /mcp loot loads it and reads.
     runtime.execute("""
         ejModuleLoads = 0
