@@ -764,7 +764,7 @@ func newPathScrubber(markers map[string]string) pathScrubber {
 	}
 	return pathScrubber{
 		paths:    strings.NewReplacer(ordered...),
-		afterDir: regexp.MustCompile(`(<GOALS>|<FILE>|<HISTORY>|<TMP>)((?:\\+[^\\\s"]+)+)`),
+		afterDir: regexp.MustCompile(`(<GOALS>|<SHARED>|<FILE>|<HISTORY>|<TMP>)((?:\\+[^\\\s"]+)+)`),
 		osErrors: strings.NewReplacer(
 			"GetFileAttributesEx ", "stat ",
 			"CreateFile ", "open ",
