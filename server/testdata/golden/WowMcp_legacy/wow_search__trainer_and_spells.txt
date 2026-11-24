@@ -35,7 +35,11 @@
     "auctions",
     "currencies",
     "macros",
-    "flightPaths"
+    "flightPaths",
+    "achievements",
+    "statistics",
+    "titles",
+    "collections"
   ],
   "note": "Bank, vendors, trainers, stable, quest windows, recipes, mail and auctions are the state from the last visits to those windows (check their age in the relevant tools); loot is the loot since the previous save.",
   "query": "disengage",

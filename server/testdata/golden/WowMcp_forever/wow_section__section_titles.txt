@@ -1,0 +1,26 @@
+# tool wow_section variant=section_titles
+# args: {"section":"titles"}
+# isError: false
+--- content[0] ---
+{
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "titles": {
+    "current": "the Patient",
+    "currentID": 53,
+    "known": [
+      {
+        "id": 1,
+        "name": "Private"
+      },
+      {
+        "id": 53,
+        "name": "the Patient"
+      }
+    ],
+    "total": 143
+  }
+}

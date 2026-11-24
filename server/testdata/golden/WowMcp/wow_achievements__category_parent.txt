@@ -1,0 +1,51 @@
+# tool wow_achievements variant=category_parent
+# args: {"category":"Quests"}
+# isError: false
+--- content[0] ---
+{
+  "categories": [
+    {
+      "category": "Quests",
+      "completed": 1,
+      "percent": 50,
+      "total": 2
+    },
+    {
+      "category": "Quests \u003e Classic",
+      "completed": 1,
+      "percent": 50,
+      "total": 2
+    }
+  ],
+  "completed": 3,
+  "completedPercent": 42.9,
+  "coverage": "The addon lists up to 600 achievements of this character (notListed counts the rest), with the completion date of completed ones and, for incomplete ones only, up to 8 criteria (missing ones first). Account-wide, guild and comparison data are not in the dump.",
+  "matching": {
+    "achievements": 4,
+    "completed": 2
+  },
+  "points": 30,
+  "recent": [
+    {
+      "category": "Quests \u003e Classic",
+      "completed": true,
+      "completedOn": "2026-11-14",
+      "name": "Darkshore Quests",
+      "points": 10
+    },
+    {
+      "category": "Quests",
+      "completed": true,
+      "completedOn": "2026-09-03",
+      "name": "50 Quests Completed",
+      "points": 10
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "total": 7,
+  "view": "summary"
+}

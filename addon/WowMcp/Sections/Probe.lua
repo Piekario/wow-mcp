@@ -14,7 +14,7 @@ local NAMESPACES = {
     "C_Traits", "C_ClassTalents", "C_TradeSkillUI", "C_GameRules", "C_CurrencyInfo", "C_Mail", "C_Timer",
     "C_AuctionHouse", "C_LFGList", "C_PartyInfo", "C_EncounterJournal", "C_QuestInfoSystem", "TooltipDataProcessor",
     "C_EquipmentSet", "C_FriendList", "C_GuildInfo", "C_PvP", "C_Map", "C_BattleNet",
-    "C_AchievementInfo",
+    "C_AchievementInfo", "C_MountJournal", "C_PetJournal", "C_TitleManager",
 }
 
 local GLOBAL_PREFIXES = {
@@ -31,6 +31,8 @@ local GLOBAL_PREFIXES = {
     -- Weapon format strings are variables, not functions.
     "^GetAchievement", "^GetCategory", "^GetTotalAchievement", "^GetNumCompletedAchievements",
     "^GetLatestCompletedAchievements", "^GetPreviousAchievement", "^GetNextAchievement", "^GetStatistic",
+    "^GetComparisonStatistic", "^GetNumTitles", "^IsTitleKnown", "^GetTitleName", "^GetCurrentTitle",
+    "^GetNumCompanions", "^GetCompanionInfo",
 }
 
 local GLOBAL_FRAGMENTS = { "Loyal", "Happiness", "TrainingPoint", "PetFood", "PetExperience", "CritChance" }

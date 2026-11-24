@@ -16,6 +16,7 @@ local _, ns = ...
 local Compat = ns.Compat
 local plain = Compat.plain
 local TraitTree = ns.TraitTree
+local Categories = ns.AchievementCategories
 
 local MAX_ACHIEVEMENTS = 150
 
@@ -218,14 +219,13 @@ end
 
 local function legacyCategories()
     local titles, parents, picked = {}, {}, {}
-    for _, categoryID in ipairs(GetCategoryList() or {}) do
-        local title, parentID = GetCategoryInfo(categoryID)
-        titles[categoryID], parents[categoryID] = plain(title), plain(parentID)
-        if mentionsLegacy(plain(title)) then picked[categoryID] = true end
+    for _, category in ipairs(Categories.read(GetCategoryList)) do
+        titles[category.id], parents[category.id] = category.title, category.parentID
+        if mentionsLegacy(category.title) then picked[category.id] = true end
     end
     local list = {}
     for categoryID in pairs(titles) do
-        if picked[categoryID] or picked[parents[categoryID]] then
+        if picked[categoryID] or (parents[categoryID] and picked[parents[categoryID]]) then
             list[#list + 1] = { id = categoryID, title = titles[categoryID] }
         end
     end
@@ -237,14 +237,13 @@ local function readChallenges()
     if not (GetCategoryList and GetCategoryInfo and GetCategoryNumAchievements and GetAchievementInfo) then return nil end
     local challenges = { matchedBy = "achievement category title contains Legacy", list = {} }
     for _, category in ipairs(legacyCategories()) do
-        for index = 1, GetCategoryNumAchievements(category.id, true) or 0 do
-            local id, name, points, completed, _, _, _, description, _, _, rewardText, _, earnedByMe =
-                GetAchievementInfo(category.id, index)
-            if id and #challenges.list < MAX_ACHIEVEMENTS then
+        for index = 1, Categories.count(category.id) do
+            local achievement = Categories.achievement(category.id, index)
+            if achievement and #challenges.list < MAX_ACHIEVEMENTS then
                 challenges.list[#challenges.list + 1] = {
-                    id = plain(id), category = category.title, name = plain(name), points = plain(points),
-                    completed = completed and true or false, earnedByMe = Compat.pick(earnedByMe == nil, nil, earnedByMe and true or false),
-                    description = plain(description), reward = Compat.pick(plain(rewardText) == "", nil, plain(rewardText)),
+                    id = achievement.id, category = category.title, name = achievement.name, points = achievement.points,
+                    completed = achievement.completed, earnedByMe = achievement.earnedByMe,
+                    description = achievement.description, reward = achievement.reward,
                 }
             end
         end

@@ -2,6 +2,251 @@
 WowMcpDB = {
 ["characters"] = {
 ["Piekasz"] = {
+["achievements"] = {
+["categories"] = {
+{
+["completed"] = 1,
+["id"] = 92,
+["name"] = "General",
+["total"] = 1,
+}, -- [1]
+{
+["completed"] = 0,
+["id"] = 15500,
+["name"] = "Legacy",
+["total"] = 0,
+}, -- [2]
+{
+["completed"] = 1,
+["id"] = 15501,
+["name"] = "Classes",
+["parentID"] = 15500,
+["total"] = 2,
+}, -- [3]
+{
+["completed"] = 1,
+["id"] = 96,
+["name"] = "Quests",
+["total"] = 2,
+}, -- [4]
+{
+["completed"] = 1,
+["id"] = 14861,
+["name"] = "Classic",
+["parentID"] = 96,
+["total"] = 2,
+}, -- [5]
+{
+["completed"] = 1,
+["id"] = 97,
+["name"] = "Exploration",
+["total"] = 3,
+}, -- [6]
+},
+["completed"] = 5,
+["list"] = {
+{
+["category"] = 92,
+["completed"] = true,
+["id"] = 6,
+["name"] = "Level 10",
+["points"] = 10,
+}, -- [1]
+{
+["category"] = 15501,
+["completed"] = true,
+["completedOn"] = "2026-11-20",
+["description"] = "Reach level 25 with a Hunter.",
+["earnedByMe"] = true,
+["id"] = 70001,
+["name"] = "Hunter: Level 25",
+["points"] = 1,
+["reward"] = "Reward: 1 Legacy Point",
+}, -- [2]
+{
+["category"] = 15501,
+["completed"] = false,
+["description"] = "Reach level 25 with a Warlock.",
+["earnedByMe"] = false,
+["id"] = 70002,
+["name"] = "Warlock: Level 25",
+["points"] = 1,
+}, -- [3]
+{
+["category"] = 96,
+["completed"] = true,
+["completedOn"] = "2026-09-03",
+["description"] = "Complete 50 quests.",
+["earnedByMe"] = true,
+["id"] = 503,
+["name"] = "50 Quests Completed",
+["points"] = 10,
+}, -- [4]
+{
+["category"] = 96,
+["completed"] = false,
+["criteria"] = {
+{
+["completed"] = false,
+["quantity"] = 74,
+["required"] = 100,
+["text"] = "Complete 100 quests",
+}, -- [1]
+},
+["criteriaDone"] = 0,
+["criteriaRead"] = 1,
+["criteriaTotal"] = 1,
+["description"] = "Complete 100 quests.",
+["earnedByMe"] = false,
+["id"] = 504,
+["name"] = "100 Quests Completed",
+["points"] = 10,
+}, -- [5]
+{
+["category"] = 14861,
+["completed"] = true,
+["completedOn"] = "2026-11-14",
+["description"] = "Complete 30 quests in Darkshore.",
+["earnedByMe"] = true,
+["id"] = 4899,
+["name"] = "Darkshore Quests",
+["points"] = 10,
+}, -- [6]
+{
+["category"] = 14861,
+["completed"] = false,
+["criteria"] = {
+{
+["completed"] = false,
+["quantity"] = 6,
+["required"] = 40,
+["text"] = "Complete quests in Ashenvale",
+}, -- [1]
+},
+["criteriaDone"] = 0,
+["criteriaRead"] = 1,
+["criteriaTotal"] = 1,
+["description"] = "Complete 40 quests in Ashenvale.",
+["earnedByMe"] = false,
+["id"] = 4896,
+["name"] = "Ashenvale Quests",
+["points"] = 10,
+}, -- [7]
+{
+["category"] = 97,
+["completed"] = true,
+["completedOn"] = "2026-08-30",
+["description"] = "Explore Teldrassil, revealing the covered areas of the world map.",
+["earnedByMe"] = true,
+["id"] = 768,
+["name"] = "Explore Teldrassil",
+["points"] = 10,
+}, -- [8]
+{
+["category"] = 97,
+["completed"] = false,
+["criteria"] = {
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Ruins of Mathystra",
+}, -- [1]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Grove of the Ancients",
+}, -- [2]
+{
+["completed"] = true,
+["quantity"] = 1,
+["required"] = 1,
+["text"] = "Auberdine",
+}, -- [3]
+{
+["completed"] = true,
+["quantity"] = 1,
+["required"] = 1,
+["text"] = "Bashal'Aran",
+}, -- [4]
+},
+["criteriaDone"] = 2,
+["criteriaRead"] = 4,
+["criteriaTotal"] = 4,
+["description"] = "Explore Darkshore, revealing the covered areas of the world map.",
+["earnedByMe"] = false,
+["id"] = 844,
+["name"] = "Explore Darkshore",
+["points"] = 10,
+}, -- [9]
+{
+["category"] = 97,
+["completed"] = false,
+["criteria"] = {
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Ashenvale",
+}, -- [1]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "The Barrens",
+}, -- [2]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Durotar",
+}, -- [3]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Mulgore",
+}, -- [4]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Stonetalon Mountains",
+}, -- [5]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Desolace",
+}, -- [6]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Feralas",
+}, -- [7]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Thousand Needles",
+}, -- [8]
+},
+["criteriaDone"] = 2,
+["criteriaRead"] = 10,
+["criteriaTotal"] = 10,
+["description"] = "Explore the regions of Kalimdor.",
+["earnedByMe"] = false,
+["id"] = 43,
+["name"] = "Explore Kalimdor",
+["points"] = 25,
+["reward"] = "Reward: Title - the Wanderer",
+}, -- [10]
+},
+["points"] = 41,
+["total"] = 10,
+},
 ["actionBars"] = {
 {
 ["bar"] = 1,
@@ -480,6 +725,33 @@ WowMcpDB = {
 ["xpMax"] = 21300,
 ["y"] = 15.4,
 ["zone"] = "Stormwind City",
+},
+["collections"] = {
+["companions"] = {
+["list"] = {
+{
+["id"] = 7385,
+["name"] = "Bombay Cat",
+["spellID"] = 10673,
+}, -- [1]
+{
+["id"] = 7390,
+["name"] = "Cockatiel",
+["spellID"] = 10680,
+}, -- [2]
+},
+["source"] = "GetCompanionInfo",
+},
+["mounts"] = {
+["list"] = {
+{
+["id"] = 7322,
+["name"] = "Striped Nightsaber",
+["spellID"] = 10793,
+}, -- [1]
+},
+["source"] = "GetCompanionInfo",
+},
 },
 ["completedQuests"] = {
 456, -- [1]
@@ -1570,72 +1842,84 @@ true, -- [1]
 },
 ["globals"] = {
 "CanMerchantRepair", -- [1]
-"GetAchievementInfo", -- [2]
-"GetBuybackItemInfo", -- [3]
-"GetBuybackItemLink", -- [4]
-"GetCategoryInfo", -- [5]
-"GetCategoryList", -- [6]
-"GetCategoryNumAchievements", -- [7]
-"GetCritChance", -- [8]
-"GetCursorPosition", -- [9]
-"GetGuildInfo", -- [10]
-"GetGuildRosterInfo", -- [11]
-"GetGuildRosterLastOnline", -- [12]
-"GetInboxHeaderInfo", -- [13]
-"GetInboxItem", -- [14]
-"GetInboxItemLink", -- [15]
-"GetInboxNumItems", -- [16]
-"GetInventoryItemCount", -- [17]
-"GetInventoryItemDurability", -- [18]
-"GetInventoryItemID", -- [19]
-"GetInventoryItemLink", -- [20]
-"GetInventoryItemQuality", -- [21]
-"GetLFDChoiceOrder", -- [22]
-"GetLFGDungeonInfo", -- [23]
-"GetMerchantItemLink", -- [24]
-"GetMerchantNumItems", -- [25]
-"GetNumBuybackItems", -- [26]
-"GetNumGuildMembers", -- [27]
-"GetNumQuestChoices", -- [28]
-"GetNumQuestLogChoices", -- [29]
-"GetNumQuestLogRewards", -- [30]
-"GetNumQuestRewards", -- [31]
-"GetNumSavedInstances", -- [32]
-"GetNumTrainerServices", -- [33]
-"GetObjectiveText", -- [34]
-"GetPVPLifetimeStats", -- [35]
-"GetPetActionInfo", -- [36]
-"GetPetExperience", -- [37]
-"GetQuestID", -- [38]
-"GetQuestItemInfo", -- [39]
-"GetQuestItemLink", -- [40]
-"GetQuestLogChoiceInfo", -- [41]
-"GetQuestLogRewardInfo", -- [42]
-"GetQuestLogRewardMoney", -- [43]
-"GetQuestLogRewardXP", -- [44]
-"GetRaidRosterInfo", -- [45]
-"GetRangedCritChance", -- [46]
-"GetRepairAllCost", -- [47]
-"GetRewardMoney", -- [48]
-"GetRewardText", -- [49]
-"GetRewardXP", -- [50]
-"GetSavedInstanceInfo", -- [51]
-"GetTaxiMapID", -- [52]
-"GetTitleText", -- [53]
-"GetTrainerServiceCost", -- [54]
-"GetTrainerServiceInfo", -- [55]
-"GetTrainerServiceLevelReq", -- [56]
-"GetXPExhaustion", -- [57]
-"IsInGuild", -- [58]
-"RequestTimePlayed", -- [59]
-"UnitHonor", -- [60]
-"UnitHonorLevel", -- [61]
-"UnitHonorMax", -- [62]
-"UnitRangedAttackPower", -- [63]
-"UnitRangedDamage", -- [64]
-"UnitStat", -- [65]
-"UnitXP", -- [66]
-"UnitXPMax", -- [67]
+"GetAchievementCriteriaInfo", -- [2]
+"GetAchievementInfo", -- [3]
+"GetAchievementNumCriteria", -- [4]
+"GetBuybackItemInfo", -- [5]
+"GetBuybackItemLink", -- [6]
+"GetCategoryInfo", -- [7]
+"GetCategoryList", -- [8]
+"GetCategoryNumAchievements", -- [9]
+"GetCompanionInfo", -- [10]
+"GetCritChance", -- [11]
+"GetCurrentTitle", -- [12]
+"GetCursorPosition", -- [13]
+"GetGuildInfo", -- [14]
+"GetGuildRosterInfo", -- [15]
+"GetGuildRosterLastOnline", -- [16]
+"GetInboxHeaderInfo", -- [17]
+"GetInboxItem", -- [18]
+"GetInboxItemLink", -- [19]
+"GetInboxNumItems", -- [20]
+"GetInventoryItemCount", -- [21]
+"GetInventoryItemDurability", -- [22]
+"GetInventoryItemID", -- [23]
+"GetInventoryItemLink", -- [24]
+"GetInventoryItemQuality", -- [25]
+"GetLFDChoiceOrder", -- [26]
+"GetLFGDungeonInfo", -- [27]
+"GetMerchantItemLink", -- [28]
+"GetMerchantNumItems", -- [29]
+"GetNumBuybackItems", -- [30]
+"GetNumCompanions", -- [31]
+"GetNumCompletedAchievements", -- [32]
+"GetNumGuildMembers", -- [33]
+"GetNumQuestChoices", -- [34]
+"GetNumQuestLogChoices", -- [35]
+"GetNumQuestLogRewards", -- [36]
+"GetNumQuestRewards", -- [37]
+"GetNumSavedInstances", -- [38]
+"GetNumTitles", -- [39]
+"GetNumTrainerServices", -- [40]
+"GetObjectiveText", -- [41]
+"GetPVPLifetimeStats", -- [42]
+"GetPetActionInfo", -- [43]
+"GetPetExperience", -- [44]
+"GetQuestID", -- [45]
+"GetQuestItemInfo", -- [46]
+"GetQuestItemLink", -- [47]
+"GetQuestLogChoiceInfo", -- [48]
+"GetQuestLogRewardInfo", -- [49]
+"GetQuestLogRewardMoney", -- [50]
+"GetQuestLogRewardXP", -- [51]
+"GetRaidRosterInfo", -- [52]
+"GetRangedCritChance", -- [53]
+"GetRepairAllCost", -- [54]
+"GetRewardMoney", -- [55]
+"GetRewardText", -- [56]
+"GetRewardXP", -- [57]
+"GetSavedInstanceInfo", -- [58]
+"GetStatistic", -- [59]
+"GetStatisticsCategoryList", -- [60]
+"GetTaxiMapID", -- [61]
+"GetTitleName", -- [62]
+"GetTitleText", -- [63]
+"GetTotalAchievementPoints", -- [64]
+"GetTrainerServiceCost", -- [65]
+"GetTrainerServiceInfo", -- [66]
+"GetTrainerServiceLevelReq", -- [67]
+"GetXPExhaustion", -- [68]
+"IsInGuild", -- [69]
+"IsTitleKnown", -- [70]
+"RequestTimePlayed", -- [71]
+"UnitHonor", -- [72]
+"UnitHonorLevel", -- [73]
+"UnitHonorMax", -- [74]
+"UnitRangedAttackPower", -- [75]
+"UnitRangedDamage", -- [76]
+"UnitStat", -- [77]
+"UnitXP", -- [78]
+"UnitXPMax", -- [79]
 },
 ["namespaces"] = {
 ["C_AuctionHouse"] = {
@@ -2765,6 +3049,50 @@ true, -- [1]
 },
 ["slots"] = 5,
 },
+["statistics"] = {
+["categories"] = {
+{
+["id"] = 130,
+["list"] = {
+{
+["id"] = 98,
+["name"] = "Quests completed",
+["value"] = "62",
+}, -- [1]
+{
+["id"] = 107,
+["name"] = "Creatures killed",
+["value"] = "1404",
+}, -- [2]
+},
+["name"] = "Character",
+}, -- [1]
+{
+["id"] = 131,
+["list"] = {
+{
+["id"] = 328,
+["name"] = "Total gold acquired",
+["value"] = "5g 20s 3c",
+}, -- [1]
+},
+["name"] = "Wealth",
+["parentID"] = 130,
+}, -- [2]
+{
+["id"] = 122,
+["list"] = {
+{
+["id"] = 60,
+["name"] = "Total deaths",
+["value"] = "3",
+}, -- [1]
+},
+["name"] = "Deaths",
+}, -- [3]
+},
+["empty"] = 2,
+},
 ["stats"] = {
 ["agility"] = 32,
 ["armor"] = 412,
@@ -2917,15 +3245,15 @@ true, -- [1]
 ["slowest"] = {
 {
 ["ms"] = 2.5,
-["name"] = "completedQuests",
+["name"] = "auras",
 }, -- [1]
 {
 ["ms"] = 2.5,
-["name"] = "cooldowns",
+["name"] = "bags",
 }, -- [2]
 {
 ["ms"] = 2.5,
-["name"] = "dungeons",
+["name"] = "equipmentSets",
 }, -- [3]
 {
 ["ms"] = 2.5,
@@ -2933,10 +3261,25 @@ true, -- [1]
 }, -- [4]
 {
 ["ms"] = 2.5,
-["name"] = "professions",
+["name"] = "macros",
 }, -- [5]
 },
-["totalMs"] = 68,
+["totalMs"] = 77.5,
+},
+["titles"] = {
+["current"] = "the Patient",
+["currentID"] = 53,
+["known"] = {
+{
+["id"] = 1,
+["name"] = "Private",
+}, -- [1]
+{
+["id"] = 53,
+["name"] = "the Patient",
+}, -- [2]
+},
+["total"] = 143,
 },
 ["trainer"] = {
 ["capturedAt"] = 1794760000,

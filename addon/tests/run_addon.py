@@ -1050,6 +1050,149 @@ C_GameRules.GetLegacyChallengeList = function() return { { challengeID = 9, comp
 C_GameRules.SetLegacyChallengeTracked = function() legacyActionCalls[#legacyActionCalls + 1] = "SetLegacyChallengeTracked" end
 """
 
+# Achievements, statistics, titles and collections (unreleased): the modern achievement API in the shape of the retail
+# documentation. Nobody has confirmed yet which of these the real Forever client has, so every mode except the legacy
+# client gets them; the legacy client has none and proves that the sections stay absent. In the Forever modes these
+# functions wrap the Legacy category mocks above, which keep their results. Names, IDs, dates and values are invented.
+ACHIEVEMENT_STUBS = r"""
+local baseCategoryList, baseCategoryInfo = GetCategoryList, GetCategoryInfo
+local baseNumAchievements, baseAchievementInfo = GetCategoryNumAchievements, GetAchievementInfo
+local categoryInfo = { [96] = { "Quests", -1 }, [14861] = { "Classic", 96 }, [97] = { "Exploration", -1 },
+    [130] = { "Character", -1 }, [131] = { "Wealth", 130 }, [122] = { "Deaths", -1 } }
+-- { id, name, points, completed, month, day, year (since 2000), description, reward, criteria { text, completed, quantity, required } }
+local kalimdor = {}
+for i, zone in ipairs({ "Teldrassil", "Darkshore", "Ashenvale", "The Barrens", "Durotar", "Mulgore", "Stonetalon Mountains",
+                         "Desolace", "Feralas", "Thousand Needles" }) do
+    kalimdor[i] = { zone, i <= 2, i <= 2 and 1 or 0, 1 }
+end
+achievementData = {
+    [96] = { { 503, "50 Quests Completed", 10, true, 9, 3, 26, "Complete 50 quests.", "" },
+             { 504, "100 Quests Completed", 10, false, nil, nil, nil, "Complete 100 quests.", "",
+               { { "Complete 100 quests", false, 74, 100 } } } },
+    [14861] = { { 4899, "Darkshore Quests", 10, true, 11, 14, 26, "Complete 30 quests in Darkshore.", "" },
+                { 4896, "Ashenvale Quests", 10, false, nil, nil, nil, "Complete 40 quests in Ashenvale.", "",
+                  { { "Complete quests in Ashenvale", false, 6, 40 } } } },
+    [97] = { { 768, "Explore Teldrassil", 10, true, 8, 30, 26, "Explore Teldrassil, revealing the covered areas of the world map.", "" },
+             { 844, "Explore Darkshore", 10, false, nil, nil, nil, "Explore Darkshore, revealing the covered areas of the world map.", "",
+               { { "Auberdine", true, 1, 1 }, { "Ruins of Mathystra", false, 0, 1 }, { "Bashal'Aran", true, 1, 1 }, { "Grove of the Ancients", false, 0, 1 } } },
+             { 43, "Explore Kalimdor", 25, false, nil, nil, nil, "Explore the regions of Kalimdor.", "Reward: Title - the Wanderer", kalimdor } },
+}
+-- Statistics: { id, name, value as GetStatistic returns it }.
+local coins = "5|TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:0|t 20|TInterface\\MoneyFrame\\UI-SilverIcon:0:0:2:0|t 3|TInterface\\MoneyFrame\\UI-CopperIcon:0:0:2:0|t"
+local statisticData = {
+    [130] = { { 98, "Quests completed", "62" }, { 107, "Creatures killed", "1404" } },
+    [131] = { { 328, "Total gold acquired", coins }, { 1148, "Gold spent on travel", "--" } },
+    [122] = { { 60, "Total deaths", "3" }, { 1149, "Deaths from falling", "--" } },
+}
+achievementInfoCalls = 0
+local byID = {}
+for _, list in pairs(achievementData) do for _, a in ipairs(list) do byID[a[1]] = a end end
+
+function GetCategoryList()
+    local list = baseCategoryList and baseCategoryList() or {}
+    for _, id in ipairs({ 96, 14861, 97 }) do list[#list + 1] = id end
+    return list
+end
+function GetStatisticsCategoryList() return { 130, 131, 122 } end
+function GetCategoryInfo(id)
+    local c = categoryInfo[id]
+    if c then return c[1], c[2], 0 end
+    if baseCategoryInfo then return baseCategoryInfo(id) end
+end
+function GetCategoryNumAchievements(id, includeAll)
+    local list = achievementData[id]
+    if list then
+        local done = 0
+        for _, a in ipairs(list) do if a[4] then done = done + 1 end end
+        return #list, done, #list - done
+    end
+    if statisticData[id] then return #statisticData[id], 0, 0 end
+    if baseNumAchievements then return baseNumAchievements(id, includeAll) end
+    return 0, 0, 0
+end
+local function achievementInfo(categoryID, index)
+    local a = achievementData[categoryID] and achievementData[categoryID][index]
+    if a then return a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], 0, 236, a[9], false, a[4], "", false end
+    local s = statisticData[categoryID] and statisticData[categoryID][index]
+    if s then return s[1], s[2], 0, false, nil, nil, nil, "", 0, 236, "", false, false, "", true end
+    if baseAchievementInfo then return baseAchievementInfo(categoryID, index) end
+end
+function GetAchievementInfo(categoryID, index)
+    achievementInfoCalls = achievementInfoCalls + 1
+    return achievementInfo(categoryID, index)
+end
+function GetAchievementNumCriteria(id) local a = byID[id] return a and a[10] and #a[10] or 0 end
+function GetAchievementCriteriaInfo(id, index)
+    local c = byID[id] and byID[id][10] and byID[id][10][index]
+    if c then return c[1], 0, c[2], c[3], c[4], nil, 0, 0, tostring(c[3]), id * 100 + index end
+end
+function GetTotalAchievementPoints()
+    local points = 0
+    for _, categoryID in ipairs(GetCategoryList()) do
+        for index = 1, (GetCategoryNumAchievements(categoryID, true)) do
+            local _, _, p, completed = achievementInfo(categoryID, index)
+            if completed then points = points + (p or 0) end
+        end
+    end
+    return points
+end
+function GetNumCompletedAchievements()
+    local total, done = 0, 0
+    for _, categoryID in ipairs(GetCategoryList()) do
+        local t, d = GetCategoryNumAchievements(categoryID, true)
+        total, done = total + t, done + (d or 0)
+    end
+    return total, done
+end
+function GetStatistic(id)
+    for _, list in pairs(statisticData) do
+        for _, s in ipairs(list) do if s[1] == id then return s[3] end end
+    end
+    return "--"
+end
+
+local titleNames = { [1] = "Private ", [53] = " the Patient", [77] = "Sergeant " }
+function GetNumTitles() return 143 end
+function IsTitleKnown(id) return id == 1 or id == 53 end
+function GetTitleName(id) return titleNames[id] end
+function GetCurrentTitle() return 53 end
+
+SetCurrentTitle, AddTrackedAchievement, RemoveTrackedAchievement = forbid("SetCurrentTitle"), forbid("AddTrackedAchievement"), forbid("RemoveTrackedAchievement")
+SetAchievementComparisonUnit = forbid("SetAchievementComparisonUnit")
+"""
+
+# Mounts and companions: the modern client has the journals (with an uncollected mount and an unowned pet), Forever
+# the companion API of the Wrath-era clients.
+JOURNAL_STUBS = r"""
+local mounts = { [6] = { "Brown Horse", 458, true, 6 }, [17] = { "Swift White Steed", 23227, false, 17 }, [41] = { "Striped Nightsaber", 10793, true, 41 } }
+C_MountJournal = {
+    GetMountIDs = function() return { 6, 17, 41 } end,
+    GetMountInfoByID = function(id)
+        local m = mounts[id]
+        if m then return m[1], m[2], 132226, false, true, 0, false, false, nil, false, m[3], m[4] end
+    end,
+    SummonByID = forbid("C_MountJournal.SummonByID"), Dismiss = forbid("C_MountJournal.Dismiss"),
+}
+local pets = { { "BattlePet-0-1", 40, true, "", 1, false, false, "Mechanical Squirrel", 1, 9, 2671 },
+               { "BattlePet-0-2", 41, false, "", 1, false, false, "Ancona Chicken", 1, 5, 7394 },
+               { "BattlePet-0-3", 42, true, "Whiskers", 1, false, false, "Cat (Black Tabby)", 1, 8, 7383 } }
+C_PetJournal = {
+    GetNumPets = function() return #pets, 2 end,
+    GetPetInfoByIndex = function(i) local p = pets[i] if p then return unpack(p) end end,
+    SummonPetByGUID = forbid("C_PetJournal.SummonPetByGUID"),
+}
+"""
+
+COMPANION_STUBS = r"""
+local companions = { MOUNT = { { 7322, "Striped Nightsaber", 10793 } }, CRITTER = { { 7385, "Bombay Cat", 10673 }, { 7390, "Cockatiel", 10680 } } }
+function GetNumCompanions(kind) return companions[kind] and #companions[kind] or 0 end
+function GetCompanionInfo(kind, index)
+    local c = companions[kind] and companions[kind][index]
+    if c then return c[1], c[2], c[3], 132599, false end
+end
+CallCompanion, DismissCompanion = forbid("CallCompanion"), forbid("DismissCompanion")
+"""
+
 # Clock for timing sections: a deterministic, increasing counter (steps of 0.5, 2.5 and 1.0 ms
 # in turn), so the dump is the same every time. The older (legacy) client does not have it.
 # Addon 0.14.0: a mock of the QuestieDB public API (global LibQuestieDB: entity Get / Exists / IdsByName) and of
@@ -1359,6 +1502,9 @@ def load_addon(mode: str, before_addon: str = ""):
         runtime.execute(localize(mode, FOREVER_V4_STUBS))
         runtime.execute(QUEST_SOURCES_STUBS)
         runtime.execute(LEGACY_TREE_STUBS)
+    if mode != "legacy":
+        runtime.execute(ACHIEVEMENT_STUBS)
+        runtime.execute(COMPANION_STUBS if mode in FOREVER_MODES else JOURNAL_STUBS)
     if before_addon:
         runtime.execute(before_addon)
     # The client passes every addon file the same arguments: the addon name and a shared table.
@@ -1413,15 +1559,19 @@ def check_robustness(runtime, g, on_event, mode: str) -> None:
         on_event(None, "MERCHANT_UPDATE")
         assert len(current["buyback"]["items"]) == 0
     if mode != "legacy":
+        check_achievement_cache(runtime, g, current)
         # No API in the client: sections vanish without errors (manual dump, no /reload).
         runtime.execute('''
             C_EquipmentSet, GetPVPLifetimeStats, UnitHonor, UnitHonorMax, UnitHonorLevel, UnitPVPRank = nil, nil, nil, nil, nil, nil
             C_UnitAuras, C_TaxiMap, GetNumBuybackItems = nil, nil, nil
+            GetCategoryList, GetStatisticsCategoryList, GetNumTitles, GetNumCompanions = nil, nil, nil, nil
+            C_MountJournal, C_PetJournal = nil, nil
         ''')
         g.SlashCmdList["WOWMCP"]("")
         dumped = g.WowMcpDB["characters"]["Piekasz"]
         assert not list(dumped["errors"].values()), list(dumped["errors"].values())
         assert dumped["pvp"] is None and dumped["equipmentSets"] is None
+        assert all(dumped[name] is None for name in ("achievements", "statistics", "titles", "collections"))
         assert g.forbiddenCalls is not None and len(g.forbiddenCalls) == 0
     if mode in FOREVER_MODES:
         # Addon 0.17.0: Legacy names are scanned once per session; a frame that appears later is found only after the
@@ -2218,6 +2368,59 @@ def check_lookups(snapshot, g, mode: str) -> None:
         assert any(expected in line for line in chat), (expected, chat)
 
 
+def check_achievement_sections(snapshot, mode: str) -> None:
+    """Achievements, statistics, titles and collections: the legacy client has none of the APIs, so the sections are
+    absent; elsewhere dates, bounded criteria (missing ones first), statistic values and the known titles."""
+    names = ("achievements", "statistics", "titles", "collections")
+    if mode == "legacy":
+        assert all(snapshot[name] is None for name in names), [name for name in names if snapshot[name] is not None]
+        return
+    achievements = snapshot["achievements"]
+    entries = {a["name"]: a for a in achievements["list"].values()}
+    assert entries["50 Quests Completed"]["completedOn"] == "2026-09-03", dict(entries["50 Quests Completed"])
+    assert entries["100 Quests Completed"]["completedOn"] is None and entries["50 Quests Completed"]["criteria"] is None
+    kalimdor = entries["Explore Kalimdor"]
+    assert (kalimdor["criteriaTotal"], kalimdor["criteriaRead"], kalimdor["criteriaDone"]) == (10, 10, 2), dict(kalimdor)
+    criteria = list(kalimdor["criteria"].values())
+    assert len(criteria) == 8 and not any(c["completed"] for c in criteria), [dict(c) for c in criteria]
+    assert kalimdor["reward"] == "Reward: Title - the Wanderer"
+    darkshore = [c["text"] for c in entries["Explore Darkshore"]["criteria"].values()]
+    assert darkshore == ["Ruins of Mathystra", "Grove of the Ancients", "Auberdine", "Bashal'Aran"], darkshore
+    expected_points = 41 if mode in FOREVER_MODES else 30
+    assert achievements["points"] == expected_points and achievements["completed"] == len(
+        [a for a in entries.values() if a["completed"]]), (achievements["points"], achievements["completed"])
+    classic = [c for c in achievements["categories"].values() if c["name"] == "Classic"][0]
+    assert classic["parentID"] == 96 and classic["total"] == 2 and classic["completed"] == 1, dict(classic)
+    statistics = snapshot["statistics"]
+    values = {s["name"]: s["value"] for c in statistics["categories"].values() for s in c["list"].values()}
+    assert values == {"Quests completed": "62", "Creatures killed": "1404", "Total gold acquired": "5g 20s 3c",
+                      "Total deaths": "3"}, values
+    assert statistics["empty"] == 2
+    titles = snapshot["titles"]
+    assert [t["name"] for t in titles["known"].values()] == ["Private", "the Patient"] and titles["current"] == "the Patient"
+    collections = snapshot["collections"]
+    mounts = [m["name"] for m in collections["mounts"]["list"].values()]
+    companions = [c["name"] for c in collections["companions"]["list"].values()]
+    if mode in FOREVER_MODES:
+        assert collections["mounts"]["source"] == "GetCompanionInfo" and mounts == ["Striped Nightsaber"], mounts
+        assert companions == ["Bombay Cat", "Cockatiel"], companions
+    else:
+        assert collections["mounts"]["source"] == "C_MountJournal" and mounts == ["Brown Horse", "Striped Nightsaber"], mounts
+        assert collections["companions"]["source"] == "C_PetJournal" and companions == ["Mechanical Squirrel", "Whiskers"]
+
+
+def check_achievement_cache(runtime, g, snapshot) -> None:
+    """A later dump re-reads only the incomplete achievements (and the Legacy challenges); statistic names are cached."""
+    incomplete = len([a for a in snapshot["achievements"]["list"].values() if not a["completed"]])
+    legacy = snapshot["legacy"]["challenges"]
+    challenges = len(legacy["list"]) if legacy is not None else 0
+    runtime.execute("achievementInfoCalls = 0")
+    g.SlashCmdList["WOWMCP"]("")
+    assert g.achievementInfoCalls == incomplete + challenges, (g.achievementInfoCalls, incomplete, challenges)
+    dumped = g.WowMcpDB["characters"]["Piekasz"]
+    assert len(dumped["achievements"]["list"]) == len(snapshot["achievements"]["list"])
+
+
 def check_quest_sources(snapshot, g, mode: str) -> None:
     """Addon 0.14.0: quest locations from the installed quest database and the next steps of the Guidelime guide."""
     if mode not in FOREVER_MODES:
@@ -2854,6 +3057,7 @@ def main() -> int:
     check_numeric_ids(snapshot, mode, runtime, addon_ns)
     check_quest_sources(snapshot, g, mode)
     check_lookups(snapshot, g, mode)
+    check_achievement_sections(snapshot, mode)
 
     dump = g.SerializeSavedVariable("WowMcpDB", g.WowMcpDB)
     assert "INVTYPE_NON_EQUIP_IGNORE" not in dump, "equipLoc = INVTYPE_NON_EQUIP_IGNORE should not reach the dump"

@@ -208,7 +208,11 @@
     "professions",
     "currencies",
     "macros",
-    "flightPaths"
+    "flightPaths",
+    "achievements",
+    "statistics",
+    "titles",
+    "collections"
   ],
   "snapshot": {
     "ageMinutes": 30,

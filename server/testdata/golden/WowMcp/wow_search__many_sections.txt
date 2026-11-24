@@ -330,6 +330,314 @@
       "section": "auctions",
       "shown": 3,
       "truncated": false
+    },
+    {
+      "count": 19,
+      "hits": [
+        {
+          "label": "Classic",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Classic"
+          ],
+          "summary": "completed 1"
+        },
+        {
+          "label": "Exploration",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Exploration"
+          ],
+          "summary": "completed 1"
+        },
+        {
+          "label": "Darkshore Quests",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Darkshore Quests"
+          ],
+          "summary": "points 10, completed, 2026-11-14"
+        },
+        {
+          "label": "Ashenvale Quests",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Ashenvale Quests"
+          ],
+          "summary": "points 10"
+        },
+        {
+          "label": "Complete quests in Ashenvale",
+          "matchedIn": "text",
+          "path": [
+            "achievements",
+            "Ashenvale Quests",
+            "Complete quests in Ashenvale"
+          ]
+        },
+        {
+          "label": "Explore Teldrassil",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Explore Teldrassil"
+          ],
+          "summary": "points 10, completed, 2026-08-30"
+        },
+        {
+          "label": "Explore Darkshore",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Explore Darkshore"
+          ],
+          "summary": "points 10"
+        },
+        {
+          "label": "Ruins of Mathystra",
+          "matchedIn": "text",
+          "path": [
+            "achievements",
+            "Explore Darkshore",
+            "Ruins of Mathystra"
+          ]
+        },
+        {
+          "label": "Grove of the Ancients",
+          "matchedIn": "text",
+          "path": [
+            "achievements",
+            "Explore Darkshore",
+            "Grove of the Ancients"
+          ]
+        },
+        {
+          "label": "Auberdine",
+          "matchedIn": "text",
+          "path": [
+            "achievements",
+            "Explore Darkshore",
+            "Auberdine"
+          ],
+          "summary": "completed"
+        },
+        {
+          "label": "Bashal'Aran",
+          "matchedIn": "text",
+          "path": [
+            "achievements",
+            "Explore Darkshore",
+            "Bashal'Aran"
+          ],
+          "summary": "completed"
+        },
+        {
+          "label": "Explore Kalimdor",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Explore Kalimdor"
+          ],
+          "summary": "points 25"
+        },
+        {
+          "label": "Ashenvale",
+          "matchedIn": "text",
+          "path": [
+            "achievements",
+            "Explore Kalimdor",
+            "Ashenvale"
+          ]
+        },
+        {
+          "label": "The Barrens",
+          "matchedIn": "text",
+          "path": [
+            "achievements",
+            "Explore Kalimdor",
+            "The Barrens"
+          ]
+        },
+        {
+          "label": "Durotar",
+          "matchedIn": "text",
+          "path": [
+            "achievements",
+            "Explore Kalimdor",
+            "Durotar"
+          ]
+        },
+        {
+          "label": "Stonetalon Mountains",
+          "matchedIn": "text",
+          "path": [
+            "achievements",
+            "Explore Kalimdor",
+            "Stonetalon Mountains"
+          ]
+        },
+        {
+          "label": "Desolace",
+          "matchedIn": "text",
+          "path": [
+            "achievements",
+            "Explore Kalimdor",
+            "Desolace"
+          ]
+        },
+        {
+          "label": "Feralas",
+          "matchedIn": "text",
+          "path": [
+            "achievements",
+            "Explore Kalimdor",
+            "Feralas"
+          ]
+        },
+        {
+          "label": "Thousand Needles",
+          "matchedIn": "text",
+          "path": [
+            "achievements",
+            "Explore Kalimdor",
+            "Thousand Needles"
+          ]
+        }
+      ],
+      "section": "achievements",
+      "shown": 19,
+      "truncated": false
+    },
+    {
+      "count": 6,
+      "hits": [
+        {
+          "label": "Character",
+          "matchedIn": "name",
+          "path": [
+            "statistics",
+            "Character"
+          ]
+        },
+        {
+          "label": "Creatures killed",
+          "matchedIn": "name",
+          "path": [
+            "statistics",
+            "Character",
+            "Creatures killed"
+          ],
+          "summary": "1404"
+        },
+        {
+          "label": "Wealth",
+          "matchedIn": "name",
+          "path": [
+            "statistics",
+            "Wealth"
+          ]
+        },
+        {
+          "label": "Total gold acquired",
+          "matchedIn": "name",
+          "path": [
+            "statistics",
+            "Wealth",
+            "Total gold acquired"
+          ],
+          "summary": "5g 20s 3c"
+        },
+        {
+          "label": "Deaths",
+          "matchedIn": "name",
+          "path": [
+            "statistics",
+            "Deaths"
+          ]
+        },
+        {
+          "label": "Total deaths",
+          "matchedIn": "name",
+          "path": [
+            "statistics",
+            "Deaths",
+            "Total deaths"
+          ],
+          "summary": "3"
+        }
+      ],
+      "section": "statistics",
+      "shown": 6,
+      "truncated": false
+    },
+    {
+      "count": 3,
+      "hits": [
+        {
+          "label": "the Patient",
+          "matchedIn": "current",
+          "path": [
+            "titles"
+          ]
+        },
+        {
+          "label": "Private",
+          "matchedIn": "name",
+          "path": [
+            "titles",
+            "Private"
+          ]
+        },
+        {
+          "label": "the Patient",
+          "matchedIn": "name",
+          "path": [
+            "titles",
+            "the Patient"
+          ]
+        }
+      ],
+      "section": "titles",
+      "shown": 3,
+      "truncated": false
+    },
+    {
+      "count": 3,
+      "hits": [
+        {
+          "label": "Mechanical Squirrel",
+          "matchedIn": "name",
+          "path": [
+            "collections",
+            "Mechanical Squirrel"
+          ]
+        },
+        {
+          "label": "Whiskers",
+          "matchedIn": "species",
+          "matchedText": "Cat (Black Tabby)",
+          "path": [
+            "collections",
+            "Whiskers"
+          ]
+        },
+        {
+          "label": "Striped Nightsaber",
+          "matchedIn": "name",
+          "path": [
+            "collections",
+            "Striped Nightsaber"
+          ],
+          "summary": "spellID 10793"
+        }
+      ],
+      "section": "collections",
+      "shown": 3,
+      "truncated": false
     }
   ],
   "notInSnapshot": [
@@ -357,13 +665,17 @@
     "stable",
     "reputation",
     "auctions",
-    "professions"
+    "professions",
+    "achievements",
+    "statistics",
+    "titles",
+    "collections"
   ],
   "snapshot": {
     "ageMinutes": 30,
     "character": "Piekasz",
     "dumpedAt": "2026-11-15 16:50:00"
   },
-  "totalHits": 28,
+  "totalHits": 59,
   "truncated": false
 }

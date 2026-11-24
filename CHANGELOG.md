@@ -63,6 +63,35 @@ calls it relies on (`Quest.GetAllIds`, the `zoneOrSort`, `preQuestSingle`, `preQ
     alternative or above their maximum level are counted apart. Without the section the answer says what to install.
 - **Changed**
   - `QuestDb.lua` exposes its database accessor and field read (`QuestDb.lib`, `QuestDb.field`) for `QuestZones.lua`.
+Achievements, statistics, titles and collections, for the addon and the server. **None of this has been run in the real client.**
+Which of these APIs Forever has is not known yet: every name below is an assumption taken from the documented modern API, to be
+confirmed with `/mcp probe`. Each section is absent when the client supplies nothing, and the tools say so.
+
+- **Added**
+  - Addon: an `achievements` section: achievement points (`GetTotalAchievementPoints`), completed and total
+    (`GetNumCompletedAchievements`), categories with their counts (`GetCategoryList`, `GetCategoryInfo`,
+    `GetCategoryNumAchievements`), and up to 600 achievements with name, points, description, reward and the completion
+    date (`GetAchievementInfo`; the year is read as years since 2000, stored as `completedOn` = `YYYY-MM-DD`). Incomplete
+    ones carry their criteria (`GetAchievementNumCriteria`, `GetAchievementCriteriaInfo`: up to 8, the missing ones first;
+    25 read per achievement, 3000 per dump). The category layout and completed achievements are read once per session, so
+    later dumps re-read only the incomplete ones. The Legacy challenges now read their categories through the same helper
+    (`AchievementCategories.lua`); their output is unchanged.
+  - Addon: a `statistics` section (`GetStatisticsCategoryList`, `GetStatistic`): the game's counters by category with the
+    game's own value text, coin icons turned into `5g 20s 3c`, `--` values left out; up to 400.
+  - Addon: a `titles` section (`GetNumTitles`, `IsTitleKnown`, `GetTitleName`, `GetCurrentTitle`) and a `collections`
+    section: mounts from `C_MountJournal` or the companion API (`GetNumCompanions` / `GetCompanionInfo` with `"MOUNT"`),
+    companion pets from the companion API (`"CRITTER"`) or `C_PetJournal`; up to 300 of each. Nothing changes the title,
+    summons, dismisses or tracks anything.
+  - `/mcp probe` also lists `C_MountJournal`, `C_PetJournal`, `C_TitleManager` and the global title, companion and
+    comparison-statistic functions, so the next probe from the game answers which of the above exist.
+  - Server: `wow_achievements` (`view` = `summary`, `timeline`, `recent`, `closest` or `all`; `query`, `category`, `limit`;
+    package `game/achievements`): totals, progress per category, the most recent ones, completion dates in order with the
+    earliest and latest, and the incomplete achievements ranked by criteria progress with the missing criteria.
+  - Server: `wow_statistics` (`query`, `category`) and `wow_collections` (`kind` = `titles`, `mounts`, `companions` or
+    `all`; `query`; package `game/collections`). `wow_search` searches the four new sections and `wow_section` lists them.
+  - Tests: the modern, Forever and deDE mocks have these APIs (journals in the modern mock, the companion API in Forever);
+    the legacy client has none and proves the sections stay absent. In the modern mock the Legacy challenges now report an
+    empty Legacy category list, since that client has the achievement API.
 
 ## 0.20.0 (2026-11-24)
 

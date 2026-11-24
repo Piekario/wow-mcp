@@ -16,7 +16,7 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
     "disabledSections": [
       "macros"
     ],
-    "dumpTimeMs": 65
+    "dumpTimeMs": 76
   },
   "character": {
     "class": "Hunter",
@@ -27,11 +27,13 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
   },
   "expectedAddonVersion": "0.20.0",
   "sectionsInSnapshot": [
+    "achievements",
     "actionBars",
     "auctions",
     "auras",
     "bags",
     "character",
+    "collections",
     "dungeons",
     "equipment",
     "equipmentSets",
@@ -49,8 +51,10 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
     "reputation",
     "spells",
     "stable",
+    "statistics",
     "stats",
     "talents",
+    "titles",
     "trainer",
     "trainers",
     "xpGains"

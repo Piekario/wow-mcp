@@ -1,0 +1,75 @@
+# tool wow_achievements variant=view_closest
+# args: {"view":"closest"}
+# isError: false
+--- content[0] ---
+{
+  "achievements": [
+    {
+      "category": "Quests",
+      "completed": false,
+      "description": "Complete 100 quests.",
+      "missing": [
+        "Complete 100 quests (74/100)"
+      ],
+      "name": "100 Quests Completed",
+      "points": 10,
+      "progressPercent": 74
+    },
+    {
+      "category": "Exploration",
+      "completed": false,
+      "criteria": "2/4",
+      "description": "Explore Darkshore, revealing the covered areas of the world map.",
+      "missing": [
+        "Ruins of Mathystra",
+        "Grove of the Ancients"
+      ],
+      "name": "Explore Darkshore",
+      "points": 10,
+      "progressPercent": 50
+    },
+    {
+      "category": "Exploration",
+      "completed": false,
+      "criteria": "2/10",
+      "description": "Explore the regions of Kalimdor.",
+      "missing": [
+        "Ashenvale",
+        "The Barrens",
+        "Durotar",
+        "Mulgore",
+        "Stonetalon Mountains",
+        "Desolace",
+        "Feralas",
+        "Thousand Needles"
+      ],
+      "name": "Explore Kalimdor",
+      "points": 25,
+      "progressPercent": 20,
+      "reward": "Reward: Title - the Wanderer"
+    },
+    {
+      "category": "Quests \u003e Classic",
+      "completed": false,
+      "description": "Complete 40 quests in Ashenvale.",
+      "missing": [
+        "Complete quests in Ashenvale (6/40)"
+      ],
+      "name": "Ashenvale Quests",
+      "points": 10,
+      "progressPercent": 15
+    }
+  ],
+  "completed": 3,
+  "completedPercent": 42.9,
+  "coverage": "The addon lists up to 600 achievements of this character (notListed counts the rest), with the completion date of completed ones and, for incomplete ones only, up to 8 criteria (missing ones first). Account-wide, guild and comparison data are not in the dump.",
+  "note": "progressPercent comes from the criteria: the count of a single counted criterion (74/100), otherwise the share of criteria done.",
+  "points": 30,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "total": 7,
+  "view": "closest"
+}

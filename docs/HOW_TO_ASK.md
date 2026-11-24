@@ -81,6 +81,9 @@ one optionally takes a character name.
 | `wow_reputation` | "How much do I need to reach Honored with Darnassus?" |
 | `wow_spells` | "Which abilities do I already know?" |
 | `wow_legacy` | "Where should I spend my Legacy Points?" · "Which Legacy challenges are still open?" |
+| `wow_achievements` | "How many achievement points do I have?" · "Which achievements am I closest to finishing, and what is missing?" · "When did I earn my exploration achievements?" (`view: timeline`, `category: Exploration`) |
+| `wow_statistics` | "How many times have I died in total?" · "How much gold have I looted?" |
+| `wow_collections` | "Which titles do I have and which one is shown?" · "Which mounts and companion pets does this character know?" |
 | `wow_talents` | "What can I spend a talent point on right now?" · "Show the talent descriptions from the Beast Mastery tree." |
 | `wow_recipes` | "What can I craft right now to level up Leatherworking?" · "What is missing for this recipe?" |
 | `wow_cooldowns` | "Does any alt have a profession cooldown ready?" |

@@ -41,4 +41,6 @@ read_globals = {
     "LOCALIZED_CLASS_NAMES_MALE", "LOCALIZED_CLASS_NAMES_FEMALE",
     -- achievements (Legacy challenges)
     "GetAchievementInfo", "GetCategoryInfo", "GetCategoryList", "GetCategoryNumAchievements",
+    -- achievements and statistics sections
+    "GetStatisticsCategoryList",
 }
