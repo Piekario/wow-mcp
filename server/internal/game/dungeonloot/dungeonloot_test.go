@@ -129,6 +129,13 @@ func TestNothingReadShowsLastAttempt(t *testing.T) {
 	if note := fmt.Sprint(mustRender(t, s)["note"]); !strings.Contains(note, "no data yet") {
 		t.Errorf("hint: %v", note)
 	}
+	if _, ok := mustRender(t, s)["howTo"]; !ok {
+		t.Error("an empty journal that may fill later still says what to type")
+	}
+	s["dungeonLoot"].(map[string]any)["lastAttempt"].(map[string]any)["outcome"] = "unavailable"
+	if _, ok := mustRender(t, s)["howTo"]; ok {
+		t.Error("a client without a journal must not be told to type /mcp loot")
+	}
 }
 
 func mustRender(t *testing.T, s snapshot.Snapshot) map[string]any {
