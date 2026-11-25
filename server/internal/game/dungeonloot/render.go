@@ -49,7 +49,10 @@ func (r Report) Render() map[string]any {
 		r.addAttempt(out)
 		return out
 	case NothingRead:
-		out := map[string]any{"available": false, "howTo": howToRead, "note": r.nothingReadNote()}
+		out := map[string]any{"available": false, "note": r.nothingReadNote()}
+		if r.Attempt == nil || r.Attempt.Outcome != "unavailable" {
+			out["howTo"] = howToRead
+		}
 		r.addAttempt(out)
 		return out
 	}
