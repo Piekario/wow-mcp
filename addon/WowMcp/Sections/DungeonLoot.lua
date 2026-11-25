@@ -4,7 +4,8 @@
 -- Section dungeonLoot: what the bosses of a dungeon drop, read from the Encounter Journal only when the player
 -- types /mcp loot [dungeon]; never on a dump, because the read moves the journal window's selection (it is put
 -- back). When the journal lists nothing because its module is not loaded, the command loads that module (the
--- game's own Blizzard_EncounterJournal, as opening the journal window does). Without a name: the dungeon the character is in, otherwise the dungeons for the character's level (from
+-- game's own Blizzard_EncounterJournal, as opening the journal window does). Without a name: the dungeon the
+-- character is in, otherwise the dungeons for the character's level (from
 -- the saved dungeons section). Results pass through later dumps, newest first and bounded. Item details come from
 -- Items.describe; items the client has not loaded yet are marked pending and read again a few times as data arrives.
 -- Every /mcp loot leaves lastAttempt in the section (outcome, what the journal offered), so a dump says what happened.
