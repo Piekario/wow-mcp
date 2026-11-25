@@ -26,7 +26,7 @@ based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` 
     race, level, section names and sizes, addon errors, rejected events, API namespace sizes after `/mcp probe`) and
     holds no names, items or gold. A chat line with a link to the window is printed at most once a month and three
     times in all, only for a class, client build and language the account has not marked with "I reported this", and never
-    before the character has a dump. `/mcp share off` or the new "Sharing reminder" switch on the options page turns it off. The addon sends nothing; a client without timers gets no reminder.
+    before the character has a dump. `/mcp share remind` prints the line on demand. `/mcp share off` or the new "Sharing reminder" switch on the options page turns it off. The addon sends nothing; a client without timers gets no reminder.
   - Chat links of the addon share one handler (`ChatLinks.lua`); the TomTom waypoint links work as before.
   - Nothing is uploaded: the server still opens no network connection (now checked by a test). The player reads the
     file and attaches it to the new issue form "Share a dump from your class", which also takes the client report. `wow_status` shows `shareDir`.

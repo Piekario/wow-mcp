@@ -57,6 +57,11 @@ local function message()
         .. offer .. ". Turn this reminder off: /mcp share off"
 end
 
+-- Prints the reminder now, whatever the limits say and without counting it (/mcp share remind).
+function ShareReminder.show()
+    chat(message())
+end
+
 -- Prints the reminder when one is due. Returns whether it did.
 function ShareReminder.check()
     local signature = ShareReport.signature()

@@ -22,7 +22,7 @@ local HELP = {
     "/mcp compact on|off - one-line panel: dump age and Save button (off by default)",
     "/mcp ahtip on|off - auction house price in the item tooltip (on by default)",
     "/mcp share - open a window with a short client report (no names, items or gold) to copy into an issue, so your class,"
-        .. " client and language can be supported; /mcp share off|on turns the rare chat reminder off or on",
+        .. " client and language can be supported; /mcp share off|on turns the rare chat reminder off or on, /mcp share remind prints it now",
     "/mcp options - open the WowMcp page in the game's options (the same switches as the commands above)",
     "/mcp probe - diagnostics: list of client API functions (spells, items, maps, achievements...), the events the client accepted"
         .. " and the client's Legacy API names",
@@ -125,6 +125,10 @@ local function share(rest)
         ns.ShareReminder.setEnabled(word == "on")
         chat(word == "on" and "Sharing reminders are on: at most one chat line a month. Turn off: /mcp share off"
             or "Sharing reminders are off. The window stays available: /mcp share")
+        return
+    end
+    if word == "remind" then
+        ns.ShareReminder.show()
         return
     end
     ns.ShareWindow.open()

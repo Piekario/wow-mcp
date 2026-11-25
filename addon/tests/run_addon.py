@@ -2404,6 +2404,10 @@ def check_sharing() -> None:
     runtime, g, addon_ns = load_addon("forever")
     event_dispatcher(g)(None, "PLAYER_LOGIN")
     assert addon_ns.ShareReminder.schedule() is False
+    # /mcp share remind prints the line on demand and does not count as a reminder.
+    before = len(g.chatlog)
+    g.SlashCmdList["WOWMCP"]("share remind")
+    assert len(g.chatlog) == before + 1 and "open the export window" in last_chat(g), "share remind"
 
 
 def check_secret_group_range() -> None:
