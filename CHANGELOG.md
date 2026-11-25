@@ -7,7 +7,6 @@ errors, dump 18 ms), addon 0.7.0 with server 0.9.0 (2026-11-15, no section error
 between are part of 0.11.0 / 0.12.2 and were run with them. Addon 0.14.0 was run on 2026-11-22 (client build 71037, no section errors, dump 25.7 ms: `questDb` for 22 log quests, `guide` reading TUGs, `/mcp quest The Glowing Shard`). **Server 0.15.0 and the 0.12.0 / 0.13.0 addon changes (carried periods, flight zones, auction gear details) have not yet been checked in a real client**: their fixes are
 based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` result and golden response tests.
 
-## Unreleased
 ## 0.22.0 (unreleased)
 
 Pet food the client checks, where to tame missing ranks, and class buffs by spell ID, for the addon and the server
@@ -33,6 +32,10 @@ with a Hunter, so the points below about taming, Beast Lore and the pet's food l
   and the two spellcast events are accepted by the client (`probe.events` shows it).
 
 - **Fixed**
+  - A recipe window for which the client gives no profession name was saved under an empty name, and `wow_recipes`
+    showed a profession called `""` (seen in the real client on 2026-11-23: one recipe, Camp Chair, `professionName`
+    empty, skill 0/0). The addon now saves it as `Unnamed profession`, keeps the client's own fields in `windowInfo`
+    so the missing name can be traced, and drops the old entry; the server shows dumps of older addons the same way.
   - The `friends` section was never saved in Forever build 71037: opening the friends list fires no `FRIENDLIST_UPDATE`
     there (real client, 2026-11-24). Every dump now reads the list the client already holds, still without asking the
     server for it; an empty list read this way is not saved, because the client reports no friends before it has the
@@ -92,6 +95,10 @@ with a Hunter, so the points below about taming, Beast Lore and the pet's food l
     elsewhere in the dump, so any language works) or `Bite 3` for an ability name the dump already knows. The answer says
     the data comes only from beasts this account tamed or examined, and how to collect them when there are none.
 - **Changed**
+  - CI runs `staticcheck` on the server and tests `install.ps1` on a Windows runner, under Windows PowerShell 5.1 and
+    PowerShell 7 (`scripts/test-install.ps1`: a `-Client` value that leaves the game folder is refused, a fresh install
+    with `-Build`, a second install that backs up and removes stale files, `-Rollback`, and an addon folder that is a
+    junction is refused with the linked folder left alone). This closes roadmap item 117.
   - `pet_care`, `wow_shopping_list`, `wow_reagents` and `wow_bag_plan` use the client's verdict on the bag food when the
     dump has it: feedings are counted, refused food is named, raw meat the pet eats is kept instead of banked. Older dumps
     keep the food by item subtype with the note that matching it to the diet is left to the reader.
