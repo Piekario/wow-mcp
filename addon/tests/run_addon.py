@@ -12,6 +12,8 @@ Usage: python3 run_addon.py <modern|legacy|forever> <output_file>
 
 import os
 import sys
+import re
+import urllib.parse
 from pathlib import Path
 
 import lupa.lua51 as lua51
@@ -2325,20 +2327,31 @@ def check_sharing() -> None:
     assert g.linkHandlers["wowmcp"]("wowmcp:share:open", "[Click here]") == 2
     window = [f for f in g.frames.values() if f.frameName == "WowMcpShareWindow"][0]
     assert window.shown is True
-    report = str(window.reportBox.fixedText)
-    assert report.startswith("WowMcp:1! WowMcp client report, format 1 || addon: ") and report.endswith(" !End:WowMcp:1!"), report
-    assert "\n" not in report, "one line, for a one-line box"
-    for expected in ( "client: 1.60.1 build 70938, interface 16001, locale enUS",
+    address = str(window.addressBox.fixedText)
+    base = "https://github.com/Piekario/wow-mcp/issues/new?template=share_dump.yml&title=Client%20report%3A%20HUNTER%2C%20enUS%2C%20build%2070938&report="
+    assert address.startswith(base + "WowMcp%3A1%21%0A"), address[:300]
+    assert re.fullmatch(r"[A-Za-z0-9\-_.~%]*", address[len(base):]), "the report is fully encoded"
+    assert len(address) <= 6000, len(address)
+    report = urllib.parse.unquote(address[len(base):])
+    assert report.startswith("WowMcp:1!\nWowMcp client report, format 1\naddon: ") and report.endswith("\n!End:WowMcp:1!"), report
+    for expected in ("client: 1.60.1 build 70938, interface 16001, locale enUS",
                      "character: HUNTER, NightElf, Alliance, level 20", "sections (", "quests=", "errors: 1",
                      "bad Player value", "events the client rejected: ", "probe: ", "C_Item="):
         assert expected in report, (expected, report)
     for personal in ("Piekasz", "Tankadin", "Night Watch", "Healbot", "Linen Cloth", "dungeon buddy"):
         assert personal not in report, (personal, report)
-    assert len(report) < 6000, len(report)
-    assert str(window.addressBox.fixedText).startswith("https://github.com/Piekario/wow-mcp/issues/new")
-    # The boxes are for copying: typed text is put back.
-    window.reportBox.scripts["OnTextChanged"](window.reportBox, True)
-    assert str(window.reportBox.label) == report
+    # The box is for copying: typed text is put back.
+    window.addressBox.scripts["OnTextChanged"](window.addressBox, True)
+    assert str(window.addressBox.label) == address
+    # A report too long for an address loses detail instead of being cut: first the API sizes, then the section sizes.
+    full = len(address)
+    addon_ns.ShareReport.MAX_URL_LENGTH = full - 1
+    shorter = urllib.parse.unquote(str(addon_ns.ShareReport.url()))
+    assert "C_Item=" not in shorter and " functions in " in shorter and "quests=" in shorter and shorter.endswith("!End:WowMcp:1!"), shorter
+    addon_ns.ShareReport.MAX_URL_LENGTH = 10
+    shortest = urllib.parse.unquote(str(addon_ns.ShareReport.url()))
+    assert "quests=" not in shortest and "quests" in shortest and shortest.endswith("!End:WowMcp:1!"), shortest
+    addon_ns.ShareReport.MAX_URL_LENGTH = 6000
     counters = str(window.countersText.label)
     assert "Sections in the dump: |cffffd100" in counters and "Addon errors: |cffffd1001|r" in counters, counters
     # Opening the window settles nothing: a month later the line comes again, until "I reported this".
@@ -2377,7 +2390,7 @@ def check_sharing() -> None:
     assert len(g.chatlog) == before
     g.SlashCmdList["WOWMCP"]("share")
     window = [f for f in g.frames.values() if f.frameName == "WowMcpShareWindow"][0]
-    assert window.shown is True and "probe: none" in str(window.reportBox.fixedText)
+    assert window.shown is True and "probe%3A%20none" in str(window.addressBox.fixedText)
     assert "none (type /mcp probe" in str(window.countersText.label)
     g.SlashCmdList["WOWMCP"]("share on")
     assert g.WowMcpDB["settings"]["shareReminder"] is None

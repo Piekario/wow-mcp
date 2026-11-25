@@ -19,8 +19,10 @@ based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` 
     collected names are then searched for in every other text (a quest text greeting the character, `<Made by ...>` in
     a tooltip), and the file is not written if one is still found. A section without privacy rules is left out.
     Class, race, level, client version, language, all game data and the `/mcp probe` result stay.
-  - In game, like QuestieTrace: `/mcp share` opens a window with the address of the issue form, a short client report
-    as one line of text to copy (Ctrl+C), a few counters and the buttons "I reported this" and "Close". The report is built from a fixed list of fields (addon and client version, build, language, class,
+  - In game, like QuestieTrace: `/mcp share` opens a window with one address to copy (Ctrl+C), a few counters and the
+    buttons "I reported this" and "Close". The address is the issue form with a short client report already in it, so
+    the form opens filled in and there is nothing else to paste; a report too long for an address loses detail (API
+    namespace sizes, then section sizes) instead of being cut. The report is built from a fixed list of fields (addon and client version, build, language, class,
     race, level, section names and sizes, addon errors, rejected events, API namespace sizes after `/mcp probe`) and
     holds no names, items or gold. A chat line with a link to the window is printed at most once a month and three
     times in all, only for a class, client build and language the account has not marked with "I reported this", and never

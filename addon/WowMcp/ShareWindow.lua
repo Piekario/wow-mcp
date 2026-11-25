@@ -1,8 +1,9 @@
 -- SPDX-License-Identifier: GPL-3.0-or-later
 -- Copyright (C) 2026 Piekasz (GitHub: Piekario). Author attribution must be kept: see NOTICE.
 
--- The sharing window (/mcp share), laid out like QuestieTrace's export window: the address of the issue form, the
--- client report as one line of text to copy, a few counters and two buttons. It only shows text: the addon sends
+-- The sharing window (/mcp share), laid out like QuestieTrace's export window: one box to copy, a few counters and
+-- two buttons. The box holds the address of the issue form with the client report already in it, so the player
+-- copies one thing and the form opens filled in. It only shows text: the addon sends
 -- nothing anywhere, and the game gives it no way to.
 
 local _, ns = ...
@@ -12,10 +13,11 @@ local ShareWindow = {}
 ns.ShareWindow = ShareWindow
 
 local FRAME_NAME = "WowMcpShareWindow"
-local WIDTH, HEIGHT, MARGIN = 560, 250, 16
-local INTRO = "Copy the text below and paste it into a new issue at the address above. It tells the project how the addon"
-    .. " works for your class, client and language. Character, realm, guild and player names are never included,"
-    .. " and neither are items or gold. Nothing is sent from the game. Reminder off: /mcp share off"
+local WIDTH, HEIGHT, MARGIN = 560, 220, 16
+local INTRO = "Copy the address above (click it, Ctrl+C) and open it in your browser: the issue form opens with the report"
+    .. " already filled in, and you only press Submit. An addon cannot open a browser itself. The report tells the"
+    .. " project how the addon works for your class, client and language. Character, realm, guild and player names"
+    .. " are never included, and neither are items or gold. Reminder off: /mcp share off"
 local NO_DUMP = "No dump yet: type /mcp and open this window again."
 
 local window
@@ -42,6 +44,7 @@ local function addCopyBox(f, y)
     box:SetSize(WIDTH - 2 * MARGIN - 8, 20)
     box:SetPoint("TOPLEFT", f, "TOPLEFT", MARGIN + 6, y)
     box:SetAutoFocus(false)
+    box:SetMaxLetters(0)
     box:SetScript("OnTextChanged", function(self, userInput)
         if userInput and self.fixedText then
             self:SetText(self.fixedText)
@@ -115,8 +118,7 @@ local function create()
     addText(f, "GameFontNormal", -12, "WowMcp: share a client report")
     f.addressBox = addCopyBox(f, -34)
     addText(f, "GameFontHighlightSmall", -62, INTRO)
-    f.reportBox = addCopyBox(f, -112)
-    f.countersText = addText(f, "GameFontHighlight", -144)
+    f.countersText = addText(f, "GameFontHighlight", -124)
     addButtons(f)
     closeOnEscape()
     f:Hide()
@@ -134,10 +136,10 @@ function ShareWindow.open()
         chat("Could not open the sharing window in this client. The form is at " .. ShareReport.ISSUE_URL)
         return false
     end
-    setFixedText(window.addressBox, ShareReport.ISSUE_URL)
-    setFixedText(window.reportBox, ShareReport.text())
+    setFixedText(window.addressBox, ShareReport.url())
     window.countersText:SetText(countersText())
     window:Show()
+    window.addressBox:SetFocus()
     return true
 end
 
