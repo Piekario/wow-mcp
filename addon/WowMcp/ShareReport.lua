@@ -16,6 +16,11 @@ ns.ShareReport = ShareReport
 
 ShareReport.FORMAT = 1
 ShareReport.ISSUE_URL = "https://github.com/Piekario/wow-mcp/issues/new?template=share_dump.yml"
+-- GitHub refuses an address much longer than this, so a report that does not fit loses detail (see DETAIL).
+ShareReport.MAX_URL_LENGTH = 6000
+
+-- How much the report says, from everything down to what always fits in an address.
+local DETAIL = { FULL = 1, NO_API_SIZES = 2, NO_SECTION_SIZES = 3 }
 
 local MAX_ERRORS, MAX_ERROR_LENGTH = 10, 200
 local META_FIELDS = {
@@ -56,11 +61,11 @@ function ShareReport.signature(snapshot)
     return character.classToken .. "|" .. text(character.clientBuild) .. "|" .. text(character.locale)
 end
 
-local function sectionLines(snapshot)
+local function sectionLines(snapshot, detail)
     local present, seen = {}, {}
     for _, name in ipairs(sortedKeys(snapshot)) do
         if not META_FIELDS[name] then
-            present[#present + 1] = name .. "=" .. size(snapshot[name])
+            present[#present + 1] = detail < DETAIL.NO_SECTION_SIZES and (name .. "=" .. size(snapshot[name])) or name
             seen[name] = true
         end
     end
@@ -93,9 +98,19 @@ local function rejectedEvents()
     return rejected
 end
 
-local function probeLine(probe)
+local function probedFunctions(probe)
+    if type(probe) ~= "table" or type(probe.namespaces) ~= "table" then return 0 end
+    local total = size(probe.globals)
+    for _, names in pairs(probe.namespaces) do total = total + size(names) end
+    return total
+end
+
+local function probeLine(probe, detail)
     if type(probe) ~= "table" or type(probe.namespaces) ~= "table" then
         return "probe: none (type /mcp probe for the list of client API functions)"
+    end
+    if detail >= DETAIL.NO_API_SIZES then
+        return "probe: " .. probedFunctions(probe) .. " functions in " .. size(probe.namespaces) .. " namespaces"
     end
     local parts = {}
     for _, name in ipairs(sortedKeys(probe.namespaces)) do
@@ -104,7 +119,7 @@ local function probeLine(probe)
     return "probe: " .. size(probe.globals) .. " global functions; " .. table.concat(parts, ", ")
 end
 
-local function dumpLines(snapshot)
+local function dumpLines(snapshot, detail)
     local c = type(snapshot.character) == "table" and snapshot.character or {}
     local timings = type(snapshot.timings) == "table" and snapshot.timings or {}
     local lines = {
@@ -113,12 +128,12 @@ local function dumpLines(snapshot)
         "character: " .. text(c.classToken) .. ", " .. text(c.raceToken) .. ", " .. text(c.faction) .. ", level " .. text(c.level),
         "dump: reason " .. text(snapshot.reason) .. ", collected in " .. text(timings.totalMs) .. " ms",
     }
-    for _, group in ipairs({ sectionLines(snapshot), errorLines(snapshot) }) do
+    for _, group in ipairs({ sectionLines(snapshot, detail), errorLines(snapshot) }) do
         for _, line in ipairs(group) do lines[#lines + 1] = line end
     end
     local rejected = rejectedEvents()
     if #rejected > 0 then lines[#lines + 1] = "events the client rejected: " .. table.concat(rejected, ", ") end
-    lines[#lines + 1] = probeLine(snapshot.probe)
+    lines[#lines + 1] = probeLine(snapshot.probe, detail)
     return lines
 end
 
@@ -129,7 +144,7 @@ local function withoutPlayerName(line)
     return (line:gsub(name:gsub("%p", "%%%0"), "Player"))
 end
 
-function ShareReport.lines()
+function ShareReport.lines(detail)
     local lines = {
         "WowMcp client report, format " .. ShareReport.FORMAT,
         "addon: " .. ns.ADDON_VERSION .. ", schema " .. ns.SCHEMA_VERSION,
@@ -139,22 +154,36 @@ function ShareReport.lines()
         lines[#lines + 1] = "no dump yet: type /mcp and open this window again"
         return lines
     end
-    for _, line in ipairs(dumpLines(snapshot)) do lines[#lines + 1] = withoutPlayerName(line) end
+    for _, line in ipairs(dumpLines(snapshot, detail or DETAIL.FULL)) do lines[#lines + 1] = withoutPlayerName(line) end
     return lines
 end
 
--- The report as one line between a start and an end mark, so it fits a one-line box and a paste that lost its
--- end can be told from a whole one.
-function ShareReport.text()
+-- The report between a start and an end mark, so a paste or an address that lost its end can be told from a whole one.
+function ShareReport.text(detail)
     local mark = "WowMcp:" .. ShareReport.FORMAT
-    return mark .. "! " .. table.concat(ShareReport.lines(), " || ") .. " !End:" .. mark .. "!"
+    return mark .. "!\n" .. table.concat(ShareReport.lines(detail), "\n") .. "\n!End:" .. mark .. "!"
 end
 
-local function probedFunctions(probe)
-    if type(probe) ~= "table" or type(probe.namespaces) ~= "table" then return 0 end
-    local total = size(probe.globals)
-    for _, names in pairs(probe.namespaces) do total = total + size(names) end
-    return total
+local function urlEncode(value)
+    return (value:gsub("[^%w%-_%.~]", function(char) return ("%%%02X"):format(char:byte()) end))
+end
+
+local function title()
+    local snapshot = Store.savedCurrentCharacter()
+    local c = type(snapshot) == "table" and type(snapshot.character) == "table" and snapshot.character or {}
+    return "Client report: " .. text(c.classToken) .. ", " .. text(c.locale) .. ", build " .. text(c.clientBuild)
+end
+
+-- The address of the issue form with the report already in its "Client report from the game" field: the player
+-- copies one thing, and the form opens filled in. A report too long for an address is shortened, never cut.
+function ShareReport.url()
+    local base = ShareReport.ISSUE_URL .. "&title=" .. urlEncode(title()) .. "&report="
+    local url
+    for _, detail in ipairs({ DETAIL.FULL, DETAIL.NO_API_SIZES, DETAIL.NO_SECTION_SIZES }) do
+        url = base .. urlEncode(ShareReport.text(detail))
+        if #url <= ShareReport.MAX_URL_LENGTH then break end
+    end
+    return url
 end
 
 -- The numbers shown under the report: { sections, errors, apiFunctions, dumpMs }; nil without a dump.

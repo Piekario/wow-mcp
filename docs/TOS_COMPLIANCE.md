@@ -35,9 +35,9 @@ and compare them with the code. The project is intended for personal use on your
   passes its map and coordinates to TomTom (`TomTom:AddWaypoint`, the same call Questie makes), which shows a waypoint and its arrow.
   Nothing is set without that click, the character is not moved or steered, and without TomTom the coordinates stay plain text.
 - Your own loot is computed by the addon from the chat messages about the player's own loot (`LOOT_ITEM_SELF` and related). It does not record other players' loot.
-- `/mcp share` shows a window with one line of text (a client report without names) for the player to copy, and at most once a month one chat line
+- `/mcp share` shows a window with one address (the issue form with a client report without names in it) for the player to copy, and at most once a month one chat line
   offers that window (off with `/mcp share off`). The addon has no way to send the report and does not try: the player
-  copies it and pastes it into an issue. Nothing opens without a click.
+  copies it and opens it in a browser. Nothing opens without a click.
 - The item tooltip gets one added line with the last saved auction house price (`/mcp ahtip off` turns it off). It is only
   text in the tooltip: the addon searches for and lists nothing, and knows the price only from searches the player ran themselves.
 - For talent descriptions the addon asks the client to load the spell data (`C_Spell.RequestLoadSpellData`). This is a request for data to

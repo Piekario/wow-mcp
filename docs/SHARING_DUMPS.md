@@ -28,11 +28,16 @@ writes a file on your disk.
 
 ## From inside the game: the client report
 
-`/mcp share` opens a window laid out like QuestieTrace's export window: the address of the issue form, one line of text
-to copy, a few counters (sections in the dump, addon errors, dump time, client API functions listed) and the buttons
-"I reported this" and "Close". Click the text, press Ctrl+C and paste it into the form's "Client report from the game"
-field; it starts with `WowMcp:1!` and ends with `!End:WowMcp:1!`, so a paste that was cut short is easy to spot. It is the quick way when you cannot run the server
-command, and it complements the full dump.
+`/mcp share` opens a window laid out like QuestieTrace's export window: one address to copy, a few counters (sections
+in the dump, addon errors, dump time, client API functions listed) and the buttons "I reported this" and "Close". Press
+Ctrl+C (the address is already selected), paste it into your browser, and the issue form opens with the report already
+in its "Client report from the game" field and a title filled in: you read it and press Submit. An addon cannot open a
+browser, so the one copy is the shortest way there is. It is the quick way when you cannot run the server command, and
+it complements the full dump.
+
+The report starts with `WowMcp:1!` and ends with `!End:WowMcp:1!`, so one that was cut short is easy to spot. An
+address has a length limit, so a long report loses detail instead of its end: first the API namespace sizes become one
+total, then the section sizes are dropped and the section names stay.
 
 The text is plain and readable, not compressed, so you can see what you are sending. It is built from a fixed list of fields, not by filtering the dump: addon and schema version, client version,
 build, interface number and language, class, race, faction and level, why and how fast the last dump was taken, the
@@ -40,7 +45,7 @@ name and size of every section, sections that are missing or disabled, the addon
 client rejected and, after `/mcp probe`, how many functions each client API namespace has. It contains no name of a
 character, realm, guild or player, no item and no gold. The character's own name is cut out of error texts.
 
-The addon cannot send anything: it shows the text and you copy it. The same holds for the reminder.
+The addon cannot send anything: it shows the address and you copy it. The same holds for the reminder.
 
 **The reminder.** At most once a month, some time after login, the addon may print one chat line offering the window,
 with a link that opens it. It appears only for a class, client build and language for which this account has not clicked
