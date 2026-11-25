@@ -58,8 +58,7 @@ with a Hunter, so the points below about taming, Beast Lore and the pet's food l
     the form opens filled in and there is nothing else to paste; a report too long for an address loses detail (API
     namespace sizes, then section sizes) instead of being cut. The report is built from a fixed list of fields (addon and client version, build, language, class,
     race, level, section names and sizes, addon errors, rejected events, API namespace sizes after `/mcp probe`) and
-    holds no names, items or gold. A chat line with a link to the window is printed at most once a month and three
-    times in all, only for a class, client build and language the account has not marked with "I reported this", and never
+    holds no names, items or gold. A chat line with a link to the window is printed at most once a day, only for a class, client build and language the account has not marked with "I reported this", and never
     before the character has a dump. `/mcp share remind` prints the line on demand. `/mcp share off` or the new "Sharing reminder" switch on the options page turns it off. The addon sends nothing; a client without timers gets no reminder.
   - Chat links of the addon share one handler (`ChatLinks.lua`); the TomTom waypoint links work as before.
   - Nothing is uploaded: the server still opens no network connection (now checked by a test). The player reads the

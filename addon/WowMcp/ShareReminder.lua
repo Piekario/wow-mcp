@@ -4,7 +4,7 @@
 -- The sharing reminder: a rare chat line that offers the sharing window, the way QuestieTrace asks for its data.
 --
 -- It is asked only for a class, client build and language this account has not reported yet, never before the
--- character has a saved dump, at most once in REMIND_EVERY and at most MAX_ASKS times; "I reported this" in the
+-- character has a saved dump, and at most once in REMIND_EVERY; "I reported this" in the
 -- window ends it for that combination, and /mcp share off (or the options page) ends it for good. It prints one
 -- line and nothing else: no window opens and nothing is sent unless the player clicks.
 
@@ -14,8 +14,7 @@ local Store, ShareReport, ChatLinks, chat = ns.Store, ns.ShareReport, ns.ChatLin
 local ShareReminder = {}
 ns.ShareReminder = ShareReminder
 
-ShareReminder.REMIND_EVERY = 30 * 24 * 3600
-ShareReminder.MAX_ASKS = 3
+ShareReminder.REMIND_EVERY = 24 * 3600
 local LOGIN_DELAY_SECONDS = 45
 local LINK_ACTION, LINK_COLOR = "share", "|cff40ff80"
 
@@ -34,8 +33,6 @@ function ShareReminder.due(state, signature, now, enabled)
     if not enabled or not signature then return false end
     state = type(state) == "table" and state or {}
     if type(state.reported) == "table" and state.reported[signature] then return false end
-    local asked = type(state.asked) == "table" and tonumber(state.asked[signature]) or 0
-    if asked >= ShareReminder.MAX_ASKS then return false end
     local last = tonumber(state.remindedAt) or 0
     return now - last >= ShareReminder.REMIND_EVERY
 end

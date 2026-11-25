@@ -47,9 +47,9 @@ character, realm, guild or player, no item and no gold. The character's own name
 
 The addon cannot send anything: it shows the address and you copy it. The same holds for the reminder.
 
-**The reminder.** At most once a month, some time after login, the addon may print one chat line offering the window,
+**The reminder.** At most once a day, some time after login, the addon may print one chat line offering the window,
 with a link that opens it. It appears only for a class, client build and language for which this account has not clicked
-"I reported this" yet, never before the character has a saved dump, and at most three times. "I reported this" ends
+"I reported this" yet, and never before the character has a saved dump. "I reported this" ends
 it for that combination; a new client build or another class is new data, so it may ask once more then.
 `/mcp share remind` prints the line on demand, whatever the limits say. `/mcp share off` or the "Sharing reminder" switch on the options page turns it off for good; `/mcp share on` turns it
 back on.

@@ -65,7 +65,7 @@ function Options.generalSwitches()
         },
         {
             label = "Sharing reminder",
-            hint = "At most one chat line a month offering to share a short client report; nothing is ever sent by itself (/mcp share).",
+            hint = "At most one chat line a day offering to share a short client report; nothing is ever sent by itself (/mcp share).",
             get = ns.ShareReminder.isEnabled,
             set = function(enabled) ns.ShareReminder.setEnabled(enabled) end,
         },
