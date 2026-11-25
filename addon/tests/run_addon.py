@@ -2322,7 +2322,7 @@ def check_sharing() -> None:
     assert share["asked"]["HUNTER|70938|enUS"] == 1 and share["remindedAt"] == g.clockNow, dict(share)
     asked = len(g.chatlog)
     g.timers[1].fn()
-    assert len(g.chatlog) == asked, "asked once, not again the same month"
+    assert len(g.chatlog) == asked, "asked once, not again the same day"
     assert not [f for f in g.frames.values() if f.frameName == "WowMcpShareWindow"], "the reminder opens nothing"
     assert g.linkHandlers["wowmcp"]("wowmcp:share:open", "[Click here]") == 2
     window = [f for f in g.frames.values() if f.frameName == "WowMcpShareWindow"][0]
@@ -2354,9 +2354,9 @@ def check_sharing() -> None:
     addon_ns.ShareReport.MAX_URL_LENGTH = 6000
     counters = str(window.countersText.label)
     assert "Sections in the dump: |cffffd100" in counters and "Addon errors: |cffffd1001|r" in counters, counters
-    # Opening the window settles nothing: a month later the line comes again, until "I reported this".
+    # Opening the window settles nothing: a day later the line comes again, until "I reported this".
     assert share["reported"] is None
-    g.clockNow = g.clockNow + 31 * 24 * 3600
+    g.clockNow = g.clockNow + 24 * 3600
     g.timers[1].fn()
     assert len(g.chatlog) == asked + 1 and share["asked"]["HUNTER|70938|enUS"] == 2
     window.reportedButton.scripts["OnClick"](window.reportedButton)
@@ -2371,9 +2371,9 @@ def check_sharing() -> None:
     day = 24 * 3600
     state = runtime.eval('{ remindedAt = 1000, asked = { ["MAGE|1|enUS"] = 2, ["PRIEST|1|enUS"] = 3 }, reported = { ["ROGUE|1|enUS"] = 5 } }')
     assert due(None, "MAGE|1|enUS", 1794760000, True) is True, "never asked"
-    assert due(state, "MAGE|1|enUS", 1000 + 29 * day, True) is False, "not twice in a month"
-    assert due(state, "MAGE|1|enUS", 1000 + 30 * day, True) is True
-    assert due(state, "PRIEST|1|enUS", 1000 + 300 * day, True) is False, "three asks at most"
+    assert due(state, "MAGE|1|enUS", 1000 + day - 1, True) is False, "not twice in a day"
+    assert due(state, "MAGE|1|enUS", 1000 + day, True) is True
+    assert due(state, "PRIEST|1|enUS", 1000 + 300 * day, True) is True, "asked until reported or turned off"
     assert due(state, "ROGUE|1|enUS", 1000 + 300 * day, True) is False, "already reported"
     assert due(state, "MAGE|1|enUS", 1000 + 300 * day, False) is False, "turned off"
     assert due(state, None, 1000 + 300 * day, True) is False, "no dump"

@@ -123,7 +123,7 @@ local function share(rest)
     local word = firstWord(rest)
     if word == "off" or word == "on" then
         ns.ShareReminder.setEnabled(word == "on")
-        chat(word == "on" and "Sharing reminders are on: at most one chat line a month. Turn off: /mcp share off"
+        chat(word == "on" and "Sharing reminders are on: at most one chat line a day. Turn off: /mcp share off"
             or "Sharing reminders are off. The window stays available: /mcp share")
         return
     end
