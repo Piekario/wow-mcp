@@ -7,7 +7,7 @@ errors, dump 18 ms), addon 0.7.0 with server 0.9.0 (2026-11-15, no section error
 between are part of 0.11.0 / 0.12.2 and were run with them. Addon 0.14.0 was run on 2026-11-22 (client build 71037, no section errors, dump 25.7 ms: `questDb` for 22 log quests, `guide` reading TUGs, `/mcp quest The Glowing Shard`). **Server 0.15.0 and the 0.12.0 / 0.13.0 addon changes (carried periods, flight zones, auction gear details) have not yet been checked in a real client**: their fixes are
 based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` result and golden response tests.
 
-## 0.22.0 (unreleased)
+## 0.22.0 (2026-11-28)
 
 Pet food the client checks, where to tame missing ranks, and class buffs by spell ID, for the addon and the server
 (roadmap 69, 70 and 105). The server expects addon 0.22.0. Run in the real client on 2026-11-24 with a Warlock (build 71037, no section errors, dump 43.5 ms), which confirmed:
@@ -105,7 +105,7 @@ with a Hunter, so the points below about taming, Beast Lore and the pet's food l
     keep the food by item subtype with the note that matching it to the diet is left to the reader.
   - The player's map position is read by one helper (`Maps.playerPosition`), shared by `character` and `beasts`.
 
-## 0.21.0 (unreleased)
+## 0.21.0 (2026-11-28)
 
 Seven new tools and two extended ones, for the addon and the server. The server expects addon 0.21.0. **Apart from the first run described below, none of this has been run in the
 real client**: everything below was checked only on the addon's API mocks, unit tests and golden responses, and each part
