@@ -7,6 +7,11 @@ errors, dump 18 ms), addon 0.7.0 with server 0.9.0 (2026-11-15, no section error
 between are part of 0.11.0 / 0.12.2 and were run with them. Addon 0.14.0 was run on 2026-11-22 (client build 71037, no section errors, dump 25.7 ms: `questDb` for 22 log quests, `guide` reading TUGs, `/mcp quest The Glowing Shard`). **Server 0.15.0 and the 0.12.0 / 0.13.0 addon changes (carried periods, flight zones, auction gear details) have not yet been checked in a real client**: their fixes are
 based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` result and golden response tests.
 
+## Unreleased
+
+- CI: a pull request fails when one of its commits has an author or committer that matches the repository variable
+  `BLOCKED_IDENTITIES`.
+
 ## 0.22.0 (2026-11-28)
 
 Pet food the client checks, where to tame missing ranks, and class buffs by spell ID, for the addon and the server
