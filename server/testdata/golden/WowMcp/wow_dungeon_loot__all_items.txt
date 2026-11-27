@@ -1,0 +1,22 @@
+# tool wow_dungeon_loot variant=all_items
+# args: {"upgradesOnly":false}
+# isError: false
+--- content[0] ---
+{
+  "available": false,
+  "lastAttempt": {
+    "at": "2026-11-15 16:26",
+    "error": "no EJ_GetInstanceByIndex in this client",
+    "inInstance": false,
+    "instancesInJournal": 0,
+    "outcome": "unavailable",
+    "query": "deadmines"
+  },
+  "note": "When /mcp loot was typed, the client did not give addons the Encounter Journal. Type /mcp probe in game and look at namespaces.C_EncounterJournal, the EJ_ globals and addons.Blizzard_EncounterJournal in the probe section (wow_section). The server has no drop tables of its own and does not guess them: dungeon loot comes only from the game's Encounter Journal.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "unavailable": "no EJ_GetInstanceByIndex in this client"
+}

@@ -10,7 +10,7 @@
       "expiresAt": "2026-11-15 16:34",
       "id": 13165,
       "leftAtDump": "7 min",
-      "name": "Aspect of the Hawk"
+      "name": "Aspekt des Falken"
     }
   ],
   "debuffs": [
@@ -21,7 +21,6 @@
   ],
   "dumpAge": "30 min",
   "dumpedAt": "2026-11-15 16:26",
-  "localeNote": "Missing class buff groups (the \"missing\" list) are matched by English spell names (e.g. Aspect of the ..., Arcane Intellect), because no language-independent spell grouping is in the dump; the selfBuffsNotActive list uses spell IDs and icons instead; this heuristic only works on English game clients, and this dump comes from a deDE client, so treat its result as incomplete.",
   "missing": [],
   "snapshot": {
     "ageMinutes": 30,

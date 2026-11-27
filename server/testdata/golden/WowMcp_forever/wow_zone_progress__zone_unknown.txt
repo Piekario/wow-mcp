@@ -1,0 +1,16 @@
+# tool wow_zone_progress variant=zone_unknown
+# args: {"zone":"Zzzz"}
+# isError: false
+--- content[0] ---
+{
+  "note": "No zone matching \"Zzzz\" in the dump. The addon lists the current zone and the zones of quests in the log; to see another zone, go there (or take a quest from it) and run /mcp reload.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "zonesInDump": [
+    "Stormwind City",
+    "Darkshore"
+  ]
+}

@@ -68,6 +68,11 @@ func RealUnloaded(t testing.TB) snapshot.Snapshot {
 
 func realLua(t testing.TB, file string) []byte {
 	t.Helper()
+	return luaFile(RealCharacter, readJSON(t, file))
+}
+
+func readJSON(t testing.TB, file string) any {
+	t.Helper()
 	data, err := os.ReadFile(Testdata(file))
 	if err != nil {
 		t.Fatal(err)
@@ -78,11 +83,16 @@ func realLua(t testing.TB, file string) []byte {
 	if err := dec.Decode(&raw); err != nil {
 		t.Fatalf("%s: %v", file, err)
 	}
+	return raw
+}
+
+// luaFile writes a SavedVariables file with one character.
+func luaFile(character string, dump any) []byte {
 	var b strings.Builder
 	b.WriteString("WowMcpDB = ")
 	writeLua(&b, map[string]any{
-		"last":       RealCharacter,
-		"characters": map[string]any{RealCharacter: raw},
+		"last":       character,
+		"characters": map[string]any{character: dump},
 	})
 	b.WriteString("\n")
 	return []byte(b.String())
@@ -94,8 +104,12 @@ func parseReal(t testing.TB, lua []byte) snapshot.Snapshot {
 	if err != nil {
 		t.Fatal(err)
 	}
+	return onlyCharacter(vars, RealCharacter)
+}
+
+func onlyCharacter(vars map[string]any, key string) snapshot.Snapshot {
 	chars := vars["WowMcpDB"].(map[string]any)["characters"].(map[string]any)
-	return chars[RealCharacter].(map[string]any)
+	return chars[key].(map[string]any)
 }
 
 // writeLua writes a JSON value as a Lua table literal (keys sorted, so the result is stable).

@@ -1,7 +1,329 @@
 
 WowMcpDB = {
+["beasts"] = {
+[2033] = {
+["family"] = "Cat",
+["level"] = 12,
+["loreLines"] = {
+"Elder Nightsaber", -- [1]
+"Level 12 Beast", -- [2]
+"Health: 450", -- [3]
+"Diet: Meat, Fish", -- [4]
+"Abilities: Claw (Rank 2), Prowl 1", -- [5]
+},
+["mapId"] = 1453,
+["name"] = "Elder Nightsaber",
+["npcId"] = 2033,
+["seenAt"] = 1794759000,
+["source"] = "beastLore",
+["x"] = 67.9,
+["y"] = 15.4,
+["zone"] = "Stormwind City",
+},
+[2034] = {
+["abilities"] = {
+{
+["id"] = 16827,
+["name"] = "Claw",
+["rank"] = "Rank 1",
+}, -- [1]
+{
+["id"] = 24451,
+["name"] = "Prowl",
+["rank"] = "Rank 1",
+}, -- [2]
+},
+["family"] = "Cat",
+["level"] = 13,
+["mapId"] = 1453,
+["name"] = "Nightsaber Stalker",
+["npcId"] = 2034,
+["seenAt"] = 1794759522,
+["source"] = "tamed",
+["x"] = 67.9,
+["y"] = 15.4,
+["zone"] = "Stormwind City",
+},
+},
 ["characters"] = {
 ["Piekasz"] = {
+["achievements"] = {
+["categories"] = {
+{
+["completed"] = 1,
+["id"] = 92,
+["name"] = "General",
+["total"] = 1,
+}, -- [1]
+{
+["completed"] = 0,
+["id"] = 15500,
+["name"] = "Legacy",
+["total"] = 0,
+}, -- [2]
+{
+["completed"] = 1,
+["id"] = 15501,
+["name"] = "Classes",
+["parentID"] = 15500,
+["total"] = 2,
+}, -- [3]
+{
+["completed"] = 1,
+["id"] = 96,
+["name"] = "Quests",
+["total"] = 2,
+}, -- [4]
+{
+["completed"] = 2,
+["id"] = 14861,
+["name"] = "Classic",
+["parentID"] = 96,
+["total"] = 4,
+}, -- [5]
+{
+["completed"] = 1,
+["id"] = 97,
+["name"] = "Exploration",
+["total"] = 3,
+}, -- [6]
+},
+["completed"] = 6,
+["list"] = {
+{
+["category"] = 92,
+["completed"] = true,
+["id"] = 6,
+["name"] = "Level 10",
+["points"] = 10,
+}, -- [1]
+{
+["category"] = 15501,
+["completed"] = true,
+["completedOn"] = "2026-11-20",
+["description"] = "Reach level 25 with a Hunter.",
+["earnedByMe"] = true,
+["id"] = 70001,
+["name"] = "Hunter: Level 25",
+["points"] = 1,
+["reward"] = "Reward: 1 Legacy Point",
+}, -- [2]
+{
+["category"] = 15501,
+["completed"] = false,
+["description"] = "Reach level 25 with a Warlock.",
+["earnedByMe"] = false,
+["id"] = 70002,
+["name"] = "Warlock: Level 25",
+["points"] = 1,
+}, -- [3]
+{
+["category"] = 96,
+["completed"] = true,
+["completedOn"] = "2026-09-03",
+["description"] = "Complete 50 quests.",
+["earnedByMe"] = true,
+["id"] = 503,
+["name"] = "50 Quests Completed",
+["points"] = 10,
+}, -- [4]
+{
+["category"] = 96,
+["completed"] = false,
+["criteria"] = {
+{
+["completed"] = false,
+["quantity"] = 74,
+["required"] = 100,
+["text"] = "Complete 100 quests",
+}, -- [1]
+},
+["criteriaDone"] = 0,
+["criteriaRead"] = 1,
+["criteriaTotal"] = 1,
+["description"] = "Complete 100 quests.",
+["earnedByMe"] = false,
+["id"] = 504,
+["name"] = "100 Quests Completed",
+["points"] = 10,
+}, -- [5]
+{
+["category"] = 14861,
+["completed"] = true,
+["completedOn"] = "2026-11-14",
+["description"] = "Complete 30 quests in Darkshore.",
+["earnedByMe"] = true,
+["id"] = 4899,
+["name"] = "Darkshore Quests",
+["points"] = 10,
+}, -- [6]
+{
+["category"] = 14861,
+["completed"] = false,
+["criteria"] = {
+{
+["completed"] = false,
+["quantity"] = 6,
+["required"] = 40,
+["text"] = "Complete quests in Ashenvale",
+}, -- [1]
+},
+["criteriaDone"] = 0,
+["criteriaRead"] = 1,
+["criteriaTotal"] = 1,
+["description"] = "Complete 40 quests in Ashenvale.",
+["earnedByMe"] = false,
+["id"] = 4896,
+["name"] = "Ashenvale Quests",
+["points"] = 10,
+}, -- [7]
+{
+["category"] = 14861,
+["completed"] = true,
+["completedOn"] = "2026-10-01",
+["description"] = "Reach level 25 for the first time on a Mage.",
+["earnedByMe"] = true,
+["id"] = 5500,
+["name"] = "Novice Mage",
+["points"] = 0,
+["reward"] = "Earn 1 Legacy Point.",
+}, -- [8]
+{
+["category"] = 14861,
+["completed"] = false,
+["criteria"] = {
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 150,
+["text"] = "150 Alchemy Skill",
+}, -- [1]
+},
+["criteriaDone"] = 0,
+["criteriaRead"] = 1,
+["criteriaTotal"] = 1,
+["description"] = "Reach 150 Alchemy skill.",
+["earnedByMe"] = false,
+["id"] = 5501,
+["name"] = "Journeyman Alchemist",
+["points"] = 0,
+["reward"] = "Earn 1 Legacy Point.",
+}, -- [9]
+{
+["category"] = 97,
+["completed"] = true,
+["completedOn"] = "2026-08-30",
+["description"] = "Explore Teldrassil, revealing the covered areas of the world map.",
+["earnedByMe"] = true,
+["id"] = 768,
+["name"] = "Explore Teldrassil",
+["points"] = 10,
+}, -- [10]
+{
+["category"] = 97,
+["completed"] = false,
+["criteria"] = {
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Ruins of Mathystra",
+}, -- [1]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Grove of the Ancients",
+}, -- [2]
+{
+["completed"] = true,
+["quantity"] = 1,
+["required"] = 1,
+["text"] = "Auberdine",
+}, -- [3]
+{
+["completed"] = true,
+["quantity"] = 1,
+["required"] = 1,
+["text"] = "Bashal'Aran",
+}, -- [4]
+},
+["criteriaDone"] = 2,
+["criteriaRead"] = 4,
+["criteriaTotal"] = 4,
+["description"] = "Explore Darkshore, revealing the covered areas of the world map.",
+["earnedByMe"] = false,
+["id"] = 844,
+["name"] = "Explore Darkshore",
+["points"] = 10,
+}, -- [11]
+{
+["category"] = 97,
+["completed"] = false,
+["criteria"] = {
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Ashenvale",
+}, -- [1]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "The Barrens",
+}, -- [2]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Durotar",
+}, -- [3]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Mulgore",
+}, -- [4]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Stonetalon Mountains",
+}, -- [5]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Desolace",
+}, -- [6]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Feralas",
+}, -- [7]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Thousand Needles",
+}, -- [8]
+},
+["criteriaDone"] = 2,
+["criteriaRead"] = 10,
+["criteriaTotal"] = 10,
+["description"] = "Explore the regions of Kalimdor.",
+["earnedByMe"] = false,
+["id"] = 43,
+["name"] = "Explore Kalimdor",
+["points"] = 25,
+["reward"] = "Reward: Title - the Wanderer",
+}, -- [12]
+},
+["points"] = 41,
+["total"] = 12,
+},
 ["actionBars"] = {
 {
 ["bar"] = 1,
@@ -28,7 +350,7 @@ WowMcpDB = {
 ["slot"] = 13,
 }, -- [3]
 },
-["addonVersion"] = "0.20.0",
+["addonVersion"] = "0.22.0",
 ["auctions"] = {
 ["capturedAt"] = 1794760000,
 ["lastVisitAt"] = 1794760000,
@@ -260,7 +582,7 @@ WowMcpDB = {
 ["expiresAt"] = 1794760450,
 ["icon"] = 136076,
 ["id"] = 13165,
-["name"] = "Aspect of the Hawk",
+["name"] = "Aspekt des Falken",
 }, -- [1]
 {
 ["harmful"] = true,
@@ -271,7 +593,7 @@ WowMcpDB = {
 },
 ["bags"] = {
 {
-["free"] = 12,
+["free"] = 11,
 ["index"] = 0,
 ["items"] = {
 {
@@ -353,12 +675,28 @@ WowMcpDB = {
 },
 ["type"] = "Waffe",
 }, -- [4]
+{
+["bindType"] = 0,
+["classID"] = 7,
+["count"] = 4,
+["id"] = 2672,
+["isBound"] = false,
+["itemLevel"] = 5,
+["name"] = "Stringy Wolf Meat",
+["quality"] = 1,
+["requiredLevel"] = 1,
+["sellPrice"] = 4,
+["slot"] = 5,
+["subType"] = "Meat",
+["subclassID"] = 8,
+["type"] = "Trade Goods",
+}, -- [5]
 },
 ["name"] = "Backpack",
 ["size"] = 16,
 }, -- [1]
 {
-["free"] = 5,
+["free"] = 2,
 ["index"] = 1,
 ["items"] = {
 {
@@ -377,6 +715,54 @@ WowMcpDB = {
 ["subclassID"] = 5,
 ["type"] = "Handwerkswaren",
 }, -- [1]
+{
+["bindType"] = 0,
+["classID"] = 7,
+["count"] = 8,
+["id"] = 2672,
+["isBound"] = false,
+["itemLevel"] = 5,
+["name"] = "Stringy Wolf Meat",
+["quality"] = 1,
+["requiredLevel"] = 1,
+["sellPrice"] = 4,
+["slot"] = 3,
+["subType"] = "Meat",
+["subclassID"] = 8,
+["type"] = "Trade Goods",
+}, -- [2]
+{
+["bindType"] = 0,
+["classID"] = 0,
+["count"] = 5,
+["id"] = 2287,
+["isBound"] = false,
+["itemLevel"] = 5,
+["name"] = "Haunch of Meat",
+["quality"] = 1,
+["requiredLevel"] = 1,
+["sellPrice"] = 4,
+["slot"] = 4,
+["subType"] = "Food & Drink",
+["subclassID"] = 5,
+["type"] = "Consumable",
+}, -- [3]
+{
+["bindType"] = 0,
+["classID"] = 0,
+["count"] = 3,
+["id"] = 1645,
+["isBound"] = false,
+["itemLevel"] = 5,
+["name"] = "Moonberry Juice",
+["quality"] = 1,
+["requiredLevel"] = 1,
+["sellPrice"] = 4,
+["slot"] = 5,
+["subType"] = "Food & Drink",
+["subclassID"] = 5,
+["type"] = "Consumable",
+}, -- [4]
 },
 ["name"] = "Small Brown Pouch",
 ["size"] = 6,
@@ -434,6 +820,51 @@ WowMcpDB = {
 }, -- [1]
 },
 },
+["beasts"] = {
+{
+["abilities"] = {
+{
+["id"] = 16827,
+["name"] = "Claw",
+["rank"] = "Rank 1",
+}, -- [1]
+{
+["id"] = 24451,
+["name"] = "Prowl",
+["rank"] = "Rank 1",
+}, -- [2]
+},
+["family"] = "Cat",
+["level"] = 13,
+["mapId"] = 1453,
+["name"] = "Nightsaber Stalker",
+["npcId"] = 2034,
+["seenAt"] = 1794759522,
+["source"] = "tamed",
+["x"] = 67.9,
+["y"] = 15.4,
+["zone"] = "Stormwind City",
+}, -- [1]
+{
+["family"] = "Cat",
+["level"] = 12,
+["loreLines"] = {
+"Elder Nightsaber", -- [1]
+"Level 12 Beast", -- [2]
+"Health: 450", -- [3]
+"Diet: Meat, Fish", -- [4]
+"Abilities: Claw (Rank 2), Prowl 1", -- [5]
+},
+["mapId"] = 1453,
+["name"] = "Elder Nightsaber",
+["npcId"] = 2033,
+["seenAt"] = 1794759000,
+["source"] = "beastLore",
+["x"] = 67.9,
+["y"] = 15.4,
+["zone"] = "Stormwind City",
+}, -- [2]
+},
 ["buyback"] = {
 ["capturedAt"] = 1794760000,
 ["items"] = {
@@ -455,7 +886,7 @@ WowMcpDB = {
 ["npc"] = "Einris Brightspear",
 },
 ["character"] = {
-["addonVersion"] = "0.20.0",
+["addonVersion"] = "0.22.0",
 ["bindLocation"] = "Auberdine",
 ["class"] = "Jäger",
 ["classToken"] = "HUNTER",
@@ -481,6 +912,64 @@ WowMcpDB = {
 ["y"] = 15.4,
 ["zone"] = "Stormwind City",
 },
+["classBuffGroups"] = {
+{
+["label"] = "Aspect",
+["spells"] = {
+{
+["id"] = 13163,
+["name"] = "Aspekt des Affen",
+}, -- [1]
+{
+["id"] = 13165,
+["name"] = "Aspekt des Falken",
+}, -- [2]
+{
+["id"] = 5118,
+["name"] = "Aspekt des Geparden",
+}, -- [3]
+{
+["id"] = 13159,
+["name"] = "Aspekt des Rudels",
+}, -- [4]
+{
+["id"] = 13161,
+["name"] = "Aspekt des Wildtiers",
+}, -- [5]
+{
+["id"] = 20043,
+["name"] = "Aspekt der Wildnis",
+}, -- [6]
+},
+}, -- [1]
+},
+["collections"] = {
+["companions"] = {
+["list"] = {
+{
+["id"] = 7385,
+["name"] = "Bombay Cat",
+["spellID"] = 10673,
+}, -- [1]
+{
+["id"] = 7390,
+["name"] = "Cockatiel",
+["spellID"] = 10680,
+}, -- [2]
+},
+["source"] = "GetCompanionInfo",
+},
+["mounts"] = {
+["list"] = {
+{
+["id"] = 7322,
+["name"] = "Striped Nightsaber",
+["spellID"] = 10793,
+}, -- [1]
+},
+["source"] = "GetCompanionInfo",
+},
+},
 ["completedQuests"] = {
 456, -- [1]
 457, -- [2]
@@ -490,7 +979,7 @@ WowMcpDB = {
 {
 ["id"] = 13165,
 ["kind"] = "spell",
-["name"] = "Aspect of the Hawk",
+["name"] = "Aspekt des Falken",
 ["readyAt"] = 1794760290,
 ["remainingSeconds"] = 290,
 }, -- [1]
@@ -790,6 +1279,7 @@ WowMcpDB = {
 {
 ["area"] = "Stormwind City",
 ["class"] = "Paladin",
+["classToken"] = "PALADIN",
 ["connected"] = true,
 ["level"] = 22,
 ["name"] = "Tankadin",
@@ -798,12 +1288,14 @@ WowMcpDB = {
 {
 ["area"] = "Darkshore",
 ["class"] = "Priest",
+["classToken"] = "PRIEST",
 ["connected"] = true,
 ["level"] = 19,
 ["name"] = "Healbot",
 }, -- [2]
 {
 ["class"] = "Mage",
+["classToken"] = "MAGE",
 ["connected"] = false,
 ["level"] = 60,
 ["name"] = "Oldfriend",
@@ -940,8 +1432,10 @@ WowMcpDB = {
 ["members"] = {
 {
 ["class"] = "Paladin",
+["classToken"] = "PALADIN",
 ["level"] = 22,
 ["name"] = "Tankadin",
+["note"] = "main tank",
 ["online"] = true,
 ["rank"] = "Officer",
 ["rankIndex"] = 1,
@@ -949,6 +1443,7 @@ WowMcpDB = {
 }, -- [1]
 {
 ["class"] = "Priest",
+["classToken"] = "PRIEST",
 ["level"] = 19,
 ["name"] = "Healbot",
 ["online"] = true,
@@ -958,6 +1453,8 @@ WowMcpDB = {
 }, -- [2]
 {
 ["class"] = "Mage",
+["classToken"] = "MAGE",
+["daysOffline"] = 63,
 ["level"] = 60,
 ["name"] = "Oldfriend",
 ["online"] = false,
@@ -1005,7 +1502,9 @@ WowMcpDB = {
 ["list"] = {
 {
 ["category"] = "Classes",
+["categoryID"] = 15501,
 ["completed"] = true,
+["completedOn"] = "2026-11-20",
 ["description"] = "Reach level 25 with a Hunter.",
 ["earnedByMe"] = true,
 ["id"] = 70001,
@@ -1015,6 +1514,7 @@ WowMcpDB = {
 }, -- [1]
 {
 ["category"] = "Classes",
+["categoryID"] = 15501,
 ["completed"] = false,
 ["description"] = "Reach level 25 with a Warlock.",
 ["earnedByMe"] = false,
@@ -1022,8 +1522,39 @@ WowMcpDB = {
 ["name"] = "Warlock: Level 25",
 ["points"] = 1,
 }, -- [2]
+{
+["category"] = "Classic",
+["categoryID"] = 14861,
+["completed"] = true,
+["completedOn"] = "2026-10-01",
+["description"] = "Reach level 25 for the first time on a Mage.",
+["earnedByMe"] = true,
+["id"] = 5500,
+["name"] = "Novice Mage",
+["points"] = 0,
+["reward"] = "Earn 1 Legacy Point.",
+}, -- [3]
+{
+["category"] = "Classic",
+["categoryID"] = 14861,
+["completed"] = false,
+["criteria"] = {
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 150,
+["text"] = "150 Alchemy Skill",
+}, -- [1]
 },
-["matchedBy"] = "achievement category title contains Legacy",
+["description"] = "Reach 150 Alchemy skill.",
+["earnedByMe"] = false,
+["id"] = 5501,
+["name"] = "Journeyman Alchemist",
+["points"] = 0,
+["reward"] = "Earn 1 Legacy Point.",
+}, -- [4]
+},
+["matchedBy"] = "achievement category title contains Legacy + reward text contains Legacy Point",
 },
 ["configs"] = {
 {
@@ -1280,6 +1811,127 @@ true, -- [1]
 },
 ["source"] = "traits",
 },
+["lookups"] = {
+{
+["at"] = 1794760000,
+["castTimeMs"] = 0,
+["description"] = "Loaded later.",
+["descriptionSource"] = "api",
+["id"] = 99002,
+["kind"] = "spell",
+["maxRange"] = 0,
+["minRange"] = 0,
+["name"] = "Late Spell",
+["query"] = "99002",
+}, -- [1]
+{
+["at"] = 1794760000,
+["castTimeMs"] = 0,
+["description"] = "Reduces the Mana cost of your Shots and Stings by 2%.",
+["descriptionSource"] = "api",
+["id"] = 19416,
+["kind"] = "spell",
+["maxRange"] = 0,
+["minRange"] = 0,
+["name"] = "Efficiency",
+["query"] = "|cff71d5ff|Hspell:19416|h[Efficiency]|h|r",
+}, -- [2]
+{
+["at"] = 1794760000,
+["castTimeMs"] = 0,
+["costs"] = {
+{
+["amount"] = 50,
+["power"] = "MANA",
+}, -- [1]
+},
+["description"] = "An instant shot that causes 15 Arcane damage.",
+["descriptionSource"] = "api",
+["id"] = 3044,
+["kind"] = "spell",
+["maxRange"] = 35,
+["minRange"] = 5,
+["name"] = "Arcane Shot",
+["query"] = "Arcane Shot",
+["rank"] = "Rang 1",
+["tooltip"] = {
+"Arcane Shot | Rang 1", -- [1]
+"50 Mana | 35 yd range", -- [2]
+"Instant", -- [3]
+"An instant shot that causes 15 Arcane damage.", -- [4]
+},
+}, -- [3]
+{
+["at"] = 1794760000,
+["bindType"] = 0,
+["classID"] = 7,
+["id"] = 99001,
+["itemLevel"] = 10,
+["kind"] = "item",
+["name"] = "Item 99001",
+["quality"] = 1,
+["query"] = "99001",
+["requiredLevel"] = 1,
+["sellPrice"] = 13,
+["subType"] = "Stoff",
+["subclassID"] = 5,
+["type"] = "Handwerkswaren",
+}, -- [4]
+{
+["at"] = 1794760000,
+["bindType"] = 0,
+["classID"] = 2,
+["equipLoc"] = "INVTYPE_WEAPON",
+["id"] = 7005,
+["itemLevel"] = 4,
+["kind"] = "item",
+["name"] = "Kürschnermesser",
+["quality"] = 1,
+["query"] = "Kürschnermesser",
+["requiredLevel"] = 1,
+["sellPrice"] = 16,
+["statTokens"] = {
+["ITEM_MOD_DAMAGE_PER_SECOND_SHORT"] = 2.2,
+},
+["stats"] = {
+["Schaden pro Sekunde"] = 2.2,
+},
+["subType"] = "Dolch",
+["subclassID"] = 15,
+["type"] = "Waffe",
+}, -- [5]
+{
+["at"] = 1794760000,
+["bindType"] = 2,
+["classID"] = 2,
+["equipLoc"] = "INVTYPE_WEAPON",
+["id"] = 5586,
+["itemLevel"] = 18,
+["kind"] = "item",
+["name"] = "Curvewood Dagger",
+["quality"] = 2,
+["query"] = "5586",
+["requiredLevel"] = 13,
+["sellPrice"] = 812,
+["statTokens"] = {
+["ITEM_MOD_AGILITY_SHORT"] = 3,
+["ITEM_MOD_DAMAGE_PER_SECOND_SHORT"] = 8.4,
+["ITEM_MOD_STAMINA_SHORT"] = 2,
+},
+["stats"] = {
+["Ausdauer"] = 2,
+["Beweglichkeit"] = 3,
+["Schaden pro Sekunde"] = 8.4,
+},
+["subType"] = "Dolch",
+["subclassID"] = 15,
+["tooltip"] = {
+"Curvewood Dagger", -- [1]
+"Einhändig | Dolch", -- [2]
+},
+["type"] = "Waffe",
+}, -- [6]
+},
 ["loot"] = {
 ["formats"] = 4,
 ["items"] = {
@@ -1378,6 +2030,29 @@ true, -- [1]
 ["slot"] = 5,
 }, -- [3]
 },
+["bagFood"] = {
+["checkedWith"] = "itemLink",
+["items"] = {
+{
+["canEat"] = true,
+["count"] = 12,
+["id"] = 2672,
+["name"] = "Stringy Wolf Meat",
+}, -- [1]
+{
+["canEat"] = true,
+["count"] = 5,
+["id"] = 2287,
+["name"] = "Haunch of Meat",
+}, -- [2]
+{
+["canEat"] = false,
+["count"] = 3,
+["id"] = 1645,
+["name"] = "Moonberry Juice",
+}, -- [3]
+},
+},
 ["damagePercent"] = 125,
 ["dead"] = false,
 ["exists"] = true,
@@ -1395,6 +2070,16 @@ true, -- [1]
 ["totalSeconds"] = 360000,
 },
 ["probe"] = {
+["addons"] = {
+["Blizzard_EncounterJournal"] = {
+["frame"] = false,
+},
+},
+["beastLore"] = {
+["hasAura"] = false,
+["name"] = "Tankadin",
+["target"] = true,
+},
 ["capturedAt"] = 1794760000,
 ["eventCandidates"] = {
 ["LOGOUT_CANCEL"] = true,
@@ -1416,6 +2101,7 @@ true, -- [1]
 ["COMMODITY_SEARCH_RESULTS_UPDATED"] = true,
 ["CRAFT_SHOW"] = false,
 ["CRAFT_UPDATE"] = false,
+["EJ_LOOT_DATA_RECIEVED"] = true,
 ["FRIENDLIST_UPDATE"] = true,
 ["GET_ITEM_INFO_RECEIVED"] = true,
 ["GUILD_ROSTER_UPDATE"] = true,
@@ -1428,6 +2114,7 @@ true, -- [1]
 ["MERCHANT_SHOW"] = true,
 ["MERCHANT_UPDATE"] = true,
 ["OWNED_AUCTIONS_UPDATED"] = true,
+["PET_BAR_UPDATE"] = true,
 ["PET_STABLE_SHOW"] = true,
 ["PET_STABLE_UPDATE"] = true,
 ["PLAYER_CAMPING"] = true,
@@ -1439,11 +2126,14 @@ true, -- [1]
 ["PLAYER_LOGOUT"] = true,
 ["PLAYER_MONEY"] = true,
 ["PLAYER_QUITING"] = true,
+["PLAYER_TARGET_CHANGED"] = true,
 ["PLAYER_XP_UPDATE"] = true,
 ["QUEST_ACCEPTED"] = true,
 ["QUEST_COMPLETE"] = true,
 ["QUEST_DETAIL"] = true,
 ["QUEST_TURNED_IN"] = true,
+["SPELLS_CHANGED"] = true,
+["SPELL_DATA_LOAD_RESULT"] = true,
 ["TAXIMAP_OPENED"] = true,
 ["TIME_PLAYED_MSG"] = true,
 ["TRADE_SKILL_LIST_UPDATE"] = true,
@@ -1451,77 +2141,98 @@ true, -- [1]
 ["TRADE_SKILL_UPDATE"] = false,
 ["TRAINER_SHOW"] = true,
 ["TRAINER_UPDATE"] = true,
+["UNIT_AURA"] = true,
+["UNIT_PET"] = true,
+["UNIT_SPELLCAST_CHANNEL_START"] = true,
+["UNIT_SPELLCAST_START"] = true,
+["UPDATE_MOUSEOVER_UNIT"] = true,
 ["ZONE_CHANGED_NEW_AREA"] = true,
 },
 ["globals"] = {
 "CanMerchantRepair", -- [1]
-"GetAchievementInfo", -- [2]
-"GetBuybackItemInfo", -- [3]
-"GetBuybackItemLink", -- [4]
-"GetCategoryInfo", -- [5]
-"GetCategoryList", -- [6]
-"GetCategoryNumAchievements", -- [7]
-"GetCritChance", -- [8]
-"GetCursorPosition", -- [9]
-"GetGuildInfo", -- [10]
-"GetGuildRosterInfo", -- [11]
-"GetInboxHeaderInfo", -- [12]
-"GetInboxItem", -- [13]
-"GetInboxItemLink", -- [14]
-"GetInboxNumItems", -- [15]
-"GetInventoryItemCount", -- [16]
-"GetInventoryItemDurability", -- [17]
-"GetInventoryItemID", -- [18]
-"GetInventoryItemLink", -- [19]
-"GetInventoryItemQuality", -- [20]
-"GetLFDChoiceOrder", -- [21]
-"GetLFGDungeonInfo", -- [22]
-"GetMerchantItemLink", -- [23]
-"GetMerchantNumItems", -- [24]
-"GetNumBuybackItems", -- [25]
-"GetNumGuildMembers", -- [26]
-"GetNumQuestChoices", -- [27]
-"GetNumQuestLogChoices", -- [28]
-"GetNumQuestLogRewards", -- [29]
-"GetNumQuestRewards", -- [30]
-"GetNumSavedInstances", -- [31]
-"GetNumTrainerServices", -- [32]
-"GetObjectiveText", -- [33]
-"GetPVPLifetimeStats", -- [34]
-"GetPetActionInfo", -- [35]
-"GetPetExperience", -- [36]
-"GetQuestID", -- [37]
-"GetQuestItemInfo", -- [38]
-"GetQuestItemLink", -- [39]
-"GetQuestLogChoiceInfo", -- [40]
-"GetQuestLogRewardInfo", -- [41]
-"GetQuestLogRewardMoney", -- [42]
-"GetQuestLogRewardXP", -- [43]
-"GetRaidRosterInfo", -- [44]
-"GetRangedCritChance", -- [45]
-"GetRepairAllCost", -- [46]
-"GetRewardMoney", -- [47]
-"GetRewardText", -- [48]
-"GetRewardXP", -- [49]
-"GetSavedInstanceInfo", -- [50]
-"GetTaxiMapID", -- [51]
-"GetTitleText", -- [52]
-"GetTrainerServiceCost", -- [53]
-"GetTrainerServiceInfo", -- [54]
-"GetTrainerServiceLevelReq", -- [55]
-"GetXPExhaustion", -- [56]
-"IsInGuild", -- [57]
-"RequestTimePlayed", -- [58]
-"UnitHonor", -- [59]
-"UnitHonorLevel", -- [60]
-"UnitHonorMax", -- [61]
-"UnitRangedAttackPower", -- [62]
-"UnitRangedDamage", -- [63]
-"UnitStat", -- [64]
-"UnitXP", -- [65]
-"UnitXPMax", -- [66]
+"GetAchievementCriteriaInfo", -- [2]
+"GetAchievementInfo", -- [3]
+"GetAchievementNumCriteria", -- [4]
+"GetBuybackItemInfo", -- [5]
+"GetBuybackItemLink", -- [6]
+"GetCategoryInfo", -- [7]
+"GetCategoryList", -- [8]
+"GetCategoryNumAchievements", -- [9]
+"GetCompanionInfo", -- [10]
+"GetCritChance", -- [11]
+"GetCurrentTitle", -- [12]
+"GetCursorPosition", -- [13]
+"GetGuildInfo", -- [14]
+"GetGuildRosterInfo", -- [15]
+"GetGuildRosterLastOnline", -- [16]
+"GetInboxHeaderInfo", -- [17]
+"GetInboxItem", -- [18]
+"GetInboxItemLink", -- [19]
+"GetInboxNumItems", -- [20]
+"GetInventoryItemCount", -- [21]
+"GetInventoryItemDurability", -- [22]
+"GetInventoryItemID", -- [23]
+"GetInventoryItemLink", -- [24]
+"GetInventoryItemQuality", -- [25]
+"GetLFDChoiceOrder", -- [26]
+"GetLFGDungeonInfo", -- [27]
+"GetMerchantItemLink", -- [28]
+"GetMerchantNumItems", -- [29]
+"GetNumBuybackItems", -- [30]
+"GetNumCompanions", -- [31]
+"GetNumCompletedAchievements", -- [32]
+"GetNumGuildMembers", -- [33]
+"GetNumQuestChoices", -- [34]
+"GetNumQuestLogChoices", -- [35]
+"GetNumQuestLogRewards", -- [36]
+"GetNumQuestRewards", -- [37]
+"GetNumSavedInstances", -- [38]
+"GetNumTitles", -- [39]
+"GetNumTrainerServices", -- [40]
+"GetObjectiveText", -- [41]
+"GetPVPLifetimeStats", -- [42]
+"GetPetActionInfo", -- [43]
+"GetPetExperience", -- [44]
+"GetQuestID", -- [45]
+"GetQuestItemInfo", -- [46]
+"GetQuestItemLink", -- [47]
+"GetQuestLogChoiceInfo", -- [48]
+"GetQuestLogRewardInfo", -- [49]
+"GetQuestLogRewardMoney", -- [50]
+"GetQuestLogRewardXP", -- [51]
+"GetRaidRosterInfo", -- [52]
+"GetRangedCritChance", -- [53]
+"GetRepairAllCost", -- [54]
+"GetRewardMoney", -- [55]
+"GetRewardText", -- [56]
+"GetRewardXP", -- [57]
+"GetSavedInstanceInfo", -- [58]
+"GetStatistic", -- [59]
+"GetStatisticsCategoryList", -- [60]
+"GetTaxiMapID", -- [61]
+"GetTitleName", -- [62]
+"GetTitleText", -- [63]
+"GetTotalAchievementPoints", -- [64]
+"GetTrainerServiceCost", -- [65]
+"GetTrainerServiceInfo", -- [66]
+"GetTrainerServiceLevelReq", -- [67]
+"GetXPExhaustion", -- [68]
+"IsInGuild", -- [69]
+"IsTitleKnown", -- [70]
+"RequestTimePlayed", -- [71]
+"UnitHonor", -- [72]
+"UnitHonorLevel", -- [73]
+"UnitHonorMax", -- [74]
+"UnitRangedAttackPower", -- [75]
+"UnitRangedDamage", -- [76]
+"UnitStat", -- [77]
+"UnitXP", -- [78]
+"UnitXPMax", -- [79]
 },
 ["namespaces"] = {
+["C_AddOns"] = {
+"GetAddOnMetadata", -- [1]
+},
 ["C_AuctionHouse"] = {
 "GetBrowseResults", -- [1]
 "GetCommoditySearchResultInfo", -- [2]
@@ -1607,7 +2318,8 @@ true, -- [1]
 "GetLootMethod", -- [1]
 },
 ["C_PetInfo"] = {
-"GetPetHappiness", -- [1]
+"CanPetEatItem", -- [1]
+"GetPetHappiness", -- [2]
 },
 ["C_QuestLog"] = {
 "GetAllCompletedQuestIDs", -- [1]
@@ -1628,9 +2340,12 @@ true, -- [1]
 ["C_Spell"] = {
 "GetSpellCooldown", -- [1]
 "GetSpellDescription", -- [2]
-"GetSpellName", -- [3]
-"IsSelfBuff", -- [4]
-"RequestLoadSpellData", -- [5]
+"GetSpellInfo", -- [3]
+"GetSpellName", -- [4]
+"GetSpellPowerCost", -- [5]
+"GetSpellSubtext", -- [6]
+"IsSelfBuff", -- [7]
+"RequestLoadSpellData", -- [8]
 },
 ["C_SpellBook"] = {
 "GetNumSpellBookSkillLines", -- [1]
@@ -1658,6 +2373,7 @@ true, -- [1]
 "GetMerchantItem", -- [6]
 "GetQuestItem", -- [7]
 "GetSpellByID", -- [8]
+"GetUnit", -- [9]
 },
 ["C_TradeSkillUI"] = {
 "GetAllRecipeIDs", -- [1]
@@ -1685,10 +2401,70 @@ true, -- [1]
 },
 ["C_UnitAuras"] = {
 "GetAuraDataByIndex", -- [1]
+"GetUnitAuraBySpellID", -- [2]
 },
 ["TooltipDataProcessor"] = {
 "AddTooltipPostCall", -- [1]
 },
+},
+["petFood"] = {
+["calls"] = {
+{
+["error"] = "[string \"<python>\"]:38: Usage: C_PetInfo.CanPetEatItem(itemLink)",
+["form"] = "itemID",
+["itemID"] = 2589,
+["ok"] = false,
+}, -- [1]
+{
+["count"] = 1,
+["form"] = "itemLink",
+["itemID"] = 2589,
+["ok"] = true,
+["results"] = {
+{
+["type"] = "boolean",
+["value"] = false,
+}, -- [1]
+},
+}, -- [2]
+{
+["error"] = "[string \"<python>\"]:38: Usage: C_PetInfo.CanPetEatItem(itemLink)",
+["form"] = "itemID",
+["itemID"] = 6948,
+["ok"] = false,
+}, -- [3]
+{
+["count"] = 1,
+["form"] = "itemLink",
+["itemID"] = 6948,
+["ok"] = true,
+["results"] = {
+{
+["type"] = "boolean",
+["value"] = false,
+}, -- [1]
+},
+}, -- [4]
+{
+["error"] = "[string \"<python>\"]:38: Usage: C_PetInfo.CanPetEatItem(itemLink)",
+["form"] = "itemID",
+["itemID"] = 2318,
+["ok"] = false,
+}, -- [5]
+{
+["count"] = 1,
+["form"] = "itemLink",
+["itemID"] = 2318,
+["ok"] = true,
+["results"] = {
+{
+["type"] = "boolean",
+["value"] = false,
+}, -- [1]
+},
+}, -- [6]
+},
+["exists"] = true,
 },
 },
 ["professions"] = {
@@ -2606,7 +3382,7 @@ true, -- [1]
 {
 ["icon"] = 136076,
 ["id"] = 13165,
-["name"] = "Aspect of the Hawk",
+["name"] = "Aspekt des Falken",
 ["rank"] = "Rang 2",
 ["selfBuff"] = true,
 ["tab"] = "Beast Mastery",
@@ -2645,6 +3421,50 @@ true, -- [1]
 }, -- [2]
 },
 ["slots"] = 5,
+},
+["statistics"] = {
+["categories"] = {
+{
+["id"] = 130,
+["list"] = {
+{
+["id"] = 98,
+["name"] = "Quests completed",
+["value"] = "62",
+}, -- [1]
+{
+["id"] = 107,
+["name"] = "Creatures killed",
+["value"] = "1404",
+}, -- [2]
+},
+["name"] = "Character",
+}, -- [1]
+{
+["id"] = 131,
+["list"] = {
+{
+["id"] = 328,
+["name"] = "Total gold acquired",
+["value"] = "5g 20s 3c",
+}, -- [1]
+},
+["name"] = "Wealth",
+["parentID"] = 130,
+}, -- [2]
+{
+["id"] = 122,
+["list"] = {
+{
+["id"] = 60,
+["name"] = "Total deaths",
+["value"] = "3",
+}, -- [1]
+},
+["name"] = "Deaths",
+}, -- [3]
+},
+["empty"] = 2,
 },
 ["stats"] = {
 ["agility"] = 32,
@@ -2802,7 +3622,7 @@ true, -- [1]
 }, -- [1]
 {
 ["ms"] = 2.5,
-["name"] = "character",
+["name"] = "completedQuests",
 }, -- [2]
 {
 ["ms"] = 2.5,
@@ -2810,14 +3630,29 @@ true, -- [1]
 }, -- [3]
 {
 ["ms"] = 2.5,
-["name"] = "equipment",
+["name"] = "group",
 }, -- [4]
 {
 ["ms"] = 2.5,
-["name"] = "group",
+["name"] = "guide",
 }, -- [5]
 },
-["totalMs"] = 64.5,
+["totalMs"] = 84,
+},
+["titles"] = {
+["current"] = "the Patient",
+["currentID"] = 53,
+["known"] = {
+{
+["id"] = 1,
+["name"] = "Private",
+}, -- [1]
+{
+["id"] = 53,
+["name"] = "the Patient",
+}, -- [2]
+},
+["total"] = 143,
 },
 ["trainer"] = {
 ["capturedAt"] = 1794760000,
@@ -3086,6 +3921,229 @@ true, -- [1]
 },
 ["since"] = 1794760000,
 ["total"] = 430,
+},
+["zoneQuests"] = {
+["currentZone"] = "Stormwind City",
+["factionRaceMasks"] = {
+["Alliance"] = 77,
+["Horde"] = 178,
+},
+["player"] = {
+["classMask"] = 4,
+["raceMask"] = 8,
+},
+["zones"] = {
+{
+["areaID"] = 1519,
+["current"] = true,
+["name"] = "Stormwind City",
+["questCount"] = 4,
+["quests"] = {
+{
+["id"] = 343,
+["level"] = 25,
+["name"] = "Speaking of Fortitude",
+["requiredLevel"] = 20,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Cerellean Whiteclaw",
+["zone"] = "Darkshore",
+},
+}, -- [1]
+{
+["id"] = 456,
+["level"] = 10,
+["name"] = "Report to Thomas",
+["next"] = 457,
+["requiredLevel"] = 8,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Osric Strang",
+["x"] = 74.6,
+["y"] = 40.2,
+},
+}, -- [2]
+{
+["id"] = 457,
+["level"] = 11,
+["name"] = "Harlan Needs a Resupply",
+["preAny"] = {
+456, -- [1]
+},
+["requiredLevel"] = 8,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Osric Strang",
+["x"] = 74.6,
+["y"] = 40.2,
+},
+}, -- [3]
+{
+["classes"] = 1,
+["id"] = 1638,
+["level"] = 10,
+["name"] = "A Warrior's Training",
+["requiredLevel"] = 10,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Osric Strang",
+["x"] = 74.6,
+["y"] = 40.2,
+},
+}, -- [4]
+},
+}, -- [1]
+{
+["areaID"] = 148,
+["logQuests"] = 2,
+["name"] = "Darkshore",
+["questCount"] = 11,
+["quests"] = {
+{
+["id"] = 918,
+["level"] = 14,
+["name"] = "Washed Ashore",
+["next"] = 4730,
+["requiredLevel"] = 11,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Terenthis",
+["x"] = 39.4,
+["y"] = 43.5,
+},
+}, -- [1]
+{
+["id"] = 947,
+["level"] = 17,
+["name"] = "Cave Mushrooms",
+["next"] = 948,
+["requiredLevel"] = 10,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Barithras Moonshade",
+["x"] = 37.3,
+["y"] = 43.6,
+},
+}, -- [2]
+{
+["id"] = 948,
+["level"] = 17,
+["name"] = "Onu",
+["preAny"] = {
+947, -- [1]
+},
+["requiredLevel"] = 10,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Barithras Moonshade",
+["x"] = 37.3,
+["y"] = 43.6,
+},
+}, -- [3]
+{
+["id"] = 982,
+["level"] = 17,
+["name"] = "Deep Ocean, Vast Sea",
+["requiredLevel"] = 13,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Cerellean Whiteclaw",
+["x"] = 35.7,
+["y"] = 43.7,
+},
+}, -- [4]
+{
+["breadcrumbFor"] = 4740,
+["id"] = 1138,
+["level"] = 18,
+["name"] = "Fruit of the Sea",
+["requiredLevel"] = 12,
+["start"] = {
+["kind"] = "item",
+["name"] = "Death Cap",
+},
+}, -- [5]
+{
+["id"] = 2118,
+["level"] = 15,
+["name"] = "Plagued Lands",
+["races"] = 178,
+["requiredLevel"] = 10,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Terenthis",
+["x"] = 39.4,
+["y"] = 43.5,
+},
+}, -- [6]
+{
+["classes"] = 1024,
+["id"] = 3524,
+["level"] = 16,
+["name"] = "Grove of the Ancients",
+["requiredLevel"] = 10,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Terenthis",
+["x"] = 39.4,
+["y"] = 43.5,
+},
+}, -- [7]
+{
+["id"] = 4725,
+["level"] = 15,
+["name"] = "Beached Sea Creature",
+["repeatable"] = true,
+["requiredLevel"] = 10,
+["start"] = {
+["kind"] = "object",
+["name"] = "Wanted Poster",
+["x"] = 37.2,
+["y"] = 44.2,
+},
+}, -- [8]
+{
+["id"] = 4730,
+["level"] = 15,
+["name"] = "Beached Sea Turtle",
+["preAny"] = {
+918, -- [1]
+},
+["requiredLevel"] = 11,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Terenthis",
+["x"] = 39.4,
+["y"] = 43.5,
+},
+}, -- [9]
+{
+["id"] = 4740,
+["level"] = 18,
+["name"] = "WANTED: Murkdeep!",
+["requiredLevel"] = 12,
+["start"] = {
+["kind"] = "object",
+["name"] = "Wanted Poster",
+["x"] = 37.2,
+["y"] = 44.2,
+},
+}, -- [10]
+{
+["id"] = 4813,
+["level"] = 23,
+["name"] = "The Fragments Within",
+["requiredLevel"] = 21,
+["start"] = {
+["kind"] = "npc",
+["name"] = "Onu",
+["x"] = 43.6,
+["y"] = 76.3,
+},
+}, -- [11]
+},
+}, -- [2]
+},
 },
 },
 },

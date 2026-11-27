@@ -5,6 +5,11 @@
 WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player to type /mcp reload in game.
 --- content[1] ---
 {
+  "bagFood": {
+    "checkedByClient": false,
+    "foodInBags": [],
+    "note": "foodInBags is food from bags by item subtype; the server has no table of which food is meat, fish, cheese etc. Match it to the pet's foodTypes by name, and when unsure, say so plainly."
+  },
   "pet": {
     "damagePercent": 125,
     "dead": false,
@@ -39,5 +44,9 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
   "trainingPlan": {
     "freePoints": 17,
     "learnableNote": "no data: open the Beast Training window in game and run /mcp reload, then I will compute the lesson costs"
+  },
+  "whereToTame": {
+    "note": "no beasts observed yet. To collect them: in game, as a Hunter, cast Beast Lore on beasts (the addon saves their tooltip when you target them or hover over them while they carry it) or tame one (the addon saves the new pet's abilities at that moment), then /mcp reload",
+    "source": "only beasts the Hunters of this account tamed (the new pet's abilities at the moment of taming) or examined with Beast Lore in Forever (tooltip lines read while the beast carried Beast Lore; the Forever format is not confirmed, so they are read tolerantly). The server has no table of its own: a rank not listed here may exist on beasts nobody observed."
   }
 }

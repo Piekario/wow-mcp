@@ -12,6 +12,7 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	"wowmcp/internal/game/accountcraft"
+	"wowmcp/internal/game/achievements"
 	"wowmcp/internal/game/addon"
 	"wowmcp/internal/game/alerts"
 	"wowmcp/internal/game/altmail"
@@ -20,8 +21,10 @@ import (
 	"wowmcp/internal/game/bagplan"
 	"wowmcp/internal/game/buffs"
 	"wowmcp/internal/game/character"
+	"wowmcp/internal/game/collections"
 	"wowmcp/internal/game/compare"
 	"wowmcp/internal/game/cooldowns"
+	"wowmcp/internal/game/dungeonloot"
 	"wowmcp/internal/game/dungeons"
 	"wowmcp/internal/game/export"
 	"wowmcp/internal/game/flights"
@@ -31,6 +34,7 @@ import (
 	"wowmcp/internal/game/journal"
 	"wowmcp/internal/game/leftovers"
 	"wowmcp/internal/game/legacy"
+	"wowmcp/internal/game/lookup"
 	"wowmcp/internal/game/mail"
 	"wowmcp/internal/game/makeorbuy"
 	"wowmcp/internal/game/pet"
@@ -50,6 +54,7 @@ import (
 	"wowmcp/internal/game/talents"
 	"wowmcp/internal/game/timeline"
 	"wowmcp/internal/game/trainer"
+	"wowmcp/internal/game/zoneprogress"
 	"wowmcp/internal/snapshot"
 )
 
@@ -78,14 +83,18 @@ const freshness = " Data comes from the last /reload or logout in game; the snap
 type tool struct {
 	name, title, description string
 	add                      func(server *mcp.Server, def *mcp.Tool)
-	writes                   bool     // true = writes to the server's own file (not read-only)
-	args                     []string // argument names of the input type (used for the narrowing hint of oversized answers)
+	writes                   bool                                    // true = writes to the server's own file (not read-only)
+	annotate                 func(title string) *mcp.ToolAnnotations // for a writer that is not ownFileWriter
+	args                     []string                                // argument names of the input type (used for the narrowing hint of oversized answers)
 }
 
 func (t tool) register(server *mcp.Server) {
 	ann := readOnly(t.title)
 	if t.writes {
 		ann = ownFileWriter(t.title)
+	}
+	if t.annotate != nil {
+		ann = t.annotate(t.title)
 	}
 	t.add(server, &mcp.Tool{Name: t.name, Description: t.description, Annotations: ann})
 }
@@ -173,8 +182,10 @@ func (s *service) statusTools() []tool {
 
 		s.doctorTool(),
 
+		s.shareDumpTool(),
+
 		accountTool(s, "wow_section", "Snapshot section",
-			"Any snapshot section by name, without filters. Reputation, bank, vendor, recipes, mail, cooldowns, talents, auctions, group (and inspect) and dungeons have more convenient tools: wow_reputation, wow_bank, wow_vendor, wow_recipes, wow_mail, wow_cooldowns, wow_talents, wow_auctions, wow_group, wow_dungeons. Big sections (probe is about 60 kB) can be read in pieces: path (a dot path into the section, e.g. namespaces.C_AuctionHouse or events) and limit (first N items or keys). Other sections: actionBars (what sits on which action bar button), macros, completedQuests (IDs of all completed quests; for checking prerequisite quests), flightPaths (flight points from the last opened flight map), probe (list of client API functions after /mcp probe), loot (own loot since the previous save, plus periods: earlier saves carried by the addon; summarized by wow_changes and wow_journal), xpGains (own XP by source: kills, quests, the rest, with periods like loot; also in wow_changes and wow_journal as xpSources), buyback (the vendor buyback list; see wow_vendor), friends and guild (see wow_social), equipmentSets (see wow_equipment), pvp (see wow_character), vendors and trainers (up to 10 remembered NPCs: name -> offer; more convenient via npc in wow_vendor and wow_trainer), legacy (Forever Legacy perk trees, challenges and API discovery; see wow_legacy), stable (stabled pets; see wow_pet), questOffer and questTurnIn (NPC quest windows; see wow_quest_rewards). The list of sections available for a character is given by wow_status."+freshness,
+			"Any snapshot section by name, without filters. Reputation, bank, vendor, recipes, mail, cooldowns, talents, auctions, group (and inspect) and dungeons have more convenient tools: wow_reputation, wow_bank, wow_vendor, wow_recipes, wow_mail, wow_cooldowns, wow_talents, wow_auctions, wow_group, wow_dungeons. Big sections (probe is about 60 kB) can be read in pieces: path (a dot path into the section, e.g. namespaces.C_AuctionHouse or events) and limit (first N items or keys). Other sections: actionBars (what sits on which action bar button), macros, completedQuests (IDs of all completed quests; for checking prerequisite quests), flightPaths (flight points from the last opened flight map), probe (list of client API functions after /mcp probe), loot (own loot since the previous save, plus periods: earlier saves carried by the addon; summarized by wow_changes and wow_journal), xpGains (own XP by source: kills, quests, the rest, with periods like loot; also in wow_changes and wow_journal as xpSources), buyback (the vendor buyback list; see wow_vendor), friends and guild (see wow_social), equipmentSets (see wow_equipment), pvp (see wow_character), vendors and trainers (up to 10 remembered NPCs: name -> offer; more convenient via npc in wow_vendor and wow_trainer), legacy (Forever Legacy perk trees, challenges and API discovery; see wow_legacy), achievements (see wow_achievements), statistics (see wow_statistics), titles and collections (mounts and companions; see wow_collections), stable (stabled pets; see wow_pet), questOffer and questTurnIn (NPC quest windows; see wow_quest_rewards). The list of sections available for a character is given by wow_status."+freshness,
 			s.section),
 	}
 }
@@ -207,10 +218,31 @@ func (s *service) characterTools() []tool {
 			}),
 
 		characterTool(s, "wow_legacy", "Legacy perks",
-			"The Forever Legacy system: unspent and spent Legacy Points of the character (points: unspent, spent, max = the points this character can have now, and the account currency with accountTotalEarned when the client links it), the three perk trees (Professions, Adventure, Resourcefulness) with every perk, its rank, the in-game description, what it requires (an arrow from another perk, requiresSpent points in the tree) and status (available, locked, maxed), canLearnNow with the perks a point can go to right now, and the Legacy challenges when the client exposes them as achievements in a Legacy category (the current client does not; perks marked unrevealed are the \"?\" perks, do not recommend them). Advise only from the descriptions in this snapshot. The tool never spends points: the player learns perks and clicks Apply Changes in the Legacy window. The tree filter narrows it to one tab; discovery=true adds what the addon found about the client's Legacy API (shown anyway when no perk tree was found; since addon 0.19.1 the dump has it only then or after /mcp probe)."+freshness,
+			"The Forever Legacy system: unspent and spent Legacy Points of the character (points: unspent, spent, max = the points this character can have now, and the account currency with accountTotalEarned when the client links it), the three perk trees (Professions, Adventure, Resourcefulness) with every perk, its rank, the in-game description, what it requires (an arrow from another perk, requiresSpent points in the tree) and status (available, locked, maxed), canLearnNow with the perks a point can go to right now, and the Legacy challenges (the achievements that reward Legacy Points: the addon lists those in a category named Legacy or with \"Legacy Point\" in the reward text, and for a dump without such a list the tool derives them from the achievements section by the reward text \"Legacy Point\", English client text; challenges shows source, matchedBy, completed with dates and the open ones with their missing criteria; perks marked unrevealed are the \"?\" perks, do not recommend them). Advise only from the descriptions in this snapshot. The tool never spends points: the player learns perks and clicks Apply Changes in the Legacy window. The tree filter narrows it to one tab; discovery=true adds what the addon found about the client's Legacy API (shown anyway when no perk tree was found; since addon 0.19.1 the dump has it only then or after /mcp probe)."+freshness,
 			func(a legacy.Query) string { return a.Character },
 			func(_ string, snap snapshot.Snapshot, q legacy.Query) (map[string]any, error) {
 				return legacy.View(snap, q), nil
+			}),
+
+		characterTool(s, "wow_achievements", "Achievements",
+			"The character's achievements from the achievements section: points, completed/total, progress per category, completion dates and, for incomplete achievements, their criteria (what is done and what is missing). view: summary (default: totals, per-category progress, the 5 most recent), timeline (completed ones in date order, with the earliest and latest), recent (newest first), closest (incomplete ones ranked by criteria progress, with the missing criteria) or all. query narrows by name, category by category name (a parent includes its subcategories), limit sets how many are listed. The dump holds at most 600 achievements and criteria only for incomplete ones (up to 8 each, missing first); there is no account-wide, guild or comparison data. When the section is absent the answer says so: the addon is older, or the client has no achievement API (nobody has confirmed yet that Forever has one); /mcp probe in game shows which API names the client has. Never invent achievements from general game knowledge."+freshness,
+			func(a achievements.Query) string { return a.Character },
+			func(_ string, snap snapshot.Snapshot, q achievements.Query) (map[string]any, error) {
+				return achievements.View(snap, q)
+			}),
+
+		characterTool(s, "wow_statistics", "Statistics",
+			"The counters the game keeps for the character (the Statistics tab of the achievement window), from the statistics section: per category, each statistic with its value as the game shows it (numbers, or money as \"5g 20s 3c\"), e.g. total deaths, quests completed, creatures killed, gold acquired. query narrows by statistic name, category by category name. Statistics the game shows as \"--\" are left out and only counted (empty); the dump holds up to 400. When the section is absent the answer says so: the addon is older, or the client has no statistics API (nobody has confirmed yet that Forever has one); /mcp probe in game shows which API names the client has. For deaths recorded by the addon itself see wow_character (deaths)."+freshness,
+			func(a achievements.StatisticsQuery) string { return a.Character },
+			func(_ string, snap snapshot.Snapshot, q achievements.StatisticsQuery) (map[string]any, error) {
+				return achievements.ViewStatistics(snap, q), nil
+			}),
+
+		characterTool(s, "wow_collections", "Titles, mounts and companions",
+			"What the character has collected: earned titles and the one it shows now (titles section), and the mounts and companion pets it knows (collections section: name, spell ID, the API it came from; up to 300 of each). kind narrows to titles, mounts or companions (default all); query narrows by name. Companions read from the pet journal follow the journal's filters in game. Each part says when it is absent: the addon is older, or the client has no such API (nobody has confirmed yet which of these Forever has); /mcp probe in game shows which API names the client has. The tool and the addon never change the title or summon anything."+freshness,
+			func(a collections.Query) string { return a.Character },
+			func(_ string, snap snapshot.Snapshot, q collections.Query) (map[string]any, error) {
+				return collections.View(snap, q)
 			}),
 
 		characterTool(s, "wow_reputation", "Reputation",
@@ -221,7 +253,7 @@ func (s *service) characterTools() []tool {
 			}),
 
 		sectionTool(s, "wow_pet", "Pet",
-			"The active Hunter pet: name, level, family, happiness (1-3), loyalty, training points (trainingPointsFree = free), experience, food types, the pet action bar (autoCast = whether the ability is cast automatically) and learned abilities with ranks. exists=false means no pet is summoned. Extras derived from snapshot data: rankReview (ranks the Hunter knows from the Beast Training window that the pet lacks; ranks from trainer offers the Hunter does not know yet), trainingPlan (which lessons fit into the free training points) and stable (stabled pets compared with the active one by level and family; data from the Stable Master window)."+freshness,
+			"The active Hunter pet: name, level, family, happiness (1-3), loyalty, training points (trainingPointsFree = free), experience, food types, the pet action bar (autoCast = whether the ability is cast automatically) and learned abilities with ranks. exists=false means no pet is summoned. Extras derived from snapshot data: rankReview (ranks the Hunter knows from the Beast Training window that the pet lacks; ranks from trainer offers the Hunter does not know yet), trainingPlan (which lessons fit into the free training points), bagFood (which bag food the pet can eat, as the game client answered it, with feedings = items it can eat; without that answer in the dump, food by item subtype to match to the diet by name), whereToTame (ability ranks seen on beasts this account tamed or examined with Beast Lore in Forever, ranks the Hunter does not know from the Beast Training window first, with the beasts' zone, level and coordinates; only observed beasts, never a table) and stable (stabled pets compared with the active one by level and family; data from the Stable Master window)."+freshness,
 			[]string{"pet"}, func(snap snapshot.Snapshot, out map[string]any) { pet.Summarize(snap, out, fresh) }),
 
 		sectionTool(s, "wow_quests", "Quest log",
@@ -341,6 +373,13 @@ func (s *service) questingTools() []tool {
 				return dungeons.View(snap, q, fresh), nil
 			}),
 
+		characterTool(s, "wow_dungeon_loot", "Dungeon loot upgrades",
+			"Which items from a dungeon would be upgrades for the character, grouped by dungeon and boss, with the stat differences against the equipped item in that slot (the same comparison as wow_compare_item; a weights.json file adds stat weights). Items the class cannot use (armor or weapon type, by the classic rules) are left out and counted in skipped. The drop lists come only from the game's Encounter Journal, read by the addon when the player types /mcp loot <dungeon> (then /mcp reload); without that the answer says what to type, and the server never guesses drop tables. When the last /mcp loot read nothing the answer shows lastAttempt (outcome, what the journal offered) and journalOffers, the dungeon names to type. dungeon: a name fragment; slot: e.g. head, finger, mainHand; upgradesOnly=false lists every item with its verdict."+freshness,
+			func(a dungeonloot.Query) string { return a.Character },
+			func(name string, snap snapshot.Snapshot, q dungeonloot.Query) (map[string]any, error) {
+				return dungeonloot.View(snap, q, items.Scoring{Store: s.Weights, Key: name})
+			}),
+
 		characterTool(s, "wow_group", "Group and raid",
 			"The composition of the group or raid at the time of the snapshot: name, level, class, race, role (tank/healer/dps), leader, subgroup and zone in a raid, online, health and max mana/energy, range; a summary of classes, roles and levels with warnings (no tank or healer, someone offline or far away, a large level difference). For players examined with the Inspect window: average item level and guild; the player parameter returns their whole equipment. myAverageItemLevel is the character's average item level."+freshness,
 			func(a group.Query) string { return a.Character },
@@ -369,6 +408,13 @@ func (s *service) questingTools() []tool {
 				return questguide.Lookup(snap, q), nil
 			}),
 
+		characterTool(s, "wow_zone_progress", "Zone quest progress",
+			"How far the character is with the quests of a zone: how many of the zone's quests are done, in the log and left, the quests left (level, required level, state: available, needs a higher level or an earlier quest, and the quest giver with map coordinates) and the unfinished quest chains (the next quest of a chain whose earlier step is done). Quests the database marks for another faction, race or class, and repeatable quests, are left out of the counts and the answer says so. The zone's quest list is read by the addon from the quest database the player has installed in the game (QuestieDB, what Questie shows) for the current zone and the zones of quests in the log; done quests come from the client's completed quest list. zone: a zone name or fragment; empty = the character's current zone. Requires Questie with QuestieDB and /mcp reload."+freshness,
+			func(a zoneprogress.Query) string { return a.Character },
+			func(_ string, snap snapshot.Snapshot, q zoneprogress.Query) (map[string]any, error) {
+				return zoneprogress.View(snap, q), nil
+			}),
+
 		characterTool(s, "wow_guide", "Leveling guide steps",
 			"The next steps of the leveling guide the player follows in the Guidelime addon (for example a TUGs guide): the guide name, how many steps are done, and up to 15 open steps in guide order as readable text, each quest with its name, state and the place to go (from the installed quest database). USE THIS for \"what should I do next\" when the player uses a guide: follow the guide's order instead of inventing a route. Steps for other races or classes are left out; quest steps count as done from the quest log, other steps when the player ticked them or moved past them. Requires addon 0.14.0, Guidelime with a guide selected and /mcp reload."+freshness,
 			characterOf,
@@ -383,11 +429,11 @@ func (s *service) progressTools() []tool {
 	fresh := s.Freshness
 	return []tool{
 		characterTool(s, "wow_changes", "Changes since the previous snapshot",
-			"What changed since an earlier snapshot: gold, XP and level-ups, items gained or lost in the bags, equipment changes, new, progressing, ready-to-turn-in and turned-in quests, reputation, new spells, professions and talents. It also shows new deaths, own loot (loot) and XP by source (xpSources: kills, quests, the rest) gained after the older snapshot, including periods of saves the server never read (periodsMerged). The server remembers every snapshot it has read (list in the history field). By default it compares with the previous one; steps or sinceHours reach further back, e.g. sinceHours=4 summarizes the whole session."+freshness,
+			"What changed since an earlier snapshot: gold, XP and level-ups, items gained or lost in the bags, equipment changes, new, progressing, ready-to-turn-in and turned-in quests, reputation, new spells, professions and talents. It also shows new deaths, own loot (loot) and XP by source (xpSources: kills, quests, the rest) gained after the older snapshot, including periods of saves the server never read (periodsMerged), and honor, honorable kills and honor level (honor, honorableKills, honorLevel) when both snapshots have a pvp section. The server remembers every snapshot it has read (list in the history field). By default it compares with the previous one; steps or sinceHours reach further back, e.g. sinceHours=4 summarizes the whole session."+freshness,
 			func(a progress.ChangesQuery) string { return a.Character }, s.progress.Changes),
 
 		characterTool(s, "wow_progress", "Progress and pace",
-			"Progress statistics from the snapshot history: XP and gold per hour in the current session and over the whole history (or the last sinceHours), how many quests were turned in, level-ups, how much XP is missing to the next level and the estimated time to level at the current pace. When the addon records played time (/played), pace is computed from in-game time rather than wall-clock time. If the death counter increased, the session shows the number of deaths. When snapshots have an xpGains section (addon 0.7.0), session and overall have xpSources: XP from kills, quests and the rest."+freshness,
+			"Progress statistics from the snapshot history: XP and gold per hour in the current session and over the whole history (or the last sinceHours), how many quests were turned in, level-ups, how much XP is missing to the next level and the estimated time to level at the current pace. When the addon records played time (/played), pace is computed from in-game time rather than wall-clock time. If the death counter increased, the session shows the number of deaths. When snapshots have a pvp section, session and overall show honorGained and honorableKills (honor restarts at an honor level-up, so a level-up undercounts honor). When snapshots have an xpGains section (addon 0.7.0), session and overall have xpSources: XP from kills, quests and the rest."+freshness,
 			func(a progress.PaceQuery) string { return a.Character }, s.progress.Pace),
 
 		characterTool(s, "wow_gold_history", "Gold history",
@@ -473,10 +519,21 @@ func (s *service) accountTools() []tool {
 			}),
 
 		characterTool(s, "wow_search", "Snapshot search",
-			"Searches for text (case-insensitive) across one character's whole snapshot at once: quests (title, objectives, zone), items in the bags, bank and equipped (name, type, description), spells, trainer and vendor offers (including remembered ones), quest rewards, quests from NPC windows, stable, loot, recipes and their materials, mail, reputation, prices and own auctions, professions, currencies, macros and flight points. Returns hits grouped by section, with the location (path) and a short summary; up to 20 hits per section, truncated says how many were cut. To find an item across all characters use wow_find_item."+freshness,
+			"Searches for text (case-insensitive) across one character's whole snapshot at once: quests (title, objectives, zone), items in the bags, bank and equipped (name, type, description), spells, trainer and vendor offers (including remembered ones), quest rewards, quests from NPC windows, stable, loot, recipes and their materials, mail, reputation, prices and own auctions, professions, currencies, macros, flight points, achievements (name, description, reward, criteria), statistics, titles, mounts and companions. Returns hits grouped by section, with the location (path) and a short summary; up to 20 hits per section, truncated says how many were cut. To find an item across all characters use wow_find_item."+freshness,
 			func(a search.Query) string { return a.Character },
 			func(_ string, snap snapshot.Snapshot, q search.Query) (map[string]any, error) {
 				return search.Run(snap, q)
+			}),
+
+		characterTool(s, "wow_lookup", "Item and spell lookup",
+			"What an item or spell really does in this game, instead of guessing from other game versions. USE THIS before describing an item's effect or a spell's description, cost, cast time or range. It returns the answers to /mcp item <id, link or name> and /mcp spell <id, link or name> that the player typed in game (the description and tooltip text the client shows, rank, cast time, cost, range, stats) and ALSO everything else the dump knows under that name or ID, with the section it came from: bags, bank, equipment, vendor and trainer offers, quest rewards, auctions, mail, loot, recipes and known spells. query is a name fragment or an ID; kind is item, spell or empty for both. When the dump has nothing, or only a mention without the full text, the answer's ask field says exactly what the player should type (/mcp item <query> or /mcp spell <query>, then /mcp reload); never answer from memory then. Requires addon 0.21.0 for the saved lookups."+freshness,
+			func(a lookup.Query) string { return a.Character },
+			func(_ string, snap snapshot.Snapshot, q lookup.Query) (map[string]any, error) {
+				r, err := lookup.Find(snap, q)
+				if err != nil {
+					return nil, err
+				}
+				return r.Render(fresh), nil
 			}),
 
 		characterTool(s, "wow_leftovers", "Leftover quest items",
@@ -512,10 +569,10 @@ func (s *service) accountTools() []tool {
 			}),
 
 		characterTool(s, "wow_social", "Friends and guild",
-			"The character's friends and guild lists from the most recently opened windows (from addon 0.7.0): who is online, level, class, zone, guild rank, counts and the age of the save (capturedAge). By default it shows only online guild members; includeOffline=true shows everyone. The addon reads only client memory and NEVER asks the game server for the friends or guild list itself, so when a list is missing, the response says which window to open in game and that /mcp reload is needed afterwards. The list is the state at the time of saving, not live. PvP stats are in wow_character (pvp)."+freshness,
+			"The character's friends and guild lists from the most recently opened windows (from addon 0.7.0): who is online, level, class, zone, guild rank, counts and the age of the save (capturedAge). By default it shows only online guild members; includeOffline=true shows everyone. The member list is capped (limit, default 40, the members closest to the character's level first, then by name; -1 = every matching member; memberList says shown, total, notShown and how to get the rest); query filters the guild members by name, class, zone, rank or note. It also gives a roster summary of the guild (members listed and online, counts by class, level bands, summary) and groupCandidates: online guild members and friends within levelRange levels (default 5) of the character, sorted into tankCapable, healerCapable and damageCapable by what their class can do (not the role they will pick), with level, class, zone, guild rank and note; use it to answer who could group with the character. A character without a guild is a normal answer (inGuild=false). The addon reads only client memory and NEVER asks the game server for the friends or guild list itself, so when a list is missing, the response says which window to open in game and that /mcp reload is needed afterwards. The list is the state at the time of saving, not live. PvP stats are in wow_character (pvp)."+freshness,
 			func(a social.Query) string { return a.Character },
 			func(_ string, snap snapshot.Snapshot, q social.Query) (map[string]any, error) {
-				return social.View(snap, q, fresh), nil
+				return social.View(snap, q, fresh)
 			}),
 
 		characterTool(s, "wow_export", "Character export",
@@ -575,6 +632,9 @@ func (s *service) status(db *snapshot.Database) map[string]any {
 	}
 	if s.GoalsFile != "" {
 		out["goalsFile"] = s.GoalsFile
+	}
+	if s.ShareDir != "" {
+		out["shareDir"] = s.ShareDir
 	}
 	return out
 }

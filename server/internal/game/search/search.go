@@ -9,6 +9,8 @@ package search
 
 import (
 	"fmt"
+	"slices"
+	"strconv"
 	"strings"
 
 	"wowmcp/internal/snapshot"
@@ -56,6 +58,10 @@ var specs = []spec{
 	{"currencies", []string{"name", "group"}, []string{"quantity", "group"}, ""},
 	{"macros", []string{"name", "body"}, []string{"scope"}, ""},
 	{"flightPaths", []string{"name"}, []string{"state"}, ""},
+	{"achievements", []string{"name", "description", "reward", "text"}, []string{"points", "completed", "completedOn"}, ""},
+	{"statistics", []string{"name"}, []string{"value"}, ""},
+	{"titles", []string{"name", "current"}, nil, ""},
+	{"collections", []string{"name", "species"}, []string{"spellID"}, ""},
 }
 
 // FieldTexts is the text a record holds in one searched field (one string, or the strings of a list).
@@ -89,6 +95,7 @@ type Record struct {
 	Label string
 	Texts []FieldTexts
 	Facts []Fact
+	IDs   []int64 // item or spell IDs of the record, for FindByID
 }
 
 type Hit struct {
@@ -129,12 +136,30 @@ func (r Result) Truncated() bool {
 	return false
 }
 
+// matcher says whether a record matches and in which field and text.
+type matcher func(rec Record) (field, text string, ok bool)
+
 // Find searches the dump. Empty text is an error because it would return the whole dump.
 func Find(s snapshot.Snapshot, query string) (Result, error) {
 	needle := strings.ToLower(strings.TrimSpace(query))
 	if needle == "" {
 		return Result{}, fmt.Errorf("provide the text to search for in the query parameter")
 	}
+	return scan(s, func(rec Record) (string, string, bool) { return rec.match(needle) }), nil
+}
+
+// FindByID returns the records that carry the item or spell ID (the id, itemId and spellID fields). A quest's own
+// ID is not an item or spell ID, so quests are matched only through their rewards.
+func FindByID(s snapshot.Snapshot, id int64) Result {
+	return scan(s, func(rec Record) (string, string, bool) {
+		if slices.Contains(rec.IDs, id) {
+			return "id", strconv.FormatInt(id, 10), true
+		}
+		return "", "", false
+	})
+}
+
+func scan(s snapshot.Snapshot, match matcher) Result {
 	var r Result
 	for _, sp := range specs {
 		records, ok := readRecords(s, sp)
@@ -143,20 +168,20 @@ func Find(s snapshot.Snapshot, query string) (Result, error) {
 			continue
 		}
 		r.Searched = append(r.Searched, sp.section)
-		hits := sp.search(records, needle)
+		hits := sp.search(records, match)
 		if len(hits) == 0 {
 			continue
 		}
 		r.Total += len(hits)
 		r.Groups = append(r.Groups, Group{Section: sp.section, Hits: hits})
 	}
-	return r, nil
+	return r
 }
 
-func (sp spec) search(records []Record, needle string) []Hit {
+func (sp spec) search(records []Record, match matcher) []Hit {
 	var hits []Hit
 	for _, rec := range records {
-		if field, text, ok := rec.match(needle); ok {
+		if field, text, ok := match(rec); ok {
 			label := rec.Label
 			if label == "" {
 				label = text

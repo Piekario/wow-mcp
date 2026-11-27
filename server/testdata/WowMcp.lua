@@ -1,10 +1,243 @@
 
 WowMcpDB = {
+["beasts"] = {
+},
 ["characters"] = {
 ["Piekasz"] = {
+["achievements"] = {
+["categories"] = {
+{
+["completed"] = 1,
+["id"] = 96,
+["name"] = "Quests",
+["total"] = 2,
+}, -- [1]
+{
+["completed"] = 2,
+["id"] = 14861,
+["name"] = "Classic",
+["parentID"] = 96,
+["total"] = 4,
+}, -- [2]
+{
+["completed"] = 1,
+["id"] = 97,
+["name"] = "Exploration",
+["total"] = 3,
+}, -- [3]
+},
+["completed"] = 4,
+["list"] = {
+{
+["category"] = 96,
+["completed"] = true,
+["completedOn"] = "2026-09-03",
+["description"] = "Complete 50 quests.",
+["earnedByMe"] = true,
+["id"] = 503,
+["name"] = "50 Quests Completed",
+["points"] = 10,
+}, -- [1]
+{
+["category"] = 96,
+["completed"] = false,
+["criteria"] = {
+{
+["completed"] = false,
+["quantity"] = 74,
+["required"] = 100,
+["text"] = "Complete 100 quests",
+}, -- [1]
+},
+["criteriaDone"] = 0,
+["criteriaRead"] = 1,
+["criteriaTotal"] = 1,
+["description"] = "Complete 100 quests.",
+["earnedByMe"] = false,
+["id"] = 504,
+["name"] = "100 Quests Completed",
+["points"] = 10,
+}, -- [2]
+{
+["category"] = 14861,
+["completed"] = true,
+["completedOn"] = "2026-11-14",
+["description"] = "Complete 30 quests in Darkshore.",
+["earnedByMe"] = true,
+["id"] = 4899,
+["name"] = "Darkshore Quests",
+["points"] = 10,
+}, -- [3]
+{
+["category"] = 14861,
+["completed"] = false,
+["criteria"] = {
+{
+["completed"] = false,
+["quantity"] = 6,
+["required"] = 40,
+["text"] = "Complete quests in Ashenvale",
+}, -- [1]
+},
+["criteriaDone"] = 0,
+["criteriaRead"] = 1,
+["criteriaTotal"] = 1,
+["description"] = "Complete 40 quests in Ashenvale.",
+["earnedByMe"] = false,
+["id"] = 4896,
+["name"] = "Ashenvale Quests",
+["points"] = 10,
+}, -- [4]
+{
+["category"] = 14861,
+["completed"] = true,
+["completedOn"] = "2026-10-01",
+["description"] = "Reach level 25 for the first time on a Mage.",
+["earnedByMe"] = true,
+["id"] = 5500,
+["name"] = "Novice Mage",
+["points"] = 0,
+["reward"] = "Earn 1 Legacy Point.",
+}, -- [5]
+{
+["category"] = 14861,
+["completed"] = false,
+["criteria"] = {
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 150,
+["text"] = "150 Alchemy Skill",
+}, -- [1]
+},
+["criteriaDone"] = 0,
+["criteriaRead"] = 1,
+["criteriaTotal"] = 1,
+["description"] = "Reach 150 Alchemy skill.",
+["earnedByMe"] = false,
+["id"] = 5501,
+["name"] = "Journeyman Alchemist",
+["points"] = 0,
+["reward"] = "Earn 1 Legacy Point.",
+}, -- [6]
+{
+["category"] = 97,
+["completed"] = true,
+["completedOn"] = "2026-08-30",
+["description"] = "Explore Teldrassil, revealing the covered areas of the world map.",
+["earnedByMe"] = true,
+["id"] = 768,
+["name"] = "Explore Teldrassil",
+["points"] = 10,
+}, -- [7]
+{
+["category"] = 97,
+["completed"] = false,
+["criteria"] = {
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Ruins of Mathystra",
+}, -- [1]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Grove of the Ancients",
+}, -- [2]
+{
+["completed"] = true,
+["quantity"] = 1,
+["required"] = 1,
+["text"] = "Auberdine",
+}, -- [3]
+{
+["completed"] = true,
+["quantity"] = 1,
+["required"] = 1,
+["text"] = "Bashal'Aran",
+}, -- [4]
+},
+["criteriaDone"] = 2,
+["criteriaRead"] = 4,
+["criteriaTotal"] = 4,
+["description"] = "Explore Darkshore, revealing the covered areas of the world map.",
+["earnedByMe"] = false,
+["id"] = 844,
+["name"] = "Explore Darkshore",
+["points"] = 10,
+}, -- [8]
+{
+["category"] = 97,
+["completed"] = false,
+["criteria"] = {
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Ashenvale",
+}, -- [1]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "The Barrens",
+}, -- [2]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Durotar",
+}, -- [3]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Mulgore",
+}, -- [4]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Stonetalon Mountains",
+}, -- [5]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Desolace",
+}, -- [6]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Feralas",
+}, -- [7]
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 1,
+["text"] = "Thousand Needles",
+}, -- [8]
+},
+["criteriaDone"] = 2,
+["criteriaRead"] = 10,
+["criteriaTotal"] = 10,
+["description"] = "Explore the regions of Kalimdor.",
+["earnedByMe"] = false,
+["id"] = 43,
+["name"] = "Explore Kalimdor",
+["points"] = 25,
+["reward"] = "Reward: Title - the Wanderer",
+}, -- [9]
+},
+["points"] = 30,
+["total"] = 9,
+},
 ["actionBars"] = {
 },
-["addonVersion"] = "0.20.0",
+["addonVersion"] = "0.22.0",
 ["auctions"] = {
 ["capturedAt"] = 1794760000,
 ["lastSearchPartial"] = {
@@ -188,8 +421,10 @@ WowMcpDB = {
 ["size"] = 10,
 }, -- [3]
 },
+["beasts"] = {
+},
 ["character"] = {
-["addonVersion"] = "0.20.0",
+["addonVersion"] = "0.22.0",
 ["bindLocation"] = "Auberdine",
 ["class"] = "Hunter",
 ["classToken"] = "HUNTER",
@@ -213,11 +448,61 @@ WowMcpDB = {
 ["y"] = 15.4,
 ["zone"] = "Stormwind City",
 },
+["collections"] = {
+["companions"] = {
+["list"] = {
+{
+["id"] = 40,
+["level"] = 1,
+["name"] = "Mechanical Squirrel",
+["species"] = "Mechanical Squirrel",
+}, -- [1]
+{
+["id"] = 42,
+["level"] = 1,
+["name"] = "Whiskers",
+["species"] = "Cat (Black Tabby)",
+}, -- [2]
+},
+["source"] = "C_PetJournal",
+},
+["mounts"] = {
+["list"] = {
+{
+["id"] = 6,
+["name"] = "Brown Horse",
+["spellID"] = 458,
+}, -- [1]
+{
+["id"] = 41,
+["name"] = "Striped Nightsaber",
+["spellID"] = 10793,
+}, -- [2]
+},
+["source"] = "C_MountJournal",
+},
+},
 ["disabledSections"] = {
 "macros", -- [1]
 },
 ["dumpedAt"] = 1794760000,
 ["dumpedAtText"] = "2026-11-15 16:50:00",
+["dungeonLoot"] = {
+["checkedAt"] = 1794760000,
+["instances"] = {
+},
+["lastAttempt"] = {
+["at"] = 1794760000,
+["error"] = "no EJ_GetInstanceByIndex in this client",
+["inInstance"] = false,
+["instanceNames"] = {
+},
+["instancesInJournal"] = 0,
+["outcome"] = "unavailable",
+["query"] = "deadmines",
+},
+["unavailable"] = "no EJ_GetInstanceByIndex in this client",
+},
 ["dungeons"] = {
 ["lfg"] = {
 {
@@ -337,6 +622,7 @@ WowMcpDB = {
 {
 ["area"] = "Stormwind City",
 ["class"] = "Paladin",
+["classToken"] = "PALADIN",
 ["connected"] = true,
 ["level"] = 22,
 ["name"] = "Tankadin",
@@ -345,12 +631,14 @@ WowMcpDB = {
 {
 ["area"] = "Darkshore",
 ["class"] = "Priest",
+["classToken"] = "PRIEST",
 ["connected"] = true,
 ["level"] = 19,
 ["name"] = "Healbot",
 }, -- [2]
 {
 ["class"] = "Mage",
+["classToken"] = "MAGE",
 ["connected"] = false,
 ["level"] = 60,
 ["name"] = "Oldfriend",
@@ -402,8 +690,10 @@ WowMcpDB = {
 ["members"] = {
 {
 ["class"] = "Paladin",
+["classToken"] = "PALADIN",
 ["level"] = 22,
 ["name"] = "Tankadin",
+["note"] = "main tank",
 ["online"] = true,
 ["rank"] = "Officer",
 ["rankIndex"] = 1,
@@ -411,6 +701,7 @@ WowMcpDB = {
 }, -- [1]
 {
 ["class"] = "Priest",
+["classToken"] = "PRIEST",
 ["level"] = 19,
 ["name"] = "Healbot",
 ["online"] = true,
@@ -420,6 +711,8 @@ WowMcpDB = {
 }, -- [2]
 {
 ["class"] = "Mage",
+["classToken"] = "MAGE",
+["daysOffline"] = 63,
 ["level"] = 60,
 ["name"] = "Oldfriend",
 ["online"] = false,
@@ -435,6 +728,42 @@ WowMcpDB = {
 ["total"] = 3,
 },
 ["legacy"] = {
+["challenges"] = {
+["list"] = {
+{
+["category"] = "Classic",
+["categoryID"] = 14861,
+["completed"] = true,
+["completedOn"] = "2026-10-01",
+["description"] = "Reach level 25 for the first time on a Mage.",
+["earnedByMe"] = true,
+["id"] = 5500,
+["name"] = "Novice Mage",
+["points"] = 0,
+["reward"] = "Earn 1 Legacy Point.",
+}, -- [1]
+{
+["category"] = "Classic",
+["categoryID"] = 14861,
+["completed"] = false,
+["criteria"] = {
+{
+["completed"] = false,
+["quantity"] = 0,
+["required"] = 150,
+["text"] = "150 Alchemy Skill",
+}, -- [1]
+},
+["description"] = "Reach 150 Alchemy skill.",
+["earnedByMe"] = false,
+["id"] = 5501,
+["name"] = "Journeyman Alchemist",
+["points"] = 0,
+["reward"] = "Earn 1 Legacy Point.",
+}, -- [2]
+},
+["matchedBy"] = "reward text contains Legacy Point",
+},
 ["configs"] = {
 },
 ["discovery"] = {
@@ -649,6 +978,50 @@ WowMcpDB = {
 },
 ["slots"] = 2,
 },
+["statistics"] = {
+["categories"] = {
+{
+["id"] = 130,
+["list"] = {
+{
+["id"] = 98,
+["name"] = "Quests completed",
+["value"] = "62",
+}, -- [1]
+{
+["id"] = 107,
+["name"] = "Creatures killed",
+["value"] = "1404",
+}, -- [2]
+},
+["name"] = "Character",
+}, -- [1]
+{
+["id"] = 131,
+["list"] = {
+{
+["id"] = 328,
+["name"] = "Total gold acquired",
+["value"] = "5g 20s 3c",
+}, -- [1]
+},
+["name"] = "Wealth",
+["parentID"] = 130,
+}, -- [2]
+{
+["id"] = 122,
+["list"] = {
+{
+["id"] = 60,
+["name"] = "Total deaths",
+["value"] = "3",
+}, -- [1]
+},
+["name"] = "Deaths",
+}, -- [3]
+},
+["empty"] = 2,
+},
 ["stats"] = {
 },
 ["talents"] = {
@@ -725,18 +1098,33 @@ WowMcpDB = {
 }, -- [2]
 {
 ["ms"] = 2.5,
-["name"] = "currencies",
+["name"] = "classBuffGroups",
 }, -- [3]
 {
 ["ms"] = 2.5,
-["name"] = "group",
+["name"] = "collections",
 }, -- [4]
 {
 ["ms"] = 2.5,
-["name"] = "pet",
+["name"] = "equipmentSets",
 }, -- [5]
 },
-["totalMs"] = 61.5,
+["totalMs"] = 81,
+},
+["titles"] = {
+["current"] = "the Patient",
+["currentID"] = 53,
+["known"] = {
+{
+["id"] = 1,
+["name"] = "Private",
+}, -- [1]
+{
+["id"] = 53,
+["name"] = "the Patient",
+}, -- [2]
+},
+["total"] = 143,
 },
 ["trainer"] = {
 ["capturedAt"] = 1794760000,

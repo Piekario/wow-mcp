@@ -1,0 +1,5 @@
+# tool wow_lookup variant=empty_query
+# args: {"query":""}
+# isError: true
+--- content[0] ---
+provide an item or spell name or ID in the query parameter

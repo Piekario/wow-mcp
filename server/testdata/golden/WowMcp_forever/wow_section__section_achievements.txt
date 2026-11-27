@@ -1,0 +1,288 @@
+# tool wow_section variant=section_achievements
+# args: {"section":"achievements"}
+# isError: false
+--- content[0] ---
+{
+  "achievements": {
+    "categories": [
+      {
+        "completed": 1,
+        "id": 92,
+        "name": "General",
+        "total": 1
+      },
+      {
+        "completed": 0,
+        "id": 15500,
+        "name": "Legacy",
+        "total": 0
+      },
+      {
+        "completed": 1,
+        "id": 15501,
+        "name": "Classes",
+        "parentID": 15500,
+        "total": 2
+      },
+      {
+        "completed": 1,
+        "id": 96,
+        "name": "Quests",
+        "total": 2
+      },
+      {
+        "completed": 2,
+        "id": 14861,
+        "name": "Classic",
+        "parentID": 96,
+        "total": 4
+      },
+      {
+        "completed": 1,
+        "id": 97,
+        "name": "Exploration",
+        "total": 3
+      }
+    ],
+    "completed": 6,
+    "list": [
+      {
+        "category": 92,
+        "completed": true,
+        "id": 6,
+        "name": "Level 10",
+        "points": 10
+      },
+      {
+        "category": 15501,
+        "completed": true,
+        "completedOn": "2026-11-20",
+        "description": "Reach level 25 with a Hunter.",
+        "earnedByMe": true,
+        "id": 70001,
+        "name": "Hunter: Level 25",
+        "points": 1,
+        "reward": "Reward: 1 Legacy Point"
+      },
+      {
+        "category": 15501,
+        "completed": false,
+        "description": "Reach level 25 with a Warlock.",
+        "earnedByMe": false,
+        "id": 70002,
+        "name": "Warlock: Level 25",
+        "points": 1
+      },
+      {
+        "category": 96,
+        "completed": true,
+        "completedOn": "2026-09-03",
+        "description": "Complete 50 quests.",
+        "earnedByMe": true,
+        "id": 503,
+        "name": "50 Quests Completed",
+        "points": 10
+      },
+      {
+        "category": 96,
+        "completed": false,
+        "criteria": [
+          {
+            "completed": false,
+            "quantity": 74,
+            "required": 100,
+            "text": "Complete 100 quests"
+          }
+        ],
+        "criteriaDone": 0,
+        "criteriaRead": 1,
+        "criteriaTotal": 1,
+        "description": "Complete 100 quests.",
+        "earnedByMe": false,
+        "id": 504,
+        "name": "100 Quests Completed",
+        "points": 10
+      },
+      {
+        "category": 14861,
+        "completed": true,
+        "completedOn": "2026-11-14",
+        "description": "Complete 30 quests in Darkshore.",
+        "earnedByMe": true,
+        "id": 4899,
+        "name": "Darkshore Quests",
+        "points": 10
+      },
+      {
+        "category": 14861,
+        "completed": false,
+        "criteria": [
+          {
+            "completed": false,
+            "quantity": 6,
+            "required": 40,
+            "text": "Complete quests in Ashenvale"
+          }
+        ],
+        "criteriaDone": 0,
+        "criteriaRead": 1,
+        "criteriaTotal": 1,
+        "description": "Complete 40 quests in Ashenvale.",
+        "earnedByMe": false,
+        "id": 4896,
+        "name": "Ashenvale Quests",
+        "points": 10
+      },
+      {
+        "category": 14861,
+        "completed": true,
+        "completedOn": "2026-10-01",
+        "description": "Reach level 25 for the first time on a Mage.",
+        "earnedByMe": true,
+        "id": 5500,
+        "name": "Novice Mage",
+        "points": 0,
+        "reward": "Earn 1 Legacy Point."
+      },
+      {
+        "category": 14861,
+        "completed": false,
+        "criteria": [
+          {
+            "completed": false,
+            "quantity": 0,
+            "required": 150,
+            "text": "150 Alchemy Skill"
+          }
+        ],
+        "criteriaDone": 0,
+        "criteriaRead": 1,
+        "criteriaTotal": 1,
+        "description": "Reach 150 Alchemy skill.",
+        "earnedByMe": false,
+        "id": 5501,
+        "name": "Journeyman Alchemist",
+        "points": 0,
+        "reward": "Earn 1 Legacy Point."
+      },
+      {
+        "category": 97,
+        "completed": true,
+        "completedOn": "2026-08-30",
+        "description": "Explore Teldrassil, revealing the covered areas of the world map.",
+        "earnedByMe": true,
+        "id": 768,
+        "name": "Explore Teldrassil",
+        "points": 10
+      },
+      {
+        "category": 97,
+        "completed": false,
+        "criteria": [
+          {
+            "completed": false,
+            "quantity": 0,
+            "required": 1,
+            "text": "Ruins of Mathystra"
+          },
+          {
+            "completed": false,
+            "quantity": 0,
+            "required": 1,
+            "text": "Grove of the Ancients"
+          },
+          {
+            "completed": true,
+            "quantity": 1,
+            "required": 1,
+            "text": "Auberdine"
+          },
+          {
+            "completed": true,
+            "quantity": 1,
+            "required": 1,
+            "text": "Bashal'Aran"
+          }
+        ],
+        "criteriaDone": 2,
+        "criteriaRead": 4,
+        "criteriaTotal": 4,
+        "description": "Explore Darkshore, revealing the covered areas of the world map.",
+        "earnedByMe": false,
+        "id": 844,
+        "name": "Explore Darkshore",
+        "points": 10
+      },
+      {
+        "category": 97,
+        "completed": false,
+        "criteria": [
+          {
+            "completed": false,
+            "quantity": 0,
+            "required": 1,
+            "text": "Ashenvale"
+          },
+          {
+            "completed": false,
+            "quantity": 0,
+            "required": 1,
+            "text": "The Barrens"
+          },
+          {
+            "completed": false,
+            "quantity": 0,
+            "required": 1,
+            "text": "Durotar"
+          },
+          {
+            "completed": false,
+            "quantity": 0,
+            "required": 1,
+            "text": "Mulgore"
+          },
+          {
+            "completed": false,
+            "quantity": 0,
+            "required": 1,
+            "text": "Stonetalon Mountains"
+          },
+          {
+            "completed": false,
+            "quantity": 0,
+            "required": 1,
+            "text": "Desolace"
+          },
+          {
+            "completed": false,
+            "quantity": 0,
+            "required": 1,
+            "text": "Feralas"
+          },
+          {
+            "completed": false,
+            "quantity": 0,
+            "required": 1,
+            "text": "Thousand Needles"
+          }
+        ],
+        "criteriaDone": 2,
+        "criteriaRead": 10,
+        "criteriaTotal": 10,
+        "description": "Explore the regions of Kalimdor.",
+        "earnedByMe": false,
+        "id": 43,
+        "name": "Explore Kalimdor",
+        "points": 25,
+        "reward": "Reward: Title - the Wanderer"
+      }
+    ],
+    "points": 41,
+    "total": 12
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

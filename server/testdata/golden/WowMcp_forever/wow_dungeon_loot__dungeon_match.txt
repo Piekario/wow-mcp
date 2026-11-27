@@ -1,0 +1,170 @@
+# tool wow_dungeon_loot variant=dungeon_match
+# args: {"dungeon":"dead"}
+# isError: false
+--- content[0] ---
+{
+  "available": true,
+  "class": "Hunter",
+  "dungeons": [
+    {
+      "bosses": [
+        "Rhahk'Zor",
+        "Sneed's Shredder",
+        "Gilnid",
+        "Mr. Smite",
+        "Edwin VanCleef"
+      ],
+      "drops": [
+        {
+          "boss": "Sneed's Shredder",
+          "items": [
+            {
+              "delta": {
+                "DPS": 2.5,
+                "Item Level": 11,
+                "Strength": 4
+              },
+              "id": 5196,
+              "itemLevel": 21,
+              "levelOk": true,
+              "name": "Smite's Reaver",
+              "quality": "Rare",
+              "replaces": [
+                "Webwood Slicer"
+              ],
+              "requiredLevel": 16,
+              "score": 13.5,
+              "slot": "offHand",
+              "verdict": "upgrade"
+            }
+          ]
+        },
+        {
+          "boss": "Gilnid",
+          "items": [
+            {
+              "delta": {
+                "Agility": 3,
+                "Item Level": 24,
+                "Stamina": 1
+              },
+              "id": 5193,
+              "itemLevel": 24,
+              "levelOk": true,
+              "name": "Cape of the Brotherhood",
+              "quality": "Rare",
+              "requiredLevel": 19,
+              "score": 24,
+              "slot": "back",
+              "slotEmpty": true,
+              "verdict": "upgrade"
+            },
+            {
+              "delta": {
+                "Item Level": 22,
+                "Stamina": 5
+              },
+              "id": 5199,
+              "itemLevel": 22,
+              "levelOk": true,
+              "name": "Smelting Pants",
+              "quality": "Rare",
+              "requiredLevel": 17,
+              "score": 22,
+              "slot": "legs",
+              "slotEmpty": true,
+              "verdict": "upgrade"
+            }
+          ]
+        },
+        {
+          "boss": "Edwin VanCleef",
+          "items": [
+            {
+              "delta": {
+                "Agility": -3,
+                "DPS": -1.5,
+                "Item Level": 24,
+                "Stamina": 5
+              },
+              "id": 5201,
+              "itemLevel": 24,
+              "levelOk": true,
+              "name": "Emberstone Staff",
+              "quality": "Rare",
+              "replaces": [
+                "Curvewood Dagger",
+                "Webwood Slicer"
+              ],
+              "requiredLevel": 19,
+              "score": 22.5,
+              "slot": "mainHand",
+              "verdict": "upgrade"
+            }
+          ]
+        },
+        {
+          "boss": "(boss not given by the journal)",
+          "items": [
+            {
+              "delta": {
+                "DPS": -1.3,
+                "Item Level": 5
+              },
+              "id": 1937,
+              "itemLevel": 15,
+              "levelOk": true,
+              "name": "Buzz Saw",
+              "quality": "Uncommon",
+              "replaces": [
+                "Webwood Slicer"
+              ],
+              "requiredLevel": 10,
+              "score": 3.7,
+              "slot": "offHand",
+              "verdict": "upgrade"
+            }
+          ]
+        }
+      ],
+      "loadingNote": "The game had not loaded these items when the journal was read; type /mcp loot The Deadmines again, then /mcp reload.",
+      "name": "The Deadmines",
+      "readAt": "2026-11-15 16:26",
+      "skipped": {
+        "laterLevel": 1,
+        "notForClass": 1,
+        "stillLoading": 1
+      },
+      "stillLoading": [
+        "Cruel Barb"
+      ]
+    }
+  ],
+  "journalOffers": [
+    "The Deadmines",
+    "Wailing Caverns",
+    "Molten Core",
+    "Blackfathom Deeps"
+  ],
+  "lastAttempt": {
+    "at": "2026-11-15 16:26",
+    "inInstance": false,
+    "instancesInJournal": 4,
+    "itemsRead": 2,
+    "outcome": "read",
+    "query": "WAILING",
+    "tiers": 3
+  },
+  "level": 20,
+  "method": {
+    "basis": "item level and DPS",
+    "how": "score = change in item level plus DPS against the equipped item, as in wow_compare_item; a weights.json file adds stats"
+  },
+  "proficiencyNote": "Which armor and weapon types a class can use follows the classic game's rules (mail for hunters and shamans and plate for warriors and paladins from level 40); Forever may differ. A weapon type the class can use may still need training.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "upgradesOnly": true
+}

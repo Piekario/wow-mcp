@@ -139,6 +139,9 @@ type Recipe struct {
 	Raw        any
 }
 
+// UnnamedBook is the name of a recipe window for which the client gave no profession name (the addon uses the same text).
+const UnnamedBook = "Unnamed profession"
+
 // RecipeBook is the recipes saved from one profession window. Rank and MaxRank stay as the dump has them.
 type RecipeBook struct {
 	Name          string

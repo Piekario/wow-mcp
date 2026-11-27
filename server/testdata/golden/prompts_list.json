@@ -61,7 +61,7 @@
         "description": "character name; empty = most recently dumped character"
       }
     ],
-    "description": "The state of a Hunter's pet: happiness, loyalty, training points, diet versus food in the bags, abilities, Beast Training (missing ranks, point plan) and a comparison with the stable. Only useful when the snapshot has a pet section; otherwise it says what is missing.",
+    "description": "The state of a Hunter's pet: happiness, loyalty, training points, which bag food it can eat and for how many feedings, abilities, Beast Training (missing ranks, point plan), where to tame beasts with ranks the Hunter lacks (from beasts this account observed) and a comparison with the stable. Only useful when the snapshot has a pet section; otherwise it says what is missing.",
     "name": "pet_care",
     "title": "Pet care"
   },

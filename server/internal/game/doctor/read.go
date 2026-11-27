@@ -9,6 +9,7 @@ import (
 
 	"wowmcp/internal/game/addon"
 	"wowmcp/internal/game/alerts"
+	"wowmcp/internal/game/buffs"
 	"wowmcp/internal/snapshot"
 )
 
@@ -33,6 +34,8 @@ type dump struct {
 	KeptDumpOnLogout bool
 	Locale           string
 	EnglishOnlyNote  string
+	HasClassGroups   bool
+	BadClassBuffIDs  []buffs.IDMismatch
 }
 
 // window is a visit-based section: whether the dump has it and how to get it.
@@ -53,6 +56,7 @@ func read(s snapshot.Snapshot, fresh snapshot.Freshness) dump {
 		Locale:          s.Locale(),
 		EnglishOnlyNote: s.EnglishOnlyNote(englishOnlyHeuristics),
 	}
+	d.HasClassGroups, d.BadClassBuffIDs = buffs.CheckGroupIDs(s)
 	if unix, ok := s.DumpedAt(); ok {
 		d.HasDumpedAt, d.Age, d.Stale = true, fresh.Age(unix), fresh.IsStale(unix)
 	}

@@ -6,6 +6,24 @@
   "capturedAgeMinutes": 30,
   "capturedAt": "2026-11-15 16:26",
   "probe": {
+    "addons": {
+      "Blizzard_EncounterJournal": {
+        "frame": true
+      }
+    },
+    "beastLore": {
+      "hasAura": true,
+      "lines": [
+        "Elder Nightsaber",
+        "Level 12 Beast",
+        "Health: 450",
+        "Diet: Meat, Fish",
+        "Abilities: Claw (Rank 2), Prowl 1"
+      ],
+      "name": "Elder Nightsaber",
+      "npcId": 2033,
+      "target": true
+    },
     "capturedAt": 1794760000,
     "eventCandidates": {
       "LOGOUT_CANCEL": true,
@@ -27,6 +45,7 @@
       "COMMODITY_SEARCH_RESULTS_UPDATED": true,
       "CRAFT_SHOW": false,
       "CRAFT_UPDATE": false,
+      "EJ_LOOT_DATA_RECIEVED": true,
       "FRIENDLIST_UPDATE": true,
       "GET_ITEM_INFO_RECEIVED": true,
       "GUILD_ROSTER_UPDATE": true,
@@ -39,6 +58,7 @@
       "MERCHANT_SHOW": true,
       "MERCHANT_UPDATE": true,
       "OWNED_AUCTIONS_UPDATED": true,
+      "PET_BAR_UPDATE": true,
       "PET_STABLE_SHOW": true,
       "PET_STABLE_UPDATE": true,
       "PLAYER_CAMPING": true,
@@ -50,11 +70,14 @@
       "PLAYER_LOGOUT": true,
       "PLAYER_MONEY": true,
       "PLAYER_QUITING": true,
+      "PLAYER_TARGET_CHANGED": true,
       "PLAYER_XP_UPDATE": true,
       "QUEST_ACCEPTED": true,
       "QUEST_COMPLETE": true,
       "QUEST_DETAIL": true,
       "QUEST_TURNED_IN": true,
+      "SPELLS_CHANGED": true,
+      "SPELL_DATA_LOAD_RESULT": true,
       "TAXIMAP_OPENED": true,
       "TIME_PLAYED_MSG": true,
       "TRADE_SKILL_LIST_UPDATE": true,
@@ -62,20 +85,41 @@
       "TRADE_SKILL_UPDATE": false,
       "TRAINER_SHOW": true,
       "TRAINER_UPDATE": true,
+      "UNIT_AURA": true,
+      "UNIT_PET": true,
+      "UNIT_SPELLCAST_CHANNEL_START": true,
+      "UNIT_SPELLCAST_START": true,
+      "UPDATE_MOUSEOVER_UNIT": true,
       "ZONE_CHANGED_NEW_AREA": true
     },
     "globals": [
       "CanMerchantRepair",
+      "EJ_GetCurrentTier",
+      "EJ_GetEncounterInfoByIndex",
+      "EJ_GetInstanceByIndex",
+      "EJ_GetLootFilter",
+      "EJ_GetNumLoot",
+      "EJ_GetNumTiers",
+      "EJ_ResetLootFilter",
+      "EJ_SelectEncounter",
+      "EJ_SelectInstance",
+      "EJ_SelectTier",
+      "EJ_SetLootFilter",
+      "GetAchievementCriteriaInfo",
       "GetAchievementInfo",
+      "GetAchievementNumCriteria",
       "GetBuybackItemInfo",
       "GetBuybackItemLink",
       "GetCategoryInfo",
       "GetCategoryList",
       "GetCategoryNumAchievements",
+      "GetCompanionInfo",
       "GetCritChance",
+      "GetCurrentTitle",
       "GetCursorPosition",
       "GetGuildInfo",
       "GetGuildRosterInfo",
+      "GetGuildRosterLastOnline",
       "GetInboxHeaderInfo",
       "GetInboxItem",
       "GetInboxItemLink",
@@ -90,12 +134,15 @@
       "GetMerchantItemLink",
       "GetMerchantNumItems",
       "GetNumBuybackItems",
+      "GetNumCompanions",
+      "GetNumCompletedAchievements",
       "GetNumGuildMembers",
       "GetNumQuestChoices",
       "GetNumQuestLogChoices",
       "GetNumQuestLogRewards",
       "GetNumQuestRewards",
       "GetNumSavedInstances",
+      "GetNumTitles",
       "GetNumTrainerServices",
       "GetObjectiveText",
       "GetPVPLifetimeStats",
@@ -115,13 +162,19 @@
       "GetRewardText",
       "GetRewardXP",
       "GetSavedInstanceInfo",
+      "GetStatistic",
+      "GetStatisticsCategoryList",
       "GetTaxiMapID",
+      "GetTitleName",
       "GetTitleText",
+      "GetTotalAchievementPoints",
       "GetTrainerServiceCost",
       "GetTrainerServiceInfo",
       "GetTrainerServiceLevelReq",
       "GetXPExhaustion",
       "IsInGuild",
+      "IsInInstance",
+      "IsTitleKnown",
       "RequestTimePlayed",
       "UnitHonor",
       "UnitHonorLevel",
@@ -133,6 +186,9 @@
       "UnitXPMax"
     ],
     "namespaces": {
+      "C_AddOns": [
+        "GetAddOnMetadata"
+      ],
       "C_AuctionHouse": [
         "GetBrowseResults",
         "GetCommoditySearchResultInfo",
@@ -168,6 +224,13 @@
         "GetCurrencyListInfo",
         "GetCurrencyListLink",
         "GetCurrencyListSize"
+      ],
+      "C_EncounterJournal": [
+        "GetInstanceForGameMap",
+        "GetLootInfoByIndex",
+        "GetSlotFilter",
+        "ResetSlotFilter",
+        "SetSlotFilter"
       ],
       "C_EquipmentSet": [
         "GetEquipmentSetIDs",
@@ -218,6 +281,7 @@
         "GetLootMethod"
       ],
       "C_PetInfo": [
+        "CanPetEatItem",
         "GetPetHappiness"
       ],
       "C_QuestLog": [
@@ -239,7 +303,10 @@
       "C_Spell": [
         "GetSpellCooldown",
         "GetSpellDescription",
+        "GetSpellInfo",
         "GetSpellName",
+        "GetSpellPowerCost",
+        "GetSpellSubtext",
         "IsSelfBuff",
         "RequestLoadSpellData"
       ],
@@ -268,7 +335,8 @@
         "GetItemKey",
         "GetMerchantItem",
         "GetQuestItem",
-        "GetSpellByID"
+        "GetSpellByID",
+        "GetUnit"
       ],
       "C_TradeSkillUI": [
         "GetAllRecipeIDs",
@@ -300,6 +368,65 @@
       "TooltipDataProcessor": [
         "AddTooltipPostCall"
       ]
+    },
+    "petFood": {
+      "calls": [
+        {
+          "count": 1,
+          "form": "itemID",
+          "itemID": 2589,
+          "ok": true,
+          "results": [
+            {
+              "type": "boolean",
+              "value": false
+            }
+          ]
+        },
+        {
+          "error": "[string \"\u003cpython\u003e\"]:41: Usage: C_PetInfo.CanPetEatItem(itemID)",
+          "form": "itemLink",
+          "itemID": 2589,
+          "ok": false
+        },
+        {
+          "count": 1,
+          "form": "itemID",
+          "itemID": 6948,
+          "ok": true,
+          "results": [
+            {
+              "type": "boolean",
+              "value": false
+            }
+          ]
+        },
+        {
+          "error": "[string \"\u003cpython\u003e\"]:41: Usage: C_PetInfo.CanPetEatItem(itemID)",
+          "form": "itemLink",
+          "itemID": 6948,
+          "ok": false
+        },
+        {
+          "count": 1,
+          "form": "itemID",
+          "itemID": 2318,
+          "ok": true,
+          "results": [
+            {
+              "type": "boolean",
+              "value": false
+            }
+          ]
+        },
+        {
+          "error": "[string \"\u003cpython\u003e\"]:41: Usage: C_PetInfo.CanPetEatItem(itemID)",
+          "form": "itemLink",
+          "itemID": 2318,
+          "ok": false
+        }
+      ],
+      "exists": true
     }
   },
   "snapshot": {

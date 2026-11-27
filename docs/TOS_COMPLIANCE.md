@@ -26,7 +26,7 @@ and compare them with the code. The project is intended for personal use on your
 - Quest rewards from the quest log are read by the addon by quest ID. In older clients that cannot do this, it selects the
   log entry for the duration of the read and immediately restores the previous selection; it does not accept, abandon or turn in quests.
 - Quest locations and guide steps (since addon 0.14.0) come from **other addons the player has installed**, read inside the game through
-  what those addons expose: the quest database QuestieDB (its public read functions: `Get`, `Exists`, `IdsByName`) and Guidelime (the guide
+  what those addons expose: the quest database QuestieDB (its public read functions: `Get`, `Exists`, `IdsByName`, `GetAllIds`, and the read-only `Enum` race and class masks) and Guidelime (the guide
   text at the moment a guide addon registers it, observed with `hooksecurefunc`, and the per-character progress table). WowMcp only
   reads: it registers no corrections, changes no data of those addons and calls nothing that acts in the game. It ships no quest database and
   no guide text of its own; the dump holds the locations of the player's current quests and the next steps of the player's own guide, and
@@ -35,6 +35,9 @@ and compare them with the code. The project is intended for personal use on your
   passes its map and coordinates to TomTom (`TomTom:AddWaypoint`, the same call Questie makes), which shows a waypoint and its arrow.
   Nothing is set without that click, the character is not moved or steered, and without TomTom the coordinates stay plain text.
 - Your own loot is computed by the addon from the chat messages about the player's own loot (`LOOT_ITEM_SELF` and related). It does not record other players' loot.
+- `/mcp share` shows a window with one address (the issue form with a client report without names in it) for the player to copy, and at most once a day one chat line
+  offers that window (off with `/mcp share off`). The addon has no way to send the report and does not try: the player
+  copies it and opens it in a browser. Nothing opens without a click.
 - The item tooltip gets one added line with the last saved auction house price (`/mcp ahtip off` turns it off). It is only
   text in the tooltip: the addon searches for and lists nothing, and knows the price only from searches the player ran themselves.
 - For talent descriptions the addon asks the client to load the spell data (`C_Spell.RequestLoadSpellData`). This is a request for data to
@@ -44,6 +47,9 @@ and compare them with the code. The project is intended for personal use on your
   sends an auction house query, never searches, scans, bids or buys.
 - It writes data only to SavedVariables (`WowMcpDB`), as every addon does. The game saves this file
   itself, on `/reload` and logout.
+- `/mcp loot`, typed by the player, loads the game's own Encounter Journal module (`Blizzard_EncounterJournal`, through
+  `C_AddOns.LoadAddOn`) when it is not loaded yet, exactly as opening the journal window does; the journal lists nothing before that.
+  It never happens on a dump.
 - The only "action" in the game is `ReloadUI()`, called after the `/mcp reload` command or a click on the "Save" button. The panel
   highlights the button as a reminder, but never saves or reloads anything by itself.
 - The only request to the game besides reading is `RequestTimePlayed` after login (the same as the `/played` command; the line "Total time played"
@@ -61,40 +67,6 @@ and compare them with the code. The project is intended for personal use on your
   at startup.
 - The goals file is changed by a single tool, `wow_goal_set`, and only at the player's request (atomic write: temporary file and rename).
   The server only reads the optional `weights.json` next to it; the player writes it themselves.
-- The newer tools (`wow_quest_rewards`, `wow_shopping_list`, `wow_journal`, `wow_bag_plan`, `wow_goals`, `wow_quest_route`, `wow_social`, `wow_quest_lookup`, `wow_guide`) only calculate from the dump
-  data: they buy nothing, choose no rewards and send nothing to the game. Recommendations are text for the player, and assumptions are
-  described as assumptions in the responses.
-- It exposes data locally through MCP (stdio) to your MCP client started by the player. It does not connect to any service itself.
-
-## What the project will never do
-
-This is the "Rejected" list from `ROADMAP.md`:
-
-- automatic saving after events (auto `/reload` after a trainer window, a button after leveling up),
-- automatic selling, repairing, accepting and turning in quests, buying from trainers, that is, any action in the game without a
-  player click,
-- automatic searching or listing in the auction house, and scanning the whole auction house,
-- queries about other players without a click (automatic Inspect, `/who`),
-- reading the game process memory, network traffic or screen pixels, overlays on the game window,
-- fetching data from external services through the server,
-- built-in "popular builds" of talents from Classic (the Forever trees are different).
-
-## How to verify it
-
-The code is open. The addon has about 4900 lines of Lua in `addon/WowMcp/`, the server is in `server/`. A few hints:
-
-```
-# functions that would be an action in the game: there should be none except ReloadUI
-grep -rnE "CastSpell|UseAction|UseContainerItem|PickupContainerItem|SendChatMessage|TargetUnit|BuyMerchantItem|SellCursorItem|AcceptQuest|CompleteQuest|PlaceAuctionBid|StartAuction|InspectUnit|NotifyInspect|RunMacro|ClickButton|SecureActionButton" addon/
-grep -rn "ReloadUI" addon/                                    # only Commands.lua and Panel.lua
-grep -rn "SendAddonMessage\|C_ChatInfo" addon/                # no communication between players
-grep -rnE "ShowFriends|GuildRoster\(|SendWho" addon/WowMcp   # only comments in Friends.lua and Guild.lua: the addon does not request friends or guild lists
-grep -rnE "Request[A-Z]|Query|Send[A-Z]" addon/WowMcp     # nothing besides RequestTimePlayed (Played.lua), C_Spell.RequestLoadSpellData (Talents.lua) and C_Item.RequestLoadItemDataByID (AuctionItems.lua); in Probe.lua it is only a name pattern
-
-# server: files and network
-grep -rn "os.Create\|os.OpenFile\|os.WriteFile\|os.MkdirAll" server --include=*.go     # only internal/storage (history, log, goals file)
-grep -rn "net/http\|net.Dial" server --include=*.go                                      # no network connections
-```
-
-The server's writes are in `internal/storage` (history, log and goals file), and the game directory boundary is enforced by `storage.RequireOutside`, which is covered by
-tests. These commands are hints for your own verification, not proof: read the results with care.
+- `wow_share_dump` (and `--share-dump`) writes an anonymized copy of a dump into `--share-dir` (by default `shared` next to
+  the history), only at the player's request. Nothing is uploaded: the player reads the file and attaches it to an issue
+  themselves. See [SHARING_DUMPS.md](SHARING_DUMPS.md).

@@ -42,6 +42,9 @@ var migrations = []string{
 		min_bid INTEGER NOT NULL,
 		PRIMARY KEY (realm, item, seen_at)
 	) WITHOUT ROWID`,
+	// NULL = the dump had no pvp section (every row written before this column existed).
+	`ALTER TABLE points ADD COLUMN honor INTEGER`,
+	`ALTER TABLE points ADD COLUMN honorable_kills INTEGER`,
 }
 
 // Ledger is safe for concurrent use, also by several server processes on the same file (the desktop app starts more

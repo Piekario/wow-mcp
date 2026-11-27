@@ -1,0 +1,71 @@
+# tool wow_dungeon_loot variant=all_args
+# args: {"character":"Piekasz","dungeon":"wailing","slot":"waist","upgradesOnly":false}
+# isError: false
+--- content[0] ---
+{
+  "available": true,
+  "class": "Hunter",
+  "dungeons": [
+    {
+      "bosses": [
+        "Lady Anacondra",
+        "Lord Cobrahn",
+        "Lord Pythas"
+      ],
+      "drops": [
+        {
+          "boss": "Lord Cobrahn",
+          "items": [
+            {
+              "delta": {
+                "Agility": 4,
+                "Item Level": 22,
+                "Stamina": 2
+              },
+              "id": 6460,
+              "itemLevel": 22,
+              "levelOk": true,
+              "name": "Cobrahn's Grasp",
+              "quality": "Rare",
+              "requiredLevel": 17,
+              "score": 22,
+              "slot": "waist",
+              "slotEmpty": true,
+              "verdict": "upgrade"
+            }
+          ]
+        }
+      ],
+      "name": "Wailing Caverns",
+      "readAt": "2026-11-15 16:26"
+    }
+  ],
+  "journalOffers": [
+    "The Deadmines",
+    "Wailing Caverns",
+    "Molten Core",
+    "Blackfathom Deeps"
+  ],
+  "lastAttempt": {
+    "at": "2026-11-15 16:26",
+    "inInstance": false,
+    "instancesInJournal": 4,
+    "itemsRead": 2,
+    "outcome": "read",
+    "query": "WAILING",
+    "tiers": 3
+  },
+  "level": 20,
+  "method": {
+    "basis": "item level and DPS",
+    "how": "score = change in item level plus DPS against the equipped item, as in wow_compare_item; a weights.json file adds stats"
+  },
+  "proficiencyNote": "Which armor and weapon types a class can use follows the classic game's rules (mail for hunters and shamans and plate for warriors and paladins from level 40); Forever may differ. A weapon type the class can use may still need training.",
+  "slot": "waist",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "upgradesOnly": false
+}

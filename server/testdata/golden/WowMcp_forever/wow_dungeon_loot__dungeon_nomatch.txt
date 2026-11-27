@@ -1,0 +1,37 @@
+# tool wow_dungeon_loot variant=dungeon_nomatch
+# args: {"dungeon":"Zzzz"}
+# isError: false
+--- content[0] ---
+{
+  "available": true,
+  "class": "Hunter",
+  "dungeons": [],
+  "journalOffers": [
+    "The Deadmines",
+    "Wailing Caverns",
+    "Molten Core",
+    "Blackfathom Deeps"
+  ],
+  "lastAttempt": {
+    "at": "2026-11-15 16:26",
+    "inInstance": false,
+    "instancesInJournal": 4,
+    "itemsRead": 2,
+    "outcome": "read",
+    "query": "WAILING",
+    "tiers": 3
+  },
+  "level": 20,
+  "method": {
+    "basis": "item level and DPS",
+    "how": "score = change in item level plus DPS against the equipped item, as in wow_compare_item; a weights.json file adds stats"
+  },
+  "note": "No saved dungeon matches \"Zzzz\". Saved: Wailing Caverns, The Deadmines. To read another one: In game type /mcp loot \u003cdungeon name\u003e (for example /mcp loot deadmines; without a name it reads the dungeon you are in, or the dungeons for your level), then /mcp reload. The addon reads the Encounter Journal only when you ask.",
+  "proficiencyNote": "Which armor and weapon types a class can use follows the classic game's rules (mail for hunters and shamans and plate for warriors and paladins from level 40); Forever may differ. A weapon type the class can use may still need training.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "upgradesOnly": true
+}

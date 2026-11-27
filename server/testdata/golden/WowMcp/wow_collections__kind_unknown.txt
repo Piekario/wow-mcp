@@ -1,0 +1,5 @@
+# tool wow_collections variant=kind_unknown
+# args: {"kind":"toys"}
+# isError: true
+--- content[0] ---
+unknown kind "toys": use titles, mounts, companions or all

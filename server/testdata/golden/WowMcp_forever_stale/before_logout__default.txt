@@ -20,7 +20,7 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
     "Copper Ore x10 (may have already expired)"
   ],
   "bagSpace": {
-    "freeSlots": 26,
+    "freeSlots": 22,
     "totalSlots": 32
   },
   "durability": {

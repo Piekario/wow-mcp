@@ -1,0 +1,66 @@
+name: Share a dump from your class
+description: Attach an anonymized dump of your character so wow-mcp can be tested with your class, client version and language.
+labels: [shared-dump]
+body:
+  - type: markdown
+    attributes:
+      value: >
+        Thank you. Only a Hunter and a Warlock on an English WoW: Forever client have been checked in the real game so far;
+        every dump from another class, faction, language or client becomes test data that each change is checked against.
+
+
+        **Two ways, use either or both.** The full anonymized dump (best) or the short client report from the game (`/mcp share`).
+
+
+        **How to make the file:** ask your assistant to *"share an anonymized dump of my character"* (the `wow_share_dump`
+        tool), or run `wow-mcp --share-dump` in a terminal. It writes a `.json` file on your own disk and sends nothing
+        anywhere. Names of your character, realm, guild, friends, group and mail senders are replaced or removed, together
+        with your note, macros and mail subjects; what exactly is removed and kept is listed in
+        [docs/SHARING_DUMPS.md](https://github.com/Piekario/wow-mcp/blob/main/docs/SHARING_DUMPS.md).
+
+
+        **Before you attach it:** open the file and read it. This issue and the file are public. An accepted file is
+        added to the repository's test data under the project's license.
+  - type: textarea
+    id: file
+    attributes:
+      label: The anonymized dump
+      description: >
+        Drag the `wow-mcp-dump-....json` file here (zip it if it is larger than 25 MB). Please do not paste its contents.
+        No server at hand? Leave this empty and paste the client report below.
+  - type: textarea
+    id: report
+    attributes:
+      label: Client report from the game
+      description: >
+        Filled in for you when you open the address from the `/mcp share` window in game. It starts with
+        `WowMcp:1!` and ends with `!End:WowMcp:1!` and is about the client and the last dump (class, race, level, client build, language, section sizes, addon errors); it holds no names.
+      render: text
+  - type: dropdown
+    id: client
+    attributes:
+      label: Game version
+      options:
+        - WoW Forever
+        - Retail
+        - Classic Era / Hardcore / Season of Discovery
+        - Classic progression (Wrath, Cataclysm, Mists, ...)
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: windows
+    attributes:
+      label: Anything the assistant got wrong for your class?
+      description: >
+        Optional. A wrong answer, a missing section, an error from `wow_doctor`. The more windows you opened before the dump
+        (trainer, vendor, bank, mailbox, auction house, professions, talents) and a `/mcp probe` before `/mcp reload`, the more the dump covers.
+  - type: checkboxes
+    id: consent
+    attributes:
+      label: Before you send
+      options:
+        - label: I read the file and it contains nothing I do not want to publish.
+          required: true
+        - label: The file may be added to the wow-mcp repository as test data under the project's license (GPL-3.0-or-later).
+          required: true

@@ -1,0 +1,17 @@
+# tool wow_lookup variant=spell_link
+# args: {"query":"|cff71d5ff|Hspell:19416|h[Efficiency]|h|r"}
+# isError: false
+--- content[0] ---
+{
+  "addonNote": "The dump has no lookups section: it needs addon 0.21.0 or newer and /mcp reload.",
+  "ask": "Nothing in the dump for this query. Do not answer from memory. Ask the player to type /mcp item 19416 or /mcp spell 19416 in game (an exact name works only for things the client has seen; an ID or a shift-clicked link always works), then /mcp reload, and ask again.",
+  "elsewhere": [],
+  "found": false,
+  "query": "|cff71d5ff|Hspell:19416|h[Efficiency]|h|r",
+  "saved": [],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

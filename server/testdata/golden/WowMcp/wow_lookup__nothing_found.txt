@@ -1,0 +1,17 @@
+# tool wow_lookup variant=nothing_found
+# args: {"query":"Zzzz"}
+# isError: false
+--- content[0] ---
+{
+  "addonNote": "The dump has no lookups section: it needs addon 0.21.0 or newer and /mcp reload.",
+  "ask": "Nothing in the dump for this query. Do not answer from memory. Ask the player to type /mcp item Zzzz or /mcp spell Zzzz in game (an exact name works only for things the client has seen; an ID or a shift-clicked link always works), then /mcp reload, and ask again.",
+  "elsewhere": [],
+  "found": false,
+  "query": "Zzzz",
+  "saved": [],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

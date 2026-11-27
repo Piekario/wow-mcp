@@ -192,7 +192,7 @@ func TestServerEndToEnd(t *testing.T) {
 	for name, wants := range map[string][]string{
 		"before_logout": {"bindLocation", "Auberdine", "classic rule, approximate", "myAuctions"},
 		"first_run":     {"windows", `"captured": true`, "/mcp reload", "expectedAddonVersion"},
-		"pet_care":      {"Growl Rank 3", `"exists": true`, "foodNote"},
+		"pet_care":      {"Growl Rank 3", `"exists": true`, `"feedings": 17`, "whereToTame"},
 	} {
 		res, err := cs.GetPrompt(ctx, &mcp.GetPromptParams{Name: name})
 		if err != nil {
@@ -277,10 +277,10 @@ func TestCorruptGoalsFileIsReportedNotOverwritten(t *testing.T) {
 	if data, _ := os.ReadFile(goalsPath); string(data) != "{this is not json" {
 		t.Errorf("the corrupt file was overwritten: %q", data)
 	}
-	// The writing tool has no read-only marker; the others do.
+	// The writing tools have no read-only marker; the others do.
 	tools, _ := cs.ListTools(ctx, nil)
 	for _, tl := range tools.Tools {
-		if (tl.Name == "wow_goal_set") == tl.Annotations.ReadOnlyHint {
+		if (tl.Name == "wow_goal_set" || tl.Name == "wow_share_dump") == tl.Annotations.ReadOnlyHint {
 			t.Errorf("%s: ReadOnlyHint = %v", tl.Name, tl.Annotations.ReadOnlyHint)
 		}
 	}

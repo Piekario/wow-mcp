@@ -159,6 +159,22 @@ func clientLanguage(d dump) Check {
 	return c
 }
 
+// classBuffIDs warns about spell IDs of the addon's class buff groups that the client names as something else.
+func classBuffIDs(d dump) Check {
+	c := Check{Check: "class buff spell IDs", Status: OK, Detail: "The class buff spells the addon asked about have the names the group rules expect, or the client is not English and the names cannot be compared."}
+	if len(d.BadClassBuffIDs) == 0 {
+		return c
+	}
+	var items []string
+	for _, m := range d.BadClassBuffIDs {
+		items = append(items, fmt.Sprintf("%d is %q (%s group)", m.ID, m.Name, m.Group))
+	}
+	c.Status = Warn
+	c.Detail = "These spell IDs of the addon's class buff list are other spells in this game version and were ignored: " + strings.Join(items, ", ") + "."
+	c.Fix = "Nothing to repair on your side: the missing-buff warnings skip those spells. Report the IDs (wow_buffs shows them as groupIdMismatches) so the addon's list can be corrected."
+	return c
+}
+
 func historyCheck(f Facts) Check {
 	c := Check{Check: "history", Status: OK}
 	switch {

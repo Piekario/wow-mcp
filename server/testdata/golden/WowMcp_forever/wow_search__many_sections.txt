@@ -119,7 +119,7 @@
       "truncated": false
     },
     {
-      "count": 8,
+      "count": 12,
       "hits": [
         {
           "label": "Backpack",
@@ -172,6 +172,16 @@
           "summary": "count 1, Weapon, Dagger"
         },
         {
+          "label": "Stringy Wolf Meat",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Backpack",
+            "Stringy Wolf Meat"
+          ],
+          "summary": "count 4, Trade Goods, Meat"
+        },
+        {
           "label": "Small Brown Pouch",
           "matchedIn": "name",
           "path": [
@@ -190,6 +200,37 @@
           "summary": "count 5, Trade Goods, Cloth"
         },
         {
+          "label": "Stringy Wolf Meat",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Small Brown Pouch",
+            "Stringy Wolf Meat"
+          ],
+          "summary": "count 8, Trade Goods, Meat"
+        },
+        {
+          "label": "Haunch of Meat",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Small Brown Pouch",
+            "Haunch of Meat"
+          ],
+          "summary": "count 5, Consumable, Food \u0026 Drink"
+        },
+        {
+          "label": "Moonberry Juice",
+          "matchedIn": "type",
+          "matchedText": "Consumable",
+          "path": [
+            "bags",
+            "Small Brown Pouch",
+            "Moonberry Juice"
+          ],
+          "summary": "count 3, Consumable, Food \u0026 Drink"
+        },
+        {
           "label": "Sharp Arrow",
           "matchedIn": "name",
           "path": [
@@ -201,7 +242,7 @@
         }
       ],
       "section": "bags",
-      "shown": 8,
+      "shown": 12,
       "truncated": false
     },
     {
@@ -789,6 +830,325 @@
       "section": "flightPaths",
       "shown": 3,
       "truncated": false
+    },
+    {
+      "count": 27,
+      "hits": [
+        {
+          "label": "General",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "General"
+          ],
+          "summary": "completed 1"
+        },
+        {
+          "label": "Legacy",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Legacy"
+          ],
+          "summary": "completed 0"
+        },
+        {
+          "label": "Classes",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Classes"
+          ],
+          "summary": "completed 1"
+        },
+        {
+          "label": "Classic",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Classic"
+          ],
+          "summary": "completed 2"
+        },
+        {
+          "label": "Exploration",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Exploration"
+          ],
+          "summary": "completed 1"
+        },
+        {
+          "label": "Hunter: Level 25",
+          "matchedIn": "description",
+          "matchedText": "Reach level 25 with a Hunter.",
+          "path": [
+            "achievements",
+            "Hunter: Level 25"
+          ],
+          "summary": "points 1, completed, 2026-11-20"
+        },
+        {
+          "label": "Warlock: Level 25",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Warlock: Level 25"
+          ],
+          "summary": "points 1"
+        },
+        {
+          "label": "Darkshore Quests",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Darkshore Quests"
+          ],
+          "summary": "points 10, completed, 2026-11-14"
+        },
+        {
+          "label": "Ashenvale Quests",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Ashenvale Quests"
+          ],
+          "summary": "points 10"
+        },
+        {
+          "label": "Complete quests in Ashenvale",
+          "matchedIn": "text",
+          "path": [
+            "achievements",
+            "Ashenvale Quests",
+            "Complete quests in Ashenvale"
+          ]
+        },
+        {
+          "label": "Novice Mage",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Novice Mage"
+          ],
+          "summary": "points 0, completed, 2026-10-01"
+        },
+        {
+          "label": "Journeyman Alchemist",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Journeyman Alchemist"
+          ],
+          "summary": "points 0"
+        },
+        {
+          "label": "150 Alchemy Skill",
+          "matchedIn": "text",
+          "path": [
+            "achievements",
+            "Journeyman Alchemist",
+            "150 Alchemy Skill"
+          ]
+        },
+        {
+          "label": "Explore Teldrassil",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Explore Teldrassil"
+          ],
+          "summary": "points 10, completed, 2026-08-30"
+        },
+        {
+          "label": "Explore Darkshore",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Explore Darkshore"
+          ],
+          "summary": "points 10"
+        },
+        {
+          "label": "Ruins of Mathystra",
+          "matchedIn": "text",
+          "path": [
+            "achievements",
+            "Explore Darkshore",
+            "Ruins of Mathystra"
+          ]
+        },
+        {
+          "label": "Grove of the Ancients",
+          "matchedIn": "text",
+          "path": [
+            "achievements",
+            "Explore Darkshore",
+            "Grove of the Ancients"
+          ]
+        },
+        {
+          "label": "Auberdine",
+          "matchedIn": "text",
+          "path": [
+            "achievements",
+            "Explore Darkshore",
+            "Auberdine"
+          ],
+          "summary": "completed"
+        },
+        {
+          "label": "Bashal'Aran",
+          "matchedIn": "text",
+          "path": [
+            "achievements",
+            "Explore Darkshore",
+            "Bashal'Aran"
+          ],
+          "summary": "completed"
+        },
+        {
+          "label": "Explore Kalimdor",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Explore Kalimdor"
+          ],
+          "summary": "points 25"
+        }
+      ],
+      "section": "achievements",
+      "shown": 20,
+      "truncated": true
+    },
+    {
+      "count": 6,
+      "hits": [
+        {
+          "label": "Character",
+          "matchedIn": "name",
+          "path": [
+            "statistics",
+            "Character"
+          ]
+        },
+        {
+          "label": "Creatures killed",
+          "matchedIn": "name",
+          "path": [
+            "statistics",
+            "Character",
+            "Creatures killed"
+          ],
+          "summary": "1404"
+        },
+        {
+          "label": "Wealth",
+          "matchedIn": "name",
+          "path": [
+            "statistics",
+            "Wealth"
+          ]
+        },
+        {
+          "label": "Total gold acquired",
+          "matchedIn": "name",
+          "path": [
+            "statistics",
+            "Wealth",
+            "Total gold acquired"
+          ],
+          "summary": "5g 20s 3c"
+        },
+        {
+          "label": "Deaths",
+          "matchedIn": "name",
+          "path": [
+            "statistics",
+            "Deaths"
+          ]
+        },
+        {
+          "label": "Total deaths",
+          "matchedIn": "name",
+          "path": [
+            "statistics",
+            "Deaths",
+            "Total deaths"
+          ],
+          "summary": "3"
+        }
+      ],
+      "section": "statistics",
+      "shown": 6,
+      "truncated": false
+    },
+    {
+      "count": 3,
+      "hits": [
+        {
+          "label": "the Patient",
+          "matchedIn": "current",
+          "path": [
+            "titles"
+          ]
+        },
+        {
+          "label": "Private",
+          "matchedIn": "name",
+          "path": [
+            "titles",
+            "Private"
+          ]
+        },
+        {
+          "label": "the Patient",
+          "matchedIn": "name",
+          "path": [
+            "titles",
+            "the Patient"
+          ]
+        }
+      ],
+      "section": "titles",
+      "shown": 3,
+      "truncated": false
+    },
+    {
+      "count": 3,
+      "hits": [
+        {
+          "label": "Bombay Cat",
+          "matchedIn": "name",
+          "path": [
+            "collections",
+            "Bombay Cat"
+          ],
+          "summary": "spellID 10673"
+        },
+        {
+          "label": "Cockatiel",
+          "matchedIn": "name",
+          "path": [
+            "collections",
+            "Cockatiel"
+          ],
+          "summary": "spellID 10680"
+        },
+        {
+          "label": "Striped Nightsaber",
+          "matchedIn": "name",
+          "path": [
+            "collections",
+            "Striped Nightsaber"
+          ],
+          "summary": "spellID 10793"
+        }
+      ],
+      "section": "collections",
+      "shown": 3,
+      "truncated": false
     }
   ],
   "note": "Bank, vendors, trainers, stable, quest windows, recipes, mail and auctions are the state from the last visits to those windows (check their age in the relevant tools); loot is the loot since the previous save.",
@@ -814,13 +1174,17 @@
     "professions",
     "currencies",
     "macros",
-    "flightPaths"
+    "flightPaths",
+    "achievements",
+    "statistics",
+    "titles",
+    "collections"
   ],
   "snapshot": {
     "ageMinutes": 30,
     "character": "Piekasz",
     "dumpedAt": "2026-11-15 16:50:00"
   },
-  "totalHits": 65,
-  "truncated": false
+  "totalHits": 108,
+  "truncated": true
 }

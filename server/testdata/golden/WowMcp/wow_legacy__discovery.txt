@@ -3,6 +3,34 @@
 # isError: false
 --- content[0] ---
 {
+  "challenges": {
+    "completed": 1,
+    "completedList": [
+      {
+        "category": "Classic",
+        "completedOn": "2026-10-01",
+        "name": "Novice Mage"
+      }
+    ],
+    "completedNames": [
+      "Novice Mage"
+    ],
+    "matchedBy": "reward text contains Legacy Point",
+    "open": [
+      {
+        "category": "Classic",
+        "description": "Reach 150 Alchemy skill.",
+        "missing": [
+          "150 Alchemy Skill (0/150)"
+        ],
+        "name": "Journeyman Alchemist",
+        "points": 0,
+        "reward": "Earn 1 Legacy Point."
+      }
+    ],
+    "source": "addon",
+    "total": 2
+  },
   "discovery": {
     "enums": [],
     "frames": [],

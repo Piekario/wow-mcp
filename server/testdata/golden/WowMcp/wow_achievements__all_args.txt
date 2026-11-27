@@ -1,0 +1,39 @@
+# tool wow_achievements variant=all_args
+# args: {"category":"Exploration","character":"Piekasz","limit":1,"query":"Explore","view":"closest"}
+# isError: false
+--- content[0] ---
+{
+  "achievements": [
+    {
+      "category": "Exploration",
+      "completed": false,
+      "criteria": "2/4",
+      "description": "Explore Darkshore, revealing the covered areas of the world map.",
+      "missing": [
+        "Ruins of Mathystra",
+        "Grove of the Ancients"
+      ],
+      "name": "Explore Darkshore",
+      "points": 10,
+      "progressPercent": 50
+    }
+  ],
+  "completed": 4,
+  "completedPercent": 44.4,
+  "coverage": "The addon lists up to 600 achievements of this character (notListed counts the rest), with the completion date of completed ones and, for incomplete ones only, up to 8 criteria (missing ones first). Account-wide, guild and comparison data are not in the dump.",
+  "matching": {
+    "achievements": 3,
+    "completed": 1
+  },
+  "note": "Showing the first 1 of 2; raise limit to see more. progressPercent comes from the criteria: the count of a single counted criterion (74/100), otherwise the share of criteria done.",
+  "of": 2,
+  "points": 30,
+  "shown": 1,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "total": 9,
+  "view": "closest"
+}

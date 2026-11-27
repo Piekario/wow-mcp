@@ -38,6 +38,9 @@ read_globals = {
     "TaxiNodeGetType", "TaxiNodeName", "UnitClass", "UnitCreatureFamily", "UnitExists", "UnitFactionGroup",
     "UnitIsDead", "UnitLevel", "UnitName", "UnitRace", "UnitXP", "UnitXPMax", "date", "debugprofilestop",
     "issecretvalue", "time",
+    "LOCALIZED_CLASS_NAMES_MALE", "BNET_CLIENT_WOW", "LOCALIZED_CLASS_NAMES_FEMALE",
     -- achievements (Legacy challenges)
     "GetAchievementInfo", "GetCategoryInfo", "GetCategoryList", "GetCategoryNumAchievements",
+    -- achievements and statistics sections
+    "GetStatisticsCategoryList",
 }

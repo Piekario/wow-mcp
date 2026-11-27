@@ -251,7 +251,7 @@ function Items.containerSlotCount(bag)
 end
 
 -- Item in a container slot: itemID, count, quality, link, isBound (nil when the client does not say).
-local function containerItem(bag, slot)
+function Items.containerItem(bag, slot)
     if C_Container and C_Container.GetContainerItemInfo then
         local info = C_Container.GetContainerItemInfo(bag, slot)
         if type(info) == "table" then
@@ -288,7 +288,7 @@ function Items.scanContainer(bag)
     container.name = firstValue({ "C_Container.GetBagName", "GetBagName" }, bag)
     local used = 0
     for slot = 1, size do
-        local itemID, count, quality, link, isBound = containerItem(bag, slot)
+        local itemID, count, quality, link, isBound = Items.containerItem(bag, slot)
         if itemID or link then
             used = used + 1
             local item = {

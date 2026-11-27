@@ -1,0 +1,38 @@
+# tool wow_achievements variant=timeline_limit_1
+# args: {"limit":1,"view":"timeline"}
+# isError: false
+--- content[0] ---
+{
+  "achievements": [
+    {
+      "category": "Legacy \u003e Classes",
+      "completed": true,
+      "completedOn": "2026-11-20",
+      "name": "Hunter: Level 25",
+      "points": 1
+    }
+  ],
+  "completed": 6,
+  "completedPercent": 50,
+  "coverage": "The addon lists up to 600 achievements of this character (notListed counts the rest), with the completion date of completed ones and, for incomplete ones only, up to 8 criteria (missing ones first). Account-wide, guild and comparison data are not in the dump.",
+  "earliest": {
+    "completedOn": "2026-08-30",
+    "name": "Explore Teldrassil"
+  },
+  "latest": {
+    "completedOn": "2026-11-20",
+    "name": "Hunter: Level 25"
+  },
+  "note": "undated counts completed achievements the client gave no date for; they are left out of the dated list. Showing the latest 1 of 5; raise limit to see more.",
+  "of": 5,
+  "points": 41,
+  "shown": 1,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "total": 12,
+  "undated": 1,
+  "view": "timeline"
+}

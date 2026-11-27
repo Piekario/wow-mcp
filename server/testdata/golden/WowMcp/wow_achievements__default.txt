@@ -1,0 +1,67 @@
+# tool wow_achievements variant=default
+# args: {}
+# isError: false
+--- content[0] ---
+{
+  "categories": [
+    {
+      "category": "Quests",
+      "completed": 1,
+      "percent": 50,
+      "total": 2
+    },
+    {
+      "category": "Quests \u003e Classic",
+      "completed": 2,
+      "percent": 50,
+      "total": 4
+    },
+    {
+      "category": "Exploration",
+      "completed": 1,
+      "percent": 33.3,
+      "total": 3
+    }
+  ],
+  "completed": 4,
+  "completedPercent": 44.4,
+  "coverage": "The addon lists up to 600 achievements of this character (notListed counts the rest), with the completion date of completed ones and, for incomplete ones only, up to 8 criteria (missing ones first). Account-wide, guild and comparison data are not in the dump.",
+  "points": 30,
+  "recent": [
+    {
+      "category": "Quests \u003e Classic",
+      "completed": true,
+      "completedOn": "2026-11-14",
+      "name": "Darkshore Quests",
+      "points": 10
+    },
+    {
+      "category": "Quests \u003e Classic",
+      "completed": true,
+      "completedOn": "2026-10-01",
+      "name": "Novice Mage",
+      "points": 0
+    },
+    {
+      "category": "Quests",
+      "completed": true,
+      "completedOn": "2026-09-03",
+      "name": "50 Quests Completed",
+      "points": 10
+    },
+    {
+      "category": "Exploration",
+      "completed": true,
+      "completedOn": "2026-08-30",
+      "name": "Explore Teldrassil",
+      "points": 10
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "total": 9,
+  "view": "summary"
+}

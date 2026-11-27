@@ -27,7 +27,7 @@ func readRecords(s snapshot.Snapshot, sp spec) ([]Record, bool) {
 }
 
 func (sp spec) record(trail []string, m map[string]any) Record {
-	rec := Record{Trail: trail, Label: labelOf(m)}
+	rec := Record{Trail: trail, Label: labelOf(m), IDs: idsOf(m)}
 	for _, f := range sp.fields {
 		rec.Texts = append(rec.Texts, FieldTexts{Field: f, Values: texts(m[f])})
 	}
@@ -121,4 +121,21 @@ func texts(v any) []string {
 		return out
 	}
 	return nil
+}
+
+// idKeys are the fields that hold an item or spell ID.
+var idKeys = []string{"id", "itemId", "spellID"}
+
+// idsOf returns the item or spell IDs of the record. A record with a title is a quest, whose id is a quest ID.
+func idsOf(m map[string]any) []int64 {
+	if _, quest := m["title"]; quest {
+		return nil
+	}
+	var ids []int64
+	for _, key := range idKeys {
+		if id, ok := snapshot.AsInt(m[key]); ok {
+			ids = append(ids, id)
+		}
+	}
+	return ids
 }

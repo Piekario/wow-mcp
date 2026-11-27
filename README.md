@@ -19,7 +19,7 @@ An [MCP](https://modelcontextprotocol.io) server that lets an AI assistant in an
 character: quests, bags, gear, talents, professions, reputation, auctions, progress over time, and more. It has two parts:
 
 - **WowMcp** (addon, Lua): saves the character state to the game's SavedVariables file.
-- **wow-mcp** (MCP server, Go): reads that file and exposes it as 52 `wow_*` tools, 14 prompts and read-only resources.
+- **wow-mcp** (MCP server, Go): reads that file and exposes it as 58 `wow_*` tools, 14 prompts and read-only resources.
 
 > **License:** [GPL-3.0-or-later](LICENSE) with an additional term that the author attribution must be kept in every copy and
 > modified version (see [NOTICE](NOTICE)). Original author: Piekasz (GitHub: Piekario).
@@ -29,7 +29,8 @@ character: quests, bags, gear, talents, professions, reputation, auctions, progr
 Everything is read-only. The addon uses the official API and clicks nothing in the game; it never automates gameplay.
 The server opens one text file from the `WTF` directory (`WowMcp.lua` in SavedVariables) and does not touch the game
 process, its memory, network traffic or pixels. The server writes only in its own directory (never in the game directory):
-the dump history with its long history database (`history.db`), an optional log and the goals file, which is changed by a single tool, `wow_goal_set`.
+the dump history with its long history database (`history.db`), an optional log, the goals file (changed only by `wow_goal_set`) and, only when you ask for one, an anonymized copy of a dump
+to share (`wow_share_dump`). It makes no network connections and uploads nothing.
 What the addon and the server do, and what they will never do, is described in [docs/TOS_COMPLIANCE.md](docs/TOS_COMPLIANCE.md).
 That document is a description by the project author, not an approval from Blizzard and not legal advice.
 
@@ -189,12 +190,16 @@ Logs go to stderr (and to `--log` if given), never to stdout.
 | `/mcp played on` / `off` | whether to ask the game for play time (`/played`) after login, from which the XP rate is computed |
 | `/mcp note <text>` | a note for the assistant in the dump, e.g. what you plan to do today; `/mcp note` alone removes it |
 | `/mcp quest <name or ID>` | where a quest starts, what it needs and where it ends, from the installed Questie database; with [TomTom](https://www.curseforge.com/wow/addons/tomtom) installed, click a coordinate to set a waypoint (TomTom is optional) |
+| `/mcp item <ID, link or exact name>` | the item's description as the client shows it (type, level, stats, tooltip text), saved for the assistant; an uncached ID is requested from the client and saved when it arrives |
+| `/mcp spell <ID, link or name>` | the spell's description, rank, cast time, cost and range, saved for the assistant (the last 30 lookups are kept) |
+| `/mcp loot [dungeon]` | reads what the bosses of a dungeon drop from the game's Encounter Journal (without a name: the dungeon you are in, or the dungeons for your level) and keeps it in the dump for `wow_dungeon_loot`; only when you type it, and the journal window's selection is put back |
 | `/mcp off <section>` / `/mcp on <section>` | stop collecting a section (it disappears from the dump) or collect it again; `/mcp off` alone shows the disabled ones and all names |
 | `/mcp minimap on` / `off` | the minimap button (on by default): a left click shows or hides the panel, saves nothing; it can be dragged |
 | `/mcp options` | opens the WowMcp page in the game's options (Interface / AddOns) with the same switches as these commands: sections, minimap button, compact panel, AH tooltip, played time; changes settings only |
 | `/mcp compact on` / `off` | the panel in a single line (dump age and the Save button); off by default |
+| `/mcp share` | opens a window with a short client report (class, client build, language, section sizes, addon errors; no names, items or gold) inside one address to copy: it opens the ["Share a dump from your class"](https://github.com/Piekario/wow-mcp/issues/new?template=share_dump.yml) form already filled in. `/mcp share off` / `on` turns the chat reminder off or on (at most one line a day, until you click "I reported this"; nothing is ever sent by itself), `/mcp share remind` prints that line now |
 | `/mcp ahtip on` / `off` | whether to show an "AH: price (age)" line in the item tooltip with the last saved auction house price (on by default; text in the tooltip only) |
-| `/mcp probe` | diagnostics: a list of the client's API functions and the events the client accepted; also does `/mcp reload` |
+| `/mcp probe` | diagnostics: a list of the client's API functions and the events the client accepted, what the client answers when asked whether the pet can eat the first few bag items (`petFood`), and the tooltip of your target when it carries Beast Lore (`beastLore`); also does `/mcp reload` |
 | `/mcp help` | list of commands |
 
 Alias: `/wmcp`. Deaths (the counter and recent places) are recorded by the addon on its own.
@@ -217,32 +222,37 @@ After login (and after every `/reload`) the addon asks the game for play time, l
 |---|---|
 | `wow_status` | server and addon versions, file path, list of characters, data age, the player's note, disabled sections and `alerts` (expiring mail and auctions, damaged gear, full bags, slow dump, addon errors) |
 | `wow_doctor` | one diagnostic report: ordered checks (dump file, account, age, addon version, section errors, windows never opened, client language, history) with a fix for each and the next step |
+| `wow_share_dump` | writes an anonymized copy of the dump to a local file (names of the character, realm, guild, friends, group and mail senders replaced or removed; note, macros and mail subjects removed) that you can read and attach to an issue yourself; nothing is uploaded, see [docs/SHARING_DUMPS.md](docs/SHARING_DUMPS.md) |
 | `wow_character` | level, class, gold, XP, zone and coordinates, `resting`, Hearthstone location (`bindLocation`), professions, talents, note, deaths and PvP (`pvp`: honor, kills, rank) |
 | `wow_quests` | the quest log with objective progress |
 | `wow_bags` | bags, free slots, items |
 | `wow_equipment` | equipped gear with durability and the game's equipment sets (`equipmentSets`, with `isEquipped`) |
 | `wow_spells` | known abilities and ranks |
-| `wow_pet` | pet: level, family, happiness, loyalty, training points, action bar, abilities; `rankReview` (missing ranks from Beast Training and trainer offers), `trainingPlan` (what fits in the free points) and `stable` (stabled pets versus the active one) |
+| `wow_pet` | pet: level, family, happiness, loyalty, training points, action bar, abilities; `rankReview` (missing ranks from Beast Training and trainer offers), `trainingPlan` (what fits in the free points), `bagFood` (which bag food the pet can eat, as the game client answers it, and how many feedings it lasts), `whereToTame` (ability ranks seen on beasts the account's Hunters tamed or examined with Beast Lore, ranks the Hunter does not know first, with zone, level and coordinates) and `stable` (stabled pets versus the active one) |
 | `wow_trainer` | the offer of the last trainer (or a remembered one chosen by `npc`; list in `known`) with prices and a `canAfford` field |
 | `wow_reputation` | reputation with progress in percent and the amount missing to the next level; filters `query`, `standing` |
 | `wow_bank` | the bank from the last visit with its vendor value; filters `query`, `type`, `minQuality`, `sellable` |
 | `wow_vendor` | the offer of the last vendor (or a remembered one chosen by `npc`; list in `known`) with `canAfford`, `levelOk` and a comparison with equipped gear (`vsEquipped`), plus the `buyback` list (assumption: the client loses it after logout); filters `query`, `type`, `minQuality`, `affordable`, `usable`, `equippable` |
 | `wow_compare_item` | compares an item from bags, bank or a vendor with the equipped one: differences in stats, DPS, armor and item level; `weights` (or `weights.json`) adds `weightedDelta` |
-| `wow_changes` | what changed since the previous dump: gold, XP, items, gear, quests, reputation, new abilities, your own loot (`loot`) and XP by source (`xpSources`: kills, quests, other); `steps` or `sinceHours` reaches further back |
+| `wow_changes` | what changed since the previous dump: gold, XP, items, gear, quests, reputation, new abilities, your own loot (`loot`), XP by source (`xpSources`: kills, quests, other) and honor and honorable kills gained (when the dump has `pvp`); `steps` or `sinceHours` reaches further back |
 | `wow_quest_plan` | quests grouped by zone with the in-game difficulty color (red, orange, yellow, green, gray), objective progress and warnings: too hard, gray, failed, group, full log |
-| `wow_progress` | rates from the dump history: XP and gold per hour in the current session and over the whole history, quests turned in, level-ups, how much XP to the next level and how long that takes; `xpSources` splits XP into kills, quests and other |
+| `wow_progress` | rates from the dump history: XP and gold per hour in the current session and over the whole history, quests turned in, honor and honorable kills gained (when the dump has `pvp`), level-ups, how much XP to the next level and how long that takes; `xpSources` splits XP into kills, quests and other |
 | `wow_account` | all characters on the account: level, class, gold (and total), XP, rested, professions, free slots, play time, mail, ready cooldowns |
 | `wow_find_item` | looks for an item across all characters: bags, gear, bank, mail |
 | `wow_cooldowns` | long cooldowns (Hearthstone, abilities, professions) with time remaining; `all` shows all characters |
 | `wow_recipes` | recipes from the professions window (including Beast Training): color, how many can be made now, materials in bags and bank, what is missing; filters `profession`, `query`, `skillUp`, `craftable` |
 | `wow_mail` | mail from the last mailbox opening: gold, COD, attachments, what is about to expire |
 | `wow_legacy` | Forever Legacy: unspent and spent Legacy Points, the three perk trees with descriptions, what can be learned now and the open Legacy challenges |
+| `wow_achievements` | achievements, if the client has them: points, completed/total, progress per category, completion dates; `view` = `summary`, `timeline` (in date order, earliest and latest), `recent`, `closest` (incomplete ones ranked by criteria progress, with what is missing) or `all`; `query`, `category`, `limit`. Absent section: older addon, or no achievement API in the client (`/mcp probe` shows which) |
+| `wow_statistics` | the counters the game keeps (the Statistics tab): per category, each statistic with the game's own value text (deaths, quests, kills, gold); `query`, `category`. Values shown as `--` are left out |
+| `wow_collections` | earned titles and the one shown now, known mounts and companion pets (`kind` = `titles`, `mounts`, `companions` or `all`; `query`). Each part says when the client gave no data |
 | `wow_talents` | talent layout (e.g. 11/0/0), free points, whole trees with descriptions from the game and a list of talents you can spend a point on now |
 | `wow_auctions` | auction house prices saved during your searches, a trend from recent visits, your auctions, an assessment of what from your bags and bank is worth listing instead of selling, and for gear the comparison with what you wear (`vsEquipped`, `canAfford`, `levelOk`; filters `type`, `equippable`, `affordable`, `usable`) |
 | `wow_group` | party or raid composition: classes, roles, levels, who is offline or far away; for players inspected with the Inspect window, average item level and full gear (`player`) |
 | `wow_dungeons` | dungeons that fit your level, those a few levels ahead, quests from your log for each dungeon and instance lockouts |
+| `wow_dungeon_loot` | which items from a dungeon would be upgrades, grouped by dungeon and boss, with the stat differences against what you wear; items your class cannot use are left out (`dungeon`, `slot`, `upgradesOnly`). The drop lists come only from the game's Encounter Journal after `/mcp loot <dungeon>` and `/mcp reload`; not available in WoW: Forever, whose client has no Encounter Journal |
 | `wow_export` | a character summary to paste into Discord (Markdown), a forum (BBCode) or as plain text; `short`, `gold`, `english` |
-| `wow_search` | text search across the whole dump of one character (quests and their rewards, quest windows at NPCs, items, abilities, trainers and vendors, stable, loot, recipes, mail, auctions, macros, flights); hits grouped by section |
+| `wow_search` | text search across the whole dump of one character (quests and their rewards, quest windows at NPCs, items, abilities, trainers and vendors, stable, loot, recipes, mail, auctions, macros, flights, achievements, statistics, titles, mounts and companions); hits grouped by section |
 | `wow_rested` | rested XP: how much there is, how many levels that is, whether it covers the rest of the level and when it will be full after logging out in an inn (Classic rules, approximate) |
 | `wow_gold_history` | gold over time from the dump history: day by day, the three largest income and expense items; `days` |
 | `wow_leftovers` | quest items in bags and bank whose quest is no longer in the log; with a confidence rating, removes nothing |
@@ -251,11 +261,11 @@ After login (and after every `/reload`) the addon asks the game for play time, l
 | `wow_journal` | a session journal from the history (levels, XP and its sources, gold, quests, notable items, loot, deaths, zones) and records; `sessions`, `markdown=true` returns ready text in the `text` field (the server itself does not write `.md` files) |
 | `wow_bag_plan` | what to do with full bags: keep, bank, sell, auction, with the reason and totals; destroys nothing |
 | `wow_quest_rewards` | an evaluation of choice rewards for quests against your gear (a quest being turned in or offered by an NPC at the top, then the log): slot, differences, score, vendor value, `best` with a justification; `quest` (name or ID), `weights`. Repeated reward lists across several quests get `suspect` and no recommendation |
-| `wow_shopping_list` | what to buy before leaving town: trainer (from all remembered ones), repair, ammo, pet food, running-low materials, who sells it and for how much, a budget in priority order; `returnToTown` says when to return to town; `hours` |
+| `wow_shopping_list` | what to buy before leaving town: trainer (from all remembered ones), repair, ammo, pet food (with the bag food the game client says the pet can eat), running-low materials, who sells it and for how much, a budget in priority order; `returnToTown` says when to return to town; `hours` |
 | `wow_goals` | the player's goals from `goals.json`: current state, how much is missing, percent and an ETA from the `wow_progress` rate |
-| `wow_goal_set` | adds or removes a goal (`level`, `gold`, `reputation`, `profession`, `spell`, `item`); **the only tool that writes**, and only to the server's goals file |
+| `wow_goal_set` | adds or removes a goal (`level`, `gold`, `reputation`, `profession`, `spell`, `item`); writes only to the server's goals file |
 | `wow_timeline` | a character timeline from the dump history: level-ups, new abilities, gear changes, quests turned in, deaths, profession thresholds; `kind`, `days`, `limit`. An event has the time of the first dump in which it is visible; level-ups and turned-in quests found in the addon's event log have their exact time (`exact`) and reach back before the kept dumps |
-| `wow_buffs` | active buffs and debuffs and missing standing class buffs (e.g. Aspect, Arcane Intellect); time remaining from `expiresAt` (addon 0.7.0 records `expiresAt` and `duration`) |
+| `wow_buffs` | active buffs and debuffs and missing standing class buffs (e.g. Aspect, Arcane Intellect; matched by the spell names the client gives, so it works in any game language with addon 0.22.0, and a wrong spell ID is reported as `groupIdMismatches`); time remaining from `expiresAt` (addon 0.7.0 records `expiresAt` and `duration`) |
 | `wow_flights` | known flight points matched against the zones where you have quests (zone from the flight point's `zone` field from addon 0.7.0, and for older dumps guessed from the name) |
 | `wow_session_rating` | the rate of the last session (XP, gold balance, quests per hour) against the median of earlier sessions |
 | `wow_compare_characters` | two characters of the account side by side: level, gold, play time, professions, ilvl and gear slot by slot (`a`, `b`) |
@@ -264,9 +274,11 @@ After login (and after every `/reload`) the addon asks the game for play time, l
 | `wow_make_or_buy` | craft or buy at the auction house: ingredient cost versus the price of the finished item; a missing price is `unknown`, never zero (`profession`, `query`, `sort`, `limit`) |
 | `wow_quest_route` | a suggested order of zones with quests (current zone, then by the number of quests ready to turn in and of all quests) with known flight points; this is not the shortest route, the server does not know the world map |
 | `wow_quest_lookup` | where a quest is picked up, done and turned in: NPC or object, zone, map coordinates, objective targets, next quest of the chain and a one-line `nextStep`; the data is read in game from the quest database the player has installed (QuestieDB, what Questie shows), never from memory or the quest text (`quest`: ID or a fragment of a quest or NPC name; `/mcp quest <name or ID>` in game adds any other quest) |
+| `wow_lookup` | what an item or spell really does in this game: the answers to `/mcp item` and `/mcp spell` typed in game plus everything else the dump knows under that name or ID (bags, bank, equipment, vendor and trainer offers, quest rewards, auctions, known spells), with the section each hit came from; when nothing is there it says what the player should type |
 | `wow_guide` | the next steps of the player's Guidelime leveling guide (for example TUGs) in guide order, as readable text with quest names, states and places |
-| `wow_social` | friends and guild from the most recently opened windows: who is online, level, class, zone, rank, counts and the age of the record; `includeOffline`. The addon does not ask the game server for these lists on its own, so you must open them in the game (PvP is in `wow_character`) |
-| `wow_section` | any dump section by name, without filters: `actionBars`, `macros`, `completedQuests`, `flightPaths`, `stats`, `auras`, `currencies`, `probe`, `loot`, `xpGains`, `buyback`, `friends`, `guild`, `vendors`, `trainers`, `stable`, `questOffer`, `questTurnIn` and the rest |
+| `wow_zone_progress` | how far the character is with a zone's quests: done, in the log and left (with level, required level, state and quest giver with coordinates) and unfinished quest chains; quests for another faction, race or class are left out and counted; the quest list is read in game from the quest database the player has installed (QuestieDB) for the current zone and the zones of the log quests (`zone`: name or fragment, default the current zone) |
+| `wow_social` | friends and guild from the most recently opened windows: who is online, level, class, zone, rank, note, counts and the age of the record; `includeOffline`; `limit` (guild members listed, default 40, closest to your level first; -1 = all) and `query` (filter by name, class, zone or rank); a roster `summary` (classes, level bands) and `groupCandidates` (online guild members and friends within `levelRange` levels of the character, by tank-, healer- or damage-capable class). The addon does not ask the game server for these lists on its own, so you must open them in the game (PvP is in `wow_character`) |
+| `wow_section` | any dump section by name, without filters: `actionBars`, `macros`, `completedQuests`, `flightPaths`, `stats`, `auras`, `currencies`, `probe`, `loot`, `xpGains`, `buyback`, `friends`, `guild`, `vendors`, `trainers`, `stable`, `questOffer`, `questTurnIn`, `achievements`, `statistics`, `titles`, `collections` and the rest |
 
 `wow_character` additionally shows currencies and tokens and play time, `wow_bags` the value of junk (Poor quality) and ammo, and `wow_equipment` a durability summary with the repair cost at the last vendor that repairs. `wow_status` hints when the dump comes from an older addon version. Example questions for every tool: [docs/HOW_TO_ASK.md](docs/HOW_TO_ASK.md).
 
@@ -291,7 +303,7 @@ Every prompt takes an optional `character`. In your MCP client they are in the `
 | `before_logout` | what to do before leaving: an inn for rested XP, mail, auctions, repair, bag space, warnings from `wow_status` |
 | `first_run` | an introduction after installation or for a new character: what the assistant sees, which windows to open, what to ask about |
 | `week_in_game` | a summary of the last 7 days from the history: levels, gold, play time, the best session and events |
-| `pet_care` | the state of a Hunter's pet: happiness, loyalty, training points, diet versus food in bags (by item subtype), missing ranks and a training points plan, comparison with the stable |
+| `pet_care` | the state of a Hunter's pet: happiness, loyalty, training points, which bag food it can eat and for how many feedings (by the game client's answer; by item subtype for older dumps), missing ranks and a training points plan, where to tame beasts with ranks the Hunter lacks (only from observed beasts), comparison with the stable |
 
 `session_plan` now uses the quest difficulty rating, the XP rate, cooldowns, gear durability and mail.
 
@@ -329,7 +341,7 @@ SavedVariables are shared across the whole account, so the file contains a dump 
 
 The server remembers every dump it reads in the `history` directory next to the server binary (with `install.sh`: `~/.local/share/wow-mcp/history`; on Windows: `bin\history`) (one JSON file per dump, by default the 50 most recent per character; dumps older than 7 days are gzipped as `.json.gz`, and one character's directory has a 200 MB limit, see `--history-max-mb` and `--history-compress-days`). `wow_changes` computes differences from this history. A dump enters the history when the server reads it: on a question to the assistant, and while the server runs also within 5 seconds of every save (it watches the file's modification time). Saves made while the MCP client is closed are seen only as the last one.
 
-Next to the dumps the server keeps a long history in `history.db` (SQLite) in the same directory: one compact row per dump (level, XP, gold, play time, deaths, completed quests, zone), the addon's `eventLog` entries and the auction prices you saw, per realm. It is not limited to the 50 most recent dumps, so `wow_gold_history`, `wow_progress`, `wow_session_rating`, goal ETAs, `wow_timeline` and the price trend in `wow_auctions` reach further back. Several server processes may share the file.
+Next to the dumps the server keeps a long history in `history.db` (SQLite) in the same directory: one compact row per dump (level, XP, gold, play time, deaths, completed quests, zone, honor and honorable kills when the dump has a `pvp` section), the addon's `eventLog` entries and the auction prices you saw, per realm. It is not limited to the 50 most recent dumps, so `wow_gold_history`, `wow_progress`, `wow_session_rating`, goal ETAs, `wow_timeline` and the price trend in `wow_auctions` reach further back. Several server processes may share the file.
 
 ### Stale data
 
@@ -337,7 +349,7 @@ When a dump is more than 2 hours old, every tool starts its response with a `WAR
 
 ### Goals and stat weights
 
-`wow_goal_set` saves goals in the `goals.json` file (by default next to the history directory, or the one given by `--goals-file`). This is the server's only write besides the history and the log; the server never writes in the game directory. Gold in the file is copper. Example:
+`wow_goal_set` saves goals in the `goals.json` file (by default next to the history directory, or the one given by `--goals-file`). Besides the history, the log and a dump you ask it to share, this is the server's only write; the server never writes in the game directory. Gold in the file is copper. Example:
 
 ```json
 {"version":1,"goals":[
@@ -369,6 +381,8 @@ The optional `weights.json` file (next to the goals file) sets stat weights for 
 | `--max-response-kb` | 48 | answers larger than this become a shortened envelope with a hint how to narrow the request; 0 = no cap |
 | `--account` (`WOW_ACCOUNT`) | newest dump | pins the account folder under `WTF/Account` when there are several |
 | `--client` (`WOW_CLIENT`) | newest dump | pins the client folder (`_forever_`, `_classic_`, ...) inside the game directory |
+| `--share-dir` | `shared` next to the history | where anonymized dumps are written (`wow_share_dump`, `--share-dump`); a path in the game directory is rejected |
+| `--share-dump` | | writes an anonymized copy of the latest dump, prints what was removed and exits; `--share-character <name>` picks the character. See [docs/SHARING_DUMPS.md](docs/SHARING_DUMPS.md) |
 | `--check` | | checks the dump file and exits |
 | `--version` | | prints the version and exits |
 
@@ -422,6 +436,9 @@ python3 addon/tests/run_addon.py forever server/testdata/WowMcp_forever.lua
 - **Have an idea?** [Suggest a feature](https://github.com/Piekario/wow-mcp/issues/new?template=feature_request.yml): a short form, no technical knowledge needed. Vote with a 👍 on
   [existing suggestions](https://github.com/Piekario/wow-mcp/issues?q=is%3Aissue+label%3Aenhancement); the most wanted ones are picked up first.
 - **Bugs:** [Issues](https://github.com/Piekario/wow-mcp/issues/new/choose) (please include `wow_doctor` output and `/mcp status`).
+- **Play another class, faction or language?** [Share an anonymized dump](https://github.com/Piekario/wow-mcp/issues/new?template=share_dump.yml):
+  ask your assistant to "share an anonymized dump of my character", read the file it writes and attach it. It becomes test data, so your
+  class is checked on every change. What is removed and kept: [docs/SHARING_DUMPS.md](docs/SHARING_DUMPS.md).
 - **Contributing code, docs or tests:** see [CONTRIBUTING.md](CONTRIBUTING.md). Fork, branch, `make test`, pull request; CI must pass on Linux,
   macOS and Windows. Reports from game clients other than WoW: Forever (`/mcp probe` output) are especially welcome.
 - **Security problems:** report privately, see [SECURITY.md](SECURITY.md).
@@ -473,14 +490,14 @@ has no case). A new addon section is a file in `Sections/`, a registry call and 
 
 1. The addon only reads state through the official API.
 2. No actions in the game without a player click.
-3. The server reads only the file written by the game; it writes only the history, log and goals file (through `wow_goal_set`) in its own directory, never in the game directory.
-4. Zero contact with the game process, its memory and network traffic.
+3. The server reads only the file written by the game; it writes only the history, log, goals file (through `wow_goal_set`) and anonymized dumps you ask for (`wow_share_dump`) in its own directory, never in the game directory.
+4. Zero contact with the game process, its memory and network traffic. The server opens no network connection; sharing a dump is a file you attach yourself.
 
 ## What the addon dumps (v0.10.0)
 
 On every `/mcp reload`: character, statistics, buffs, quest log, IDs of completed quests, bags and gear
 (with stats and the full item description, and ammo with the item count), abilities, talents, professions
-and weapon skills, pet (action bar and learned abilities), `equipmentSets` (equipment sets), `pvp` (honor and kills), aura duration (`expiresAt`, `duration`), action bars, reputation, macros,
+and weapon skills, pet (action bar, learned abilities and, since 0.22.0, which bag food it can eat), `beasts` (Hunters only, since 0.22.0: beasts the account's Hunters tamed or examined with Beast Lore), `classBuffGroups` (since 0.22.0: the class buff groups with the client's spell names), `equipmentSets` (equipment sets), `pvp` (honor and kills), aura duration (`expiresAt`, `duration`), action bars, reputation, macros,
 `currencies` (currencies and tokens), `cooldowns` (cooldowns longer than 90 s, e.g. Hearthstone), `played` (play time),
 `group` (party or raid composition) and `dungeons` (dungeons from the group finder and instance lockouts). Talents have
 whole trees with descriptions. The character also has zone, subzone, coordinates, `resting` and `bindLocation`. The dump carries `timings`

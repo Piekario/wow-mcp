@@ -70,9 +70,11 @@ func Diagnose(s snapshot.Snapshot, f Facts, fresh snapshot.Freshness) Report {
 		windowSections(d),
 		unloadedDump(d, f),
 		clientLanguage(d),
-		historyCheck(f),
-		goalsCheck(f),
 	}
+	if d.HasClassGroups {
+		checks = append(checks, classBuffIDs(d))
+	}
+	checks = append(checks, historyCheck(f), goalsCheck(f))
 	return build(checks, f)
 }
 

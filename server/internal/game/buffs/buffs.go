@@ -6,9 +6,11 @@
 // (spells section) and no effect from its group is among the auras. "Time left" is computed only when the dump has an
 // expiresAt or remaining field (addon 0.7.0+ saves expiresAt and duration when the client gives them; older dumps do not).
 //
-// Locale independence (addon 0.10.0): the groups of "one of these is enough" (all Aspects, all Blessings) are defined by
-// English spell names, and no locale-independent group property exists in the dump (the client has no spell family
-// field, and the spell IDs of Forever's ranks are not verified). What the dump does give in every language is each
+// Locale independence: the groups of "one of these is enough" (all Aspects, all Blessings) are defined by English
+// spell names in rules(), and the client has no spell family field. Since addon 0.22.0 the dump carries the groups as
+// spell IDs with the names the client gives them in its language (the classBuffGroups section), so they match on any
+// client; an ID whose name the English rule does not accept is dropped and reported (groups.go). For older dumps, and
+// as a fallback, addon 0.10.0 gives in every language each
 // spell's icon and the aura's icon and spell ID, so an active aura counts as a known spell's buff when the IDs or
 // icons are equal (all ranks of a spell share an icon), and the spells the client flags as self buffs (selfBuff)
 // can be checked against the active auras without any name (selfBuffsNotActive).
@@ -59,6 +61,7 @@ type Dump struct {
 	HasAuras      bool
 	Auras         []Aura
 	Spells        []Spell
+	Groups        []DumpGroup
 	Class         string
 	EnglishClient bool
 	Pet           PetState
@@ -109,13 +112,20 @@ type Report struct {
 	AnyTiming          bool
 	Missing            []Gap
 	SelfBuffsNotActive []string
+	ByClientNames      bool // the groups came from the dump's classBuffGroups section, not from the English rules
+	IDMismatches       []IDMismatch
 }
 
 // group is a family of spells of which one active is enough (e.g. one Aspect at a time).
 type group struct {
 	label    string
-	prefixes []string // the spell/aura name starts with one of these
-	names    []string // or is one of these names
+	prefixes []string       // the spell/aura name starts with one of these
+	names    []string       // or is one of these names
+	ids      map[int64]bool // an aura with one of these spell IDs belongs to the group as well
+}
+
+func (g group) matchesAura(a Aura) bool {
+	return g.matches(a.Name) || (a.HasID && g.ids[a.ID])
 }
 
 func (g group) matches(name string) bool {
@@ -169,10 +179,12 @@ func Inspect(d Dump, fresh snapshot.Freshness) Report {
 		r.Buffs = append(r.Buffs, status)
 		active = append(active, a)
 	}
-	r.Missing = missing(d, active)
-	// On an English client with rules for the class the name groups are the better answer (they know which buffs exclude
-	// each other); otherwise the ID and icon list is all there is.
-	if !d.EnglishClient || len(rules()[d.Class]) == 0 {
+	groups, mismatches := classGroups(d)
+	r.ByClientNames, r.IDMismatches = len(d.Groups) > 0, mismatches
+	r.Missing = missing(d, groups, active)
+	// The groups know which buffs exclude each other, so they are the better answer; without them (an old dump, or a
+	// non-English client with no section) the ID and icon list is all there is.
+	if !r.ByClientNames && (!d.EnglishClient || len(rules()[d.Class]) == 0) {
 		r.SelfBuffsNotActive = selfBuffsNotActive(d.Spells, active)
 	}
 	return r
@@ -233,13 +245,13 @@ func selfBuffsNotActive(known []Spell, active []Aura) []string {
 }
 
 // missing returns the class buff groups whose spell the character knows but with no aura from the group.
-func missing(d Dump, active []Aura) []Gap {
+func missing(d Dump, groups []group, active []Aura) []Gap {
 	known := map[string]bool{}
 	for _, sp := range d.Spells {
 		known[sp.Name] = true
 	}
 	var out []Gap
-	for _, g := range rules()[d.Class] {
+	for _, g := range groups {
 		spells := inGroup(g, known)
 		if len(spells) == 0 || anyIn(g, active, d.Spells) {
 			continue
@@ -278,7 +290,7 @@ func inGroup(g group, known map[string]bool) []string {
 // known spell that is in the group.
 func anyIn(g group, active []Aura, known []Spell) bool {
 	for _, a := range active {
-		if g.matches(a.Name) {
+		if g.matchesAura(a) {
 			return true
 		}
 	}

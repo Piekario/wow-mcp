@@ -1,0 +1,38 @@
+# tool wow_lookup variant=spell_name
+# args: {"kind":"spell","query":"arcane shot"}
+# isError: false
+--- content[0] ---
+{
+  "elsewhere": [],
+  "found": true,
+  "kind": "spell",
+  "note": "This is everything the dump knows. Describe the item or spell only from these fields: World of Warcraft: Forever differs from other game versions, so do not fill gaps from memory.",
+  "query": "arcane shot",
+  "saved": [
+    {
+      "castTime": "instant",
+      "cost": [
+        "50 mana"
+      ],
+      "description": "An instant shot that causes 15 Arcane damage.",
+      "id": 3044,
+      "kind": "spell",
+      "name": "Arcane Shot",
+      "query": "Arcane Shot",
+      "range": "5-35 yards",
+      "rank": "Rank 1",
+      "savedAgo": "30 min",
+      "tooltip": [
+        "Arcane Shot | Rank 1",
+        "50 Mana | 35 yd range",
+        "Instant",
+        "An instant shot that causes 15 Arcane damage."
+      ]
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

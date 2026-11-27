@@ -170,11 +170,30 @@ func (c ChallengeReport) render() map[string]any {
 		putIf(entry, "description", ch.Description)
 		putIf(entry, "reward", ch.Reward)
 		putIf(entry, "points", ch.Points)
+		if len(ch.Missing) > 0 {
+			entry["missing"] = ch.Missing
+		}
+		if ch.MoreMissing > 0 {
+			entry["moreCriteriaNotListed"] = ch.MoreMissing
+		}
 		open = append(open, entry)
 	}
-	out := map[string]any{"total": c.Total, "completed": len(c.CompletedNames), "completedNames": c.CompletedNames, "open": open}
+	out := map[string]any{"total": c.Total, "source": c.Source, "completed": len(c.CompletedNames), "completedNames": c.CompletedNames, "open": open}
+	done := []any{}
+	for _, ch := range c.Done {
+		entry := map[string]any{"name": ch.Name}
+		putIf(entry, "category", ch.Category)
+		if ch.CompletedOn != "" {
+			entry["completedOn"] = ch.CompletedOn
+		}
+		done = append(done, entry)
+	}
+	out["completedList"] = done
+	if c.MatchedBy != "" {
+		out["matchedBy"] = c.MatchedBy
+	}
 	if c.Total == 0 {
-		out["note"] = "No achievement category named Legacy in this client; challenges may live elsewhere (see discovery=true)."
+		out["note"] = "No achievement in a category named Legacy and none with a Legacy Point reward in this dump; challenges may live elsewhere (see discovery=true)."
 	} else if c.NotListed > 0 {
 		out["openTruncated"] = c.NotListed
 	}

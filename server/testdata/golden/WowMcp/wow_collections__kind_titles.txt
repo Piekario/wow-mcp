@@ -1,0 +1,21 @@
+# tool wow_collections variant=kind_titles
+# args: {"kind":"titles"}
+# isError: false
+--- content[0] ---
+{
+  "kind": "titles",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "titles": {
+    "current": "the Patient",
+    "known": [
+      "Private",
+      "the Patient"
+    ],
+    "knownCount": 2,
+    "titlesInGame": 143
+  }
+}

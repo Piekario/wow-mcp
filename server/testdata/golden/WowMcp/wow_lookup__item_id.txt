@@ -1,0 +1,55 @@
+# tool wow_lookup variant=item_id
+# args: {"query":"5586"}
+# isError: false
+--- content[0] ---
+{
+  "addonNote": "The dump has no lookups section: it needs addon 0.21.0 or newer and /mcp reload.",
+  "ask": "The dump only mentions this by name or ID and holds no full in-game description of it. For the real text ask the player to type /mcp item 5586 or /mcp spell 5586 in game, then /mcp reload.",
+  "elsewhere": [
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Curvewood Dagger",
+          "matchedIn": "id",
+          "matchedText": "5586",
+          "path": [
+            "quests",
+            "Cave Mushrooms",
+            "Curvewood Dagger"
+          ]
+        }
+      ],
+      "section": "quests",
+      "shown": 1,
+      "truncated": false
+    },
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Curvewood Dagger",
+          "matchedIn": "id",
+          "matchedText": "5586",
+          "path": [
+            "equipment",
+            "Curvewood Dagger"
+          ],
+          "summary": "mainHand"
+        }
+      ],
+      "section": "equipment",
+      "shown": 1,
+      "truncated": false
+    }
+  ],
+  "found": true,
+  "note": "This is everything the dump knows. Describe the item or spell only from these fields: World of Warcraft: Forever differs from other game versions, so do not fill gaps from memory.",
+  "query": "5586",
+  "saved": [],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

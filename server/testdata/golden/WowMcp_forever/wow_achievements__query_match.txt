@@ -1,0 +1,64 @@
+# tool wow_achievements variant=query_match
+# args: {"query":"explore","view":"all"}
+# isError: false
+--- content[0] ---
+{
+  "achievements": [
+    {
+      "category": "Exploration",
+      "completed": true,
+      "completedOn": "2026-08-30",
+      "description": "Explore Teldrassil, revealing the covered areas of the world map.",
+      "name": "Explore Teldrassil",
+      "points": 10
+    },
+    {
+      "category": "Exploration",
+      "completed": false,
+      "criteria": "2/4",
+      "description": "Explore Darkshore, revealing the covered areas of the world map.",
+      "missing": [
+        "Ruins of Mathystra",
+        "Grove of the Ancients"
+      ],
+      "name": "Explore Darkshore",
+      "points": 10,
+      "progressPercent": 50
+    },
+    {
+      "category": "Exploration",
+      "completed": false,
+      "criteria": "2/10",
+      "description": "Explore the regions of Kalimdor.",
+      "missing": [
+        "Ashenvale",
+        "The Barrens",
+        "Durotar",
+        "Mulgore",
+        "Stonetalon Mountains",
+        "Desolace",
+        "Feralas",
+        "Thousand Needles"
+      ],
+      "name": "Explore Kalimdor",
+      "points": 25,
+      "progressPercent": 20,
+      "reward": "Reward: Title - the Wanderer"
+    }
+  ],
+  "completed": 6,
+  "completedPercent": 50,
+  "coverage": "The addon lists up to 600 achievements of this character (notListed counts the rest), with the completion date of completed ones and, for incomplete ones only, up to 8 criteria (missing ones first). Account-wide, guild and comparison data are not in the dump.",
+  "matching": {
+    "achievements": 3,
+    "completed": 1
+  },
+  "points": 41,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "total": 12,
+  "view": "all"
+}

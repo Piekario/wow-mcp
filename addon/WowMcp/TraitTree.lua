@@ -60,6 +60,13 @@ local function describe(spellID, entryID, rank)
     return nil
 end
 
+-- Description of a spell by ID and where it came from; nil when the client does not know it yet.
+function TraitTree.spellDescription(spellID)
+    local ok, text, source = pcall(describe, spellID)
+    if ok then return text, source end
+    return nil
+end
+
 -- Adds a description to a node entry. No description: a request for spell data (it only loads data into client
 -- memory, not a game action) and the owner's missingDescriptions counter, so the server knows another dump will help.
 function TraitTree.addDescription(owner, entry, entryID, rank)

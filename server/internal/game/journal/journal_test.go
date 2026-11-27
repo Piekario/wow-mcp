@@ -25,7 +25,6 @@ type step struct {
 	deaths                int64
 	completed             []int64
 	rareItem              string
-	extraQuest            *map[string]any
 	loot                  []any // entries of the dump's loot section
 	xpKills, xpQuests     int64 // XP from kills and quests in the xpGains section (both 0 = no section)
 }

@@ -13,7 +13,7 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
 ```json
 {
   "bagSpace": {
-    "freeSlots": 26,
+    "freeSlots": 22,
     "totalSlots": 32
   },
   "class": "Hunter",

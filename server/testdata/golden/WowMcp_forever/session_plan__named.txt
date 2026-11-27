@@ -11,11 +11,11 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
 ```json
 {
   "bagSpace": {
-    "freeSlots": 26,
+    "freeSlots": 22,
     "totalSlots": 32
   },
   "character": {
-    "addonVersion": "0.20.0",
+    "addonVersion": "0.22.0",
     "bindLocation": "Auberdine",
     "class": "Hunter",
     "classToken": "HUNTER",
@@ -109,6 +109,8 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
       "deaths": 1,
       "duration": "2 h",
       "from": "2026-11-15 14:26",
+      "honorGained": 0,
+      "honorableKills": 0,
       "levelsGained": 1,
       "moneyChange": "+25s 0c",
       "moneyPerHour": "+12s 50c",
@@ -129,6 +131,8 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
       "deaths": 1,
       "duration": "2 h",
       "from": "2026-11-15 14:26",
+      "honorGained": 0,
+      "honorableKills": 0,
       "levelsGained": 1,
       "moneyChange": "+25s 0c",
       "moneyPerHour": "+12s 50c",
@@ -192,7 +196,7 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
       "total": 812
     },
     "bags": {
-      "freeSlots": 26,
+      "freeSlots": 22,
       "gainedSlotsPerHour": 0,
       "hoursUntilFull": "no data",
       "note": "used bag slots did not grow in the measured stretch of history",

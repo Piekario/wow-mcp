@@ -11,6 +11,7 @@
       {
         "area": "Stormwind City",
         "class": "Paladin",
+        "classToken": "PALADIN",
         "connected": true,
         "level": 22,
         "name": "Tankadin",
@@ -19,12 +20,14 @@
       {
         "area": "Darkshore",
         "class": "Priest",
+        "classToken": "PRIEST",
         "connected": true,
         "level": 19,
         "name": "Healbot"
       },
       {
         "class": "Mage",
+        "classToken": "MAGE",
         "connected": false,
         "level": 60,
         "name": "Oldfriend"

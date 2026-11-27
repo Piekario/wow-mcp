@@ -1,0 +1,12 @@
+# tool wow_achievements variant=all_args
+# args: {"category":"Exploration","character":"Piekasz","limit":1,"query":"Explore","view":"closest"}
+# isError: false
+--- content[0] ---
+{
+  "note": "The dump has no achievements section. Either the WowMcp addon is older than this feature (update it and type /mcp reload), or this game client has no achievement API (GetCategoryList, GetAchievementInfo), so the addon has nothing to read. To tell which: type /mcp probe in game, then /mcp reload, and read wow_section with section probe and path globals for the API names. Do not answer from general game knowledge as if it were this character's data.",
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

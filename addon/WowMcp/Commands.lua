@@ -16,18 +16,27 @@ local HELP = {
     "/mcp note <text> - note for the assistant in the dump (e.g. what you plan today); bare /mcp note removes it",
     "/mcp quest <id or name> - where a quest starts and ends, from the Questie database you have installed; the answer also goes into the dump."
         .. " With TomTom installed, click a coordinate to set a waypoint",
+    "/mcp item <id, item link or exact name> - reads the item's description from the game and saves it for the assistant"
+        .. " (the client knows items it has seen; an ID is always tried)",
+    "/mcp spell <id, spell link or name> - reads the spell's description, cast time, cost and range and saves it for the assistant",
     "/mcp off <section> - stop collecting this section; bare /mcp off lists disabled sections and all section names",
     "/mcp on <section> - collect the section again",
     "/mcp minimap on|off - minimap button (left click: panel; on by default)",
     "/mcp compact on|off - one-line panel: dump age and Save button (off by default)",
     "/mcp ahtip on|off - auction house price in the item tooltip (on by default)",
+    "/mcp share - open a window with a short client report (no names, items or gold) to copy into an issue, so your class,"
+        .. " client and language can be supported; /mcp share off|on turns the rare chat reminder off or on, /mcp share remind prints it now",
     "/mcp options - open the WowMcp page in the game's options (the same switches as the commands above)",
-    "/mcp probe - diagnostics: list of client API functions (spells, items, maps, achievements...), the events the client accepted"
-        .. " and the client's Legacy API names",
+    "/mcp loot [dungeon] - read what the bosses of a dungeon drop from the Encounter Journal (default: the dungeon you are in,"
+        .. " or the dungeons for your level); the journal's selection is put back. Then /mcp reload",
+    "/mcp probe - diagnostics: list of client API functions (spells, items, maps, achievements...), the events the client accepted,"
+        .. " the client's Legacy API names, what the client answers when asked whether the pet can eat a few bag items,"
+        .. " and the tooltip of your target when it carries Beast Lore",
     "Windows saved automatically when opened: trainer and vendor (last 10), bank, flights, professions, mail,"
         .. " auction house (search results), Inspect, stable, NPC quest (offer and turn-in),"
         .. " buyback list (at the vendor), friends and guild (from client memory once the window is open; the addon requests nothing from the server)",
     "Deaths, your own loot and experience (kills, quests) since the last save are recorded automatically."
+        .. " A Hunter also records the beasts they tame or examine with Beast Lore (shared by all Hunters on the account)."
         .. " The panel highlights Save after new window data, but never saves by itself.",
 }
 
@@ -115,6 +124,51 @@ local function lookUpQuest(rest)
     for _, line in ipairs(lines) do chat(line) end
     if coordinates then ns.Waypoints.suggestTomTom() end
     Panel.refresh()
+end
+
+local LOOKUP_USAGE = {
+    item = "Usage: /mcp item <item ID, item link (shift-click an item) or exact item name>",
+    spell = "Usage: /mcp spell <spell ID, spell link or spell name>",
+}
+
+local LOOKUP_REPLY = {
+    disabled = "The lookups section is disabled. Enable it: /mcp on lookups",
+    pending = "The client has not loaded this %s yet and was asked for it. The result is saved and announced here in a moment;"
+        .. " if nothing appears, check the ID.",
+    unknown = "The client does not know that %s by name. Use its ID, or shift-click it into the command to paste a link.",
+}
+
+-- Shared by /mcp item and /mcp spell: `lookup` is ItemLookup or SpellLookup.
+local function lookUp(kind, lookup, rest)
+    local status, entry = lookup.run(rest)
+    if status == "usage" then
+        chat(LOOKUP_USAGE[kind])
+    elseif status == "saved" then
+        chat(ns.Lookups.confirmation(entry))
+        if entry.descriptionMissing then
+            chat("The client has no description for this spell yet. Repeat the command in a moment.")
+        end
+    else
+        chat(LOOKUP_REPLY[status]:format(kind))
+    end
+end
+
+local function lookUpItem(rest) lookUp("item", ns.ItemLookup, rest) end
+local function lookUpSpell(rest) lookUp("spell", ns.SpellLookup, rest) end
+
+local function share(rest)
+    local word = firstWord(rest)
+    if word == "off" or word == "on" then
+        ns.ShareReminder.setEnabled(word == "on")
+        chat(word == "on" and "Sharing reminders are on: at most one chat line a day. Turn off: /mcp share off"
+            or "Sharing reminders are off. The window stays available: /mcp share")
+        return
+    end
+    if word == "remind" then
+        ns.ShareReminder.show()
+        return
+    end
+    ns.ShareWindow.open()
 end
 
 local function listSections()
@@ -241,6 +295,10 @@ local COMMANDS = {
     compact = setCompactPanel,
     note = setNote,
     quest = lookUpQuest,
+    item = lookUpItem,
+    spell = lookUpSpell,
+    loot = function(rest) ns.DungeonLoot.run(rest) end,
+    share = share,
     off = disableSection,
     on = enableSection,
     status = showStatus,

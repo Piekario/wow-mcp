@@ -95,6 +95,7 @@ func goldenCases() []goldenCase {
 
 	add(tcs("wow_status", "default", args{}))
 	add(characterVariants("wow_doctor")...)
+	add(characterVariants("wow_share_dump")...)
 	for _, n := range []string{"wow_character", "wow_quests", "wow_bags", "wow_equipment", "wow_spells", "wow_pet", "wow_trainer"} {
 		add(characterVariants(n)...)
 	}
@@ -278,6 +279,15 @@ func goldenCases() []goldenCase {
 		tc("wow_dungeons", "all_args", args{"character": charKnown, "all": true, "name": "a"}),
 		tc("wow_dungeons", "unknown_character", args{"character": charUnknown}),
 	)
+	add(characterVariants("wow_dungeon_loot")...)
+	add(
+		tc("wow_dungeon_loot", "all_items", args{"upgradesOnly": false}),
+		tc("wow_dungeon_loot", "dungeon_match", args{"dungeon": "dead"}),
+		tc("wow_dungeon_loot", "dungeon_nomatch", args{"dungeon": "Zzzz"}),
+		tc("wow_dungeon_loot", "slot_back", args{"slot": "cloak"}),
+		tc("wow_dungeon_loot", "bad_slot", args{"slot": "moon"}),
+		tc("wow_dungeon_loot", "all_args", args{"character": charKnown, "dungeon": "wailing", "slot": "waist", "upgradesOnly": false}),
+	)
 
 	add(
 		tcs("wow_export", "default", args{}),
@@ -432,13 +442,77 @@ func goldenCases() []goldenCase {
 		tc("wow_quest_lookup", "quest_nomatch", args{"quest": "Zzzz"}),
 		tc("wow_quest_lookup", "all_args", args{"character": charKnown, "quest": "947"}),
 	)
+	add(
+		tc("wow_lookup", "item_id", args{"query": "5586"}),
+		tc("wow_lookup", "item_name", args{"query": "skinning", "kind": "item"}),
+		tc("wow_lookup", "spell_name", args{"query": "arcane shot", "kind": "spell"}),
+		tc("wow_lookup", "spell_link", args{"query": "|cff71d5ff|Hspell:19416|h[Efficiency]|h|r"}),
+		tc("wow_lookup", "from_dump_only", args{"query": "linen cloth"}),
+		tc("wow_lookup", "nothing_found", args{"query": "Zzzz"}),
+		tc("wow_lookup", "nothing_found_item_id", args{"query": "424242", "kind": "item"}),
+		tc("wow_lookup", "empty_query", args{"query": ""}),
+		tc("wow_lookup", "bad_kind", args{"query": "arcane", "kind": "quest"}),
+		tc("wow_lookup", "no_args", args{}),
+		tc("wow_lookup", "unknown_character", args{"character": charUnknown, "query": "arcane"}),
+		tc("wow_lookup", "all_args", args{"character": charKnown, "query": "arcane shot", "kind": "spell"}),
+	)
+	add(characterVariants("wow_zone_progress")...)
+	add(
+		tc("wow_zone_progress", "zone_name", args{"zone": "darkshore"}),
+		tc("wow_zone_progress", "zone_fragment", args{"zone": "storm"}),
+		tc("wow_zone_progress", "zone_unknown", args{"zone": "Zzzz"}),
+		tc("wow_zone_progress", "all_args", args{"character": charKnown, "zone": "Darkshore"}),
+	)
 	add(characterVariants("wow_guide")...)
+	add(characterVariants("wow_achievements")...)
+	add(
+		tc("wow_achievements", "view_timeline", args{"view": "timeline"}),
+		tc("wow_achievements", "view_recent", args{"view": "recent"}),
+		tc("wow_achievements", "view_closest", args{"view": "closest"}),
+		tc("wow_achievements", "view_all", args{"view": "all"}),
+		tc("wow_achievements", "view_unknown", args{"view": "nope"}),
+		tc("wow_achievements", "query_match", args{"view": "all", "query": "explore"}),
+		tc("wow_achievements", "query_nomatch", args{"view": "all", "query": "Zzzz"}),
+		tc("wow_achievements", "category_parent", args{"category": "Quests"}),
+		tc("wow_achievements", "timeline_limit_1", args{"view": "timeline", "limit": 1}),
+		ir(tc("wow_achievements", "all_args", args{"character": charKnown, "view": "closest", "query": "Explore", "category": "Exploration", "limit": 1})),
+	)
+	add(characterVariants("wow_statistics")...)
+	add(
+		tc("wow_statistics", "query_match", args{"query": "death"}),
+		tc("wow_statistics", "query_nomatch", args{"query": "Zzzz"}),
+		tc("wow_statistics", "category_parent", args{"category": "Character"}),
+		ir(tc("wow_statistics", "all_args", args{"character": charKnown, "query": "gold", "category": "Wealth"})),
+	)
+	add(characterVariants("wow_collections")...)
+	add(
+		tc("wow_collections", "kind_titles", args{"kind": "titles"}),
+		tc("wow_collections", "kind_mounts", args{"kind": "mounts"}),
+		tc("wow_collections", "kind_companions", args{"kind": "companions"}),
+		tc("wow_collections", "kind_unknown", args{"kind": "toys"}),
+		tc("wow_collections", "query_match", args{"query": "cat"}),
+		ir(tc("wow_collections", "all_args", args{"character": charKnown, "kind": "mounts", "query": "saber"})),
+	)
+	for _, sec := range []string{"achievements", "statistics", "titles", "collections"} {
+		add(tc("wow_section", "section_"+sec, args{"section": sec}))
+	}
+	add(tc("wow_search", "achievement_text", args{"query": "Darkshore"}))
 	add(characterVariants("wow_social")...)
 	add(
 		tc("wow_social", "include_offline", args{"includeOffline": true}),
 		tc("wow_social", "include_offline_false", args{"includeOffline": false}),
 		tc("wow_social", "bad_type", args{"includeOffline": "yes"}),
-		ir(tc("wow_social", "all_args", args{"character": charKnown, "includeOffline": true})),
+		tc("wow_social", "limit_one", args{"limit": 1}),
+		tc("wow_social", "limit_all", args{"limit": -1, "includeOffline": true}),
+		ir(tc("wow_social", "limit_invalid", args{"limit": -2})),
+		tc("wow_social", "query_class", args{"query": "priest"}),
+		tc("wow_social", "query_nomatch", args{"query": "zzzz"}),
+		tc("wow_social", "bad_limit_type", args{"limit": "ten"}),
+		tc("wow_social", "level_range", args{"levelRange": 1}),
+		tc("wow_social", "level_range_wide", args{"levelRange": 50}),
+		ir(tc("wow_social", "level_range_negative", args{"levelRange": -3})),
+		tc("wow_social", "bad_level_range_type", args{"levelRange": "five"}),
+		ir(tc("wow_social", "all_args", args{"character": charKnown, "includeOffline": true, "levelRange": 10, "limit": 2, "query": "a"})),
 	)
 	add(
 		ir(tc("wow_compare_characters", "one_character_account", args{})), // the fixtures have one character: an error instead of a comparison
@@ -703,7 +777,8 @@ func newGoldenEnv(t *testing.T, sc goldenScenario) *goldenEnv {
 			t.Fatal(err)
 		}
 	}
-	var options []func(*mcpserver.Config)
+	shareDir := filepath.Join(tmp, "shared")
+	options := []func(*mcpserver.Config){withShares(shareDir)}
 	if sc.ledger {
 		long := seedLedger(t, file)
 		options = append(options, func(c *mcpserver.Config) { c.Ledger = long })
@@ -725,7 +800,7 @@ func newGoldenEnv(t *testing.T, sc goldenScenario) *goldenEnv {
 		ss.Close()
 	})
 
-	scrubber := newPathScrubber(map[string]string{goalsPath: "<GOALS>", file: "<FILE>", histDir: "<HISTORY>", tmp: "<TMP>"})
+	scrubber := newPathScrubber(map[string]string{goalsPath: "<GOALS>", shareDir: "<SHARED>", file: "<FILE>", histDir: "<HISTORY>", tmp: "<TMP>"})
 	return &goldenEnv{cs: cs, scrubber: scrubber}
 }
 
@@ -762,7 +837,7 @@ func newPathScrubber(markers map[string]string) pathScrubber {
 	}
 	return pathScrubber{
 		paths:    strings.NewReplacer(ordered...),
-		afterDir: regexp.MustCompile(`(<GOALS>|<FILE>|<HISTORY>|<TMP>)((?:\\+[^\\\s"]+)+)`),
+		afterDir: regexp.MustCompile(`(<GOALS>|<SHARED>|<FILE>|<HISTORY>|<TMP>)((?:\\+[^\\\s"]+)+)`),
 		osErrors: strings.NewReplacer(
 			"GetFileAttributesEx ", "stat ",
 			"CreateFile ", "open ",

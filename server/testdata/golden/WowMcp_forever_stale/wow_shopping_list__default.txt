@@ -51,8 +51,31 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
   "note": "Vendor prices come from remembered windows (vendors) and may be old; the price in the vendor window is per pack (stack), the price of one piece is the pack price divided by its size. The server buys, teaches and repairs nothing.",
   "order": "purchase priority: trainer skills, repair, ammo, food and materials",
   "petFood": {
-    "foodInBags": 0,
-    "note": "there is no food in the bags that can be given to the pet (subtype Food); a hungry pet loses happiness"
+    "bagFood": {
+      "checkedWith": "itemID",
+      "edible": [
+        {
+          "count": 12,
+          "id": 2672,
+          "name": "Stringy Wolf Meat"
+        },
+        {
+          "count": 5,
+          "id": 2287,
+          "name": "Haunch of Meat"
+        }
+      ],
+      "feedings": 17,
+      "refused": [
+        {
+          "count": 3,
+          "id": 1645,
+          "name": "Moonberry Juice"
+        }
+      ],
+      "source": "the game client itself answered, for each food item in the bags, whether this pet can eat it (C_PetInfo.CanPetEatItem); feedings counts one item per Feed Pet. Vendor food was not checked."
+    },
+    "foodInBags": 17
   },
   "planningHours": 2,
   "repair": {
@@ -78,7 +101,7 @@ WARNING: The data is 3 h 20 min old. Before basing advice on it, ask the player 
       "total": 812
     },
     "bags": {
-      "freeSlots": 26,
+      "freeSlots": 22,
       "gainedSlotsPerHour": 0,
       "hoursUntilFull": "no data",
       "note": "used bag slots did not grow in the measured stretch of history",

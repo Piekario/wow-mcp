@@ -6,12 +6,13 @@ package progress
 import "wowmcp/internal/snapshot"
 
 // Point is what the long history keeps of one dump: the character's numbers, without the dump itself.
-// A number the dump did not have is -1.
+// A number the dump did not have (including honor without a pvp section) is -1.
 type Point struct {
 	At                              int64
 	Level, XP, XPMax, Money, Rested int64
 	Played, Deaths                  int64
 	CompletedQuests                 int64
+	Honor, HonorableKills           int64
 	Zone                            string
 }
 
@@ -32,7 +33,7 @@ func PointOf(s snapshot.Snapshot) (Point, bool) {
 		Level: known(p.char.Level, p.char.HasLevel), XP: known(p.char.XP, p.char.HasXP),
 		XPMax: known(p.char.XPMax, p.char.HasXPMax), Money: known(p.char.Money, p.char.HasMoney),
 		Rested: p.char.Rested, Played: p.played, Deaths: p.deaths,
-		CompletedQuests: int64(p.completed), Zone: zone,
+		CompletedQuests: int64(p.completed), Zone: zone, Honor: p.honor, HonorableKills: p.kills,
 	}, true
 }
 
@@ -43,7 +44,7 @@ func (p Point) progressPoint() progressPoint {
 	xpMax, hasXPMax := unknownAsZero(p.XPMax)
 	money, hasMoney := unknownAsZero(p.Money)
 	return progressPoint{
-		at: p.At, played: p.Played, deaths: p.Deaths, completed: int(max(p.CompletedQuests, 0)),
+		at: p.At, played: p.Played, deaths: p.Deaths, honor: p.Honor, kills: p.HonorableKills, completed: int(max(p.CompletedQuests, 0)),
 		char: characterState{
 			Level: level, XP: xp, XPMax: xpMax, Money: money, Rested: max(p.Rested, 0),
 			HasLevel: hasLevel, HasXP: hasXP, HasXPMax: hasXPMax, HasMoney: hasMoney,

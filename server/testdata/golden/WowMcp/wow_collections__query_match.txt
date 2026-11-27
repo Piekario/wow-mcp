@@ -1,0 +1,37 @@
+# tool wow_collections variant=query_match
+# args: {"query":"cat"}
+# isError: false
+--- content[0] ---
+{
+  "companions": {
+    "count": 2,
+    "known": [
+      {
+        "name": "Whiskers",
+        "species": "Cat (Black Tabby)"
+      }
+    ],
+    "matching": 1,
+    "source": "C_PetJournal",
+    "sourceNote": "read from the pet journal, whose list follows the journal's own filters in game: a hidden pet is missing here"
+  },
+  "kind": "all",
+  "mounts": {
+    "count": 2,
+    "known": [],
+    "matching": 0,
+    "source": "C_MountJournal"
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "titles": {
+    "current": "the Patient",
+    "known": [],
+    "knownCount": 2,
+    "matching": 0,
+    "titlesInGame": 143
+  }
+}

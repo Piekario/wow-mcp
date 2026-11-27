@@ -1,0 +1,5 @@
+# tool wow_achievements variant=view_unknown
+# args: {"view":"nope"}
+# isError: true
+--- content[0] ---
+unknown view "nope": use summary, timeline, recent, closest or all

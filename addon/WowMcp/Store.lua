@@ -1,7 +1,7 @@
 -- SPDX-License-Identifier: GPL-3.0-or-later
 -- Copyright (C) 2026 Piekasz (GitHub: Piekario). Author attribution must be kept: see NOTICE.
 
--- SavedVariables (WowMcpDB): character dumps and settings.
+-- SavedVariables (WowMcpDB): character dumps, settings and the beasts observed on the account.
 -- The game replaces WowMcpDB after the addon files load, so every
 -- function reads the global at call time and never caches it.
 
@@ -151,4 +151,11 @@ function Store.setSectionDisabled(name, disabled)
         settings.disabledSections[name] = nil
         if next(settings.disabledSections) == nil then settings.disabledSections = nil end
     end
+end
+
+-- Beasts the account's Hunters tamed or examined with Beast Lore (Beasts.lua): creature ID -> observation. Account-wide,
+-- because a beast is the same for every character; each Hunter's dump carries a copy (section beasts).
+function Store.beasts()
+    if type(WowMcpDB.beasts) ~= "table" then WowMcpDB.beasts = {} end
+    return WowMcpDB.beasts
 end

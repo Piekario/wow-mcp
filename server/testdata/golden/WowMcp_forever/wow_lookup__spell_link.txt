@@ -1,0 +1,26 @@
+# tool wow_lookup variant=spell_link
+# args: {"query":"|cff71d5ff|Hspell:19416|h[Efficiency]|h|r"}
+# isError: false
+--- content[0] ---
+{
+  "elsewhere": [],
+  "found": true,
+  "note": "This is everything the dump knows. Describe the item or spell only from these fields: World of Warcraft: Forever differs from other game versions, so do not fill gaps from memory.",
+  "query": "|cff71d5ff|Hspell:19416|h[Efficiency]|h|r",
+  "saved": [
+    {
+      "castTime": "instant",
+      "description": "Reduces the Mana cost of your Shots and Stings by 2%.",
+      "id": 19416,
+      "kind": "spell",
+      "name": "Efficiency",
+      "query": "|cff71d5ff|Hspell:19416|h[Efficiency]|h|r",
+      "savedAgo": "30 min"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

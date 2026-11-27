@@ -7,6 +7,260 @@ errors, dump 18 ms), addon 0.7.0 with server 0.9.0 (2026-11-15, no section error
 between are part of 0.11.0 / 0.12.2 and were run with them. Addon 0.14.0 was run on 2026-11-22 (client build 71037, no section errors, dump 25.7 ms: `questDb` for 22 log quests, `guide` reading TUGs, `/mcp quest The Glowing Shard`). **Server 0.15.0 and the 0.12.0 / 0.13.0 addon changes (carried periods, flight zones, auction gear details) have not yet been checked in a real client**: their fixes are
 based on the real dumps (`testdata/real/`), API mocks matching the `/mcp probe` result and golden response tests.
 
+## 0.22.0 (unreleased)
+
+Pet food the client checks, where to tame missing ranks, and class buffs by spell ID, for the addon and the server
+(roadmap 69, 70 and 105). The server expects addon 0.22.0. Run in the real client on 2026-11-24 with a Warlock (build 71037, no section errors, dump 43.5 ms), which confirmed:
+`C_PetInfo.CanPetEatItem(itemID)` returns one boolean and raises an error for an item link (`probe.petFood`); every new
+event is accepted (`PLAYER_TARGET_CHANGED`, `UPDATE_MOUSEOVER_UNIT`, `UNIT_AURA`, `UNIT_PET`, `PET_BAR_UPDATE`,
+`SPELLS_CHANGED`, `UNIT_SPELLCAST_START`, `UNIT_SPELLCAST_CHANNEL_START`); `classBuffGroups` gave Demon Skin (687) and
+Demon Armor (706) with the right names and left out Fel Armor (28176), which this client does not know. Not yet run
+with a Hunter, so the points below about taming, Beast Lore and the pet's food list are still assumptions:
+
+- Tame Beast is spell ID 1515 and fires `UNIT_SPELLCAST_START` or `UNIT_SPELLCAST_CHANNEL_START` with `(unit, castGUID,
+  spellID)`; the tamed pet arrives with `UNIT_PET`, `PET_BAR_UPDATE` or `SPELLS_CHANGED` within 60 s; the pet's GUID has
+  the form `Pet-0-…-<npcID>-…` (otherwise the families are compared); creature GUIDs have the form
+  `Creature-0-…-<npcID>-…`.
+- Beast Lore is spell ID 1462 and leaves an aura on the beast that `C_UnitAuras.GetUnitAuraBySpellID` (or, without it,
+  `C_UnitAuras.GetAuraDataByIndex` / `UnitAura`) finds; the beast's abilities appear in the unit tooltip that
+  `C_TooltipInfo.GetUnit` returns. The tooltip format is unknown, so the lines are saved raw.
+- Class buff spell IDs (`ClassBuffs.lua`) are the IDs of the original game and are not verified for Forever;
+  `C_Spell.GetSpellName` answers with the spell's name in the client's language, and all ranks of a spell share that
+  name. On English clients the server cross-checks every returned name against its English rule and reports an ID that
+  does not fit; on other clients the IDs cannot be cross-checked.
+- Events `PLAYER_TARGET_CHANGED`, `UPDATE_MOUSEOVER_UNIT`, `UNIT_AURA`, `UNIT_PET`, `PET_BAR_UPDATE`, `SPELLS_CHANGED`
+  and the two spellcast events are accepted by the client (`probe.events` shows it).
+
+- **Fixed**
+  - A recipe window for which the client gives no profession name was saved under an empty name, and `wow_recipes`
+    showed a profession called `""` (seen in the real client on 2026-11-23: one recipe, Camp Chair, `professionName`
+    empty, skill 0/0). The addon now saves it as `Unnamed profession`, keeps the client's own fields in `windowInfo`
+    so the missing name can be traced, and drops the old entry; the server shows dumps of older addons the same way.
+  - The `friends` section was never saved in Forever build 71037: opening the friends list fires no `FRIENDLIST_UPDATE`
+    there (real client, 2026-11-24). Every dump now reads the list the client already holds, still without asking the
+    server for it; an empty list read this way is not saved, because the client reports no friends before it has the
+    list. Battle.net friends who are in the game join the list as their character (`battleNet = true`); the account
+    name and BattleTag are not read. Assumes `BNGetNumFriends` and `C_BattleNet.GetFriendAccountInfo(index)` with
+    `gameAccountInfo` (not yet confirmed in the real client; `/mcp probe` now lists the `BNGet*` globals).
+
+- **Added**
+  - Sharing a dump with the project, so classes, factions, clients and languages nobody has tested can become test data.
+    The new tool `wow_share_dump` and the command `wow-mcp --share-dump` (`--share-character`, `--share-dir`) write an
+    anonymized copy of a character's latest dump into the server's own directory, by default `shared` next to the
+    history. Character, guild, friend, group and inspected player names become aliases (`Player`, `Player 2`,
+    `Guild 1`; the same player keeps one alias everywhere), mail senders become `Sender 1`, the realm name and number
+    and player GUIDs are dropped, and the note, macro bodies, mail subjects, guild and friend notes are removed. The
+    collected names are then searched for in every other text (a quest text greeting the character, `<Made by ...>` in
+    a tooltip), and the file is not written if one is still found. A section without privacy rules is left out.
+    Class, race, level, client version, language, all game data and the `/mcp probe` result stay.
+  - In game, like QuestieTrace: `/mcp share` opens a window with one address to copy (Ctrl+C), a few counters and the
+    buttons "I reported this" and "Close". The address is the issue form with a short client report already in it, so
+    the form opens filled in and there is nothing else to paste; a report too long for an address loses detail (API
+    namespace sizes, then section sizes) instead of being cut. The report is built from a fixed list of fields (addon and client version, build, language, class,
+    race, level, section names and sizes, addon errors, rejected events, API namespace sizes after `/mcp probe`) and
+    holds no names, items or gold. A chat line with a link to the window is printed at most once a day, only for a class, client build and language the account has not marked with "I reported this", and never
+    before the character has a dump. `/mcp share remind` prints the line on demand. `/mcp share off` or the new "Sharing reminder" switch on the options page turns it off. The addon sends nothing; a client without timers gets no reminder.
+  - Chat links of the addon share one handler (`ChatLinks.lua`); the TomTom waypoint links work as before.
+  - Nothing is uploaded: the server still opens no network connection (now checked by a test). The player reads the
+    file and attaches it to the new issue form "Share a dump from your class", which also takes the client report. `wow_status` shows `shareDir`.
+  - Accepted dumps live in `server/testdata/shared/`; `TestSharedDumps` requires each to be exactly what the current
+    rules would write and calls every tool on it. The first two are the project's own real Hunter dumps.
+  - [docs/SHARING_DUMPS.md](docs/SHARING_DUMPS.md): what is removed, what stays, and what happens to an accepted dump.
+  - Addon: section `classBuffGroups` (`ClassBuffs.lua`, `Sections/ClassBuffGroups.lua`): the player's class buff groups
+    (Aspects, Blessings, mage and warlock armors, shamans' shields, Arcane Intellect, Fortitude, Mark of the Wild, Battle
+    Shout) as `{label, spells = {{id, name}}}`, one ID per spell, with the name the client gives it in its language. An
+    ID the client does not know is left out; a class without groups has no section.
+  - Server: `wow_buffs` matches the groups by those names, so `missing` works on non-English clients and the `localeNote`
+    and the `selfBuffsNotActive` fallback appear only for dumps without the section. On an English client a returned name
+    that the English rule of the group (`rules()`) does not accept means the ID is wrong for this game version: the spell
+    is dropped from the group and listed in `groupIdMismatches`, and `wow_doctor` warns in the new check `class buff
+    spell IDs` (shown only when the dump has the section). The Hunter's pet warnings (Call Pet, Revive Pet) still match
+    English names.
+  - Addon: `pet.bagFood` (`PetFood.lua`): for every distinct bag item that may be pet food (Food & Drink, and Trade Goods
+    because raw meat and fish are trade goods) the addon asks the client `C_PetInfo.CanPetEatItem` and saves
+    `{checkedWith, items = {id, name, count, canEat}}`. Nothing is saved when the client has no such function or never
+    answers with a boolean. The addon only asks; it never feeds the pet.
+  - Addon: section `beasts` (Hunters only; `Beasts.lua`, `BeastTaming.lua`, `BeastLore.lua`, `Sections/Beasts.lua`): an
+    account-wide store of observed beasts keyed by creature ID (`WowMcpDB.beasts`, at most 300, the least recently seen
+    dropped), carried in every Hunter's dump. When the player tames a beast, the new pet's spellbook abilities with ranks
+    are saved at that moment (`source = tamed`); when the target or mouseover unit carries Beast Lore, its tooltip lines
+    are saved raw (`source = beastLore`), with name, level, family, zone, map ID and the player's position. `/mcp off
+    beasts` stops the recording.
+  - `/mcp probe` also saves `petFood` (the raw answers of `CanPetEatItem` for the first 3 bag items, with each argument
+    form) and `beastLore` (the target's tooltip lines when it carries Beast Lore), so one run confirms the signature and
+    the tooltip format.
+  - Server: `wow_pet` shows `bagFood` (food the pet can eat, food it refuses, `feedings`) and `whereToTame`: each ability
+    rank seen on observed beasts, whether the Hunter knows it (from the Beast Training window; unknown when it was never
+    opened) and which beasts have it (name, level, zone, coordinates, source, when seen), ranks the Hunter does not know
+    first. Beast Lore lines are read tolerantly: `Bite (Rank 3)`, `Bite Rank 3` (with the rank word the client uses
+    elsewhere in the dump, so any language works) or `Bite 3` for an ability name the dump already knows. The answer says
+    the data comes only from beasts this account tamed or examined, and how to collect them when there are none.
+- **Changed**
+  - CI runs `staticcheck` on the server and tests `install.ps1` on a Windows runner, under Windows PowerShell 5.1 and
+    PowerShell 7 (`scripts/test-install.ps1`: a `-Client` value that leaves the game folder is refused, a fresh install
+    with `-Build`, a second install that backs up and removes stale files, `-Rollback`, and an addon folder that is a
+    junction is refused with the linked folder left alone). This closes roadmap item 117.
+  - `pet_care`, `wow_shopping_list`, `wow_reagents` and `wow_bag_plan` use the client's verdict on the bag food when the
+    dump has it: feedings are counted, refused food is named, raw meat the pet eats is kept instead of banked. Older dumps
+    keep the food by item subtype with the note that matching it to the diet is left to the reader.
+  - The player's map position is read by one helper (`Maps.playerPosition`), shared by `character` and `beasts`.
+
+## 0.21.0 (unreleased)
+
+Seven new tools and two extended ones, for the addon and the server. The server expects addon 0.21.0. **Apart from the first run described below, none of this has been run in the
+real client**: everything below was checked only on the addon's API mocks, unit tests and golden responses, and each part
+names the client API it assumes.
+
+Found in the first real-client run (2026-11-24, build 71037): addon 0.21.0 ran with zero section errors and the dump took 43.5 ms
+(achievements 8.3 ms). The achievement and statistics API exist (111 achievements, 63 statistics); `zoneQuests` works with QuestieDB and
+`/mcp item` works. Titles: 0 known of 111. `C_MountJournal` and `GetCompanionInfo` exist but their lists are empty;
+`C_TitleManager` is absent. The `EJ_*` globals exist, but no `dungeonLoot` section was produced yet. The run showed three problems,
+fixed here:
+
+- **Fixed**
+  - `wow_social` group candidates listed the character itself when the guild roster wrote its name with a realm after a space
+    ("Name Realm") instead of a dash. Both forms are now recognised.
+  - Legacy challenges: the achievements that grant Legacy Points are in ordinary categories (Classes > Warlock, Tradeskills >
+    Alchemy, Dungeons, ...), no category title contains "Legacy", and all achievements are worth 0 points. They are recognised by
+    their reward text "Earn 1 Legacy Point." The addon now matches an achievement as a challenge when its category title mentions
+    Legacy or its reward text mentions "Legacy Point" (`challenges.matchedBy` says which rule matched), reading from the same pass
+    as the `achievements` section instead of reading every achievement twice; `categoryID`, `completedOn` and the criteria of
+    incomplete ones are saved too. `wow_legacy` also derives the challenges from the `achievements` section by the reward text
+    (English client text) when a dump's own list is empty, so dumps from before this fix work; `challenges.source` and
+    `matchedBy` say how they were found, `completedList` has the dates and open ones the `missing` criteria.
+  - `wow_social` was 59.5 KB for a guild of 937 members and was cut at the response limit. The guild member list is now capped:
+    `limit` (default 40, the members closest to the character's level first, then by name; -1 = every matching member) and
+    `query` (name, class, zone, rank or note); `memberList` states `shown`, `total`, `notShown` and how to get the rest. A
+    synthetic guild of 300 members answers in 14.8 KB with the default arguments (a test keeps it under 20 KB).
+  - Dungeon loot: the Encounter Journal lists one tier at a time, so only the current tier's dungeons could be found. The addon
+    now lists the instances of every tier (up to 12), selects the instance's tier before reading it and puts the tier, instance
+    and boss selection back. Every `/mcp loot` now leaves `dungeonLoot.lastAttempt` (outcome `read`, `noMatch`, `readFailed` or
+    `unavailable`, how many instances and tiers the journal offered, the first 40 names, whether the player was in an instance,
+    the error), and the section exists even when nothing was read. `wow_dungeon_loot` shows the last attempt and `journalOffers`,
+    the dungeon names to type. When the journal offers nothing because `Blizzard_EncounterJournal` is not loaded,
+    `/mcp loot` loads that module itself (`C_AddOns.LoadAddOn`, the game's own UI module, the same thing opening the journal
+    window does), says so in chat and reads again. **WoW: Forever has no Encounter Journal**: the real client (build 71037)
+    reports the module as loadable but refuses to load it (`WRONG_GAME_TYPE`), has no journal window, and the `EJ_*` functions
+    list nothing. There `/mcp loot` says so in chat and records `outcome = "unavailable"` with `loadRefused`, and
+    `wow_dungeon_loot` passes that on instead of asking the player to open a window. The feature stays for clients that
+    have a journal.
+  - Section order: `legacy` now follows `achievements` in the dump.
+
+Item and spell lookup, for the addon and the server. Not yet run in the real client: it is
+covered by the API mocks of the addon test and the golden tests only.
+
+- **Added**
+  - `/mcp item <ID, item link or exact name>` and `/mcp spell <ID, spell link or name>`: the addon reads the item or spell
+    from the client (the same details and tooltip lines as bag items; for spells the name, rank, description, cast time,
+    cost, range and tooltip) and keeps the last 30 answers in the new dump section `lookups`. An item or spell the client
+    has not cached is requested from the client cache and saved when the data arrives; chat says so.
+  - Tool `wow_lookup` (`query`, `kind`, `character`): returns the saved lookups and also what the dump already holds under
+    that name or ID (bags, bank, equipment, vendor and trainer offers, quest rewards, auctions, mail, loot, recipes, known
+    spells), with the section of each hit. When nothing is found it says which commands the player should type
+    (`/mcp item <query>` or `/mcp spell <query>`, then `/mcp reload`) and the assistant is told not to answer from memory.
+
+Guild overview and PvP history, for the addon and the server. **Not run in the real client**: checked only with the API
+mocks, unit tests and golden responses, so the new guild fields (`note`, `classToken`, `daysOffline`) and
+`GetGuildRosterLastOnline` still have to be confirmed in the game.
+
+- **Added**
+  - Guild overview in `wow_social`: a `summary` of the roster (members listed and online, counts by class, level bands
+    of ten, average online level) and `groupCandidates`: online guild members and friends within `levelRange` levels
+    (default 5) of the character, sorted into `tankCapable`, `healerCapable` and `damageCapable` by what their class can
+    do (one class-to-role table in the `group` package), with level, class, zone, guild rank and note. A person on both
+    lists appears once. A character without a guild still gets candidates from the friends list. The guild entries also
+    show `note` and, for offline members, `offlineDays`.
+  - Addon: the `guild` section saves each member's `note` (up to 60 characters; the officer note is never read),
+    `classToken` and, for offline members, `offlineDays` (`GetGuildRosterLastOnline`); the `friends` section saves
+    `classToken`, found from the localized class name, so roles work on non-English clients.
+  - PvP in the long history: `history.db` now keeps honor and honorable kills for every dump that has a `pvp` section
+    (schema 4: two nullable columns on `points`; older databases are migrated in place and their rows stay unknown, never
+    zero). `wow_changes` shows `honor`, `honorableKills` and `honorLevel` between two dumps, and `wow_progress` shows
+    `honorGained` and `honorableKills` for the session and the whole history. Both appear only when the dumps have a
+    `pvp` section. The honor counter restarts at an honor level-up, so a stretch with a level-up undercounts honor and says
+    so through `honorLevel`.
+
+Zone quest progress, for the addon and the server. **Not yet run in the real client**: the addon side was checked only on the
+API mocks (`addon/tests/run_addon.py`, with an invented QuestieDB), the server side with unit and golden tests. The QuestieDB
+calls it relies on (`Quest.GetAllIds`, the `zoneOrSort`, `preQuestSingle`, `preQuestGroup`, `exclusiveTo`,
+`breadcrumbForQuestId`, `specialFlags` and `requiredMaxLevel` fields, `Enum.raceMaskById`, `Enum.classKeys`,
+`Enum.factionRaceMasks`) are taken from that addon's public API documentation, not from a run in the game.
+
+- **Added**
+  - Section `zoneQuests` (`Sections/ZoneQuests.lua`, foundation file `QuestZones.lua`): every quest the installed quest
+    database files under the current zone and under the zones of the log quests (up to 3 zones, 150 quests each), in a
+    compact form: name, level, required and maximum level, race and class masks, prerequisite and next quests, the quest
+    it closes or leads to, repeatable, and the first quest giver with its coordinates in that zone. It also has the
+    character's race and class bits and both factions' race masks. The database has no zone index, so the first dump of
+    a game session walks its quest IDs once (one field per quest) and keeps the index; each zone's list is built once
+    per session. Absent without QuestieDB; `noZoneIndex` when the database cannot list its quests. It only reads.
+  - Tool `wow_zone_progress` (domain package `game/zoneprogress`): for a zone (`zone`, by default the character's current
+    zone) how many of its quests are done (`completedQuests`), in the log and left; the quests left with level, required
+    level, state (available, needs a higher level, needs an earlier quest) and quest giver; and the unfinished quest
+    chains (the next quest of a chain whose earlier step is done). Quests the database marks for another faction, race or
+    class are left out of the counts and counted in `notForCharacter`; repeatable quests and quests closed by an
+    alternative or above their maximum level are counted apart. Without the section the answer says what to install.
+- **Changed**
+  - `QuestDb.lua` exposes its database accessor and field read (`QuestDb.lib`, `QuestDb.field`) for `QuestZones.lua`.
+
+Achievements, statistics, titles and collections, for the addon and the server. **None of this has been run in the real client.**
+Which of these APIs Forever has is not known yet: every name below is an assumption taken from the documented modern API, to be
+confirmed with `/mcp probe`. Each section is absent when the client supplies nothing, and the tools say so.
+
+- **Added**
+  - Addon: an `achievements` section: achievement points (`GetTotalAchievementPoints`), completed and total
+    (`GetNumCompletedAchievements`), categories with their counts (`GetCategoryList`, `GetCategoryInfo`,
+    `GetCategoryNumAchievements`), and up to 600 achievements with name, points, description, reward and the completion
+    date (`GetAchievementInfo`; the year is read as years since 2000, stored as `completedOn` = `YYYY-MM-DD`). Incomplete
+    ones carry their criteria (`GetAchievementNumCriteria`, `GetAchievementCriteriaInfo`: up to 8, the missing ones first;
+    25 read per achievement, 3000 per dump). The category layout and completed achievements are read once per session, so
+    later dumps re-read only the incomplete ones. The Legacy challenges now read their categories through the same helper
+    (`AchievementCategories.lua`); their output is unchanged.
+  - Addon: a `statistics` section (`GetStatisticsCategoryList`, `GetStatistic`): the game's counters by category with the
+    game's own value text, coin icons turned into `5g 20s 3c`, `--` values left out; up to 400.
+  - Addon: a `titles` section (`GetNumTitles`, `IsTitleKnown`, `GetTitleName`, `GetCurrentTitle`) and a `collections`
+    section: mounts from `C_MountJournal` or the companion API (`GetNumCompanions` / `GetCompanionInfo` with `"MOUNT"`),
+    companion pets from the companion API (`"CRITTER"`) or `C_PetJournal`; up to 300 of each. Nothing changes the title,
+    summons, dismisses or tracks anything.
+  - `/mcp probe` also lists `C_MountJournal`, `C_PetJournal`, `C_TitleManager` and the global title, companion and
+    comparison-statistic functions, so the next probe from the game answers which of the above exist.
+  - Server: `wow_achievements` (`view` = `summary`, `timeline`, `recent`, `closest` or `all`; `query`, `category`, `limit`;
+    package `game/achievements`): totals, progress per category, the most recent ones, completion dates in order with the
+    earliest and latest, and the incomplete achievements ranked by criteria progress with the missing criteria.
+  - Server: `wow_statistics` (`query`, `category`) and `wow_collections` (`kind` = `titles`, `mounts`, `companions` or
+    `all`; `query`; package `game/collections`). `wow_search` searches the four new sections and `wow_section` lists them.
+  - Tests: the modern, Forever and deDE mocks have these APIs (journals in the modern mock, the companion API in Forever);
+    the legacy client has none and proves the sections stay absent. In the modern mock the Legacy challenges now report an
+    empty Legacy category list, since that client has the achievement API.
+
+Dungeon loot upgrades. **Not run in the real client yet**: the addon side was tested only against API mocks in
+`addon/tests/run_addon.py`. The real `/mcp probe` of 2026-11-15 lists `C_EncounterJournal` (including `GetLootInfoByIndex`
+and `GetInstanceForGameMap`), but nobody has checked whether Forever has the global `EJ_*` functions, so these names are
+assumptions taken from mainline clients: `EJ_GetInstanceByIndex`, `EJ_SelectInstance`, `EJ_GetEncounterInfoByIndex`,
+`EJ_SelectEncounter`, `EJ_GetNumLoot`, `EJ_GetLootFilter` / `EJ_SetLootFilter` / `EJ_ResetLootFilter`, the
+`EncounterJournal.instanceID` / `encounterID` frame fields, `C_EncounterJournal.GetSlotFilter` / `SetSlotFilter` /
+`ResetSlotFilter` (probed), the return order of `C_EncounterJournal.GetLootInfoByIndex` and the `EJ_LOOT_DATA_RECIEVED`
+event. When they are missing, `/mcp loot` says so and records only the reason.
+
+- **Added**
+  - `/mcp loot [dungeon]` reads from the Encounter Journal what the bosses of a dungeon drop, only when the player types
+    it and never on a dump. Without a name it reads the dungeon the character is in, otherwise the dungeons for the
+    character's level from the saved group finder ranges (at most 3 per command). The read selects instances and
+    bosses and resets the class and slot loot filters, then puts the journal window's selection and filters back; chat
+    says what was read. Items the client has not loaded yet are
+    marked `pending` and read again up to 5 times as their data arrives; chat says how many are still loading.
+  - Dump section `dungeonLoot` (carried over between dumps): up to 8 dungeons with name, journal and map IDs, level range
+    when known, boss names and up to 40 items each (ID, name, quality, boss, journal slot and armor text, item level,
+    required level, stats and tooltip from the same item helpers as bags and vendors). See `docs/DUMP_FORMAT.md`.
+  - `/mcp probe` also lists the global `EJ_*` functions, `IsInInstance`, `GetInstanceInfo`, `IsAddOnLoaded`,
+    `GetAddOnInfo`, the `C_AddOns` namespace and whether `Blizzard_EncounterJournal` is loaded, loadable and has its frame.
+  - Tool `wow_dungeon_loot` (`character`, `dungeon`, `slot`, `upgradesOnly`, default true): the saved dungeon items that
+    would be upgrades, grouped by dungeon and boss, with the stat differences against the equipped item from the same
+    rule as `wow_compare_item` and `wow_quest_rewards` (`items.Buyer.Evaluate`; a `weights.json` file adds stat weights).
+    Items the class cannot use are left out and counted under `skipped`, from a classic armor and weapon proficiency
+    table (`itemkind`, mail and plate from level 40); Forever may differ, and the answer says so. Without the section the
+    answer says what to type in the game and suggests `/mcp probe`; the server has no drop tables and never guesses them.
+
 ## 0.20.0 (2026-11-24)
 
 A long history and less `/mcp reload`, for the addon and the server. The server expects addon 0.20.0. This release also carries

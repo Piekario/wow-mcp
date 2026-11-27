@@ -13,8 +13,8 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
 ```json
 {
   "addon": {
-    "addonVersion": "0.20.0",
-    "dumpTimeMs": 64.5
+    "addonVersion": "0.22.0",
+    "dumpTimeMs": 84
   },
   "character": {
     "class": "Hunter",
@@ -23,19 +23,24 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
     "race": "Night Elf",
     "zone": "Stormwind City"
   },
-  "expectedAddonVersion": "0.20.0",
+  "expectedAddonVersion": "0.22.0",
   "sectionsInSnapshot": [
+    "achievements",
     "actionBars",
     "auctions",
     "auras",
     "bags",
     "bank",
+    "beasts",
     "buyback",
     "character",
+    "classBuffGroups",
+    "collections",
     "completedQuests",
     "cooldowns",
     "currencies",
     "deaths",
+    "dungeonLoot",
     "dungeons",
     "equipment",
     "equipmentSets",
@@ -47,6 +52,7 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
     "guild",
     "inspect",
     "legacy",
+    "lookups",
     "loot",
     "macros",
     "mail",
@@ -65,13 +71,16 @@ Data of character Piekasz from World of Warcraft: Forever (WowMcp addon snapshot
     "reputation",
     "spells",
     "stable",
+    "statistics",
     "stats",
     "talents",
+    "titles",
     "trainer",
     "trainers",
     "vendor",
     "vendors",
-    "xpGains"
+    "xpGains",
+    "zoneQuests"
   ],
   "snapshot": {
     "ageMinutes": 200,

@@ -19,6 +19,19 @@ function Maps.mapType(name, default)
     return (types and types[name]) or default
 end
 
+-- The player's map ID and position on it in percent (as on the world map); nil for what the client does not supply.
+function Maps.playerPosition()
+    if not (C_Map and C_Map.GetBestMapForUnit) then return nil end
+    local mapID = plain(C_Map.GetBestMapForUnit("player"))
+    if not (mapID and C_Map.GetPlayerMapPosition) then return mapID end
+    local pos = C_Map.GetPlayerMapPosition(mapID, "player")
+    if not (pos and pos.GetXY) then return mapID end
+    local rawX, rawY = pos:GetXY()
+    local x, y = plain(rawX), plain(rawY)
+    if not (x and y) then return mapID end
+    return mapID, ns.round1(x * 100), ns.round1(y * 100)
+end
+
 -- Continent the character is on (the player's map and its parents); nil when the client does not supply it.
 function Maps.playerContinent()
     if not (C_Map and C_Map.GetBestMapForUnit and C_Map.GetMapInfo) then return nil end

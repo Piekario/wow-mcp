@@ -43,7 +43,8 @@ func callText(t *testing.T, cs *mcp.ClientSession, name string, args map[string]
 }
 
 // Every tool declares annotations in the one place that registers them: all are read-only, idempotent and closed-world,
-// except wow_goal_set, which writes only the server's own goals file and may remove a goal.
+// except wow_goal_set, which writes only the server's own goals file and may remove a goal, and wow_share_dump,
+// which only adds a file to the server's own directory.
 func TestEveryToolHasAnnotations(t *testing.T) {
 	cs := connect(t, Config{Name: "wow-mcp", Version: "test", Snapshots: &storage.Store{File: fixtures.Testdata("WowMcp_forever.lua")}, Freshness: fixtures.At(0)})
 	tools, err := cs.ListTools(context.Background(), nil)
@@ -62,7 +63,8 @@ func TestEveryToolHasAnnotations(t *testing.T) {
 		}
 		if !a.ReadOnlyHint {
 			writers++
-			if tl.Name != "wow_goal_set" || a.DestructiveHint == nil || !*a.DestructiveHint {
+			destroys, known := map[string]bool{"wow_goal_set": true, "wow_share_dump": false}[tl.Name]
+			if !known || a.DestructiveHint == nil || *a.DestructiveHint != destroys {
 				t.Errorf("%s: unexpected writer: %+v", tl.Name, a)
 			}
 			continue
@@ -71,8 +73,8 @@ func TestEveryToolHasAnnotations(t *testing.T) {
 			t.Errorf("%s: read-only tools are idempotent", tl.Name)
 		}
 	}
-	if writers != 1 {
-		t.Errorf("%d tools are not read-only, want exactly 1", writers)
+	if writers != 2 {
+		t.Errorf("%d tools are not read-only, want exactly 2", writers)
 	}
 }
 

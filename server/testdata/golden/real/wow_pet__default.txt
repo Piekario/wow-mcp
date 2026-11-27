@@ -3,6 +3,42 @@
 # isError: false
 --- content[0] ---
 {
+  "bagFood": {
+    "checkedByClient": false,
+    "foodInBags": [
+      {
+        "count": 4,
+        "id": 3220,
+        "name": "Blood Sausage"
+      },
+      {
+        "count": 8,
+        "id": 414,
+        "name": "Dalaran Sharp"
+      },
+      {
+        "count": 1,
+        "id": 2287,
+        "name": "Haunch of Meat"
+      },
+      {
+        "count": 2,
+        "id": 1179,
+        "name": "Ice Cold Milk"
+      },
+      {
+        "count": 10,
+        "id": 159,
+        "name": "Refreshing Spring Water"
+      },
+      {
+        "count": 5,
+        "id": 117,
+        "name": "Tough Jerky"
+      }
+    ],
+    "note": "foodInBags is food from bags by item subtype; the server has no table of which food is meat, fish, cheese etc. Match it to the pet's foodTypes by name, and when unsure, say so plainly."
+  },
   "pet": {
     "abilities": [
       {
@@ -183,5 +219,9 @@
     "order": "server heuristic: higher ranks of abilities the pet already has first, then new ones, cheapest first; the player decides how valuable an ability is",
     "pointsLeftAfter": 47,
     "suggested": []
+  },
+  "whereToTame": {
+    "note": "the dump has no beasts section: it needs addon 0.22.0 or newer on a Hunter. To collect beasts: in game, as a Hunter, cast Beast Lore on beasts (the addon saves their tooltip when you target them or hover over them while they carry it) or tame one (the addon saves the new pet's abilities at that moment), then /mcp reload",
+    "source": "only beasts the Hunters of this account tamed (the new pet's abilities at the moment of taming) or examined with Beast Lore in Forever (tooltip lines read while the beast carried Beast Lore; the Forever format is not confirmed, so they are read tolerantly). The server has no table of its own: a rank not listed here may exist on beasts nobody observed."
   }
 }

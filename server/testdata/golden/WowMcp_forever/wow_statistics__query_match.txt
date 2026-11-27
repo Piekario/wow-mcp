@@ -1,0 +1,25 @@
+# tool wow_statistics variant=query_match
+# args: {"query":"death"}
+# isError: false
+--- content[0] ---
+{
+  "categories": [
+    {
+      "category": "Deaths",
+      "statistics": [
+        {
+          "name": "Total deaths",
+          "value": "3"
+        }
+      ]
+    }
+  ],
+  "coverage": "Values are the game's own display text from the Statistics tab (up to 400 statistics); statistics the game shows as \"--\" (never happened) are left out and only counted in empty.",
+  "empty": 2,
+  "shown": 1,
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

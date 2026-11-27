@@ -18,6 +18,9 @@ import (
 type Query struct {
 	Character      string `json:"character,omitempty" jsonschema:"character name; empty = the most recently dumped character"`
 	IncludeOffline bool   `json:"includeOffline,omitempty" jsonschema:"true = also show guild members who were offline (default online only; the rest as a count)"`
+	LevelRange     int    `json:"levelRange,omitempty" jsonschema:"groupCandidates: how many levels above and below the character an online guild member or friend may be; default 5"`
+	Limit          int    `json:"limit,omitempty" jsonschema:"guild members to list, the ones closest to the character's level first, then by name; default 40 (0 = default); -1 = every matching member (a large guild can exceed the response size limit)"`
+	Search         string `json:"query,omitempty" jsonschema:"only guild members whose name, class, zone, rank or note contains this text (case-insensitive); empty = all"`
 }
 
 // Count is a number the dump may not have.
@@ -36,6 +39,7 @@ type Capture struct {
 // The text fields of Friend, Member, Guild and PvP are kept as the client gave them; nil means the dump has no such field.
 type Friend struct {
 	Name, Level, Class, Area, Notes any
+	ClassToken                      string
 	Online                          bool
 }
 
@@ -48,6 +52,9 @@ type FriendList struct {
 
 type Member struct {
 	Name, Rank, RankIndex, Level, Class, Zone any
+	Note, ClassToken                          string
+	OfflineDays                               int64
+	HasOfflineDays                            bool
 	Online                                    bool
 }
 

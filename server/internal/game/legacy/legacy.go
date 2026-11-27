@@ -86,11 +86,15 @@ type Config struct {
 type Challenge struct {
 	Name, Category, Description, Reward, Points any
 	Completed                                   bool
+	CompletedOn                                 string
+	Missing                                     []string // criteria still to do (incomplete challenges)
+	MoreMissing                                 int64
 }
 
 type Section struct {
 	Configs            []Config
 	Challenges         *[]Challenge
+	MatchedBy          string // how the addon matched the challenges
 	ChallengesError    string
 	HasChallengesError bool
 	Discovery          any
@@ -161,7 +165,10 @@ type Points struct {
 
 type ChallengeReport struct {
 	Total          int
+	Source         string // ChallengesFromAddon or ChallengesFromRewards
+	MatchedBy      string
 	CompletedNames []any
+	Done           []Challenge
 	Open           []Challenge
 	NotListed      int
 }
@@ -199,9 +206,16 @@ func Analyse(s snapshot.Snapshot, q Query) Report {
 		r.analyseConfig(*r.Config, q.Tree)
 		notes = append(notes, s.EnglishOnlyNote("recognising the Legacy tree among several trait trees by its tab names"))
 	}
-	if section.Challenges != nil {
+	if section.Challenges != nil && len(*section.Challenges) > 0 {
 		r.Challenges = summariseChallenges(*section.Challenges)
-		notes = append(notes, s.EnglishOnlyNote("finding Legacy challenges by the achievement category title"))
+		r.Challenges.Source, r.Challenges.MatchedBy = ChallengesFromAddon, section.MatchedBy
+		notes = append(notes, s.EnglishOnlyNote("finding Legacy challenges by the achievement category title or reward text"))
+	} else if derived := deriveChallenges(s); derived != nil {
+		r.Challenges = derived
+		notes = append(notes, s.EnglishOnlyNote("finding Legacy challenges by the reward text \""+rewardFragment+"\""))
+	} else if section.Challenges != nil {
+		r.Challenges = summariseChallenges(nil)
+		r.Challenges.Source, r.Challenges.MatchedBy = ChallengesFromAddon, section.MatchedBy
 	}
 	r.LocaleNote = joinNonEmpty(notes)
 	return r
@@ -377,6 +391,7 @@ func summariseChallenges(list []Challenge) *ChallengeReport {
 	for _, ch := range list {
 		if ch.Completed {
 			r.CompletedNames = append(r.CompletedNames, ch.Name)
+			r.Done = append(r.Done, ch)
 		} else if len(r.Open) < maxOpenChallenges {
 			r.Open = append(r.Open, ch)
 		}

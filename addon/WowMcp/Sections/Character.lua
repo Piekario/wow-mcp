@@ -8,20 +8,8 @@ local _, ns = ...
 local plain, callFirst, firstValue = ns.Compat.plain, ns.Compat.callFirst, ns.Compat.firstValue
 local round1 = ns.round1
 
--- Position on the zone map in percent (as on the world map).
 local function addMapPosition(c)
-    if not (C_Map and C_Map.GetBestMapForUnit) then return end
-    local mapID = plain(C_Map.GetBestMapForUnit("player"))
-    c.mapID = mapID
-    if not (mapID and C_Map.GetPlayerMapPosition) then return end
-    local pos = C_Map.GetPlayerMapPosition(mapID, "player")
-    if not (pos and pos.GetXY) then return end
-    local rawX, rawY = pos:GetXY()
-    local x, y = plain(rawX), plain(rawY)
-    if x and y then
-        c.x = round1(x * 100)
-        c.y = round1(y * 100)
-    end
+    c.mapID, c.x, c.y = ns.Maps.playerPosition()
 end
 
 local function addClientVersion(c)

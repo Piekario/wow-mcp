@@ -10,6 +10,7 @@ import (
 	"wowmcp/internal/game/character"
 	"wowmcp/internal/game/loot"
 	"wowmcp/internal/game/periods"
+	"wowmcp/internal/game/social"
 	"wowmcp/internal/game/talents"
 	"wowmcp/internal/game/xpgains"
 	"wowmcp/internal/snapshot"
@@ -123,6 +124,9 @@ type Comparison struct {
 	Currencies     []CurrencyChange
 	PlayedBetween  int64
 	Deaths         *Change
+	Honor          *Change // nil unless both dumps have a pvp section and the number changed
+	HonorableKills *Change
+	HonorLevel     *Change
 	Loot           *LootGained
 	XPSources      *XPGained
 	TalentPoints   *Change
@@ -133,7 +137,7 @@ type Comparison struct {
 func (c Comparison) HasChanges() bool {
 	return c.Money != nil || c.XP != nil || c.Zone != nil || len(c.Gained)+len(c.Lost) > 0 || len(c.Equipment) > 0 ||
 		!c.Quests.Empty() || len(c.Reputation) > 0 || len(c.NewSpells) > 0 || len(c.Professions) > 0 ||
-		len(c.Currencies) > 0 || c.Deaths != nil || c.Loot != nil || c.XPSources != nil || c.TalentPoints != nil ||
+		len(c.Currencies) > 0 || c.Deaths != nil || c.Honor != nil || c.HonorableKills != nil || c.HonorLevel != nil || c.Loot != nil || c.XPSources != nil || c.TalentPoints != nil ||
 		len(c.TalentsLearned) > 0
 }
 
@@ -166,6 +170,7 @@ func Compare(before, after snapshot.Snapshot) Comparison {
 		}
 	}
 	c.Deaths = diffDeaths(before, after)
+	c.Honor, c.HonorableKills, c.HonorLevel = diffHonor(before, after)
 	c.Loot = diffLoot(before, after)
 	c.XPSources = diffXPGains(before, after)
 	if sb, ok := readTalentsSpent(before); ok {
@@ -185,6 +190,25 @@ func diffDeaths(before, after snapshot.Snapshot) *Change {
 		return nil
 	}
 	return &Change{nb, na}
+}
+
+// diffHonor compares the pvp numbers; each is nil when a dump lacks the section or the number did not change.
+// The honor counter restarts at an honor level-up, so a lower honor comes with a higher HonorLevel.
+func diffHonor(before, after snapshot.Snapshot) (honor, kills, level *Change) {
+	hb, ha := social.Honor(before), social.Honor(after)
+	if !hb.Saved || !ha.Saved {
+		return nil, nil, nil
+	}
+	if hb.HasHonor && ha.HasHonor && hb.Honor != ha.Honor {
+		honor = &Change{hb.Honor, ha.Honor}
+	}
+	if hb.HasKills && ha.HasKills && hb.HonorableKills != ha.HonorableKills {
+		kills = &Change{hb.HonorableKills, ha.HonorableKills}
+	}
+	if hb.HasHonorLevel && ha.HasHonorLevel && hb.HonorLevel != ha.HonorLevel {
+		level = &Change{hb.HonorLevel, ha.HonorLevel}
+	}
+	return honor, kills, level
 }
 
 // diffXP is nil when a dump lacks the numbers or nothing changed.

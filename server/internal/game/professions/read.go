@@ -64,13 +64,21 @@ func readRecipeBooks(s snapshot.Snapshot) []RecipeBook {
 	var books []RecipeBook
 	for _, name := range slices.Sorted(maps.Keys(all)) {
 		m := snapshot.AsMap(all[name])
-		book := RecipeBook{Name: name, Rank: m["rank"], MaxRank: m["maxRank"], Captured: snapshot.CapturedOf(m)}
+		book := RecipeBook{Name: bookName(name), Rank: m["rank"], MaxRank: m["maxRank"], Captured: snapshot.CapturedOf(m)}
 		for _, raw := range snapshot.AsList(m["recipes"]) {
 			book.Recipes = append(book.Recipes, readRecipe(raw))
 		}
 		books = append(books, book)
 	}
 	return books
+}
+
+// bookName names a window the client gave no profession name for: addons up to 0.20.0 saved it under the key "".
+func bookName(key string) string {
+	if key == "" {
+		return UnnamedBook
+	}
+	return key
 }
 
 func readBankStock(s snapshot.Snapshot) map[string]int64 {

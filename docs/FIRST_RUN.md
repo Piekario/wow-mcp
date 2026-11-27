@@ -31,6 +31,9 @@ client with the snippet the installer prints. On the first installation `--check
 6. In your MCP client ask for `wow_status`. It should show `serverVersion` 0.10.0, `addonVersion` 0.8.0 for the character, a fresh `dumpedAt`,
    `dumpTimeMs`, the note `test` and an empty or short `alerts`.
 7. In `wow_character` check `resting`, `bindLocation` and `zone`; also ask for `wow_search` (e.g. the name of an item from your bags).
+8. `/mcp item 5498`, then `/mcp reload` (any item ID or a shift-clicked link; an item the client has not seen yet is requested and
+   saved a moment later, chat tells you when). Ask for `wow_lookup` with that ID: the answer has the description the client shows.
+   `/mcp spell <name or ID>` works the same way for spells. Addon 0.21.0 or newer.
 
 ## 3. Verifying auctions, dungeons and talents (roadmap 4-6)
 
@@ -41,6 +44,9 @@ These sections are collected only after you open a window in the game. For each 
 | Auctions | open the auction house, search for any item | `wow_auctions` | whether prices are present; `source` = `list` (classic API) or `browse`/`commodity`/`item` (C_AuctionHouse) |
 | Dungeons | open the LFG window (group finder) | `wow_dungeons` | whether level ranges come from the client; if not, the server uses the classic table |
 | Talents | open the talents window | `wow_talents` | whether nodes have a `description` (text from `C_Spell.GetSpellDescription`) |
+| Dungeon loot | `/mcp loot deadmines` (or `/mcp loot` inside a dungeon) | `wow_dungeon_loot` | whether chat says what was read; if it says the client has no Encounter Journal for addons, do `/mcp probe` and check `probe.globals` (`EJ_*`) and `probe.addons` |
+| Pet food (0.22.0) | Hunter with a pet and some food in the bags: `/mcp probe` | `wow_section` `probe`, path `petFood`; then `wow_pet` | `petFood.calls`: which argument form (`itemID` or `itemLink`) returned `ok = true` with one `boolean` result; `wow_pet` `bagFood` should list what the pet eats with `feedings` |
+| Where to tame (0.22.0) | Hunter: cast Beast Lore on a beast and keep it targeted, then `/mcp probe`; tame a beast if you can | `wow_section` `probe`, path `beastLore`; then `wow_pet` | `beastLore.hasAura = true` and the tooltip `lines` (do they show the abilities and their ranks, and in what form?); `wow_section` `beasts`; `whereToTame.ranks` in `wow_pet` |
 | Legacy | open the Legacy window (Y) | `wow_legacy` | whether a perk tree with Professions / Adventure / Resourcefulness was found; if not, `discovery=true` shows the client's Legacy API names |
 
 Note what worked and what came back empty: the roadmap fix for each section is based on this. Also check whether `/mcp probe`
@@ -113,6 +119,34 @@ Open the friends and guild windows yourself: the addon only reads what the clien
    (`costCopper`) is the pet's training points (`wow_pet` assumes it is).
 6. **Recipes, stable, auctions.** Open the professions window (ingredients in `wow_recipes`), the stable (`active` on the active pet)
    and search for something at the auction house (`wow_auctions`).
+
+## 3d. What to check in the game for zone quest progress (0.21.0)
+
+Needs Questie (with QuestieDB). This has only been run on API mocks so far.
+
+1. **Current zone.** Stand in a zone where you have done some quests, `/mcp reload`, then ask for `wow_zone_progress` without arguments.
+   `zone` should be the zone you stand in, and `counts.completed` should match what you remember; the quests in `left` should have
+   quest givers with coordinates that match Questie's map pins.
+2. **Other zones.** With quests from another zone in the log, `wow_zone_progress` with `zone` set to that zone should answer too.
+3. **Filtering.** `notForCharacter` should count quests for the other faction or other classes; none of them should appear in `left`.
+4. **Dump time.** `/mcp status` after the first dump of a session: the first `zoneQuests` read walks the whole quest database once,
+   so report the dump time if it grows noticeably (the second dump of the session should be back to normal).
+
+## 3e. What to check in the game: achievements, statistics, titles and collections
+
+These four sections use API names that nobody has run in Forever yet (`GetCategoryList`, `GetAchievementInfo`,
+`GetAchievementCriteriaInfo`, `GetStatisticsCategoryList`, `GetStatistic`, `GetNumTitles`, `IsTitleKnown`, `GetTitleName`,
+`GetCurrentTitle`, `C_MountJournal`, `C_PetJournal`, `GetNumCompanions`, `GetCompanionInfo`). A missing section is not an error: the
+client may simply not have that API.
+
+1. Type `/mcp probe` and `/mcp reload`, then ask for `wow_section` with section `probe` and path `globals` (and `namespaces`): report which of
+   the names above are listed.
+2. Ask for `wow_achievements`, `wow_statistics` and `wow_collections`. Each answers with data, or with a note that the section is absent.
+3. If achievements are there: compare `points` and a few completion dates (`view: timeline`) with the achievement window in the game; the
+   date conversion assumes the client gives the year as years since 2000. Check `/mcp status` for the dump time: the first dump of a session
+   reads every achievement, later ones only the incomplete ones.
+4. If titles or mounts are there: compare them with the character window (title drop-down) and the mount list. Companions read from the pet
+   journal follow the journal's filters.
 
 ## 4. When something does not work
 

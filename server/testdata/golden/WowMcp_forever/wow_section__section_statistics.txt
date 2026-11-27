@@ -1,0 +1,55 @@
+# tool wow_section variant=section_statistics
+# args: {"section":"statistics"}
+# isError: false
+--- content[0] ---
+{
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "statistics": {
+    "categories": [
+      {
+        "id": 130,
+        "list": [
+          {
+            "id": 98,
+            "name": "Quests completed",
+            "value": "62"
+          },
+          {
+            "id": 107,
+            "name": "Creatures killed",
+            "value": "1404"
+          }
+        ],
+        "name": "Character"
+      },
+      {
+        "id": 131,
+        "list": [
+          {
+            "id": 328,
+            "name": "Total gold acquired",
+            "value": "5g 20s 3c"
+          }
+        ],
+        "name": "Wealth",
+        "parentID": 130
+      },
+      {
+        "id": 122,
+        "list": [
+          {
+            "id": 60,
+            "name": "Total deaths",
+            "value": "3"
+          }
+        ],
+        "name": "Deaths"
+      }
+    ],
+    "empty": 2
+  }
+}

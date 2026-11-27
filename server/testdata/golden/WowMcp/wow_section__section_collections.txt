@@ -1,0 +1,45 @@
+# tool wow_section variant=section_collections
+# args: {"section":"collections"}
+# isError: false
+--- content[0] ---
+{
+  "collections": {
+    "companions": {
+      "list": [
+        {
+          "id": 40,
+          "level": 1,
+          "name": "Mechanical Squirrel",
+          "species": "Mechanical Squirrel"
+        },
+        {
+          "id": 42,
+          "level": 1,
+          "name": "Whiskers",
+          "species": "Cat (Black Tabby)"
+        }
+      ],
+      "source": "C_PetJournal"
+    },
+    "mounts": {
+      "list": [
+        {
+          "id": 6,
+          "name": "Brown Horse",
+          "spellID": 458
+        },
+        {
+          "id": 41,
+          "name": "Striped Nightsaber",
+          "spellID": 10793
+        }
+      ],
+      "source": "C_MountJournal"
+    }
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

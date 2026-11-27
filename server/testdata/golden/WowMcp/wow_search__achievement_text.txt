@@ -1,0 +1,100 @@
+# tool wow_search variant=achievement_text
+# args: {"query":"Darkshore"}
+# isError: false
+--- content[0] ---
+{
+  "groups": [
+    {
+      "count": 2,
+      "hits": [
+        {
+          "label": "Cave Mushrooms",
+          "matchedIn": "zone",
+          "matchedText": "Darkshore",
+          "path": [
+            "quests",
+            "Cave Mushrooms"
+          ],
+          "summary": "level 17, Darkshore"
+        },
+        {
+          "label": "WANTED: Murkdeep!",
+          "matchedIn": "zone",
+          "matchedText": "Darkshore",
+          "path": [
+            "quests",
+            "WANTED: Murkdeep!"
+          ],
+          "summary": "level 18, Darkshore"
+        }
+      ],
+      "section": "quests",
+      "shown": 2,
+      "truncated": false
+    },
+    {
+      "count": 2,
+      "hits": [
+        {
+          "label": "Darkshore Quests",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Darkshore Quests"
+          ],
+          "summary": "points 10, completed, 2026-11-14"
+        },
+        {
+          "label": "Explore Darkshore",
+          "matchedIn": "name",
+          "path": [
+            "achievements",
+            "Explore Darkshore"
+          ],
+          "summary": "points 10"
+        }
+      ],
+      "section": "achievements",
+      "shown": 2,
+      "truncated": false
+    }
+  ],
+  "notInSnapshot": [
+    "questOffer",
+    "questTurnIn",
+    "bank",
+    "vendor",
+    "vendors",
+    "recipes",
+    "mail",
+    "currencies",
+    "macros",
+    "flightPaths"
+  ],
+  "note": "Bank, vendors, trainers, stable, quest windows, recipes, mail and auctions are the state from the last visits to those windows (check their age in the relevant tools); loot is the loot since the previous save.",
+  "query": "Darkshore",
+  "searched": [
+    "quests",
+    "bags",
+    "equipment",
+    "spells",
+    "trainer",
+    "trainers",
+    "loot",
+    "stable",
+    "reputation",
+    "auctions",
+    "professions",
+    "achievements",
+    "statistics",
+    "titles",
+    "collections"
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "totalHits": 4,
+  "truncated": false
+}

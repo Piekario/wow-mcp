@@ -1,0 +1,36 @@
+# tool wow_collections variant=query_match
+# args: {"query":"cat"}
+# isError: false
+--- content[0] ---
+{
+  "companions": {
+    "count": 2,
+    "known": [
+      {
+        "name": "Bombay Cat",
+        "spellID": 10673
+      }
+    ],
+    "matching": 1,
+    "source": "GetCompanionInfo"
+  },
+  "kind": "all",
+  "mounts": {
+    "count": 1,
+    "known": [],
+    "matching": 0,
+    "source": "GetCompanionInfo"
+  },
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  },
+  "titles": {
+    "current": "the Patient",
+    "known": [],
+    "knownCount": 2,
+    "matching": 0,
+    "titlesInGame": 143
+  }
+}

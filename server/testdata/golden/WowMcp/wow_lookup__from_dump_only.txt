@@ -1,0 +1,89 @@
+# tool wow_lookup variant=from_dump_only
+# args: {"query":"linen cloth"}
+# isError: false
+--- content[0] ---
+{
+  "addonNote": "The dump has no lookups section: it needs addon 0.21.0 or newer and /mcp reload.",
+  "ask": "The dump only mentions this by name or ID and holds no full in-game description of it. For the real text ask the player to type /mcp item linen cloth or /mcp spell linen cloth in game, then /mcp reload.",
+  "elsewhere": [
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Linen Cloth",
+          "matchedIn": "name",
+          "path": [
+            "quests",
+            "Cave Mushrooms",
+            "Linen Cloth"
+          ]
+        }
+      ],
+      "section": "quests",
+      "shown": 1,
+      "truncated": false
+    },
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Linen Cloth",
+          "matchedIn": "name",
+          "path": [
+            "bags",
+            "Backpack",
+            "Linen Cloth"
+          ],
+          "summary": "count 14"
+        }
+      ],
+      "section": "bags",
+      "shown": 1,
+      "truncated": false
+    },
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Linen Cloth",
+          "matchedIn": "name",
+          "path": [
+            "loot",
+            "Linen Cloth"
+          ],
+          "summary": "count 5"
+        }
+      ],
+      "section": "loot",
+      "shown": 1,
+      "truncated": false
+    },
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Linen Cloth",
+          "matchedIn": "name",
+          "path": [
+            "auctions",
+            "Einris Brightspear",
+            "Linen Cloth"
+          ],
+          "summary": "minBid 5c, quantity 20"
+        }
+      ],
+      "section": "auctions",
+      "shown": 1,
+      "truncated": false
+    }
+  ],
+  "found": true,
+  "note": "This is everything the dump knows. Describe the item or spell only from these fields: World of Warcraft: Forever differs from other game versions, so do not fill gaps from memory.",
+  "query": "linen cloth",
+  "saved": [],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

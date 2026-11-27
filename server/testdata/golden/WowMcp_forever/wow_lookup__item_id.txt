@@ -1,0 +1,169 @@
+# tool wow_lookup variant=item_id
+# args: {"query":"5586"}
+# isError: false
+--- content[0] ---
+{
+  "elsewhere": [
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Curvewood Dagger",
+          "matchedIn": "id",
+          "matchedText": "5586",
+          "path": [
+            "quests",
+            "Cave Mushrooms",
+            "Curvewood Dagger"
+          ]
+        }
+      ],
+      "section": "quests",
+      "shown": 1,
+      "truncated": false
+    },
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Curvewood Dagger",
+          "matchedIn": "id",
+          "matchedText": "5586",
+          "path": [
+            "questOffer",
+            "The Defias Brotherhood",
+            "Curvewood Dagger"
+          ]
+        }
+      ],
+      "section": "questOffer",
+      "shown": 1,
+      "truncated": false
+    },
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Curvewood Dagger",
+          "matchedIn": "id",
+          "matchedText": "5586",
+          "path": [
+            "questTurnIn",
+            "Red Leather Bandanas",
+            "Curvewood Dagger"
+          ]
+        }
+      ],
+      "section": "questTurnIn",
+      "shown": 1,
+      "truncated": false
+    },
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Curvewood Dagger",
+          "matchedIn": "id",
+          "matchedText": "5586",
+          "path": [
+            "equipment",
+            "Curvewood Dagger"
+          ],
+          "summary": "mainHand, itemLevel 18, Weapon"
+        }
+      ],
+      "section": "equipment",
+      "shown": 1,
+      "truncated": false
+    },
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Laminated Recurve Bow",
+          "matchedIn": "id",
+          "matchedText": "5586",
+          "path": [
+            "vendor",
+            "Einris Brightspear",
+            "Laminated Recurve Bow"
+          ],
+          "summary": "priceCopper 72s 95c, Weapon, requiredLevel 13"
+        }
+      ],
+      "section": "vendor",
+      "shown": 1,
+      "truncated": false
+    },
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Laminated Recurve Bow",
+          "matchedIn": "id",
+          "matchedText": "5586",
+          "path": [
+            "vendors",
+            "Laird",
+            "Laminated Recurve Bow"
+          ],
+          "summary": "priceCopper 72s 95c, Weapon, requiredLevel 13"
+        }
+      ],
+      "section": "vendors",
+      "shown": 1,
+      "truncated": false
+    },
+    {
+      "count": 1,
+      "hits": [
+        {
+          "label": "Curvewood Dagger",
+          "matchedIn": "id",
+          "matchedText": "5586",
+          "path": [
+            "auctions",
+            "Einris Brightspear",
+            "Curvewood Dagger"
+          ],
+          "summary": "minBuyout 90s 0c, minBid 70s 0c, quantity 1"
+        }
+      ],
+      "section": "auctions",
+      "shown": 1,
+      "truncated": false
+    }
+  ],
+  "found": true,
+  "note": "This is everything the dump knows. Describe the item or spell only from these fields: World of Warcraft: Forever differs from other game versions, so do not fill gaps from memory.",
+  "query": "5586",
+  "saved": [
+    {
+      "equipLoc": "INVTYPE_WEAPON",
+      "id": 5586,
+      "itemLevel": 18,
+      "kind": "item",
+      "name": "Curvewood Dagger",
+      "quality": "Uncommon",
+      "query": "5586",
+      "requiredLevel": 13,
+      "savedAgo": "30 min",
+      "sellPrice": "8s 12c",
+      "stats": {
+        "Agility": 3,
+        "Damage Per Second": 8.4,
+        "ITEM_MOD_STAMINA_SHORT": 2
+      },
+      "tooltip": [
+        "Curvewood Dagger",
+        "One-Hand | Dagger"
+      ],
+      "type": "Weapon Dagger"
+    }
+  ],
+  "snapshot": {
+    "ageMinutes": 30,
+    "character": "Piekasz",
+    "dumpedAt": "2026-11-15 16:50:00"
+  }
+}

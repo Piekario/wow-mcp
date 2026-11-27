@@ -108,6 +108,41 @@ func RenderFood(food []FoodStack) []any {
 // FoodInBags is BagFood for the answer.
 func FoodInBags(s snapshot.Snapshot) []any { return RenderFood(readBagFood(s)) }
 
+// FoodCheckedNote says where the verdict on the bag food comes from.
+const FoodCheckedNote = "the game client itself answered, for each food item in the bags, whether this pet can eat it (C_PetInfo.CanPetEatItem); " +
+	"feedings counts one item per Feed Pet. Vendor food was not checked."
+
+// Render is the client's verdict on the bag food for the answer; call it only when Known.
+func (c FoodCheck) Render() map[string]any {
+	out := map[string]any{"edible": renderFoodItems(c.Edible), "feedings": c.Feedings, "source": FoodCheckedNote}
+	if len(c.Refused) > 0 {
+		out["refused"] = renderFoodItems(c.Refused)
+	}
+	if c.CheckedWith != "" {
+		out["checkedWith"] = c.CheckedWith
+	}
+	if c.Feedings == 0 {
+		out["note"] = "the client says the pet can eat none of the food in the bags; a hungry pet loses happiness"
+	}
+	return out
+}
+
+func renderFoodItems(items []FoodItem) []any {
+	out := []any{}
+	for _, it := range items {
+		out = append(out, map[string]any{"id": it.ID, "name": it.Name, "count": it.Count})
+	}
+	return out
+}
+
+// renderBagFood is the client's verdict, or, without it, the food from bags by item subtype with FoodNote.
+func renderBagFood(c FoodCheck, byType []FoodStack) map[string]any {
+	if c.Known {
+		return c.Render()
+	}
+	return map[string]any{"checkedByClient": false, "foodInBags": RenderFood(byType), "note": FoodNote}
+}
+
 // Review collects the pet description extras: ability ranks, the training points plan and the stable comparison.
 // Sections whose data is not in the dump say what to open in game. For a character without an active pet it returns only the stable.
 func Review(s snapshot.Snapshot, fresh snapshot.Freshness) map[string]any {
@@ -119,6 +154,10 @@ func (c Checkup) Render(fresh snapshot.Freshness) map[string]any {
 	if c.Pet.Summoned {
 		out["rankReview"] = c.Ranks.render()
 		out["trainingPlan"] = c.Plan.render()
+		out["bagFood"] = renderBagFood(c.Food, c.FoodByType)
+	}
+	if c.HasTaming {
+		out["whereToTame"] = c.Taming.render()
 	}
 	if c.HasStable {
 		out["stable"] = c.Stable.render(fresh)
@@ -280,6 +319,91 @@ func (c StabledComparison) render(hasActive bool) map[string]any {
 			cmp["sameFamily"] = c.VsActive.SameFamily
 		}
 		e["vsActive"] = cmp
+	}
+	return e
+}
+
+// tamingSource says plainly where whereToTame comes from.
+const tamingSource = "only beasts the Hunters of this account tamed (the new pet's abilities at the moment of taming) or examined with Beast Lore " +
+	"in Forever (tooltip lines read while the beast carried Beast Lore; the Forever format is not confirmed, so they are read tolerantly). " +
+	"The server has no table of its own: a rank not listed here may exist on beasts nobody observed."
+
+// howToObserve says how the player collects observations.
+const howToObserve = "in game, as a Hunter, cast Beast Lore on beasts (the addon saves their tooltip when you target " +
+	"them or hover over them while they carry it) or tame one (the addon saves the new pet's abilities at that moment), then /mcp reload"
+
+func (w WhereToTame) render() map[string]any {
+	out := map[string]any{"source": tamingSource}
+	switch {
+	case !w.HasSection:
+		out["note"] = "the dump has no beasts section: it needs addon 0.22.0 or newer on a Hunter. To collect beasts: " + howToObserve
+		return out
+	case w.Observed == 0:
+		out["note"] = "no beasts observed yet. To collect them: " + howToObserve
+		return out
+	}
+	out["observedBeasts"] = w.Observed
+	ranks := []any{}
+	for _, o := range w.Options {
+		ranks = append(ranks, o.render())
+	}
+	out["ranks"] = ranks
+	if len(ranks) == 0 {
+		out["note"] = "the observed beasts show no ability rank that could be read; taming a beast saves its abilities for certain"
+	}
+	if !w.LessonsFound {
+		out["hunterKnowsNote"] = "unknown which ranks the Hunter knows: open the Beast Training window in game and run /mcp reload"
+	}
+	out["order"] = "ranks the Hunter does not know first, then those not known to be known, then known ones; beasts most recently seen first"
+	return out
+}
+
+func (k Knowledge) render() string {
+	switch k {
+	case Known:
+		return "yes"
+	case NotKnown:
+		return "no"
+	}
+	return "unknown"
+}
+
+func (o TameOption) render() map[string]any {
+	e := map[string]any{"ability": o.Ability, "hunterKnows": o.Hunter.render(), "petHas": o.PetHas}
+	if o.Rank > 0 {
+		e["rank"] = o.Rank
+	}
+	beasts := []any{}
+	for _, s := range o.Beasts {
+		beasts = append(beasts, s.render())
+	}
+	e["beasts"] = beasts
+	return e
+}
+
+func (s Sighting) render() map[string]any {
+	b := s.Beast
+	e := map[string]any{"npcId": b.NpcID, "name": b.Name, "source": s.Source}
+	if b.HasLevel {
+		e["level"] = b.Level
+	}
+	if b.Family != "" {
+		e["family"] = b.Family
+	}
+	if b.Zone != "" {
+		e["zone"] = b.Zone
+	}
+	if b.HasMap {
+		e["mapId"] = b.MapID
+	}
+	if b.HasPos {
+		e["x"], e["y"] = b.X, b.Y
+	}
+	if b.SeenAt > 0 {
+		e["seenAt"] = snapshot.FormatTime(b.SeenAt)
+	}
+	if s.Source == SourceBeastLore {
+		e["loreLine"] = s.Ability.Line
 	}
 	return e
 }

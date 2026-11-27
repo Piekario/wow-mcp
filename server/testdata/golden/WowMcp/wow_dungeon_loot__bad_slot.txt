@@ -1,0 +1,5 @@
+# tool wow_dungeon_loot variant=bad_slot
+# args: {"slot":"moon"}
+# isError: true
+--- content[0] ---
+unknown slot "moon"; use one of head, neck, shoulder, back, chest, wrist, hands, waist, legs, feet, finger1, finger2, trinket1, trinket2, mainHand, offHand, ranged (finger and trinket match both slots)

@@ -29,6 +29,8 @@ one optionally takes a character name.
 |---|---|
 | `wow_quests` | "What quests do I have in my log and which can I turn in?" · "Which quest has an unfinished objective?" |
 | `wow_quest_lookup` | "Where do I turn in The Glowing Shard?" · "Where do I pick up the next quest of this chain?" · "Where are the mobs for this quest?" (needs Questie installed; for a quest outside your log type `/mcp quest <name or ID>` in game, then `/mcp reload`) |
+| `wow_lookup` | "What does this item really do?" · "What does Arcane Shot cost and how long does it take to cast?" · "Is this trinket's Use effect the same as in Classic?" (for something the dump does not know, type `/mcp item <ID, link or name>` or `/mcp spell <ID, link or name>` in game, then `/mcp reload`; shift-click an item into the command to paste its link) |
+| `wow_zone_progress` | "How many quests have I done in Darkshore and what is left?" · "Which quest chains did I leave unfinished here?" (needs Questie installed; covers the current zone and the zones of the quests in your log) |
 | `wow_guide` | "What is my next step in the guide?" · "What do I have left in this TUGs part and where do I go?" (needs Guidelime with a guide selected) |
 | `wow_quest_plan` | "Arrange my quests by zone." · "Which quests are too hard or gray?" |
 | `wow_leftovers` | "Do I have quest items in my bags for quests I no longer have?" (these are only candidates, nothing is removed automatically) |
@@ -67,18 +69,22 @@ one optionally takes a character name.
 
 | Tool or prompt | Example questions |
 |---|---|
-| `wow_progress` | "How much XP per hour am I making and when is the next level?" · "How many times did I die this session?" · "Where does my XP come from this session: kills or quests?" (`xpSources`, since addon 0.7.0) |
+| `wow_progress` | "How much XP per hour am I making and when is the next level?" · "How many times did I die this session?" · "Where does my XP come from this session: kills or quests?" (`xpSources`, since addon 0.7.0) · "How much honor and how many honorable kills did I get this session?" (`honorGained`, `honorableKills`; only when the dumps have `pvp`) |
 | `wow_timeline` | "Show my character's timeline for the last 7 days." · "When did I last level up and what changed afterwards?" · "Show only deaths." |
 | `wow_session_rating` | "Is this session going faster than usual?" · "How do my XP and gold per hour compare with previous sessions?" |
 | `week_in_game` | "Summarize my week in the game: levels, gold, play time and the best session." |
 | `wow_journal` | "Describe my recent sessions." · "Give me a session journal in Markdown to paste." (with loot and records) |
 | `wow_goals` | "How are my goals going and when will I reach them?" |
 | `wow_goal_set` | "Add a goal: level 25." · "Goal: 10 gold." · "Remove goal g2." (writes only the server's goals file) |
-| `wow_changes` | "What changed since the last dump?" · "What loot did I get since the last save?" · "Summarize the whole session today (last 4 hours)." |
+| `wow_share_dump` | "Share an anonymized dump of my character." · "Prepare a dump of my Priest for the wow-mcp project." (writes a local file with names and personal text removed; you read it and attach it to an issue yourself) |
+| `wow_changes` | "What changed since the last dump?" · "What loot did I get since the last save?" · "Summarize the whole session today (last 4 hours)." · "How much honor did I earn since the last dump?" |
 | `wow_rested` | "How much rested XP do I have and when will it be full if I log out in an inn?" |
 | `wow_reputation` | "How much do I need to reach Honored with Darnassus?" |
 | `wow_spells` | "Which abilities do I already know?" |
 | `wow_legacy` | "Where should I spend my Legacy Points?" · "Which Legacy challenges are still open?" |
+| `wow_achievements` | "How many achievement points do I have?" · "Which achievements am I closest to finishing, and what is missing?" · "When did I earn my exploration achievements?" (`view: timeline`, `category: Exploration`) |
+| `wow_statistics` | "How many times have I died in total?" · "How much gold have I looted?" |
+| `wow_collections` | "Which titles do I have and which one is shown?" · "Which mounts and companion pets does this character know?" |
 | `wow_talents` | "What can I spend a talent point on right now?" · "Show the talent descriptions from the Beast Mastery tree." |
 | `wow_recipes` | "What can I craft right now to level up Leatherworking?" · "What is missing for this recipe?" |
 | `wow_cooldowns` | "Does any alt have a profession cooldown ready?" |
@@ -104,8 +110,9 @@ one optionally takes a character name.
 |---|---|
 | `wow_group` | "Who is missing from the group: tank, healer?" · "Show the gear of the player I inspected." (after clicking Inspect) |
 | `wow_dungeons` | "Which dungeons fit my level?" · "Which quests can I do in Deadmines?" |
+| `wow_dungeon_loot` | "What could I get from Deadmines?" · "Which boss in Wailing Caverns drops a better belt for me?" (first type `/mcp loot deadmines` in the game, then `/mcp reload`) |
 | `dungeon_finder` | "Where should I go for a dungeon and how should I prepare?" |
-| `wow_social` | "Which of my friends are online now?" · "Who from the guild is online and in which zone?" · "Show the whole guild, including offline members." (first open the social or guild window in the game and do `/mcp reload`; the addon does not ask the game server for these lists on its own) |
+| `wow_social` | "Which of my friends are online now?" · "Who from the guild is online and in which zone?" · "Show the whole guild, including offline members." (a large guild is cut to the 40 members closest to your level; ask for more with `limit`, or filter with `query`, e.g. "Which priests are online in my guild?") · "Which classes and levels are online in my guild?" · "Who from the guild or my friends could I group with now?" (`groupCandidates`, `levelRange`, default 5; roles are what a class can do, not what the player picks) (first open the social or guild window in the game and do `/mcp reload`; the addon does not ask the game server for these lists on its own) |
 
 ## Diagnostics
 

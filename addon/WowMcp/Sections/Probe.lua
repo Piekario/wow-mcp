@@ -3,7 +3,9 @@
 
 -- Section probe (diagnostics, only via /mcp probe): list of client API functions
 -- in selected namespaces and the registration result of the addon's events (events).
--- Used to find out what a function is called in this client and whether it knows a given event.
+-- Used to find out what a function is called in this client and whether it knows a given event. Since 0.22.0 also
+-- the raw answers of C_PetInfo.CanPetEatItem for a few bag items (petFood) and the Beast Lore tooltip of the target
+-- (beastLore); the taming and Beast Lore events are in events, since the addon registers them.
 
 local _, ns = ...
 
@@ -14,7 +16,7 @@ local NAMESPACES = {
     "C_Traits", "C_ClassTalents", "C_TradeSkillUI", "C_GameRules", "C_CurrencyInfo", "C_Mail", "C_Timer",
     "C_AuctionHouse", "C_LFGList", "C_PartyInfo", "C_EncounterJournal", "C_QuestInfoSystem", "TooltipDataProcessor",
     "C_EquipmentSet", "C_FriendList", "C_GuildInfo", "C_PvP", "C_Map", "C_BattleNet",
-    "C_AchievementInfo",
+    "C_AchievementInfo", "C_MountJournal", "C_PetJournal", "C_TitleManager", "C_AddOns",
 }
 
 local GLOBAL_PREFIXES = {
@@ -31,6 +33,9 @@ local GLOBAL_PREFIXES = {
     -- Weapon format strings are variables, not functions.
     "^GetAchievement", "^GetCategory", "^GetTotalAchievement", "^GetNumCompletedAchievements",
     "^GetLatestCompletedAchievements", "^GetPreviousAchievement", "^GetNextAchievement", "^GetStatistic",
+    "^GetComparisonStatistic", "^GetNumTitles", "^IsTitleKnown", "^GetTitleName", "^GetCurrentTitle",
+    "^GetNumCompanions", "^GetCompanionInfo",
+    "^EJ_", "^BNGet", "^IsInInstance", "^GetInstanceInfo", "^IsAddOnLoaded", "^GetAddOnInfo",
 }
 
 local GLOBAL_FRAGMENTS = { "Loyal", "Happiness", "TrainingPoint", "PetFood", "PetExperience", "CritChance" }
@@ -68,9 +73,33 @@ local function candidateEvents()
     return known
 end
 
+-- Blizzard UI addons whose state matters to a section: loaded now, loadable on demand, and whether their main
+-- frame exists. The probe only asks; it loads nothing.
+local UI_ADDONS = { Blizzard_EncounterJournal = "EncounterJournal" }
+
+local function addonStates()
+    local states = {}
+    for name, frameName in pairs(UI_ADDONS) do
+        local state = { frame = _G[frameName] ~= nil }
+        state.loaded = ns.Compat.firstValue({ "C_AddOns.IsAddOnLoaded", "IsAddOnLoaded" }, name)
+        state.loadable = ns.Compat.firstValue({ "C_AddOns.IsAddOnLoadable" }, name)
+        if state.loadable == nil then
+            local info = ns.Compat.callFirst({ "C_AddOns.GetAddOnInfo", "GetAddOnInfo" }, name)
+            state.loadable = info and ns.Compat.plain(info[4])
+        end
+        states[name] = state
+    end
+    return states
+end
+
 local function collectProbe()
     local probe = { capturedAt = time(), namespaces = {}, globals = {}, events = ns.Events.registrationResults() }
     probe.eventCandidates = candidateEvents()
+    probe.addons = addonStates()
+    local okFood, petFood = pcall(ns.PetFood.probe)
+    probe.petFood = okFood and petFood or nil
+    local okLore, beastLore = pcall(ns.BeastLore.probeTarget)
+    probe.beastLore = okLore and beastLore or nil
     for _, namespace in ipairs(NAMESPACES) do
         local object = _G[namespace]
         if type(object) == "table" then

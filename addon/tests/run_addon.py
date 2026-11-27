@@ -12,6 +12,8 @@ Usage: python3 run_addon.py <modern|legacy|forever> <output_file>
 
 import os
 import sys
+import re
+import urllib.parse
 from pathlib import Path
 
 import lupa.lua51 as lua51
@@ -131,9 +133,9 @@ function UnitName(unit)
 end
 function UnitLevel(unit) if unit == "pet" then return 19 end return 20 end
 function GetBindLocation() return "Auberdine" end
-function UnitClass() return "Hunter", "HUNTER" end
+function UnitClass() return "Hunter", "HUNTER", 3 end
 function GetLocale() return "enUS" end
-function UnitRace() return "Night Elf", "NightElf" end
+function UnitRace() return "Night Elf", "NightElf", 4 end
 function UnitFactionGroup() return "Alliance" end
 playedRequested = false
 function RequestTimePlayed() playedRequested = true end
@@ -150,6 +152,8 @@ guildRoster = {
     { "Healbot", "Member", 3, 19, "Priest", "Darkshore", "", "", true, 0, "PRIEST" },
     { "Oldfriend", "Veteran", 2, 60, "Mage", "Dalaran", "", "", false, 0, "MAGE" },
 }
+function GetGuildRosterLastOnline(i) if i == 3 then return 0, 2, 3, 4 end end
+LOCALIZED_CLASS_NAMES_MALE = { PALADIN = "Paladin", PRIEST = "Priest", MAGE = "Mage", HUNTER = "Hunter" }
 function IsInGuild() return true end
 function GetGuildInfo(unit) if unit == "player" then return "Night Watch", "Hunter Rank", 4 end end
 function GetNumGuildMembers()
@@ -540,7 +544,13 @@ WEAPON_SPEED = "Speed"
 -- 7 Trade Goods / 5 Cloth; Enum.ItemBind 2 = binds when equipped. The numbers match the type texts of the mock.
 C_Item = {
     GetItemInfo = function(link)
+        -- Like the real client, an ID or name gets a full link back; items by name are known only when the client has seen them.
+        if type(link) == "number" then link = "|cffffffff|Hitem:" .. link .. ":0|h[Item " .. link .. "]|h|r" end
+        if link == "Skinning Knife" then link = "|cffffffff|Hitem:7005:0|h[Skinning Knife]|h|r" end
         local id = tonumber(tostring(link):match("item:(%d+)")) or link
+        if type(id) == "string" then return nil end
+        -- Item 99001 is not in the client cache until the data arrives (lateItemLoaded).
+        if id == 99001 and not lateItemLoaded then return nil end
         if ahItemData[id] then return ahItemInfo(link) end
         if id == 5586 then return "Curvewood Dagger", link, 2, 18, 13, "Weapon", "Dagger", 1, "INVTYPE_WEAPON", 135, 812, 2, 15, 2 end
         if id == 7005 then return "Skinning Knife", link, 1, 4, 1, "Weapon", "Dagger", 1, "INVTYPE_WEAPON", 135, 16, 2, 15, 0 end
@@ -576,6 +586,7 @@ C_TooltipInfo = {
     GetSpellByID = function(id)
         if id == 1225451 then return { lines = { { leftText = "Working Overtime" }, { leftText = "Passive" } } } end
         if id == 1225440 then return { lines = { { leftText = "Gourmand" }, { leftText = "Passive" }, { leftText = "Food heals you more." } } } end
+        if id == 3044 then return { lines = { { leftText = "Arcane Shot", rightText = "Rank 1" }, { leftText = "50 Mana", rightText = "35 yd range" }, { leftText = "Instant" }, { leftText = "An instant shot that causes 15 Arcane damage." } } } end
         if id == 19426 then return { lines = { { leftText = "Lethal Shots" }, { leftText = "Increases your critical strike chance with ranged weapons by |cffffffff1%|r." } } } end
         if id == 19295 then return { lines = { { leftText = "Deflection" }, { leftText = "Increases your Parry chance by 1%." } } } end
     end,
@@ -592,13 +603,43 @@ C_UnitAuras = {
 C_QuestLog.GetAllCompletedQuestIDs = function() return { 918, 456, 457 } end
 
 spellDataRequested = {}
+lateItemLoaded, lateSpellLoaded = false, false
 local actions = { [1] = { "spell", 3044 }, [2] = { "macro", 1 }, [13] = { "item", 4540 } }
 function HasAction(slot) return actions[slot] ~= nil end
 function GetActionInfo(slot) local a = actions[slot]; if a then return a[1], a[2], "" end end
+-- Spell names the client gives for the class buff IDs of the Hunter (ClassBuffs.lua); 99999 has no entry, like an
+-- ID the client does not know. Warlock and Mage IDs are unknown here: only the Hunter's section is exercised.
+local classBuffNames = {
+    [13163] = "Aspect of the Monkey", [13165] = "Aspect of the Hawk", [5118] = "Aspect of the Cheetah",
+    [13159] = "Aspect of the Pack", [13161] = "Aspect of the Beast", [20043] = "Aspect of the Wild",
+}
 C_Spell = {
     IsSelfBuff = function(id) return id == 13165 end,
-    GetSpellName = function(id) if id == 3044 then return "Arcane Shot" end if id == 19416 then return "Efficiency" end end,
-    GetSpellDescription = function(id) if id == 19416 then return "Reduces the Mana cost of your Shots and Stings by |cffffffff2%|r." end return "" end,
+    GetSpellName = function(id)
+        if id == 3044 then return "Arcane Shot" end
+        if id == 19416 then return "Efficiency" end
+        return classBuffNames[id]
+    end,
+    GetSpellDescription = function(id)
+        if id == 19416 then return "Reduces the Mana cost of your Shots and Stings by |cffffffff2%|r." end
+        if id == 3044 then return "An instant shot that causes |cffffffff15|r Arcane damage." end
+        if id == 99002 and lateSpellLoaded then return "Loaded later." end
+        return ""
+    end,
+    -- Spell 99002 is unknown to the client until its data arrives (lateSpellLoaded).
+    GetSpellInfo = function(key)
+        local known = { [3044] = "Arcane Shot", [19416] = "Efficiency", [99002] = lateSpellLoaded and "Late Spell" or nil }
+        local id = tonumber(key)
+        if not id then for spellID, name in pairs(known) do if name == key then id = spellID end end end
+        if not (id and known[id]) then return nil end
+        local arcane = id == 3044
+        return { name = known[id], spellID = id, iconID = 132218, castTime = 0, minRange = arcane and 5 or 0, maxRange = arcane and 35 or 0 }
+    end,
+    GetSpellSubtext = function(id) if id == 3044 then return "Rank 1" end return "" end,
+    GetSpellPowerCost = function(id)
+        if id == 3044 then return { { name = "MANA", type = 0, cost = 50, minCost = 50 }, { name = "RAGE", type = 1, cost = 0 } } end
+        return {}
+    end,
     RequestLoadSpellData = function(id) spellDataRequested[#spellDataRequested + 1] = id end,
     -- Aspect of the Hawk has (unrealistically) a 5 min cooldown here, Hunter's Mark only the global one.
     GetSpellCooldown = function(id)
@@ -1021,13 +1062,259 @@ C_GameRules.GetLegacyChallengeList = function() return { { challengeID = 9, comp
 C_GameRules.SetLegacyChallengeTracked = function() legacyActionCalls[#legacyActionCalls + 1] = "SetLegacyChallengeTracked" end
 """
 
+# Achievements, statistics, titles and collections (addon 0.21.0): the modern achievement API in the shape of the retail
+# documentation. Nobody has confirmed yet which of these the real Forever client has, so every mode except the legacy
+# client gets them; the legacy client has none and proves that the sections stay absent. In the Forever modes these
+# functions wrap the Legacy category mocks above, which keep their results. Names, IDs, dates and values are invented.
+# Addon 0.22.0: pet food and beasts (Forever modes). C_PetInfo.CanPetEatItem is in the real client (probe of addon
+# 0.7.0) but its argument is not confirmed: "forever" answers for an item ID, "dede" (petFoodByLink) only for an item
+# link, so both forms reach a fixture. Raw meat is Trade Goods (7/8), cooked food and drink Food & Drink (0/5); the cat
+# eats meat and refuses the juice. mockUnits overrides the unit functions for the target, the mouseover and the pet
+# while the test tames a beast or examines one with Beast Lore.
+PET_TAMING_STUBS = r"""
+petFoodData = {
+    [2672] = { name = "Stringy Wolf Meat", type = "Trade Goods", subType = "Meat", classID = 7, subclassID = 8, canEat = true },
+    [2287] = { name = "Haunch of Meat", type = "Consumable", subType = "Food & Drink", classID = 0, subclassID = 5, canEat = true },
+    [1645] = { name = "Moonberry Juice", type = "Consumable", subType = "Food & Drink", classID = 0, subclassID = 5, canEat = false },
+}
+local function foodLink(id) return "|cffffffff|Hitem:" .. id .. ":0|h[" .. petFoodData[id].name .. "]|h|r" end
+local foodSlots = {
+    [0] = { [5] = { itemID = 2672, stackCount = 4, quality = 1, isBound = false, hyperlink = foodLink(2672) } },
+    [1] = {
+        [3] = { itemID = 2672, stackCount = 8, quality = 1, isBound = false, hyperlink = foodLink(2672) },
+        [4] = { itemID = 2287, stackCount = 5, quality = 1, isBound = false, hyperlink = foodLink(2287) },
+        [5] = { itemID = 1645, stackCount = 3, quality = 1, isBound = false, hyperlink = foodLink(1645) },
+    },
+}
+local slotInfo = C_Container.GetContainerItemInfo
+C_Container.GetContainerItemInfo = function(bag, slot)
+    if foodSlots[bag] and foodSlots[bag][slot] then return foodSlots[bag][slot] end
+    return slotInfo(bag, slot)
+end
+local itemInfo, instantInfo = C_Item.GetItemInfo, GetItemInfoInstant
+C_Item.GetItemInfo = function(link)
+    local id = tonumber(tostring(link):match("item:(%d+)")) or link
+    local d = petFoodData[id]
+    if d then return d.name, foodLink(id), 1, 5, 1, d.type, d.subType, 20, "INVTYPE_NON_EQUIP_IGNORE", 134, 4, d.classID, d.subclassID, 0 end
+    return itemInfo(link)
+end
+function GetItemInfoInstant(link)
+    local id = ahItemId(link)
+    local d = petFoodData[id]
+    if d then return id, d.type, d.subType, "INVTYPE_NON_EQUIP_IGNORE", 134, d.classID, d.subclassID end
+    return instantInfo(link)
+end
+C_Item.GetItemInfoInstant = GetItemInfoInstant
+C_PetInfo.CanPetEatItem = function(item)
+    local id = item
+    if petFoodByLink then
+        if type(item) ~= "string" then error("Usage: C_PetInfo.CanPetEatItem(itemLink)") end
+        id = ahItemId(item)
+    elseif type(item) ~= "number" then
+        error("Usage: C_PetInfo.CanPetEatItem(itemID)")
+    end
+    local d = petFoodData[id]
+    return d ~= nil and d.canEat or false
+end
+
+mockUnits = {}
+local function unitField(field, fallback)
+    return function(unit, ...)
+        local u = mockUnits[unit]
+        if u and u[field] ~= nil then return u[field] end
+        if fallback then return fallback(unit, ...) end
+    end
+end
+UnitGUID = unitField("guid", UnitGUID)
+UnitName = unitField("name", UnitName)
+UnitLevel = unitField("level", UnitLevel)
+UnitCreatureFamily = unitField("family", UnitCreatureFamily)
+local unitExists = UnitExists
+function UnitExists(unit) if mockUnits[unit] then return true end return unitExists(unit) end
+local auraByIndex = C_UnitAuras.GetAuraDataByIndex
+C_UnitAuras.GetAuraDataByIndex = function(unit, index, filter)
+    local u = mockUnits[unit]
+    if u then
+        if u.lore and filter == "HARMFUL" and index == 1 then return { name = "Beast Lore", spellId = 1462 } end
+        return nil
+    end
+    return auraByIndex(unit, index, filter)
+end
+if petFoodByLink then
+    C_UnitAuras.GetUnitAuraBySpellID = function(unit, spellID)
+        local u = mockUnits[unit]
+        if u and u.lore and spellID == 1462 then return { name = "Beast Lore", spellId = 1462 } end
+    end
+end
+C_TooltipInfo.GetUnit = function(unit)
+    local u = mockUnits[unit]
+    if not (u and u.tooltip) then return nil end
+    local lines = {}
+    for i, text in ipairs(u.tooltip) do lines[i] = { leftText = text } end
+    return { lines = lines }
+end
+-- The pet spellbook right after taming (tamedPetSpells); the pet section reads the usual one.
+local hasPetSpells, bookItem = C_SpellBook.HasPetSpells, C_SpellBook.GetSpellBookItemInfo
+C_SpellBook.HasPetSpells = function()
+    if tamedPetSpells then return #tamedPetSpells, "PET" end
+    return hasPetSpells()
+end
+C_SpellBook.GetSpellBookItemInfo = function(i, bank)
+    if tamedPetSpells and bank == 1 then return tamedPetSpells[i] end
+    return bookItem(i, bank)
+end
+"""
+
+ACHIEVEMENT_STUBS = r"""
+local baseCategoryList, baseCategoryInfo = GetCategoryList, GetCategoryInfo
+local baseNumAchievements, baseAchievementInfo = GetCategoryNumAchievements, GetAchievementInfo
+local categoryInfo = { [96] = { "Quests", -1 }, [14861] = { "Classic", 96 }, [97] = { "Exploration", -1 },
+    [130] = { "Character", -1 }, [131] = { "Wealth", 130 }, [122] = { "Deaths", -1 } }
+-- { id, name, points, completed, month, day, year (since 2000), description, reward, criteria { text, completed, quantity, required } }
+local kalimdor = {}
+for i, zone in ipairs({ "Teldrassil", "Darkshore", "Ashenvale", "The Barrens", "Durotar", "Mulgore", "Stonetalon Mountains",
+                         "Desolace", "Feralas", "Thousand Needles" }) do
+    kalimdor[i] = { zone, i <= 2, i <= 2 and 1 or 0, 1 }
+end
+achievementData = {
+    [96] = { { 503, "50 Quests Completed", 10, true, 9, 3, 26, "Complete 50 quests.", "" },
+             { 504, "100 Quests Completed", 10, false, nil, nil, nil, "Complete 100 quests.", "",
+               { { "Complete 100 quests", false, 74, 100 } } } },
+    [14861] = { { 4899, "Darkshore Quests", 10, true, 11, 14, 26, "Complete 30 quests in Darkshore.", "" },
+                { 4896, "Ashenvale Quests", 10, false, nil, nil, nil, "Complete 40 quests in Ashenvale.", "",
+                  { { "Complete quests in Ashenvale", false, 6, 40 } } },
+                -- Legacy challenges found by their reward text in an ordinary category (real client 2026-11-24).
+                { 5500, "Novice Mage", 0, true, 10, 1, 26, "Reach level 25 for the first time on a Mage.", "Earn 1 Legacy Point." },
+                { 5501, "Journeyman Alchemist", 0, false, nil, nil, nil, "Reach 150 Alchemy skill.", "Earn 1 Legacy Point.",
+                  { { "150 Alchemy Skill", false, 0, 150 } } } },
+    [97] = { { 768, "Explore Teldrassil", 10, true, 8, 30, 26, "Explore Teldrassil, revealing the covered areas of the world map.", "" },
+             { 844, "Explore Darkshore", 10, false, nil, nil, nil, "Explore Darkshore, revealing the covered areas of the world map.", "",
+               { { "Auberdine", true, 1, 1 }, { "Ruins of Mathystra", false, 0, 1 }, { "Bashal'Aran", true, 1, 1 }, { "Grove of the Ancients", false, 0, 1 } } },
+             { 43, "Explore Kalimdor", 25, false, nil, nil, nil, "Explore the regions of Kalimdor.", "Reward: Title - the Wanderer", kalimdor } },
+}
+-- Statistics: { id, name, value as GetStatistic returns it }.
+local coins = "5|TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:0|t 20|TInterface\\MoneyFrame\\UI-SilverIcon:0:0:2:0|t 3|TInterface\\MoneyFrame\\UI-CopperIcon:0:0:2:0|t"
+local statisticData = {
+    [130] = { { 98, "Quests completed", "62" }, { 107, "Creatures killed", "1404" } },
+    [131] = { { 328, "Total gold acquired", coins }, { 1148, "Gold spent on travel", "--" } },
+    [122] = { { 60, "Total deaths", "3" }, { 1149, "Deaths from falling", "--" } },
+}
+achievementInfoCalls = 0
+local byID = {}
+for _, list in pairs(achievementData) do for _, a in ipairs(list) do byID[a[1]] = a end end
+
+function GetCategoryList()
+    local list = baseCategoryList and baseCategoryList() or {}
+    for _, id in ipairs({ 96, 14861, 97 }) do list[#list + 1] = id end
+    return list
+end
+function GetStatisticsCategoryList() return { 130, 131, 122 } end
+function GetCategoryInfo(id)
+    local c = categoryInfo[id]
+    if c then return c[1], c[2], 0 end
+    if baseCategoryInfo then return baseCategoryInfo(id) end
+end
+function GetCategoryNumAchievements(id, includeAll)
+    local list = achievementData[id]
+    if list then
+        local done = 0
+        for _, a in ipairs(list) do if a[4] then done = done + 1 end end
+        return #list, done, #list - done
+    end
+    if statisticData[id] then return #statisticData[id], 0, 0 end
+    if baseNumAchievements then return baseNumAchievements(id, includeAll) end
+    return 0, 0, 0
+end
+local function achievementInfo(categoryID, index)
+    local a = achievementData[categoryID] and achievementData[categoryID][index]
+    if a then return a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], 0, 236, a[9], false, a[4], "", false end
+    local s = statisticData[categoryID] and statisticData[categoryID][index]
+    if s then return s[1], s[2], 0, false, nil, nil, nil, "", 0, 236, "", false, false, "", true end
+    if baseAchievementInfo then return baseAchievementInfo(categoryID, index) end
+end
+function GetAchievementInfo(categoryID, index)
+    achievementInfoCalls = achievementInfoCalls + 1
+    return achievementInfo(categoryID, index)
+end
+function GetAchievementNumCriteria(id) local a = byID[id] return a and a[10] and #a[10] or 0 end
+function GetAchievementCriteriaInfo(id, index)
+    local c = byID[id] and byID[id][10] and byID[id][10][index]
+    if c then return c[1], 0, c[2], c[3], c[4], nil, 0, 0, tostring(c[3]), id * 100 + index end
+end
+function GetTotalAchievementPoints()
+    local points = 0
+    for _, categoryID in ipairs(GetCategoryList()) do
+        for index = 1, (GetCategoryNumAchievements(categoryID, true)) do
+            local _, _, p, completed = achievementInfo(categoryID, index)
+            if completed then points = points + (p or 0) end
+        end
+    end
+    return points
+end
+function GetNumCompletedAchievements()
+    local total, done = 0, 0
+    for _, categoryID in ipairs(GetCategoryList()) do
+        local t, d = GetCategoryNumAchievements(categoryID, true)
+        total, done = total + t, done + (d or 0)
+    end
+    return total, done
+end
+function GetStatistic(id)
+    for _, list in pairs(statisticData) do
+        for _, s in ipairs(list) do if s[1] == id then return s[3] end end
+    end
+    return "--"
+end
+
+local titleNames = { [1] = "Private ", [53] = " the Patient", [77] = "Sergeant " }
+function GetNumTitles() return 143 end
+function IsTitleKnown(id) return id == 1 or id == 53 end
+function GetTitleName(id) return titleNames[id] end
+function GetCurrentTitle() return 53 end
+
+SetCurrentTitle, AddTrackedAchievement, RemoveTrackedAchievement = forbid("SetCurrentTitle"), forbid("AddTrackedAchievement"), forbid("RemoveTrackedAchievement")
+SetAchievementComparisonUnit = forbid("SetAchievementComparisonUnit")
+"""
+
+# Mounts and companions: the modern client has the journals (with an uncollected mount and an unowned pet), Forever
+# the companion API of the Wrath-era clients.
+JOURNAL_STUBS = r"""
+local mounts = { [6] = { "Brown Horse", 458, true, 6 }, [17] = { "Swift White Steed", 23227, false, 17 }, [41] = { "Striped Nightsaber", 10793, true, 41 } }
+C_MountJournal = {
+    GetMountIDs = function() return { 6, 17, 41 } end,
+    GetMountInfoByID = function(id)
+        local m = mounts[id]
+        if m then return m[1], m[2], 132226, false, true, 0, false, false, nil, false, m[3], m[4] end
+    end,
+    SummonByID = forbid("C_MountJournal.SummonByID"), Dismiss = forbid("C_MountJournal.Dismiss"),
+}
+local pets = { { "BattlePet-0-1", 40, true, "", 1, false, false, "Mechanical Squirrel", 1, 9, 2671 },
+               { "BattlePet-0-2", 41, false, "", 1, false, false, "Ancona Chicken", 1, 5, 7394 },
+               { "BattlePet-0-3", 42, true, "Whiskers", 1, false, false, "Cat (Black Tabby)", 1, 8, 7383 } }
+C_PetJournal = {
+    GetNumPets = function() return #pets, 2 end,
+    GetPetInfoByIndex = function(i) local p = pets[i] if p then return unpack(p) end end,
+    SummonPetByGUID = forbid("C_PetJournal.SummonPetByGUID"),
+}
+"""
+
+COMPANION_STUBS = r"""
+local companions = { MOUNT = { { 7322, "Striped Nightsaber", 10793 } }, CRITTER = { { 7385, "Bombay Cat", 10673 }, { 7390, "Cockatiel", 10680 } } }
+function GetNumCompanions(kind) return companions[kind] and #companions[kind] or 0 end
+function GetCompanionInfo(kind, index)
+    local c = companions[kind] and companions[kind][index]
+    if c then return c[1], c[2], c[3], 132599, false end
+end
+CallCompanion, DismissCompanion = forbid("CallCompanion"), forbid("DismissCompanion")
+"""
+
 # Clock for timing sections: a deterministic, increasing counter (steps of 0.5, 2.5 and 1.0 ms
 # in turn), so the dump is the same every time. The older (legacy) client does not have it.
 # Addon 0.14.0: a mock of the QuestieDB public API (global LibQuestieDB: entity Get / Exists / IdsByName) and of
 # Guidelime (registerGuide, GuidelimeDataChar). All quest, NPC and guide data below is invented for the tests; the
 # addon ships no quest or guide data and reads these only when the player has those addons installed.
 QUEST_SOURCES_STUBS = r"""
-local areaNames = { [148] = "Darkshore", [331] = "Ashenvale", [719] = "Blackfathom Deeps" }
+local areaNames = { [148] = "Darkshore", [331] = "Ashenvale", [719] = "Blackfathom Deeps", [1519] = "Stormwind City" }
 C_Map.GetAreaInfo = function(areaID) return areaNames[areaID] end
 C_QuestLog.IsQuestFlaggedCompleted = function(id) return id == 918 or id == 456 or id == 457 end
 
@@ -1037,18 +1324,45 @@ local rows = {
                   startedBy = { { 3583 } }, finishedBy = { { 3583 } },
                   objectivesText = { "Bring 5 Scaber Stalks and 1 Death Cap to Barithras Moonshade in Auberdine." },
                   objectives = { nil, { { 174795, "Scaber Stalk" } }, { { 5270 } } } },
-        [948] = { name = "Onu", questLevel = 17, requiredLevel = 10, zoneOrSort = 148, startedBy = { { 3583 } }, finishedBy = { { 3616 } } },
+        [948] = { name = "Onu", questLevel = 17, requiredLevel = 10, zoneOrSort = 148, preQuestSingle = { 947 },
+                  startedBy = { { 3583 } }, finishedBy = { { 3616 } } },
         [4740] = { name = "WANTED: Murkdeep!", questLevel = 18, requiredLevel = 12, zoneOrSort = 148,
                    startedBy = { nil, { 176115 } }, finishedBy = { { 3693 } }, objectives = { { { 10323 } } } },
         [982] = { name = "Deep Ocean, Vast Sea", questLevel = 17, requiredLevel = 13, zoneOrSort = 148,
                   startedBy = { { 3644 } }, finishedBy = { { 3644 }, { 9999001 } }, objectives = { { { 2165, "Grizzled Thistle Bear slain" } } } },
         [-1] = { name = "Deleted quest" },
+        -- zoneQuests: more quests of Darkshore and of the current zone, Stormwind City. 918 is done and
+        -- leads to 4730; 4813 needs a higher level; 2118, 3524 and 4725 are for the Horde, for druids and repeatable;
+        -- 1138 is a breadcrumb to 4740, which is in the log.
+        [918] = { name = "Washed Ashore", questLevel = 14, requiredLevel = 11, zoneOrSort = 148, nextQuestInChain = 4730,
+                  startedBy = { { 3693 } }, finishedBy = { { 3693 } } },
+        [4730] = { name = "Beached Sea Turtle", questLevel = 15, requiredLevel = 11, zoneOrSort = 148, preQuestSingle = { 918 },
+                   startedBy = { { 3693 } }, finishedBy = { { 3693 } } },
+        [4813] = { name = "The Fragments Within", questLevel = 23, requiredLevel = 21, zoneOrSort = 148,
+                   startedBy = { { 3616 } }, finishedBy = { { 3616 } } },
+        [2118] = { name = "Plagued Lands", questLevel = 15, requiredLevel = 10, zoneOrSort = 148, requiredRaces = 178,
+                   startedBy = { { 3693 } }, finishedBy = { { 3693 } } },
+        [3524] = { name = "Grove of the Ancients", questLevel = 16, requiredLevel = 10, zoneOrSort = 148, requiredClasses = 1024,
+                   startedBy = { { 3693 } }, finishedBy = { { 3693 } } },
+        [4725] = { name = "Beached Sea Creature", questLevel = 15, requiredLevel = 10, zoneOrSort = 148, specialFlags = 1,
+                   startedBy = { nil, { 176115 } }, finishedBy = { { 3693 } } },
+        [1138] = { name = "Fruit of the Sea", questLevel = 18, requiredLevel = 12, zoneOrSort = 148, breadcrumbForQuestId = 4740,
+                   startedBy = { nil, nil, { 5270 } }, finishedBy = { { 3693 } } },
+        [456] = { name = "Report to Thomas", questLevel = 10, requiredLevel = 8, zoneOrSort = 1519, nextQuestInChain = 457,
+                  startedBy = { { 1323 } }, finishedBy = { { 1323 } } },
+        [457] = { name = "Harlan Needs a Resupply", questLevel = 11, requiredLevel = 8, zoneOrSort = 1519, preQuestSingle = { 456 },
+                  startedBy = { { 1323 } }, finishedBy = { { 1323 } } },
+        [343] = { name = "Speaking of Fortitude", questLevel = 25, requiredLevel = 20, zoneOrSort = 1519,
+                  startedBy = { { 3644 } }, finishedBy = { { 1323 } } },
+        [1638] = { name = "A Warrior's Training", questLevel = 10, requiredLevel = 10, zoneOrSort = 1519, requiredClasses = 1,
+                   startedBy = { { 1323 } }, finishedBy = { { 1323 } } },
     },
     Npc = {
         [3583] = { name = "Barithras Moonshade", subName = "Mushroom Collector", friendlyToFaction = "A", minLevel = 22, maxLevel = 22,
                    zoneID = 148, spawns = { [148] = { { 37.32, 43.64 } } } },
         [3616] = { name = "Onu", friendlyToFaction = "A", zoneID = 148, spawns = { [148] = { { 43.56, 76.29 } } } },
         [3693] = { name = "Terenthis", friendlyToFaction = "A", zoneID = 148, spawns = { [148] = { { 39.37, 43.48 } } } },
+        [1323] = { name = "Osric Strang", friendlyToFaction = "A", zoneID = 1519, spawns = { [1519] = { { 74.62, 40.21 } } } },
         [3644] = { name = "Cerellean Whiteclaw", friendlyToFaction = "A", zoneID = 148, spawns = { [148] = { { 35.74, 43.71 } } } },
         [10323] = { name = "Murkdeep", minLevel = 19, maxLevel = 19, zoneID = 148, spawns = { [148] = { { 36.4, 76.6 } } } },
         -- A creature with spawn points in two zones and inside an instance: the main zone comes first.
@@ -1067,6 +1381,12 @@ local function entity(kind)
     return {
         Get = function(id, key) questDbReads = questDbReads + 1; return data[id] and data[id][key] end,
         Exists = function(id) return data[id] ~= nil end,
+        GetAllIds = function()
+            local ids = {}
+            for id in pairs(data) do if id > 0 then ids[#ids + 1] = id end end
+            table.sort(ids)
+            return ids
+        end,
         IdsByName = function(name)
             local ids = {}
             for id, row in pairs(data) do if row.name == name then ids[#ids + 1] = id end end
@@ -1078,6 +1398,9 @@ local function entity(kind)
 end
 LibQuestieDB = { Quest = entity("Quest"), Npc = entity("Npc"), Object = entity("Object"), Item = entity("Item"),
                  addonName = "QuestieDB", contractVersion = 4, readMode = "baked" }
+-- zoneQuests: the race and class bit masks of the database (QuestieDB contract 3 and 4).
+LibQuestieDB.Enum = { classKeys = { WARRIOR = 1, HUNTER = 4, DRUID = 1024 }, raceMaskById = { [1] = 1, [2] = 2, [4] = 8 },
+                      factionRaceMasks = { Alliance = 77, Horde = 178 } }
 C_AddOns = { GetAddOnMetadata = function(name, key) if name == "QuestieDB" and key == "Version" then return "1.1.3" end end }
 -- Addon 0.18.0: the zone support data (area ID -> UI map ID) as the Lua source text QuestieDB ships, and the client's
 -- link handler API (Forever: LinkUtil.RegisterLinkHandler, as Questie uses it). TomTom is absent unless a check adds it.
@@ -1102,6 +1425,126 @@ GuidelimeDataChar = {
     currentGuide = "Mock Guides 17-19 Darkshore",
     progress = { ["Mock Guides 17-19 Darkshore"] = { [7] = { completed = true, stepText = "Set your [H] to Auberdine at [G37, 44.1Darkshore]" } } },
 }
+"""
+
+# Dungeon loot (unreleased): the Encounter Journal as mainline clients have it (EJ_* globals and
+# C_EncounterJournal.GetLootInfoByIndex). The real Forever client was only probed for C_EncounterJournal, so these
+# names are an assumption. The player's journal window shows Wailing Caverns with a class and a slot filter; a read must
+# see every item and put all of that back. Wailing Caverns lists loot only per boss (the per-encounter fallback).
+EJ_STUBS = r"""
+ejState = { instance = 240, encounter = 2, classID = 3, specID = 0, slot = 5, tier = 3 }
+ejChanges = 0
+EncounterJournal = { instanceID = 240, encounterID = 2 }
+local function item(id, name, encounterID, quality, slot, info, stats, cached)
+    return { id = id, name = name, encounterID = encounterID, quality = quality, slot = slot, info = info, stats = stats, cached = cached }
+end
+-- info: itemLevel, requiredLevel, type, subType, equipLoc, classID, subclassID
+ejLoot = {
+    [63] = {
+        item(5196, "Smite's Reaver", 91, 3, "One-Hand", { 21, 16, "Weapon", "Axe", "INVTYPE_WEAPON", 2, 0 },
+             { ITEM_MOD_DAMAGE_PER_SECOND_SHORT = 10.9, ITEM_MOD_STRENGTH_SHORT = 4 }, true),
+        item(5193, "Cape of the Brotherhood", 92, 3, "Back", { 24, 19, "Armor", "Cloth", "INVTYPE_CLOAK", 4, 1 },
+             { ITEM_MOD_AGILITY_SHORT = 3, ITEM_MOD_STAMINA_SHORT = 1 }, true),
+        item(5199, "Smelting Pants", 92, 3, "Legs", { 22, 17, "Armor", "Leather", "INVTYPE_LEGS", 4, 2 },
+             { ITEM_MOD_STAMINA_SHORT = 5 }, true),
+        item(5195, "Gold-flecked Gloves", 93, 2, "Hands", { 23, 18, "Armor", "Mail", "INVTYPE_HAND", 4, 3 },
+             { ITEM_MOD_INTELLECT_SHORT = 3 }, true),
+        item(5198, "Cookie's Stirring Rod", 93, 3, "Ranged", { 22, 17, "Weapon", "Wand", "INVTYPE_RANGEDRIGHT", 2, 19 },
+             { ITEM_MOD_DAMAGE_PER_SECOND_SHORT = 14.1 }, true),
+        item(5191, "Cruel Barb", 95, 3, "One-Hand", { 24, 19, "Weapon", "Sword", "INVTYPE_WEAPON", 2, 7 },
+             { ITEM_MOD_DAMAGE_PER_SECOND_SHORT = 12.4, ITEM_MOD_STRENGTH_SHORT = 6 }, false),
+        item(5201, "Emberstone Staff", 95, 3, "Two-Hand", { 24, 19, "Weapon", "Staff", "INVTYPE_2HWEAPON", 2, 10 },
+             { ITEM_MOD_DAMAGE_PER_SECOND_SHORT = 15.3, ITEM_MOD_STAMINA_SHORT = 7 }, false),
+        item(1937, "Buzz Saw", 90, 2, "One-Hand", { 15, 10, "Weapon", "Dagger", "INVTYPE_WEAPON", 2, 15 },
+             { ITEM_MOD_DAMAGE_PER_SECOND_SHORT = 7.1 }, true),
+    },
+    [240] = {
+        item(6460, "Cobrahn's Grasp", 2, 3, "Waist", { 22, 17, "Armor", "Leather", "INVTYPE_WAIST", 4, 2 },
+             { ITEM_MOD_AGILITY_SHORT = 4, ITEM_MOD_STAMINA_SHORT = 2 }, true),
+        item(6631, "Living Root", 3, 3, "Two-Hand", { 23, 18, "Weapon", "Staff", "INVTYPE_2HWEAPON", 2, 10 },
+             { ITEM_MOD_DAMAGE_PER_SECOND_SHORT = 11.5 }, true),
+    },
+}
+ejEncounters = {
+    [63] = { { "Rhahk'Zor", 89 }, { "Sneed's Shredder", 91 }, { "Gilnid", 92 }, { "Mr. Smite", 93 }, { "Edwin VanCleef", 95 } },
+    [240] = { { "Lady Anacondra", 1 }, { "Lord Cobrahn", 2 }, { "Lord Pythas", 3 } },
+}
+-- { id, name, mapID, tier }: the journal lists only the selected tier (the window starts on tier 3, which has none).
+ejInstances = { { 63, "The Deadmines", 36, 1 }, { 240, "Wailing Caverns", 43, 1 }, { 227, "Blackfathom Deeps", 48, 2 } }
+ejTierCalls = 0
+function EJ_GetNumTiers() return 3 end
+function EJ_GetCurrentTier() return ejState.tier end
+function EJ_SelectTier(tier) ejTierCalls = ejTierCalls + 1 ejState.tier = tier end
+ejByID = {}
+for _, list in pairs(ejLoot) do for _, it in ipairs(list) do ejByID[it.id] = it end end
+
+function EJ_GetInstanceByIndex(index, isRaid)
+    if isRaid then
+        if index == 1 and ejState.tier == 1 then return 741, "Molten Core", "", 0, 0, 0, 0, 232, "", true, 409 end
+        return nil
+    end
+    local shown = {}
+    for _, i in ipairs(ejInstances) do if (i[4] or 1) == ejState.tier then shown[#shown + 1] = i end end
+    local i = shown[index]
+    if i then return i[1], i[2], "", 0, 0, 0, 0, 0, "", false, i[3] end
+end
+function EJ_SelectInstance(id) ejChanges = ejChanges + 1 ejState.instance, ejState.encounter = id, nil end
+function EJ_SelectEncounter(id) ejChanges = ejChanges + 1 ejState.encounter = id end
+function EJ_GetEncounterInfoByIndex(index, instanceID)
+    local id = instanceID or ejState.instance
+    for _, i in ipairs(ejInstances) do if i[1] == id and (i[4] or 1) ~= ejState.tier then return nil end end
+    local e = (ejEncounters[id] or {})[index]
+    if e then return e[1], "", e[2], 0, "", instanceID, 0, 0 end
+end
+function EJ_GetLootFilter() return ejState.classID, ejState.specID end
+function EJ_SetLootFilter(classID, specID) ejState.classID, ejState.specID = classID, specID end
+function EJ_ResetLootFilter() ejState.classID, ejState.specID = 0, 0 end
+local function visibleLoot()
+    local out = {}
+    if ejState.slot ~= nil or ejState.classID ~= 0 then return out end -- a filter hides most loot; a read must clear it
+    for _, i in ipairs(ejInstances) do if i[1] == ejState.instance and (i[4] or 1) ~= ejState.tier then return out end end
+    for _, it in ipairs(ejLoot[ejState.instance] or {}) do
+        -- Wailing Caverns lists loot only when a boss is selected.
+        if ejState.instance == 240 and ejState.encounter == it.encounterID then out[#out + 1] = it
+        elseif ejState.instance ~= 240 and (ejState.encounter == nil or ejState.encounter == it.encounterID) then out[#out + 1] = it end
+    end
+    return out
+end
+function EJ_GetNumLoot() return #visibleLoot() end
+C_EncounterJournal = {
+    GetLootInfoByIndex = function(index)
+        local it = visibleLoot()[index]
+        if not it then return nil end
+        return { itemID = it.id, encounterID = it.encounterID, name = it.cached and it.name or nil, itemQuality = it.quality,
+                 slot = it.slot, armorType = it.info[4], link = "|cff0070dd|Hitem:" .. it.id .. "::::::::20:::::|h[" .. it.name .. "]|h|r" }
+    end,
+    GetSlotFilter = function() return ejState.slot end,
+    SetSlotFilter = function(slot) ejState.slot = slot end,
+    ResetSlotFilter = function() ejState.slot = nil end,
+    GetInstanceForGameMap = function(mapID) if mapID == 1581 then return 63 end end,
+}
+inInstance = false
+function IsInInstance() return inInstance, inInstance and "party" or "none" end
+local baseInfo, baseStats = C_Item.GetItemInfo, C_Item.GetItemStats
+C_Item.GetItemInfo = function(link)
+    local it = ejByID[tonumber(tostring(link):match("item:(%d+)"))]
+    if not it then return baseInfo(link) end
+    if not it.cached then return nil end
+    local i = it.info
+    return it.name, link, it.quality, i[1], i[2], i[3], i[4], 1, i[5], 135, 1000, i[6], i[7], 1
+end
+C_Item.GetItemStats = function(link)
+    local it = ejByID[tonumber(tostring(link):match("item:(%d+)"))]
+    if not it then return baseStats(link) end
+    if not it.cached then return nil end
+    return it.stats
+end
+local baseTooltip = C_TooltipInfo.GetItemByID
+C_TooltipInfo.GetItemByID = function(id)
+    local it = ejByID[id]
+    if not it then return baseTooltip(id) end
+    if it.cached then return { lines = { { leftText = it.name }, { leftText = it.slot, rightText = it.info[4] } } } end
+end
 """
 
 # Registered after the addon loads, as guide addons do (they depend on Guidelime and load later).
@@ -1203,10 +1646,13 @@ FOREVER_REJECTED_EVENTS = (
 # so the server must reach the same conclusions from the deDE dump as from the English one.
 DEDE_TEXT = (
     ('function GetLocale() return "enUS" end', 'function GetLocale() return "deDE" end'),
-    ('function UnitClass() return "Hunter", "HUNTER" end', 'function UnitClass() return "Jäger", "HUNTER" end'),
-    ('function UnitRace() return "Night Elf", "NightElf" end', 'function UnitRace() return "Nachtelf", "NightElf" end'),
+    ('function UnitClass() return "Hunter", "HUNTER", 3 end', 'function UnitClass() return "Jäger", "HUNTER", 3 end'),
+    ('function UnitRace() return "Night Elf", "NightElf", 4 end', 'function UnitRace() return "Nachtelf", "NightElf", 4 end'),
     ('return "Hunter", "", "header", true', 'return "Jäger", "", "header", true'),
     ('"Rank ', '"Rang '),
+    ('"Aspect of the Monkey"', '"Aspekt des Affen"'), ('"Aspect of the Hawk"', '"Aspekt des Falken"'),
+    ('"Aspect of the Cheetah"', '"Aspekt des Geparden"'), ('"Aspect of the Pack"', '"Aspekt des Rudels"'),
+    ('"Aspect of the Beast"', '"Aspekt des Wildtiers"'), ('"Aspect of the Wild"', '"Aspekt der Wildnis"'),
     ('[Skinning Knife]', '[Kürschnermesser]'), ('"Skinning Knife"', '"Kürschnermesser"'),
     ('[Sharp Arrow]', '[Scharfer Pfeil]'), ('"Sharp Arrow"', '"Scharfer Pfeil"'),
     ('[Tough Hunk of Bread]', '[Zähes Stück Brot]'), ('[Hearthstone]', '[Ruhestein]'),
@@ -1242,7 +1688,9 @@ DEDE_TEXT = (
 # Text the assertions expect, per mode (English unless the deDE client translates it).
 DEDE_EXPECT = {
     "One-Hand | Dagger": "Einhändig | Dolch", "9 - 18 Damage | Speed 1.60": "9 - 18 Schaden | Tempo 1,60",
-    "Hearthstone": "Ruhestein", "Leatherworking": "Lederverarbeitung", "Attack": "Angriff",
+    "Hearthstone": "Ruhestein", "Aspect of the Hawk": "Aspekt des Falken",
+    "Aspect of the Monkey": "Aspekt des Affen", "Aspect of the Cheetah": "Aspekt des Geparden", "Aspect of the Pack": "Aspekt des Rudels",
+    "Aspect of the Beast": "Aspekt des Wildtiers", "Aspect of the Wild": "Aspekt der Wildnis", "Skinning Knife": "Kürschnermesser", "Rank 1": "Rang 1", "Leatherworking": "Lederverarbeitung", "Attack": "Angriff",
 }
 
 
@@ -1294,6 +1742,13 @@ def load_addon(mode: str, before_addon: str = ""):
         runtime.execute(localize(mode, FOREVER_V4_STUBS))
         runtime.execute(QUEST_SOURCES_STUBS)
         runtime.execute(LEGACY_TREE_STUBS)
+        runtime.execute(f"petFoodByLink = {'true' if mode == 'dede' else 'false'}")
+        runtime.execute(PET_TAMING_STUBS)
+    if mode != "legacy":
+        runtime.execute(ACHIEVEMENT_STUBS)
+        runtime.execute(COMPANION_STUBS if mode in FOREVER_MODES else JOURNAL_STUBS)
+    if mode == "forever":
+        runtime.execute(EJ_STUBS)
     if before_addon:
         runtime.execute(before_addon)
     # The client passes every addon file the same arguments: the addon name and a shared table.
@@ -1348,15 +1803,19 @@ def check_robustness(runtime, g, on_event, mode: str) -> None:
         on_event(None, "MERCHANT_UPDATE")
         assert len(current["buyback"]["items"]) == 0
     if mode != "legacy":
+        check_achievement_cache(runtime, g, current)
         # No API in the client: sections vanish without errors (manual dump, no /reload).
         runtime.execute('''
             C_EquipmentSet, GetPVPLifetimeStats, UnitHonor, UnitHonorMax, UnitHonorLevel, UnitPVPRank = nil, nil, nil, nil, nil, nil
             C_UnitAuras, C_TaxiMap, GetNumBuybackItems = nil, nil, nil
+            GetCategoryList, GetStatisticsCategoryList, GetNumTitles, GetNumCompanions = nil, nil, nil, nil
+            C_MountJournal, C_PetJournal = nil, nil
         ''')
         g.SlashCmdList["WOWMCP"]("")
         dumped = g.WowMcpDB["characters"]["Piekasz"]
         assert not list(dumped["errors"].values()), list(dumped["errors"].values())
         assert dumped["pvp"] is None and dumped["equipmentSets"] is None
+        assert all(dumped[name] is None for name in ("achievements", "statistics", "titles", "collections"))
         assert g.forbiddenCalls is not None and len(g.forbiddenCalls) == 0
     if mode in FOREVER_MODES:
         # Addon 0.17.0: Legacy names are scanned once per session; a frame that appears later is found only after the
@@ -1431,7 +1890,7 @@ def check_auction_item_keys(prices, g) -> None:
     assert trinket["equipLoc"] == "INVTYPE_TRINKET" and trinket["minBuyout"] == 52000 and trinket["requiredLevel"] == 40, dict(trinket)
     assert list(trinket["tooltip"].values())[2].startswith("Use:"), dict(trinket["tooltip"])
     assert list(prices["Hornwood Recurve Bow"]["tooltip"].values()) == ["Hornwood Recurve Bow"]
-    requested = set(g.itemDataRequests.values())
+    requested = set(g.itemDataRequests.values()) - {99001}  # 99001: the /mcp item lookup, not the auction house
     assert requested == {2507, 1404}, requested
 
 
@@ -1649,12 +2108,12 @@ def check_options_page() -> None:
     general = len(addon_ns.Options.generalSwitches())
     section_switches = addon_ns.Options.sectionSwitches()
     sections = [section_switches[i]["label"] for i in range(1, len(section_switches) + 1)]
-    assert general == 4 and len(boxes) == general + len(sections) and "macros" in sections and "character" not in sections
+    assert general == 5 and len(boxes) == general + len(sections) and "macros" in sections and "character" not in sections
     assert [i for i, b in enumerate(boxes) if b.checked is not True] == [1], "all on by default except the compact panel"
-    minimap, compact, ahtip, played = boxes[0], boxes[1], boxes[2], boxes[3]
+    minimap, compact, ahtip, played, share = boxes[0], boxes[1], boxes[2], boxes[3], boxes[4]
     settings = g.WowMcpDB["settings"]
     for box, name, off_value in ((minimap, "minimap", False), (compact, "compact", None),
-                                 (ahtip, "ahTooltip", False), (played, "played", False)):
+                                 (ahtip, "ahTooltip", False), (played, "played", False), (share, "shareReminder", False)):
         box.checked = False
         box.scripts["OnClick"](box)
         assert settings[name] == off_value, (name, settings[name])
@@ -1662,7 +2121,7 @@ def check_options_page() -> None:
     g.SlashCmdList["WOWMCP"]("compact off")
     g.SlashCmdList["WOWMCP"]("minimap on")
     frame.scripts["OnShow"](frame)  # the page follows what /mcp changed meanwhile
-    assert minimap.checked is True and compact.checked is False and played.checked is False
+    assert minimap.checked is True and compact.checked is False and played.checked is False and share.checked is False
     macros = boxes[general + sections.index("macros")]
     macros.checked = False
     macros.scripts["OnClick"](macros)
@@ -1985,8 +2444,9 @@ def check_real_lifecycle() -> None:
     # A guild without an open window: only the fact of membership (name and rank from client memory, no list).
     guild = reloaded["guild"]
     assert guild["inGuild"] is True and guild["name"] == "Night Watch" and guild["members"] is None, dict(guild)
-    # The friends window was not open: there is no friends section (different from an empty list).
-    assert reloaded["friends"] is None
+    # The friends window was not open (real client 2026-11-24: opening it fires no event either): the dump reads the
+    # list the client holds.
+    assert reloaded["friends"]["total"] == 3 and len(reloaded["friends"]["friends"]) == 3, dict(reloaded["friends"])
     assert set(reloaded["vendors"].keys()) == {"Quartermaster Lewis"} and reloaded["buyback"] is not None
     assert reloaded["loot"]["since"] == login_at and reloaded["xpGains"]["kills"]["count"] == 1
     assert {i["name"] for i in reloaded["loot"]["items"].values()} == {"Linen Cloth", "Copper Ore"}
@@ -2084,7 +2544,12 @@ def check_legacy_tree(legacy, g) -> None:
     assert currency["name"] == "Legacy Points" and currency["totalEarned"] == 5, dict(currency)
     challenges = list(legacy["challenges"]["list"].values())
     assert [(c["name"], c["completed"], c["category"]) for c in challenges] == [
-        ("Hunter: Level 25", True, "Classes"), ("Warlock: Level 25", False, "Classes")], challenges
+        ("Hunter: Level 25", True, "Classes"), ("Warlock: Level 25", False, "Classes"),
+        ("Novice Mage", True, "Classic"), ("Journeyman Alchemist", False, "Classic")], challenges
+    assert legacy["challenges"]["matchedBy"] == "achievement category title contains Legacy + reward text contains Legacy Point"
+    alchemist = challenges[3]
+    assert alchemist["reward"] == "Earn 1 Legacy Point." and alchemist["categoryID"] == 14861 and alchemist["criteria"][1]["required"] == 150
+    assert challenges[2]["completedOn"] == "2026-10-01" and challenges[2]["criteria"] is None
     assert challenges[0]["reward"] == "Reward: 1 Legacy Point" and challenges[1]["reward"] is None
     discovery = legacy["discovery"]
     assert list(discovery["namespaces"]["C_LegacyMock"].values()) == ["GetPerkInfo", "GetPointsInfo", "IsEnabled", "LearnPerk"]
@@ -2104,10 +2569,116 @@ def check_legacy_tree(legacy, g) -> None:
     assert "Enum.TraitConfigType.Generic=3" in list(discovery["enums"].values())
 
 
+def run_lookups(g, on_event, mode: str) -> None:
+    """Addon 0.21.0: /mcp item and /mcp spell by ID, name and link; data the client lacks arrives later."""
+    command = g.SlashCmdList["WOWMCP"]
+    for query in ("5586", expect(mode, "Skinning Knife"), "No Such Item", "99001"):
+        command("item " + query)
+    on_event(None, "GET_ITEM_INFO_RECEIVED", 99001, False)
+    command("item 99001")
+    g.lateItemLoaded = True
+    on_event(None, "GET_ITEM_INFO_RECEIVED", 99001, True)
+    for query in ("3044", "Arcane Shot", "|cff71d5ff|Hspell:19416|h[Efficiency]|h|r", "99002"):
+        command("spell " + query)
+    g.lateSpellLoaded = True
+    on_event(None, "SPELL_DATA_LOAD_RESULT", 99002, True)
+    command("item")
+    command("spell")
+
+
+def check_lookups(snapshot, g, mode: str) -> None:
+    """The lookups section and the chat answers of run_lookups."""
+    if mode not in FOREVER_MODES:
+        assert snapshot["lookups"] is None
+        g.SlashCmdList["WOWMCP"]("item 5586")
+        assert "has not loaded this item" in last_chat(g), last_chat(g)
+        return
+    entries = {(e["kind"], e["id"]): e for e in values(snapshot["lookups"])}
+    order = [(e["kind"], e["id"]) for e in values(snapshot["lookups"])]
+    assert order == [("spell", 99002), ("spell", 19416), ("spell", 3044), ("item", 99001), ("item", 7005), ("item", 5586)], order
+    dagger = entries[("item", 5586)]
+    assert (dagger["name"], dagger["query"], dagger["equipLoc"], dagger["classID"]) == ("Curvewood Dagger", "5586", "INVTYPE_WEAPON", 2), dict(dagger)
+    assert values(dagger["tooltip"]) == ["Curvewood Dagger", expect(mode, "One-Hand | Dagger")], dict(dagger)
+    knife = entries[("item", 7005)]
+    assert knife["name"] == knife["query"] == expect(mode, "Skinning Knife"), dict(knife)
+    assert entries[("item", 99001)]["name"] == "Item 99001"
+    shot = entries[("spell", 3044)]
+    assert shot["query"] == "Arcane Shot" and shot["rank"] == expect(mode, "Rank 1") and shot["castTimeMs"] == 0, dict(shot)
+    assert (shot["minRange"], shot["maxRange"]) == (5, 35)
+    assert [dict(c) for c in values(shot["costs"])] == [{"power": "MANA", "amount": 50}], values(shot["costs"])
+    assert shot["description"] == "An instant shot that causes |cffffffff15|r Arcane damage.".replace("|cffffffff", "").replace("|r", "")
+    assert shot["descriptionSource"] == "api" and values(shot["tooltip"])[1] == "50 Mana | 35 yd range"
+    assert entries[("spell", 19416)]["description"].startswith("Reduces the Mana cost")
+    late = entries[("spell", 99002)]
+    assert late["name"] == "Late Spell" and late["description"] == "Loaded later." and late["descriptionMissing"] is None
+    assert 99001 in values(g.itemDataRequests) and 99002 in values(g.spellDataRequested)
+    chat = [str(line) for line in g.chatlog.values()]
+    for expected in ("Usage: /mcp item", "Usage: /mcp spell", "does not know that item", "has not loaded this item",
+                     "item 99001 Item 99001 saved", "spell 99002 Late Spell saved", "The client has no item 99001"):
+        assert any(expected in line for line in chat), (expected, chat)
+
+
+def check_achievement_sections(snapshot, mode: str) -> None:
+    """Achievements, statistics, titles and collections: the legacy client has none of the APIs, so the sections are
+    absent; elsewhere dates, bounded criteria (missing ones first), statistic values and the known titles."""
+    names = ("achievements", "statistics", "titles", "collections")
+    if mode == "legacy":
+        assert all(snapshot[name] is None for name in names), [name for name in names if snapshot[name] is not None]
+        return
+    achievements = snapshot["achievements"]
+    entries = {a["name"]: a for a in achievements["list"].values()}
+    assert entries["50 Quests Completed"]["completedOn"] == "2026-09-03", dict(entries["50 Quests Completed"])
+    assert entries["100 Quests Completed"]["completedOn"] is None and entries["50 Quests Completed"]["criteria"] is None
+    kalimdor = entries["Explore Kalimdor"]
+    assert (kalimdor["criteriaTotal"], kalimdor["criteriaRead"], kalimdor["criteriaDone"]) == (10, 10, 2), dict(kalimdor)
+    criteria = list(kalimdor["criteria"].values())
+    assert len(criteria) == 8 and not any(c["completed"] for c in criteria), [dict(c) for c in criteria]
+    assert kalimdor["reward"] == "Reward: Title - the Wanderer"
+    darkshore = [c["text"] for c in entries["Explore Darkshore"]["criteria"].values()]
+    assert darkshore == ["Ruins of Mathystra", "Grove of the Ancients", "Auberdine", "Bashal'Aran"], darkshore
+    expected_points = 41 if mode in FOREVER_MODES else 30
+    assert achievements["points"] == expected_points and achievements["completed"] == len(
+        [a for a in entries.values() if a["completed"]]), (achievements["points"], achievements["completed"])
+    classic = [c for c in achievements["categories"].values() if c["name"] == "Classic"][0]
+    assert classic["parentID"] == 96 and classic["total"] == 4 and classic["completed"] == 2, dict(classic)
+    if mode == "modern":  # no category is named Legacy: only the reward text finds the challenges (real client 2026-11-24)
+        challenges = snapshot["legacy"]["challenges"]
+        assert challenges["matchedBy"] == "reward text contains Legacy Point", challenges["matchedBy"]
+        assert [c["name"] for c in challenges["list"].values()] == ["Novice Mage", "Journeyman Alchemist"]
+    statistics = snapshot["statistics"]
+    values = {s["name"]: s["value"] for c in statistics["categories"].values() for s in c["list"].values()}
+    assert values == {"Quests completed": "62", "Creatures killed": "1404", "Total gold acquired": "5g 20s 3c",
+                      "Total deaths": "3"}, values
+    assert statistics["empty"] == 2
+    titles = snapshot["titles"]
+    assert [t["name"] for t in titles["known"].values()] == ["Private", "the Patient"] and titles["current"] == "the Patient"
+    collections = snapshot["collections"]
+    mounts = [m["name"] for m in collections["mounts"]["list"].values()]
+    companions = [c["name"] for c in collections["companions"]["list"].values()]
+    if mode in FOREVER_MODES:
+        assert collections["mounts"]["source"] == "GetCompanionInfo" and mounts == ["Striped Nightsaber"], mounts
+        assert companions == ["Bombay Cat", "Cockatiel"], companions
+    else:
+        assert collections["mounts"]["source"] == "C_MountJournal" and mounts == ["Brown Horse", "Striped Nightsaber"], mounts
+        assert collections["companions"]["source"] == "C_PetJournal" and companions == ["Mechanical Squirrel", "Whiskers"]
+
+
+def check_achievement_cache(runtime, g, snapshot) -> None:
+    """A later dump re-reads only the incomplete achievements (and the Legacy challenges); statistic names are cached."""
+    incomplete = len([a for a in snapshot["achievements"]["list"].values() if not a["completed"]])
+    challenges = 0  # the Legacy challenges come from the achievements read of the same dump
+    runtime.execute("achievementInfoCalls = 0")
+    g.SlashCmdList["WOWMCP"]("")
+    assert g.achievementInfoCalls == incomplete + challenges, (g.achievementInfoCalls, incomplete, challenges)
+    dumped = g.WowMcpDB["characters"]["Piekasz"]
+    assert len(dumped["achievements"]["list"]) == len(snapshot["achievements"]["list"])
+
+
 def check_quest_sources(snapshot, g, mode: str) -> None:
     """Addon 0.14.0: quest locations from the installed quest database and the next steps of the Guidelime guide."""
     if mode not in FOREVER_MODES:
         assert snapshot["questDb"] is None and snapshot["guide"] is None and snapshot["questLookups"] is None
+        assert snapshot["zoneQuests"] is None
         g.SlashCmdList["WOWMCP"]("quest 947")
         assert "No quest database found" in last_chat(g), last_chat(g)
         return
@@ -2159,6 +2730,24 @@ def check_quest_sources(snapshot, g, mode: str) -> None:
     chat = [str(line) for line in g.chatlog.values()]
     assert any("ends: Barithras Moonshade, Darkshore 37.3, 43.6" in line for line in chat), chat
     assert any('Nothing found for "No Such Quest"' in line for line in chat), chat
+    check_zone_quests(snapshot["zoneQuests"])
+
+
+def check_zone_quests(section) -> None:
+    """The quests of the current zone and of the zones of log quests, with the character's race and class masks."""
+    assert section["currentZone"] == "Stormwind City" and dict(section["player"]) == {"raceMask": 8, "classMask": 4}
+    zones = values(section["zones"])
+    assert [(z["name"], z["current"], z["logQuests"]) for z in zones] == [("Stormwind City", True, None), ("Darkshore", None, 2)]
+    darkshore = {q["id"]: q for q in values(zones[1]["quests"])}
+    assert zones[1]["questCount"] == 11 and zones[1]["truncated"] is None and len(darkshore) == 11
+    turtle = darkshore[4730]
+    assert values(turtle["preAny"]) == [918] and darkshore[918]["next"] == 4730, dict(turtle)
+    assert (turtle["start"]["name"], turtle["start"]["x"], turtle["start"]["y"]) == ("Terenthis", 39.4, 43.5)
+    assert darkshore[2118]["races"] == 178 and darkshore[3524]["classes"] == 1024 and darkshore[4725]["repeatable"]
+    assert darkshore[1138]["breadcrumbFor"] == 4740 and dict(darkshore[1138]["start"]) == {"kind": "item", "name": "Death Cap"}
+    # A starter that spawns only in another zone names that zone instead of coordinates.
+    fortitude = values(zones[0]["quests"])[0]
+    assert dict(fortitude["start"]) == {"kind": "npc", "name": "Cerellean Whiteclaw", "zone": "Darkshore"}, dict(fortitude["start"])
 
 
 def check_passed_guide_steps() -> None:
@@ -2292,6 +2881,122 @@ def check_waypoint_links() -> None:
     assert not any("|H" in line or "install TomTom" in line for line in chat), chat
 
 
+TIMER_STUB = """
+timers = {}
+C_Timer = { After = function(seconds, fn) timers[#timers + 1] = { seconds = seconds, fn = fn } end }
+"""
+
+
+def check_sharing() -> None:
+    """The sharing window and its reminder: a report without names, a rare chat line, and an off switch."""
+    # A first login has no dump: nothing is asked, and no setting is written.
+    runtime, g, addon_ns = load_addon("forever", before_addon=TIMER_STUB)
+    on_event = event_dispatcher(g)
+    on_event(None, "PLAYER_LOGIN")
+    assert len(g.timers) == 1 and g.timers[1].seconds >= 30, "the reminder waits until the login messages are over"
+    before = len(g.chatlog)
+    g.timers[1].fn()
+    assert len(g.chatlog) == before and g.WowMcpDB["settings"]["share"] is None, "no dump yet: no reminder"
+
+    # With a dump: one line with a link; clicking it opens the window with the report.
+    runtime.execute("function GetNumMacros() error('bad Piekasz value') end")
+    g.SlashCmdList["WOWMCP"]("probe")
+    g.reloaded = False
+    g.timers[1].fn()
+    line = last_chat(g)
+    assert "|Hwowmcp:share:open|h[Click here to open the export window]|h" in line and "/mcp share off" in line, line
+    share = g.WowMcpDB["settings"]["share"]
+    assert share["asked"]["HUNTER|70938|enUS"] == 1 and share["remindedAt"] == g.clockNow, dict(share)
+    asked = len(g.chatlog)
+    g.timers[1].fn()
+    assert len(g.chatlog) == asked, "asked once, not again the same day"
+    assert not [f for f in g.frames.values() if f.frameName == "WowMcpShareWindow"], "the reminder opens nothing"
+    assert g.linkHandlers["wowmcp"]("wowmcp:share:open", "[Click here]") == 2
+    window = [f for f in g.frames.values() if f.frameName == "WowMcpShareWindow"][0]
+    assert window.shown is True
+    address = str(window.addressBox.fixedText)
+    base = "https://github.com/Piekario/wow-mcp/issues/new?template=share_dump.yml&title=Client%20report%3A%20HUNTER%2C%20enUS%2C%20build%2070938&report="
+    assert address.startswith(base + "WowMcp%3A1%21%0A"), address[:300]
+    assert re.fullmatch(r"[A-Za-z0-9\-_.~%]*", address[len(base):]), "the report is fully encoded"
+    assert len(address) <= 6000, len(address)
+    report = urllib.parse.unquote(address[len(base):])
+    assert report.startswith("WowMcp:1!\nWowMcp client report, format 1\naddon: ") and report.endswith("\n!End:WowMcp:1!"), report
+    for expected in ("client: 1.60.1 build 70938, interface 16001, locale enUS",
+                     "character: HUNTER, NightElf, Alliance, level 20", "sections (", "quests=", "errors: 1",
+                     "bad Player value", "events the client rejected: ", "probe: ", "C_Item="):
+        assert expected in report, (expected, report)
+    for personal in ("Piekasz", "Tankadin", "Night Watch", "Healbot", "Linen Cloth", "dungeon buddy"):
+        assert personal not in report, (personal, report)
+    # The box is for copying: typed text is put back.
+    window.addressBox.scripts["OnTextChanged"](window.addressBox, True)
+    assert str(window.addressBox.label) == address
+    # A report too long for an address loses detail instead of being cut: first the API sizes, then the section sizes.
+    full = len(address)
+    addon_ns.ShareReport.MAX_URL_LENGTH = full - 1
+    shorter = urllib.parse.unquote(str(addon_ns.ShareReport.url()))
+    assert "C_Item=" not in shorter and " functions in " in shorter and "quests=" in shorter and shorter.endswith("!End:WowMcp:1!"), shorter
+    addon_ns.ShareReport.MAX_URL_LENGTH = 10
+    shortest = urllib.parse.unquote(str(addon_ns.ShareReport.url()))
+    assert "quests=" not in shortest and "quests" in shortest and shortest.endswith("!End:WowMcp:1!"), shortest
+    addon_ns.ShareReport.MAX_URL_LENGTH = 6000
+    counters = str(window.countersText.label)
+    assert "Sections in the dump: |cffffd100" in counters and "Addon errors: |cffffd1001|r" in counters, counters
+    # Opening the window settles nothing: a day later the line comes again, until "I reported this".
+    assert share["reported"] is None
+    g.clockNow = g.clockNow + 24 * 3600
+    g.timers[1].fn()
+    assert len(g.chatlog) == asked + 1 and share["asked"]["HUNTER|70938|enUS"] == 2
+    window.reportedButton.scripts["OnClick"](window.reportedButton)
+    assert share["reported"]["HUNTER|70938|enUS"] is not None and window.shown is False
+    asked = len(g.chatlog)
+    g.clockNow = g.clockNow + 400 * 24 * 3600
+    g.timers[1].fn()
+    assert len(g.chatlog) == asked, "reported: never asked for it again"
+    assert len(g.forbiddenCalls) == 0 and not g.reloaded
+
+    due = addon_ns.ShareReminder.due
+    day = 24 * 3600
+    state = runtime.eval('{ remindedAt = 1000, asked = { ["MAGE|1|enUS"] = 2, ["PRIEST|1|enUS"] = 3 }, reported = { ["ROGUE|1|enUS"] = 5 } }')
+    assert due(None, "MAGE|1|enUS", 1794760000, True) is True, "never asked"
+    assert due(state, "MAGE|1|enUS", 1000 + day - 1, True) is False, "not twice in a day"
+    assert due(state, "MAGE|1|enUS", 1000 + day, True) is True
+    assert due(state, "PRIEST|1|enUS", 1000 + 300 * day, True) is True, "asked until reported or turned off"
+    assert due(state, "ROGUE|1|enUS", 1000 + 300 * day, True) is False, "already reported"
+    assert due(state, "MAGE|1|enUS", 1000 + 300 * day, False) is False, "turned off"
+    assert due(state, None, 1000 + 300 * day, True) is False, "no dump"
+
+    # /mcp share off: no reminder even when one is due; /mcp share still opens the window; on restores it.
+    runtime, g, addon_ns = load_addon("forever", before_addon=TIMER_STUB)
+    on_event = event_dispatcher(g)
+    on_event(None, "PLAYER_LOGIN")
+    g.SlashCmdList["WOWMCP"]("")
+    g.SlashCmdList["WOWMCP"]("share off")
+    assert g.WowMcpDB["settings"]["shareReminder"] is False
+    before = len(g.chatlog)
+    g.timers[1].fn()
+    assert len(g.chatlog) == before
+    g.SlashCmdList["WOWMCP"]("share")
+    window = [f for f in g.frames.values() if f.frameName == "WowMcpShareWindow"][0]
+    assert window.shown is True and "probe%3A%20none" in str(window.addressBox.fixedText)
+    assert "none (type /mcp probe" in str(window.countersText.label)
+    g.SlashCmdList["WOWMCP"]("share on")
+    assert g.WowMcpDB["settings"]["shareReminder"] is None
+
+    # A client without the link API gets the command in words; one without timers gets no reminder at all.
+    runtime, g, addon_ns = load_addon("forever", before_addon=TIMER_STUB + "LinkUtil = nil")
+    event_dispatcher(g)(None, "PLAYER_LOGIN")
+    g.SlashCmdList["WOWMCP"]("")
+    g.timers[1].fn()
+    assert "Type /mcp share to open the export window" in last_chat(g) and "|H" not in last_chat(g), last_chat(g)
+    runtime, g, addon_ns = load_addon("forever")
+    event_dispatcher(g)(None, "PLAYER_LOGIN")
+    assert addon_ns.ShareReminder.schedule() is False
+    # /mcp share remind prints the line on demand and does not count as a reminder.
+    before = len(g.chatlog)
+    g.SlashCmdList["WOWMCP"]("share remind")
+    assert len(g.chatlog) == before + 1 and "open the export window" in last_chat(g), "share remind"
+
+
 def check_secret_group_range() -> None:
     """Addon 0.18.0 fix: in a real group (Forever, 2026-11-22) UnitInRange returned a secret "range checked" value and
     the boolean test on it failed the whole group section. Secrets are now dropped: the group is saved without inRange."""
@@ -2306,6 +3011,58 @@ def check_secret_group_range() -> None:
     assert not values(snapshot["errors"]), values(snapshot["errors"])
     members = values(snapshot["group"]["members"])
     assert len(members) == 3 and all(m["inRange"] is None for m in members), [dict(m) for m in members]
+
+
+def check_unnamed_profession_window() -> None:
+    """Real client 2026-11-23: a recipe window (Camp Chair) had an empty professionName and was saved under the key "".
+    It is now saved under a fixed name with the client's fields, and the old "" entry is dropped."""
+    runtime, g, addon_ns = load_addon("forever")
+    runtime.execute("""
+        C_TradeSkillUI.GetBaseProfessionInfo = function()
+            return { professionName = "", parentProfessionName = "", skillLevel = 0, maxSkillLevel = 0, professionID = 2777 }
+        end
+    """)
+    on_event = event_dispatcher(g)
+    on_event(None, "PLAYER_LOGIN")
+    runtime.eval('function(ns) ns.Snapshot.current().recipes = { [""] = { name = "", recipes = {} } } end')(addon_ns)
+    on_event(None, "TRADE_SKILL_SHOW")
+    g.SlashCmdList["WOWMCP"]("reload")
+    snapshot = saved_character(g)
+    assert not values(snapshot["errors"]), values(snapshot["errors"])
+    books = dict(snapshot["recipes"])
+    assert sorted(books) == ["Unnamed profession"], sorted(books)
+    book = books["Unnamed profession"]
+    assert len(values(book["recipes"])) == 3 and book["windowInfo"]["professionID"] == 2777, dict(book)
+def check_battle_net_friends() -> None:
+    """Battle.net friends who are in the game join the list as their character; other programs, offline accounts and a
+    character already on the list are skipped, and no account name is saved. An empty list is not saved by a dump alone."""
+    runtime, g, _ = load_addon("forever")
+    runtime.execute("""
+        function BNGetNumFriends() return 4, 3 end
+        local accounts = {
+            { accountName = "Real Name", battleTag = "Tag#1234", gameAccountInfo = { characterName = "Shamanka", className = "Priest",
+                characterLevel = 31, areaName = "Thousand Needles", isOnline = true, clientProgram = "WoW" } },
+            { accountName = "Other", gameAccountInfo = { characterName = "Tankadin", className = "Paladin", isOnline = true, clientProgram = "WoW" } },
+            { accountName = "Elsewhere", gameAccountInfo = { characterName = "Barb", isOnline = true, clientProgram = "D4" } },
+            { accountName = "Away", gameAccountInfo = { isOnline = false, clientProgram = "App" } },
+        }
+        C_BattleNet = { GetFriendAccountInfo = function(i) return accounts[i] end }
+    """)
+    event_dispatcher(g)(None, "PLAYER_LOGIN")
+    g.SlashCmdList["WOWMCP"]("reload")
+    friends = saved_character(g)["friends"]
+    names = [f["name"] for f in values(friends["friends"])]
+    assert names == ["Tankadin", "Healbot", "Oldfriend", "Shamanka"] and friends["total"] == 4, names
+    added = values(friends["friends"])[3]
+    assert added["battleNet"] is True and added["classToken"] == "PRIEST" and added["level"] == 31, dict(added)
+    saved_values = [str(v) for f in values(friends["friends"]) for v in dict(f).values()]
+    assert "Real Name" not in saved_values and "Tag#1234" not in saved_values, saved_values
+
+    runtime, g, _ = load_addon("forever")
+    runtime.execute("C_FriendList.GetNumFriends = function() return 0 end")
+    event_dispatcher(g)(None, "PLAYER_LOGIN")
+    g.SlashCmdList["WOWMCP"]("reload")
+    assert saved_character(g)["friends"] is None
 
 
 def check_quest_sources_absent() -> None:
@@ -2323,6 +3080,9 @@ def check_quest_sources_absent() -> None:
     # Quests still exist in the database, but every field read fails: IDs only, nothing invented.
     quest = values(snapshot["questDb"]["quests"])[0]
     assert quest["id"] == 947 and quest["name"] is None and quest["finishedBy"] is None, dict(quest)
+    # No field reads, so no zone index: the section says so instead of listing empty zones.
+    zone_quests = snapshot["zoneQuests"]
+    assert zone_quests["noZoneIndex"] and zone_quests["zones"] is None, dict(zone_quests)
 
     # A guide that was registered before the addon loaded is not visible: the section says so instead of guessing.
     runtime, g, _ = load_addon("forever")
@@ -2331,6 +3091,273 @@ def check_quest_sources_absent() -> None:
     g.SlashCmdList["WOWMCP"]("reload")
     guide = saved_character(g)["guide"]
     assert guide["textUnavailable"] and guide["registeredGuides"] == 2 and guide["next"] is None, dict(guide)
+
+
+def read_dungeon_loot(g, on_event) -> None:
+    """/mcp loot in the forever flow: usage without a name (no saved dungeon list yet), then two dungeons."""
+    g.SlashCmdList["WOWMCP"]("loot")
+    assert "Usage: /mcp loot" in last_chat(g), last_chat(g)
+    # Listing the instances of every tier moves the tier and puts it back (and the selected instance and boss).
+    state = g.ejState
+    assert g.ejTierCalls == 4 and (state.tier, state.instance, state.encounter) == (3, 240, 2), (g.ejTierCalls, dict(state))
+    g.SlashCmdList["WOWMCP"]("loot deadmines")
+    assert any("2 items are still loading" in line for line in g.chatlog.values())
+    g.SlashCmdList["WOWMCP"]("loot WAILING")
+    # Restored: the window's instance and boss, the class filter and the slot filter.
+    state = g.ejState
+    assert (state.instance, state.encounter, state.classID, state.specID, state.slot) == (240, 2, 3, 0, 5), dict(state)
+    # The staff arrives from the server, the sword never does: the retries stop and say how many are missing.
+    g.ejByID[5201].cached = True
+    for _ in range(8):
+        on_event(None, "GET_ITEM_INFO_RECEIVED", 5201, True)
+    lines = list(g.chatlog.values())
+    assert sum("1 items are still loading" in line for line in lines) == 1, lines[-5:]
+
+
+def check_dungeon_loot(snapshot, g, mode: str) -> None:
+    """The dungeonLoot section: read on request in forever, a reason without the API (modern), absent otherwise."""
+    loot = snapshot["dungeonLoot"]
+    if mode == "modern":
+        assert loot["unavailable"] == "no EJ_GetInstanceByIndex in this client" and len(loot["instances"]) == 0, dict(loot)
+        attempt = loot["lastAttempt"]
+        assert attempt["outcome"] == "unavailable" and attempt["query"] == "deadmines" and attempt["instancesInJournal"] == 0
+        return
+    if mode != "forever":
+        assert loot is None, "without /mcp loot there is no dungeonLoot section"
+        return
+    instances = list(loot["instances"].values())
+    assert [i["name"] for i in instances] == ["Wailing Caverns", "The Deadmines"], [i["name"] for i in instances]
+    wc, dm = instances
+    assert wc["minLevel"] is None, "no saved dungeon list before the first dump, so no level range"
+    assert list(dm["encounters"].values())[0] == "Rhahk'Zor" and dm["journalInstanceID"] == 63 and dm["mapID"] == 36
+    items = {i["name"]: i for i in dm["items"].values()}
+    assert len(items) == 8, list(items)
+    reaver = items["Smite's Reaver"]
+    assert reaver["encounter"] == "Sneed's Shredder" and reaver["itemLevel"] == 21 and reaver["requiredLevel"] == 16, dict(reaver)
+    assert reaver["equipLoc"] == "INVTYPE_WEAPON" and reaver["classID"] == 2 and reaver["subclassID"] == 0
+    assert reaver["statTokens"]["ITEM_MOD_STRENGTH_SHORT"] == 4 and reaver["pending"] is None
+    assert items["Emberstone Staff"]["pending"] is None and items["Emberstone Staff"]["itemLevel"] == 24
+    assert items["Cruel Barb"]["pending"] is True and items["Cruel Barb"]["id"] == 5191
+    assert {i["encounter"] for i in wc["items"].values()} == {"Lord Cobrahn", "Lord Pythas"}, "per-boss fallback"
+    attempt = loot["lastAttempt"]
+    assert (attempt["outcome"], attempt["query"], attempt["tiers"], attempt["inInstance"], attempt["itemsRead"]) == ("read", "WAILING", 3, False, 2)
+    assert attempt["instancesInJournal"] == 4 and list(attempt["instanceNames"].values()) == [
+        "The Deadmines", "Wailing Caverns", "Molten Core", "Blackfathom Deeps"], dict(attempt["instanceNames"])
+
+
+def check_dungeon_loot_targets() -> None:
+    """A dump never reads the journal; /mcp loot without a name picks the instance the character is in, otherwise the
+    dungeons for its level; at most 8 dungeons and 40 items per dungeon are kept."""
+    runtime, g, _ = load_addon("forever")
+    on_event = event_dispatcher(g)
+    on_event(None, "PLAYER_LOGIN")
+    g.SlashCmdList["WOWMCP"]("reload")
+    assert g.ejChanges == 0 and g.ejTierCalls == 0, "a dump must not touch the Encounter Journal"
+    g.SlashCmdList["WOWMCP"]("loot")
+    saved = g.WowMcpDB["characters"]["Piekasz"]["dungeonLoot"]
+    # Level 20 fits The Deadmines (17-26) and Wailing Caverns (17-25), not Blackfathom Deeps (24-32) or a raid.
+    assert [i["name"] for i in saved["instances"].values()] == ["Wailing Caverns", "The Deadmines"], dict(saved)
+    assert saved["instances"][1]["minLevel"] == 17 and saved["instances"][1]["maxLevel"] == 25
+    assert saved["instances"][2]["minLevel"] == 17 and saved["instances"][2]["maxLevel"] == 26
+    runtime.execute("inInstance = true; C_Map.GetBestMapForUnit = function() return 1581 end")
+    g.SlashCmdList["WOWMCP"]("loot")
+    assert saved["instances"][1]["name"] == "The Deadmines" and len(saved["instances"]) == 2
+    runtime.execute("""
+        for n = 1, 10 do
+            local id = 900 + n
+            ejInstances[#ejInstances + 1] = { id, "Test Dungeon " .. n, 0 }
+            ejLoot[id] = {}
+            for k = 1, 45 do ejLoot[id][k] = { id = id * 100 + k, name = "Thing " .. k, encounterID = 1, quality = 1,
+                slot = "Neck", info = { 10, 1, "Armor", "Miscellaneous", "INVTYPE_NECK", 4, 0 }, stats = {}, cached = true } end
+            for _, it in ipairs(ejLoot[id]) do ejByID[it.id] = it end
+        end
+    """)
+    g.SlashCmdList["WOWMCP"]("loot test dungeon")
+    assert "at most 3 per command" in "".join(g.chatlog.values())
+    for n in range(4, 11):
+        g.SlashCmdList["WOWMCP"](f"loot test dungeon {n}")
+    names = [i["name"] for i in saved["instances"].values()]
+    assert len(names) == 8 and names[0] == "Test Dungeon 10", names
+    assert len(saved["instances"][1]["items"]) == 40 and saved["instances"][1]["truncated"] is True
+    g.SlashCmdList["WOWMCP"]("loot no such place")
+    assert "No dungeon in the Encounter Journal matches" in "".join(g.chatlog.values())
+    attempt = saved["lastAttempt"]
+    assert attempt["outcome"] == "noMatch" and attempt["query"] == "no such place" and attempt["instancesInJournal"] == 14, dict(attempt)
+    assert len(attempt["instanceNames"]) == 14 and len(saved["instances"]) == 8, "a no-match attempt keeps the saved loot"
+    # WoW: Forever: the module counts as loadable, but the client refuses to load it and has no journal window.
+    runtime.execute("""
+        ejInstanceByIndex = EJ_GetInstanceByIndex
+        function EJ_GetInstanceByIndex() return nil end
+        function C_AddOns.IsAddOnLoaded(name) return false end
+        function C_AddOns.IsAddOnLoadable(name) return true end
+        function C_AddOns.LoadAddOn(name) return false, "WRONG_GAME_TYPE" end
+    """)
+    g.SlashCmdList["WOWMCP"]("loot deadmines")
+    attempt = saved["lastAttempt"]
+    assert attempt["outcome"] == "unavailable" and attempt["instancesInJournal"] == 0 and attempt["journalLoaded"] is False
+    assert attempt["loadRefused"] == "WRONG_GAME_TYPE" and "WRONG_GAME_TYPE" in attempt["hint"], dict(attempt)
+    assert "has no Encounter Journal" in last_chat(g) and "Open the" not in last_chat(g), last_chat(g)
+    assert len(saved["instances"]) == 8, "a refused load keeps the saved loot"
+    # The same journal when the client can load the module: /mcp loot loads it and reads.
+    runtime.execute("""
+        ejModuleLoads = 0
+        function C_AddOns.LoadAddOn(name)
+            ejModuleLoads = ejModuleLoads + 1
+            EJ_GetInstanceByIndex = ejInstanceByIndex
+            C_AddOns.IsAddOnLoaded = function() return true end
+            return true
+        end
+    """)
+    g.SlashCmdList["WOWMCP"]("loot test dungeon 10")
+    attempt = saved["lastAttempt"]
+    assert g.ejModuleLoads == 1 and attempt["outcome"] == "read" and attempt["instancesInJournal"] == 14, dict(attempt)
+    assert any("Loaded the game's Encounter Journal module" in str(line) for line in g.chatlog.values())
+
+
+def check_legacy_challenge_rules() -> None:
+    """The category rule without the reward-text achievements, and the category rule alone without the achievements section."""
+    drop = "table.remove(achievementData[14861], 4) table.remove(achievementData[14861], 3)"
+    for off in (False, True):
+        runtime, g, _ = load_addon("forever", drop)
+        on_event = event_dispatcher(g)
+        on_event(None, "PLAYER_LOGIN")
+        if off:
+            g.SlashCmdList["WOWMCP"]("off achievements")
+        g.SlashCmdList["WOWMCP"]("reload")
+        challenges = g.WowMcpDB["characters"]["Piekasz"]["legacy"]["challenges"]
+        assert [c["name"] for c in challenges["list"].values()] == ["Hunter: Level 25", "Warlock: Level 25"]
+        expected = "achievement category title contains Legacy"
+        expected += " (the achievements section was not available)" if off else " + reward text contains Legacy Point"  # the Hunter mock has both
+        assert challenges["matchedBy"] == expected, challenges["matchedBy"]
+
+
+ELDER_NIGHTSABER = ('{ guid = "Creature-0-5827-0-12-2033-00004A1B2C", name = "Elder Nightsaber", level = 12, family = "Cat",'
+                    ' lore = true, tooltip = { "Elder Nightsaber", "Level 12 Beast", "Health: 450", "Diet: Meat, Fish",'
+                    ' "Abilities: Claw (Rank 2), Prowl 1" } }')
+
+
+def observe_beasts(g, on_event, runtime) -> None:
+    """Addon 0.22.0: Beast Lore on one beast, then taming another; both land in the account-wide store."""
+    g.clockNow = 1794759000
+    g.mockUnits.target = runtime.eval(ELDER_NIGHTSABER)
+    on_event(None, "PLAYER_TARGET_CHANGED")
+    on_event(None, "UNIT_AURA", "target")
+    g.mockUnits.target = runtime.eval('{ guid = "Creature-0-5827-0-12-2034-00004A1B2D", name = "Nightsaber Stalker", level = 13, family = "Cat" }')
+    g.clockNow = 1794759500
+    on_event(None, "UNIT_SPELLCAST_CHANNEL_START", "player", "Cast-3-5827-0-12-1515-0000ABCDEF", 1515)
+    # The pet that shows up first comes from another creature (an old pet called back): not the tamed beast.
+    g.mockUnits.pet = runtime.eval('{ guid = "Pet-0-5827-0-12-9999-0100000001" }')
+    on_event(None, "UNIT_PET", "player")
+    g.mockUnits.target = None
+    g.mockUnits.pet = runtime.eval('{ guid = "Pet-0-5827-0-12-2034-0100000002" }')
+    g.tamedPetSpells = runtime.eval('{ { spellID = 16827, name = "Claw", subName = "Rank 1", itemType = 1 },'
+                                    ' { spellID = 24451, name = "Prowl", subName = "Rank 1", itemType = 1 },'
+                                    ' { spellID = 0, name = "Attack", subName = "Pet Command", itemType = 3 } }')
+    g.clockNow += 22
+    on_event(None, "UNIT_PET", "player")
+    g.tamedPetSpells = None
+    g.mockUnits.pet = None
+    # The taming is recorded; later spellbook changes (lessons the Hunter teaches) must not touch it.
+    g.clockNow += 5
+    on_event(None, "SPELLS_CHANGED")
+    g.clockNow = 1794760000
+
+
+def check_beasts(snapshot, mode: str) -> None:
+    if mode not in FOREVER_MODES:
+        assert len(snapshot["beasts"]) == 0, "nothing tamed or examined in this mode"
+        return
+    beasts = [b for b in snapshot["beasts"].values()]
+    assert [(b["npcId"], b["source"], b["seenAt"]) for b in beasts] == [
+        (2034, "tamed", 1794759522), (2033, "beastLore", 1794759000)], [dict(b) for b in beasts]
+    tamed, lore = beasts
+    abilities = [(a["name"], a["rank"]) for a in tamed["abilities"].values()]
+    assert abilities == [("Claw", "Rank 1"), ("Prowl", "Rank 1")], abilities
+    assert tamed["name"] == "Nightsaber Stalker" and tamed["level"] == 13 and tamed["family"] == "Cat"
+    assert tamed["zone"] == "Stormwind City" and tamed["mapId"] is not None and tamed["loreLines"] is None, dict(tamed)
+    assert list(lore["loreLines"].values())[-1] == "Abilities: Claw (Rank 2), Prowl 1" and lore["abilities"] is None
+    probe = snapshot["probe"]
+    for event in ("UNIT_SPELLCAST_START", "UNIT_SPELLCAST_CHANNEL_START", "UNIT_PET", "PLAYER_TARGET_CHANGED", "UNIT_AURA"):
+        assert probe["events"][event] is True, event
+    calls = list(probe["petFood"]["calls"].values())
+    assert probe["petFood"]["exists"] is True and len(calls) == 6, [dict(c) for c in calls]
+    by_id, by_link = calls[0], calls[1]
+    assert (by_id["form"], by_link["form"]) == ("itemID", "itemLink")
+    working, failing = (by_id, by_link) if mode == "forever" else (by_link, by_id)
+    assert working["ok"] is True and working["count"] == 1 and working["results"][1]["type"] == "boolean", dict(working)
+    assert failing["ok"] is False and "Usage" in failing["error"], dict(failing)
+    if mode == "forever":
+        lore_probe = probe["beastLore"]
+        assert lore_probe["hasAura"] is True and lore_probe["npcId"] == 2033 and len(lore_probe["lines"]) == 5, dict(lore_probe)
+    else:
+        # The target is the inspected player: no creature, no aura, no lines.
+        lore_probe = probe["beastLore"]
+        assert lore_probe["hasAura"] is False and lore_probe["npcId"] is None and lore_probe["lines"] is None, dict(lore_probe)
+
+
+def check_pet_food(snapshot, mode: str) -> None:
+    food = snapshot["pet"]["bagFood"]
+    if mode not in FOREVER_MODES:
+        assert food is None, "no CanPetEatItem in this client: nothing is saved"
+        return
+    assert food["checkedWith"] == ("itemID" if mode == "forever" else "itemLink"), dict(food)
+    items = [(i["id"], i["count"], i["canEat"]) for i in food["items"].values()]
+    # Two stacks of meat add up; bread, cloth and leather (Trade Goods the cat refuses) are left out.
+    assert items == [(2672, 12, True), (2287, 5, True), (1645, 3, False)], items
+
+
+def check_class_buff_groups(snapshot, mode: str) -> None:
+    """The Hunter's groups carry the name the client answers in its language; an ID it does not know is left out."""
+    groups = snapshot["classBuffGroups"]
+    if mode not in FOREVER_MODES:
+        assert groups is None, "no spell name API in this client: no section"
+        return
+    assert [g["label"] for g in groups.values()] == ["Aspect"], dict(groups)
+    spells = [(s["id"], s["name"]) for s in groups[1]["spells"].values()]
+    expected = [(13163, "Aspect of the Monkey"), (13165, "Aspect of the Hawk"), (5118, "Aspect of the Cheetah"),
+                (13159, "Aspect of the Pack"), (13161, "Aspect of the Beast"), (20043, "Aspect of the Wild")]
+    assert spells == [(i, expect(mode, n)) for i, n in expected], spells
+
+
+def check_class_buff_group_edges() -> None:
+    """A wrong name is saved as the client gave it (the server judges it), an unknown ID is left out, a class without
+    groups has no section, and a client that knows none of the IDs has no section either."""
+    runtime, g, addon_ns = load_addon("forever")
+    on_event = event_dispatcher(g)
+    on_event(None, "PLAYER_LOGIN")
+    g.C_Spell.GetSpellName = runtime.eval(
+        'function(id) if id == 13163 then return "Demon Skin" end if id == 13165 then return "Aspect of the Hawk" end end')
+    groups = addon_ns.Snapshot.dump("manual")[0]["classBuffGroups"]
+    spells = [(s["id"], s["name"]) for s in groups[1]["spells"].values()]
+    assert spells == [(13163, "Demon Skin"), (13165, "Aspect of the Hawk")], spells
+    g.C_Spell.GetSpellName = runtime.eval("function() return nil end")
+    assert addon_ns.Snapshot.dump("manual")[0]["classBuffGroups"] is None
+    g.C_Spell.GetSpellName = runtime.eval('function(id) return "Spell " .. id end')
+    g.UnitClass = runtime.eval('function() return "Rogue", "ROGUE", 4 end')
+    assert addon_ns.Snapshot.dump("manual")[0]["classBuffGroups"] is None, "Rogue has no groups"
+    g.UnitClass = runtime.eval('function() return "Mage", "MAGE", 8 end')
+    labels = [grp["label"] for grp in addon_ns.Snapshot.dump("manual")[0]["classBuffGroups"].values()]
+    assert labels == ["Arcane Intellect", "Armor"], labels
+
+
+def check_beast_store_edges() -> None:
+    """The store keeps at most 300 beasts (oldest dropped), only Hunters record, and a CanPetEatItem that never answers
+    with a boolean saves no bagFood."""
+    runtime, g, addon_ns = load_addon("forever")
+    on_event = event_dispatcher(g)
+    on_event(None, "PLAYER_LOGIN")
+    g.C_PetInfo.CanPetEatItem = runtime.eval("function() return nil end")
+    assert addon_ns.PetFood.check() is None
+    for i in range(305):
+        g.clockNow = 1794700000 + i
+        addon_ns.Beasts.record(runtime.eval(f'{{ npcId = {5000 + i}, name = "Boar {i}" }}'), "beastLore", runtime.eval("{}"))
+    store = g.WowMcpDB["beasts"]
+    assert len(list(store.keys())) == 300 and store[5000] is None and store[5004] is None and store[5005] is not None
+    g.UnitClass = runtime.eval('function() return "Mage", "MAGE", 8 end')
+    g.mockUnits.target = runtime.eval(ELDER_NIGHTSABER.replace("2033", "2099"))
+    on_event(None, "PLAYER_TARGET_CHANGED")
+    assert store[2099] is None, "only Hunters record beasts"
+    assert addon_ns.Snapshot.dump("manual")[0]["beasts"] is None, "a non-Hunter dump has no beasts section"
 
 
 def main() -> int:
@@ -2420,13 +3447,22 @@ def main() -> int:
         # Quest lookups by name (any letter case), by ID and with no match; the same query twice is stored once.
         for query in ("deep ocean, vast sea", "947", "Murkdeep", "No Such Quest", "947"):
             g.SlashCmdList["WOWMCP"]("quest " + query)
+        run_lookups(g, on_event, mode)
+        observe_beasts(g, on_event, runtime)
+        if mode == "forever":
+            g.mockUnits.target = runtime.eval(ELDER_NIGHTSABER)
+            read_dungeon_loot(g, on_event)
     elif mode == "modern":
         for event in ("AUCTION_HOUSE_SHOW", "AUCTION_ITEM_LIST_UPDATE", "AUCTION_OWNED_LIST_UPDATE"):
             on_event(None, event)
         # A disabled section does not reach the dump; in the other modes the macros stay.
         g.SlashCmdList["WOWMCP"]("off macros")
+        # No Encounter Journal API: the command only records why, and reads nothing.
+        g.SlashCmdList["WOWMCP"]("loot deadmines")
     g.SlashCmdList["WOWMCP"]("probe" if mode in FOREVER_MODES else "reload")
     g.SlashCmdList["WOWMCP"]("status")
+    if mode in FOREVER_MODES:
+        g.mockUnits.target = None
 
     for line in g.chatlog.values():
         print("chat:", line)
@@ -2450,7 +3486,7 @@ def main() -> int:
                         "currencies", "cooldowns", "played", "recipes", "mail"):
             assert snapshot[section] is not None, f"missing section {section}"
         cooldowns = {c["name"]: c for c in snapshot["cooldowns"].values()}
-        assert set(cooldowns) == {"Aspect of the Hawk", expect(mode, "Hearthstone")}, f"cooldowns: {list(cooldowns)}"
+        assert set(cooldowns) == {expect(mode, "Aspect of the Hawk"), expect(mode, "Hearthstone")}, f"cooldowns: {list(cooldowns)}"
         assert cooldowns[expect(mode, "Hearthstone")]["remainingSeconds"] == 3000
         assert snapshot["played"]["totalSeconds"] == 360000
         recipes = snapshot["recipes"]
@@ -2671,6 +3707,10 @@ def main() -> int:
     assert len(guild["members"]) == 3 and guild["onlineOnly"] is None, "up to 200 people we save everyone"
     assert guild["members"][1]["name"] == "Tankadin" and guild["members"][1]["zone"] == "Stormwind City"
     assert guild["members"][3]["online"] is False
+    # Note, class token and days since the member was last online (only offline members have them).
+    assert guild["members"][1]["note"] == "main tank" and guild["members"][1]["classToken"] == "PALADIN" and guild["members"][1]["daysOffline"] is None
+    assert guild["members"][3]["daysOffline"] == 63, dict(guild["members"][3])
+    assert first_friend["classToken"] == "PALADIN"
     sets = snapshot["equipmentSets"]
     if mode == "legacy":
         assert len(sets) == 1 and sets[1]["name"] == "Leveling" and sets[1]["isEquipped"] is False, dict(sets[1])
@@ -2681,7 +3721,7 @@ def main() -> int:
         assert set(slots) == {"mainHand", "offHand"} and slots["mainHand"]["id"] == 5586, "slots 0 and 1 are empty and ignored"
     if mode in FOREVER_MODES:
         auras = {a["name"]: a for a in snapshot["auras"].values()}
-        hawk = auras["Aspect of the Hawk"]
+        hawk = auras[expect(mode, "Aspect of the Hawk")]
         assert hawk["duration"] == 600 and hawk["expiresAt"] == 1794760000 + 450, dict(hawk)
         assert auras["Ghost"]["expiresAt"] is None and auras["Ghost"]["duration"] is None, "an aura without a duration has no end"
     if mode in ("modern", "legacy"):
@@ -2708,10 +3748,18 @@ def main() -> int:
     else:
         assert any(f.frameName == "WowMcpMinimapButton" for f in g.frames.values())
 
+    check_dungeon_loot(snapshot, g, mode)
+
     # Locale-independent identifiers next to the client's text.
     check_identifiers(snapshot, mode)
     check_numeric_ids(snapshot, mode, runtime, addon_ns)
     check_quest_sources(snapshot, g, mode)
+    check_lookups(snapshot, g, mode)
+    check_achievement_sections(snapshot, mode)
+    if mode != "legacy":
+        check_pet_food(snapshot, mode)
+        check_beasts(snapshot, mode)
+    check_class_buff_groups(snapshot, mode)
 
     dump = g.SerializeSavedVariable("WowMcpDB", g.WowMcpDB)
     assert "INVTYPE_NON_EQUIP_IGNORE" not in dump, "equipLoc = INVTYPE_NON_EQUIP_IGNORE should not reach the dump"
@@ -2721,11 +3769,18 @@ def main() -> int:
     check_robustness(runtime, g, on_event, mode)
     if mode == "forever":
         check_quest_sources_absent()
+        check_unnamed_profession_window()
+        check_battle_net_friends()
         check_waypoint_links()
+        check_sharing()
         check_secret_group_range()
         check_passed_guide_steps()
         check_legacy_scan_only_when_needed()
         check_realmless_key()
+        check_dungeon_loot_targets()
+        check_beast_store_edges()
+        check_class_buff_group_edges()
+        check_legacy_challenge_rules()
         check_real_lifecycle()
         print("lifecycle from the real game: OK")
     return 0

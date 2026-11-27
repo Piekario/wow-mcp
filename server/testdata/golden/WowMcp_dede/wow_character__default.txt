@@ -9,7 +9,7 @@
       "expiresAt": 1794760450,
       "icon": 136076,
       "id": 13165,
-      "name": "Aspect of the Hawk"
+      "name": "Aspekt des Falken"
     },
     {
       "harmful": true,
@@ -19,7 +19,7 @@
     }
   ],
   "character": {
-    "addonVersion": "0.20.0",
+    "addonVersion": "0.22.0",
     "bindLocation": "Auberdine",
     "class": "Jäger",
     "classToken": "HUNTER",
